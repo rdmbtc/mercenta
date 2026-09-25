@@ -19,17 +19,17 @@ import {
   Route,
   Scale,
   ShieldCheck,
-  Sparkles,
   UserCheck,
   Wallet,
   Workflow,
 } from "lucide-react";
 import DecisionFeed from "@/components/DecisionFeed";
-import OrderJourney from "@/components/OrderJourney";
+import MagneticLink from "@/components/MagneticLink";
 import PolicyTerminal from "@/components/PolicyTerminal";
 import ScrollEffects from "@/components/ScrollEffects";
 import SiteHeader from "@/components/SiteHeader";
 import SpotlightGrid from "@/components/SpotlightGrid";
+import StoryCanvas from "@/components/StoryCanvas";
 import { CASES, ORDER, POLICY, evaluatePolicy, percent, usdc } from "@/lib/policy";
 
 const ECOSYSTEM = [
@@ -42,11 +42,11 @@ const ECOSYSTEM = [
 ];
 
 const SECTIONS = [
-  { label: "Order journey", href: "#order-journey", id: "order-journey" },
-  { label: "Policy engine", href: "#policy", id: "policy" },
+  { label: "Story", href: "#order-journey", id: "order-journey" },
+  { label: "Engine", href: "#engine", id: "engine" },
+  { label: "Terminal", href: "#policy", id: "policy" },
   { label: "Platform", href: "#platform", id: "platform" },
   { label: "Catalogue", href: "#catalogue", id: "catalogue" },
-  { label: "Settlement", href: "#settlement", id: "settlement" },
   { label: "Status", href: "#status", id: "status" },
 ];
 
@@ -217,71 +217,7 @@ export default function Home() {
       <SiteHeader sections={SECTIONS} ecosystem={ECOSYSTEM} />
 
       <main id="main">
-        <section className="hero" aria-labelledby="hero-title">
-          <div className="hero-bg" aria-hidden="true">
-            <span className="aurora aurora--a" />
-            <span className="aurora aurora--b" />
-            <span className="aurora aurora--c" />
-            <span className="hero-grid" />
-            <span className="hero-beam" />
-            <span className="hero-ring" />
-          </div>
-
-          <div className="hero-inner">
-            <div className="hero-copy">
-              <p className="hero-tags">
-                <span className="chip chip--accent">
-                  <Sparkles size={12} aria-hidden="true" /> Commerce OS for autonomous agents
-                </span>
-                <span className="chip">Pre-launch · illustrative data</span>
-              </p>
-              <h1 id="hero-title">
-                Commerce, <span className="grad">with control.</span>
-              </h1>
-              <p className="hero-lead">
-                A policy-controlled checkout for software agents. Agents propose what to buy; published rules decide
-                whether anything is authorised; settlement and delivery are recorded on one order a finance team can
-                read.
-              </p>
-              <div className="hero-actions">
-                <a className="btn btn--primary btn--lg" href="#policy">
-                  Open the interactive demo <ArrowRight size={16} aria-hidden="true" />
-                </a>
-                <a className="btn btn--lg" href="#order-journey">
-                  Follow one order <ChevronRight size={16} aria-hidden="true" />
-                </a>
-              </div>
-              <dl className="hero-facts">
-                <div>
-                  <dt>Available to spend</dt>
-                  <dd>{usdc(POLICY.availableToSpend)}</dd>
-                </div>
-                <div>
-                  <dt>Reserved</dt>
-                  <dd>{usdc(POLICY.reserved)}</dd>
-                </div>
-                <div>
-                  <dt>Gross margin floor</dt>
-                  <dd>{percent(POLICY.grossMarginFloor)}</dd>
-                </div>
-                <div>
-                  <dt>Auto-approval limit</dt>
-                  <dd>{usdc(POLICY.autoApprovalLimit)}</dd>
-                </div>
-              </dl>
-              <p className="note">Illustrative configuration, shown the same way everywhere on this page.</p>
-            </div>
-
-            <div className="hero-visual">
-              <DecisionFeed />
-            </div>
-          </div>
-
-          <a className="hero-scroll" href="#how">
-            <span className="hero-scroll-line" aria-hidden="true" />
-            Scroll
-          </a>
-        </section>
+        <StoryCanvas />
 
         <div className="ticker" aria-label="Vocabulary used across the platform">
           <div className="ticker-track">
@@ -298,10 +234,49 @@ export default function Home() {
           </div>
         </div>
 
+        <section className="section" id="engine" aria-labelledby="engine-title">
+          <div className="engine-head" data-reveal>
+            <div className="head head--narrow">
+              <p className="kicker">Decision engine</p>
+              <h2 id="engine-title" className="metal">
+                Every intent. <span className="grad">One deterministic answer.</span>
+              </h2>
+              <p className="head-note">
+                A live look at the gate: intents arrive, five ordered checks run, and each one leaves as Cleared,
+                Policy blocked or Human approval required. The stream below is simulated in your browser from a fixed
+                sequence — the rules are the real thing.
+              </p>
+            </div>
+            <ul className="plain-list">
+              <li>
+                <span className="plain-icon">
+                  <Activity size={15} aria-hidden="true" />
+                </span>
+                Same code path as the terminal: change a rule there and this stream would change with it
+              </li>
+              <li>
+                <span className="plain-icon">
+                  <Gauge size={15} aria-hidden="true" />
+                </span>
+                Eval time is measured, not quoted — it is the cost of the checks running on your machine
+              </li>
+              <li>
+                <span className="plain-icon">
+                  <ShieldCheck size={15} aria-hidden="true" />
+                </span>
+                Volume and counts are session tallies of the simulation, not a record of real activity
+              </li>
+            </ul>
+          </div>
+          <div data-reveal>
+            <DecisionFeed />
+          </div>
+        </section>
+
         <section className="section" id="how" aria-labelledby="how-title">
           <div className="head head--center" data-reveal>
             <p className="kicker">How an order moves</p>
-            <h2 id="how-title">
+            <h2 id="how-title" className="metal">
               Propose. Check. <span className="grad">Authorise. Settle.</span>
             </h2>
             <p className="head-note">
@@ -326,18 +301,17 @@ export default function Home() {
           </ol>
         </section>
 
-        <OrderJourney />
-
         <section className="section" id="policy" aria-labelledby="policy-title">
           <div className="policy-head" data-reveal>
             <div className="head head--narrow">
-              <p className="kicker">Policy engine</p>
-              <h2 id="policy-title">
+              <p className="kicker">Policy terminal</p>
+              <h2 id="policy-title" className="metal">
                 Rules first. <span className="grad">Then money moves.</span>
               </h2>
               <p className="head-note">
-                Every intent an agent proposes runs through the same five checks in the same order. Change the inputs
-                and the decision updates; the outcome never depends on a model&apos;s judgement.
+                Run a scenario and watch the intent travel the circuit: five checks light up in order, the decision
+                lands, and — only if everything clears — a settlement token is issued. Change any input and the
+                decision updates; the outcome never depends on a model&apos;s judgement.
               </p>
             </div>
             <ul className="plain-list">
@@ -369,7 +343,7 @@ export default function Home() {
         <section className="section" id="platform" aria-labelledby="platform-title">
           <div className="head head--center" data-reveal>
             <p className="kicker">Platform</p>
-            <h2 id="platform-title">
+            <h2 id="platform-title" className="metal">
               Built for finance teams, <span className="grad">not for demos.</span>
             </h2>
             <p className="head-note">
@@ -379,7 +353,7 @@ export default function Home() {
           </div>
 
           <SpotlightGrid className="bento">
-            <article className="bento-card spot bento-card--wide" data-reveal>
+            <article className="bento-card spot glass bento-card--wide" data-reveal>
               <div className="bento-head">
                 <span className="bento-icon">
                   <ListChecks size={18} aria-hidden="true" />
@@ -403,7 +377,7 @@ export default function Home() {
               </ul>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card spot glass" data-reveal>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Gauge size={18} aria-hidden="true" />
@@ -434,7 +408,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card spot glass" data-reveal>
               <div className="bento-head">
                 <span className="bento-icon">
                   <UserCheck size={18} aria-hidden="true" />
@@ -455,7 +429,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card spot glass" data-reveal>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Blocks size={18} aria-hidden="true" />
@@ -481,7 +455,7 @@ export default function Home() {
               </pre>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card spot glass" data-reveal>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Coins size={18} aria-hidden="true" />
@@ -494,7 +468,7 @@ export default function Home() {
               </p>
               <ul className="chain-list">
                 {["Arc", "Base", "Solana"].map((chain) => (
-                  <li key={chain}>
+                  <li key={chain} className="badge-link">
                     <span className="chain-dot" aria-hidden="true" /> {chain}
                     <span className="eco-status">planned</span>
                   </li>
@@ -502,7 +476,7 @@ export default function Home() {
               </ul>
             </article>
 
-            <article className="bento-card spot bento-card--wide" data-reveal>
+            <article className="bento-card spot glass bento-card--wide" data-reveal>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Fingerprint size={18} aria-hidden="true" />
@@ -533,7 +507,7 @@ export default function Home() {
               </ol>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card spot glass" data-reveal>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Workflow size={18} aria-hidden="true" />
@@ -572,7 +546,7 @@ export default function Home() {
         <section className="section" id="catalogue" aria-labelledby="catalogue-title">
           <div className="head" data-reveal>
             <p className="kicker">The catalogue</p>
-            <h2 id="catalogue-title">
+            <h2 id="catalogue-title" className="metal">
               Business inputs, bought wholesale. <span className="grad">Sold at a margin you set.</span>
             </h2>
             <p className="head-note">
@@ -586,7 +560,7 @@ export default function Home() {
           </p>
           <div className="cards">
             {CATALOGUE.map((item, index) => (
-              <article className="card" key={item.name} data-reveal style={{ "--i": index } as CSSProperties}>
+              <article className="card glass" key={item.name} data-reveal style={{ "--i": index } as CSSProperties}>
                 <header className="card-top">
                   <span className="card-icon">{item.icon}</span>
                   <span className="card-sku">{item.sku}</span>
@@ -626,7 +600,7 @@ export default function Home() {
         <section className="section" id="settlement" aria-labelledby="settlement-title">
           <div className="head" data-reveal>
             <p className="kicker">Settlement</p>
-            <h2 id="settlement-title">
+            <h2 id="settlement-title" className="metal">
               One record for the payment <span className="grad">and the delivery.</span>
             </h2>
             <p className="head-note">
@@ -678,7 +652,7 @@ export default function Home() {
         <section className="section section--tight" id="status" aria-labelledby="status-title">
           <div className="head head--center" data-reveal>
             <p className="kicker">Status</p>
-            <h2 id="status-title">What is live today</h2>
+            <h2 id="status-title" className="metal">What is live today</h2>
             <p className="head-note">
               Mercenta is pre-launch. We would rather describe the gap than imply a product that does not run yet.
             </p>
@@ -701,19 +675,19 @@ export default function Home() {
             <span className="cta-glow" aria-hidden="true" />
             <Image className="cta-mark" src="/mercenta-logo.png" alt="" width={420} height={420} aria-hidden="true" />
             <p className="kicker">Early access</p>
-            <h2>
+            <h2 className="metal">
               Put a boundary in front of <span className="grad">the next purchase.</span>
             </h2>
             <p className="cta-lead">
               Pre-launch. No signup form is wired into this preview — follow the build, or step through the demo above.
             </p>
             <div className="hero-actions">
-              <a className="btn btn--primary btn--lg" href="#policy">
-                Open the interactive demo <ArrowRight size={16} aria-hidden="true" />
-              </a>
-              <a className="btn btn--lg" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">
+              <MagneticLink className="btn btn--primary btn--lg" href="#policy">
+                Run the policy terminal <ArrowRight size={16} aria-hidden="true" />
+              </MagneticLink>
+              <MagneticLink className="btn btn--glass btn--lg" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">
                 Follow the build on X <ArrowUpRight size={16} aria-hidden="true" />
-              </a>
+              </MagneticLink>
             </div>
             <p className="cta-badges">
               <span className="chip">
@@ -754,12 +728,14 @@ export default function Home() {
           </nav>
           <nav className="footer-col" aria-label="Ecosystem">
             <p className="kicker">Ecosystem · planned, not live</p>
-            {ECOSYSTEM.map((item) => (
-              <a key={item.host} href={"https://" + item.host}>
-                {item.host}
-                <span className="eco-status">planned</span>
-              </a>
-            ))}
+            <div className="badges">
+              {ECOSYSTEM.map((item) => (
+                <a key={item.host} className="badge-link" href={"https://" + item.host}>
+                  <span className="eco-host">{item.host}</span>
+                  <span className="eco-status">planned</span>
+                </a>
+              ))}
+            </div>
           </nav>
           <div className="footer-col">
             <p className="kicker">Follow</p>

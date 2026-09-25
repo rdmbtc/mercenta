@@ -14,18 +14,20 @@ npm run build    # production check
 
 | Path | Role |
 | --- | --- |
-| `src/app/page.tsx` | Server-rendered page: hero, vocabulary ticker, pipeline, film, policy engine, platform bento, metrics, catalogue, settlement, status, CTA, footer. |
-| `src/app/layout.tsx` | Metadata (title, description, OpenGraph, Twitter, theme colour) and the Geist fonts. The font variables live on `<html>` so `:root` tokens can resolve them. |
-| `src/app/globals.css` | All tokens and rules, grouped by section. No CSS framework layer beyond Tailwind's import. |
-| `src/lib/policy.ts` | Single source of truth: `POLICY`, `ORDER`, `CASES`, `evaluatePolicy`, `usdc`, `percent`, `tone`. |
-| `src/components/SiteHeader.tsx` | Fixed header: compacts on scroll, highlights the current section, mobile menu. Client. |
-| `src/components/DecisionFeed.tsx` | Hero console: a fixed sequence of illustrative intents run through `evaluatePolicy`, one new row every 2.6 s. Pauses on hover, off-screen, hidden tab, or via its button. Client. |
-| `src/components/OrderJourney.tsx` | The scroll film: one illustrative order, four acts. Client. |
-| `src/components/PolicyTerminal.tsx` | The interactive policy terminal, with presets, reset and a checks-passed score. Client. |
-| `src/components/ScrollEffects.tsx` | Adds `.is-in` to `[data-reveal]` elements as they enter the viewport and counts `[data-count]` numbers up. Hiding is scoped to `html.has-js`, so nothing is invisible without JavaScript. Client. |
-| `src/components/SpotlightGrid.tsx` | Pointer-tracking glow for the platform bento cards. Client. |
+| `src/app/page.tsx` | Server-rendered page: story canvas, vocabulary ticker, decision engine, pipeline, policy terminal, platform bento, metrics, catalogue, settlement, status, CTA, footer. |
+| `src/app/layout.tsx` | Metadata (title, description, OpenGraph, Twitter, theme colour), the Geist fonts and the film-grain overlay. Font variables live on `<html>` so `:root` tokens can resolve them. |
+| `src/app/globals.css` | Design system: obsidian tokens, `.glass` / `.foil` / `.metal` materials, `.tag` + `.dot` telemetry type, buttons with shimmer, and per-section rules. |
+| `src/lib/policy.ts` | Single source of truth: `POLICY`, `ORDER`, `CASES`, `SCENARIOS`, `evaluatePolicy`, `credential`, `usdc`, `percent`, `tone`. |
+| `src/components/StoryCanvas.tsx` | The showstopper: a 480vh sticky canvas. Act 00 is the hero; acts 01–04 follow one order with HUD overlays (reticle, laser scan, unfolding foil receipt) while the vault film scrubs with scroll. Client. |
+| `src/components/DecisionFeed.tsx` | Decision engine: a fixed sequence of illustrative intents through `evaluatePolicy`, with rolling odometers, a measured eval-time tile, an oscilloscope trace and a typewriter log. Client. |
+| `src/components/PolicyTerminal.tsx` | Policy terminal 2.0: persona scenarios, liquid sliders, an SVG circuit the intent packet rides through the gate (checks light in order), and a settlement token that flips in only when the intent clears. Client. |
+| `src/components/SiteHeader.tsx` | Fixed glass header: compacts on scroll, highlights the current section, hover Ecosystem menu, mobile menu. Client. |
+| `src/components/SpotlightGrid.tsx` | Cursor spotlight + specular + 3D tilt for `.spot` cards; one rAF per pointer frame, CSS variables only. Client. |
+| `src/components/MagneticLink.tsx` | Anchor that leans toward the cursor and springs back. Client. |
+| `src/components/Odometer.tsx` | Slot-machine digits: each digit is a 0–9 column translated to its value. Server-renderable. |
+| `src/components/ScrollEffects.tsx` | Adds `.is-in` to `[data-reveal]` and counts `[data-count]` up. Hiding is scoped to `html.has-js`. Client. |
 
-The hero facts, the decision feed, the film, the terminal and the platform cards all read the same numbers from
+The hero facts, the feed, the film, the terminal and the platform cards all read the same numbers from
 `src/lib/policy.ts`, so no two sections can disagree about a balance, a floor or an outcome. Change a case there and
 everything follows.
 
@@ -35,8 +37,12 @@ everything follows.
 ## The film
 
 One illustrative order (MR-ORD-2481, 250 cloud-compute hours from CloudCore Compute) is followed end to end:
-**intent → the five ordered checks → the authorization boundary → settlement and delivery receipt.** Four acts
-share one sticky stage, crossfading on scroll, with a video scrubbed by native scroll position.
+**hero → intent → the five ordered checks → the authorization boundary → settlement and delivery receipt.** Five
+panels share one sticky stage, crossfading on scroll, with a video scrubbed by native scroll position. The stage
+publishes `--p`, `--frame`, `--hero`, `--intent`, `--gate`, `--scan` and `--unfold` as CSS variables and a
+`data-lit` count on the gate panel, so the frame inset, the laser sweep, the reticle, the sequential check lighting
+and the receipt unfold are all plain CSS driven by one number. Deep links (`#order-journey`, `#policy-gate`) are
+absolutely positioned anchors inside the tall container placed at a chosen story progress.
 
 - **Native scroll only.** No wheel or touch hijacking, no scroll traps. Progress is read in a `scroll`/`resize`
   driven requestAnimationFrame loop that stops itself once movement settles.
@@ -80,12 +86,16 @@ Run `npm run dev`, open the page, and confirm:
    zero-opacity panel, the mobile menu closes on Escape.
 6. **Narrow viewports.** At 390×844 and 320×568 there is no horizontal overflow, and an act taller than the stage
    scrolls internally so its last row is reachable above the bottom chrome.
-7. **Terminal.** Presets, amount and cost inputs, and the supplier select re-evaluate immediately; a failed check
-   blocks the order, a held check escalates to a human, "This page's order" matches the film's figures, and Reset is
-   disabled while that preset is loaded.
-8. **Feed.** The top row changes every few seconds, the tally in the footer grows with it, the pause button stops it
-   (dot turns amber), and hovering the card holds the current rows still.
-9. **Build.** `npm run build`, `npx tsc --noEmit` and `npx eslint src` must pass before shipping.
+7. **Terminal.** Clicking a scenario (or Run) sends the packet along the circuit: a pulse at the gate, checks lit in
+   order, and the verdict reads "Evaluating…" until the packet stops. A failing check stops the packet red; a held
+   check parks it amber at the gate exit; a cleared intent reaches Settlement and the token card flips in with a
+   deterministic `•••• nnnn` tail and seal. Editing any input resets the run. Reset is disabled on the default order.
+8. **Feed.** The top row changes every few seconds, the odometers roll, the eval-time tile shows a measured µs figure,
+   the trace spikes on each decision, the log types out, the pause button stops it (dot turns amber), and hovering
+   holds the rows still.
+9. **Materials.** Moving the cursor over the platform grid tilts the hovered card (`--rx`/`--ry`) and moves the border
+   glow on every card (`--mx`/`--my`); primary buttons carry a sweeping beam and lean toward the cursor.
+10. **Build.** `npm run build`, `npx tsc --noEmit` and `npx eslint src` must pass before shipping.
 
 ## Truthfulness rules
 
@@ -94,8 +104,11 @@ planned; the six ecosystem subdomains are each labelled `planned`; the catalogue
 labelled illustrative and are not real inventory or final pricing. The terminal is labelled
 "illustrative configuration", the decision feed is labelled "Simulated" and states that it is evaluated in the
 browser, and no order is submitted and no funds move anywhere on this site. The metrics strip states structural
-facts about the engine (five checks, three outcomes, one record, no model authority), not performance figures. No
-cashback, subsidy or fee promise is made, and nothing claims delivery before payment.
+facts about the engine (five checks, three outcomes, one record, no model authority), not performance figures. The
+feed's "volume" and "decisions" are session tallies of the simulation and its "eval time" is measured on the visitor's
+machine; the terminal's settlement token is USDC-native and labelled illustrative (no card network is named), and its
+scenarios use generic agent personas rather than third-party products. No cashback, subsidy or fee promise is made,
+and nothing claims delivery before payment.
 
 ## Arc branding
 

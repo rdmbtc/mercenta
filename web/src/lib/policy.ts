@@ -56,10 +56,81 @@ export const CASES = {
   overLimit: { label: "Over approval limit", amount: 7_800, cost: 6_200, supplier: "verified" },
 } satisfies Record<string, PolicyCase>;
 
+export type Scenario = PolicyCase & {
+  id: string;
+  agent: string;
+  listing: string;
+  quantity: string;
+  supplierName: string;
+};
+
+/** Persona-flavoured presets for the terminal. Generic agent names on purpose: no third-party products are implied. */
+export const SCENARIOS: Scenario[] = [
+  {
+    id: "compute",
+    label: "Research agent buys GPU hours",
+    agent: "research-agent",
+    listing: ORDER.listing,
+    quantity: ORDER.units + " " + ORDER.unit,
+    supplierName: ORDER.supplier,
+    amount: CASES.order.amount,
+    cost: CASES.order.cost,
+    supplier: "verified",
+  },
+  {
+    id: "seats",
+    label: "Ops agent books 100 seats",
+    agent: "ops-agent",
+    listing: "Enterprise SaaS Seats",
+    quantity: "100 seat-months",
+    supplierName: "Northwind Licensing",
+    amount: CASES.overLimit.amount,
+    cost: CASES.overLimit.cost,
+    supplier: "verified",
+  },
+  {
+    id: "thin",
+    label: "Pricing agent quotes too low",
+    agent: "pricing-agent",
+    listing: ORDER.listing,
+    quantity: ORDER.units + " " + ORDER.unit,
+    supplierName: ORDER.supplier,
+    amount: CASES.thin.amount,
+    cost: CASES.thin.cost,
+    supplier: "verified",
+  },
+  {
+    id: "uncertain",
+    label: "Buyer agent picks an unverified supplier",
+    agent: "buyer-agent",
+    listing: "API Credit Bundles",
+    quantity: "1,000 credits",
+    supplierName: "Unlisted reseller",
+    amount: 860,
+    cost: 720,
+    supplier: "uncertain",
+  },
+  {
+    id: "rogue",
+    label: "Rogue scraper attempts a runaway spend",
+    agent: "scraper-bot",
+    listing: "API Credit Bundles",
+    quantity: "60,000 credits",
+    supplierName: "Vertex Credit Desk",
+    amount: 50_000,
+    cost: 42_000,
+    supplier: "verified",
+  },
+];
+
 const usdcFormat = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function usdc(value: number): string {
   return usdcFormat.format(Number.isFinite(value) ? value : 0) + " USDC";
+}
+
+export function usdcPlain(value: number): string {
+  return usdcFormat.format(Number.isFinite(value) ? value : 0);
 }
 
 export function percent(ratio: number): string {
@@ -76,6 +147,27 @@ export function tone(decision: Decision): Tone {
 export function grossMargin(amount: number, cost: number): number {
   if (!(amount > 0)) return 0;
   return (amount - cost) / amount;
+}
+
+/* FNV-1a, 32-bit. Purely presentational: gives the terminal a stable, order-specific looking token and seal. */
+function fnv1a(input: string): number {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < input.length; i += 1) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return hash >>> 0;
+}
+
+/** Illustrative settlement credential for a given intent. Deterministic, so the same inputs always show the same token. */
+export function credential(amount: number, cost: number, supplier: SupplierState) {
+  const seed = [amount, cost, supplier].join("|");
+  const a = fnv1a(seed);
+  const b = fnv1a(seed + "#seal");
+  return {
+    tail: String(a % 10_000).padStart(4, "0"),
+    seal: (a.toString(16).padStart(8, "0") + b.toString(16).padStart(8, "0")).slice(0, 16),
+  };
 }
 
 /**

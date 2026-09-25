@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
+import MagneticLink from "@/components/MagneticLink";
 
 type Link = { label: string; href: string; id: string };
 
@@ -85,7 +86,7 @@ export default function SiteHeader({
             <div className="eco-panel" role="menu" aria-label="Ecosystem addresses">
               <p className="eco-note">Planned addresses for each part of the product. None of them is live today.</p>
               {ecosystem.map((item) => (
-                <a key={item.host} className="eco-link" href={"https://" + item.host} role="menuitem">
+                <a key={item.host} className="eco-link badge-link" href={"https://" + item.host} role="menuitem">
                   <span className="eco-host">{item.host}</span>
                   <span className="eco-role">{item.role}</span>
                   <span className="eco-status">planned</span>
@@ -99,9 +100,9 @@ export default function SiteHeader({
           <a className="btn btn--ghost btn--sm" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">
             Follow <ArrowUpRight size={14} aria-hidden="true" />
           </a>
-          <a className="btn btn--primary btn--sm" href="#policy">
-            Open the demo <ArrowRight size={14} aria-hidden="true" />
-          </a>
+          <MagneticLink className="btn btn--primary btn--sm" href="#policy">
+            Run the terminal <ArrowRight size={14} aria-hidden="true" />
+          </MagneticLink>
           <button
             type="button"
             className="menu-toggle"
@@ -127,15 +128,17 @@ export default function SiteHeader({
         </nav>
         <div className="mobile-eco">
           <p className="kicker">Ecosystem · planned, not live</p>
-          {ecosystem.map((item) => (
-            <a key={item.host} href={"https://" + item.host}>
-              <span className="eco-host">{item.host}</span>
-              <span className="eco-status">planned</span>
-            </a>
-          ))}
+          <div className="badges">
+            {ecosystem.map((item) => (
+              <a key={item.host} className="badge-link" href={"https://" + item.host}>
+                <span className="eco-host">{item.host}</span>
+                <span className="eco-status">planned</span>
+              </a>
+            ))}
+          </div>
         </div>
         <a className="btn btn--primary" href="#policy" onClick={() => setOpen(false)}>
-          Open the interactive demo <ArrowRight size={16} aria-hidden="true" />
+          Run the policy terminal <ArrowRight size={16} aria-hidden="true" />
         </a>
       </div>
     </header>
