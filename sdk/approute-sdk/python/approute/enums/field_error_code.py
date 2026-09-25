@@ -1,0 +1,11 @@
+from enum import Enum
+
+
+class FieldErrorCode(str, Enum):
+    MISSING = "MISSING"
+    OUT_OF_RANGE = "OUT_OF_RANGE"
+    INVALID_FORMAT = "INVALID_FORMAT"
+    INVALID_VALUE = "INVALID_VALUE"
+    NOT_ALLOWED = "NOT_ALLOWED"
+    TOO_LONG = "TOO_LONG"
+    TOO_SHORT = "TOO_SHORT"

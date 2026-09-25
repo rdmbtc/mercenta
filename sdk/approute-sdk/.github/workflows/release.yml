@@ -1,0 +1,117 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  # Адрес сервера с приватными реестрами (задать в GitHub Secrets)
+  REGISTRY_HOST: ${{ secrets.REGISTRY_HOST }}
+
+jobs:
+  python:
+    name: Publish Python SDK to private PyPI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
+        run: pip install hatch twine
+
+      - name: Set version from tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "__version__ = \"${VERSION}\"" > approute/_version.py
+
+      - name: Build
+        run: hatch build
+
+      - name: Publish to private PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.REGISTRY_USER }}
+          TWINE_PASSWORD: ${{ secrets.REGISTRY_PASS }}
+          TWINE_REPOSITORY_URL: https://${{ secrets.REGISTRY_HOST }}/pypi/
+        run: twine upload dist/*
+
+  javascript:
+    name: Publish JS/TS SDK to private npm (Verdaccio)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: javascript
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: https://${{ secrets.REGISTRY_HOST }}/npm/
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Set version from tag
+        run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to Verdaccio
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish
+
+  php:
+    name: Rebuild Satis index (PHP/Composer)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Satis rebuild via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd /opt/approute/package-registry
+            docker compose --profile build run --rm satis-build
+
+  go-tag:
+    name: Tag Go module
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Go subdirectory tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          GO_TAG="golang/v${VERSION}"
+          git tag "${GO_TAG}"
+          git push origin "${GO_TAG}"
+
+  github-release:
+    name: Create GitHub Release
+    needs: [python, javascript, php, go-tag]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "${{ github.ref_name }}" \
+            --generate-notes

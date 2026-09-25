@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  python:
+    name: Python SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Type check
+        run: mypy approute
+
+      - name: Test
+        run: pytest --tb=short -q
+
+  golang:
+    name: Go SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: golang
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -race -count=1 ./...
+
+      - name: Benchmark
+        run: go test -bench=. -benchmem -benchtime=1s ./... | tee /dev/null
+
+  javascript:
+    name: JS/TS SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: javascript
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npx vitest run
+
+  php:
+    name: PHP SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: php
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Test
+        run: vendor/bin/phpunit

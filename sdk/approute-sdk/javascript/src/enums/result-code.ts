@@ -1,0 +1,20 @@
+/**
+ * API result codes returned in the envelope `code` field.
+ */
+export const ResultCode = {
+  OK: "OK",
+  ACCEPTED: "ACCEPTED",
+  IDEMPOTENCY_REPLAY: "IDEMPOTENCY_REPLAY",
+  VALIDATION_ERROR: "VALIDATION_ERROR",
+  UNAUTHORIZED: "UNAUTHORIZED",
+  FORBIDDEN: "FORBIDDEN",
+  NOT_FOUND: "NOT_FOUND",
+  CONFLICT: "CONFLICT",
+  LIMIT_REACHED: "LIMIT_REACHED",
+  OUT_OF_STOCK: "OUT_OF_STOCK",
+  INSUFFICIENT_FUNDS: "INSUFFICIENT_FUNDS",
+  UPSTREAM_ERROR: "UPSTREAM_ERROR",
+  INTERNAL_ERROR: "INTERNAL_ERROR",
+} as const;
+
+export type ResultCode = (typeof ResultCode)[keyof typeof ResultCode];

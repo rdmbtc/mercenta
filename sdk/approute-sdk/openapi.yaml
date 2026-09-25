@@ -1,0 +1,959 @@
+# TODO(openapi-coverage): this spec is incomplete. The /services paths
+# (GET /services, GET /services/{id}, GET /services/{id}/stock, the new
+# GET /services/{service_id}/items/{item_id}, and POST /services/items/lookup)
+# and the /orders paths are NOT yet described here, even though the
+# corresponding Product/ProductItem/PurchaseRequest schemas already are.
+# Until a dedicated catch-up PR lands the missing operations and rewires
+# them to the new ItemLookup* schemas, treat this file as a SCHEMA
+# reference only, not a complete contract. The four language SDKs are the
+# source of truth for the operation set.
+openapi: 3.1.0
+info:
+  title: AppRoute Public API (Data Plane)
+  version: 1.0.0
+  description: |
+    Public REST API gateway (edge) over internal microservices.
+    All responses use the unified envelope and strict schemas.
+servers:
+  - url: /api/v1
+security:
+  - ApiKeyAuth: []
+tags:
+  - name: Accounts
+  - name: Funds
+
+paths:
+  /accounts:
+    get:
+      tags: [Accounts]
+      summary: List account balances
+      description: Returns balances for the current API key owner (USDT only).
+      x-weight: 1
+      x-required-scopes: ["funds:read"]
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id:
+              $ref: "#/components/headers/TraceId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvelopeAccountList"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /accounts/transactions:
+    get:
+      tags: [Accounts]
+      summary: List balance transactions
+      description: Balance transaction history for the API key owner.
+      x-weight: 2
+      x-required-scopes: ["funds:read"]
+      parameters:
+        - in: query
+          name: currency
+          schema: { type: string, enum: [USDT] }
+        - in: query
+          name: category
+          description: Filter by category
+          schema:
+            type: array
+            items: { $ref: "#/components/schemas/BalanceCategory" }
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: transactionId
+          schema: { type: string }
+        - in: query
+          name: orderId
+          schema: { type: string }
+        - in: query
+          name: dateFrom
+          schema: { type: string, format: date-time }
+        - in: query
+          name: dateTo
+          schema: { type: string, format: date-time }
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+        - in: query
+          name: offset
+          schema: { type: integer, minimum: 0, default: 0 }
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeAccountTransactionPage" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /funds/methods:
+    get:
+      tags: [Funds]
+      summary: List funding methods
+      x-weight: 1
+      x-required-scopes: ["funds:read"]
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeFundingMethods" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /funds/invoices:
+    get:
+      tags: [Funds]
+      summary: List funding invoices
+      x-weight: 2
+      x-required-scopes: ["funds:read"]
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: array
+            items: { $ref: "#/components/schemas/FundingStatus" }
+        - in: query
+          name: methodCode
+          schema:
+            type: array
+            items: { $ref: "#/components/schemas/FundingMethodCode" }
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: createdFrom
+          schema: { type: string, format: date-time }
+        - in: query
+          name: createdTo
+          schema: { type: string, format: date-time }
+        - in: query
+          name: withTx
+          schema: { type: boolean }
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 1000, default: 50 }
+        - in: query
+          name: offset
+          schema: { type: integer, minimum: 0, default: 0 }
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeFundingInvoiceList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+    post:
+      tags: [Funds]
+      summary: Create funding invoice
+      x-weight: 3
+      x-required-scopes: ["funds:write"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FundingInvoiceCreateRequest" }
+      responses:
+        "200":
+          description: Created
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeFundingInvoice" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/Unprocessable" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /funds/invoices/{id}:
+    get:
+      tags: [Funds]
+      summary: Get funding invoice
+      x-weight: 1
+      x-required-scopes: ["funds:read"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeFundingInvoice" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /funds/invoices/{id}/check:
+    post:
+      tags: [Funds]
+      summary: Check funding invoice
+      x-weight: 3
+      x-required-scopes: ["funds:write"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeFundingInvoice" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /funds/invoices/{id}/time-left:
+    get:
+      tags: [Funds]
+      summary: Funding invoice time left
+      x-weight: 1
+      x-required-scopes: ["funds:read"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeFundingTimeLeft" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /funds/ton/deposit:
+    get:
+      tags: [Funds]
+      summary: Get TON deposit state
+      x-weight: 1
+      x-required-scopes: ["funds:read"]
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeTonDeposit" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /funds/bybit/state:
+    get:
+      tags: [Funds]
+      summary: Get Bybit UID state
+      x-weight: 1
+      x-required-scopes: ["funds:read"]
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeBybitState" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /funds/bybit/attach:
+    post:
+      tags: [Funds]
+      summary: Attach Bybit UID
+      x-weight: 2
+      x-required-scopes: ["funds:write"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BybitAttachRequest" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeBybitState" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /funds/bybit/unlink:
+    post:
+      tags: [Funds]
+      summary: Unlink Bybit UID
+      x-weight: 2
+      x-required-scopes: ["funds:write"]
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-Trace-Id: { $ref: "#/components/headers/TraceId" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeBybitState" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  headers:
+    TraceId:
+      description: Trace id for correlation
+      schema: { type: string }
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/EnvelopeError" }
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/EnvelopeError" }
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/EnvelopeError" }
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/EnvelopeError" }
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/EnvelopeError" }
+    Unprocessable:
+      description: Unprocessable entity
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/EnvelopeError" }
+    RateLimited:
+      description: Too many requests
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/EnvelopeError" }
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/EnvelopeError" }
+
+  schemas:
+    TransactionStatus:
+      type: string
+      enum: [in_progress, completed, partially_completed, cancelled]
+
+    ResultCode:
+      type: string
+      enum:
+        - OK
+        - ACCEPTED
+        - VALIDATION_ERROR
+        - UNAUTHORIZED
+        - FORBIDDEN
+        - NOT_FOUND
+        - CONFLICT
+        - LIMIT_REACHED
+        - OUT_OF_STOCK
+        - INSUFFICIENT_FUNDS
+        - IDEMPOTENCY_REPLAY
+        - UPSTREAM_ERROR
+        - INTERNAL_ERROR
+
+    FieldErrorCode:
+      type: string
+      enum: [MISSING, OUT_OF_RANGE, INVALID_FORMAT, INVALID_VALUE, NOT_ALLOWED, TOO_LONG, TOO_SHORT]
+
+    FieldError:
+      type: object
+      additionalProperties: false
+      required: [field, code, message]
+      properties:
+        field: { type: string }
+        code: { $ref: "#/components/schemas/FieldErrorCode" }
+        message: { type: string }
+
+    EnvelopeBase:
+      type: object
+      additionalProperties: false
+      required: [status, code, message, traceId, data]
+      properties:
+        status: { $ref: "#/components/schemas/TransactionStatus" }
+        code: { $ref: "#/components/schemas/ResultCode" }
+        message: { type: string }
+        traceId: { type: string }
+        data: { nullable: true }
+        errors:
+          type: array
+          items: { $ref: "#/components/schemas/FieldError" }
+
+    EnvelopeError:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { nullable: true, type: "null" }
+
+    BalanceCategory:
+      type: string
+      enum: [funding, refund, withdraw, shop, direct-top-up]
+
+    AccountActivity:
+      type: object
+      additionalProperties: false
+      required: [id, currency, amount, operation, createdAt]
+      properties:
+        id: { type: string }
+        currency: { type: string, enum: [USDT] }
+        amount: { type: number }
+        operation: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    Account:
+      type: object
+      additionalProperties: false
+      required: [currency, balance, available, overdraftLimit, recentActivity]
+      properties:
+        currency: { type: string, enum: [USDT] }
+        balance: { type: number }
+        available: { type: number }
+        overdraftLimit: { type: number }
+        recentActivity:
+          type: array
+          items: { $ref: "#/components/schemas/AccountActivity" }
+
+    AccountListResponse:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Account" }
+
+    AccountTransaction:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - currency
+        - transactionId
+        - category
+        - balance
+        - amount
+        - orderId
+        - description
+        - createdAt
+      properties:
+        id: { type: string }
+        currency: { type: string, enum: [USDT] }
+        transactionId: { type: string }
+        category: { $ref: "#/components/schemas/BalanceCategory" }
+        balance: { type: number }
+        amount: { type: number }
+        orderId: { type: string }
+        orderIdRaw: { type: string }
+        description: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+
+    AccountTransactionPage:
+      type: object
+      additionalProperties: false
+      required: [totalCount, items]
+      properties:
+        totalCount: { type: integer }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/AccountTransaction" }
+
+    ProductType:
+      type: string
+      enum: [voucher, direct_topup]
+
+    ProductFieldOption:
+      type: object
+      additionalProperties: false
+      required: [label, value]
+      properties:
+        label: { type: string }
+        value: { type: string }
+        price: { type: number, nullable: true }
+
+    ProductFieldValidation:
+      type: object
+      additionalProperties: false
+      properties:
+        min: { type: number, nullable: true }
+        max: { type: number, nullable: true }
+        pattern: { type: string, nullable: true }
+        message: { type: string, nullable: true }
+
+    ProductField:
+      type: object
+      additionalProperties: false
+      required: [key, type, required]
+      properties:
+        key: { type: string }
+        type: { type: string, enum: [text, masked, select, option_grid, amount_input, summary] }
+        label: { type: string, nullable: true }
+        required: { type: boolean }
+        options:
+          type: array
+          items: { $ref: "#/components/schemas/ProductFieldOption" }
+        validation: { $ref: "#/components/schemas/ProductFieldValidation" }
+
+    ProductItem:
+      type: object
+      additionalProperties: false
+      required: [id, name, nominal, price, currency, available]
+      properties:
+        id: { type: string }
+        name: { type: string, nullable: true }
+        nominal: { type: number }
+        price: { type: number }
+        currency: { type: string, enum: [USDT] }
+        available: { type: boolean }
+        stock: { type: integer, nullable: true }
+        isLongOrder: { type: boolean, nullable: true }
+        minQtyToLongOrder: { type: integer, nullable: true }
+
+    Product:
+      type: object
+      additionalProperties: false
+      required: [id, name, type, imageUrl, items]
+      properties:
+        id: { type: string }
+        name: { type: string, nullable: true }
+        type: { $ref: "#/components/schemas/ProductType" }
+        imageUrl: { type: string, nullable: true }
+        countryCode: { type: string, nullable: true }
+        categoryName: { type: string, nullable: true }
+        subcategoryName: { type: string, nullable: true }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/ProductItem" }
+        fields:
+          type: array
+          items: { $ref: "#/components/schemas/ProductField" }
+
+    ProductListResponse:
+      type: object
+      additionalProperties: false
+      required: [items, hasNext]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Product" }
+        hasNext: { type: boolean }
+
+    ProductStockItem:
+      type: object
+      additionalProperties: false
+      required: [itemId]
+      properties:
+        itemId: { type: string }
+        stock: { type: integer, nullable: true }
+
+    ProductStockResponse:
+      type: object
+      additionalProperties: false
+      required: [productId, items]
+      properties:
+        productId: { type: string }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/ProductStockItem" }
+
+    PurchaseField:
+      type: object
+      additionalProperties: false
+      required: [key, value]
+      properties:
+        key: { type: string }
+        value: { type: string }
+
+    PurchaseRequest:
+      type: object
+      additionalProperties: false
+      required: [clientTime, reference, itemId, quantity]
+      properties:
+        accountId: { type: integer, nullable: true }
+        clientTime: { type: string, format: date-time }
+        reference: { type: string, maxLength: 40 }
+        productId: { type: string, nullable: true }
+        itemId: { type: string }
+        quantity: { type: integer, minimum: 1 }
+        amount: { type: number, nullable: true }
+        currency: { type: string, enum: [USDT], nullable: true }
+        fields:
+          type: array
+          items: { $ref: "#/components/schemas/PurchaseField" }
+        directOrder: { type: boolean, nullable: true }
+
+    Voucher:
+      type: object
+      additionalProperties: false
+      required: [pin]
+      properties:
+        pin: { type: string }
+        serialNumber: { type: string, nullable: true }
+        expiration: { type: string, format: date-time, nullable: true }
+
+    Esim:
+      type: object
+      additionalProperties: false
+      required: [matchingId, qrCodeText, smdpAddress]
+      properties:
+        matchingId: { type: string }
+        qrCodeText: { type: string }
+        smdpAddress: { type: string }
+        iccid: { type: string, nullable: true }
+
+    PurchaseResult:
+      type: object
+      additionalProperties: false
+      properties:
+        vouchers:
+          type: array
+          items: { $ref: "#/components/schemas/Voucher" }
+        esim: { $ref: "#/components/schemas/Esim" }
+        attributes:
+          type: object
+          additionalProperties: { type: string }
+
+    PurchaseResponse:
+      type: object
+      additionalProperties: false
+      required: [transactionUUID, status, price, currency]
+      properties:
+        transactionUUID: { type: string, format: uuid }
+        status: { $ref: "#/components/schemas/TransactionStatus" }
+        price: { type: number }
+        currency: { type: string, enum: [USDT] }
+        result: { $ref: "#/components/schemas/PurchaseResult" }
+
+    TransactionStatusResponse:
+      allOf:
+        - $ref: "#/components/schemas/PurchaseResponse"
+
+    TransactionListItem:
+      type: object
+      additionalProperties: false
+      required: [transactionUUID, reference, serverTime, status, quantity, currency]
+      properties:
+        transactionUUID: { type: string, format: uuid }
+        reference: { type: string }
+        serverTime: { type: string, format: date-time }
+        clientTime: { type: string, format: date-time, nullable: true }
+        status: { $ref: "#/components/schemas/TransactionStatus" }
+        productId: { type: string, nullable: true }
+        itemId: { type: string, nullable: true }
+        productName: { type: string, nullable: true }
+        itemName: { type: string, nullable: true }
+        quantity: { type: integer }
+        amount: { type: number, nullable: true }
+        currency: { type: string, enum: [USDT] }
+        accountNumber: { type: string, nullable: true }
+        vouchers:
+          type: array
+          items: { $ref: "#/components/schemas/Voucher" }
+
+    TransactionListResponse:
+      type: object
+      additionalProperties: false
+      required: [page]
+      properties:
+        page:
+          type: object
+          additionalProperties: false
+          required: [items, hasNext]
+          properties:
+            items:
+              type: array
+              items: { $ref: "#/components/schemas/TransactionListItem" }
+            hasNext: { type: boolean }
+
+    FundingMethodCode:
+      type: string
+      enum: [USDT_TRC20, USDT_BEP20, USDT_TON, USDT_BYBIT]
+
+    FundingStatus:
+      type: string
+      enum: [pending, confirming, success, fail, expired]
+
+    FundingMethod:
+      type: object
+      additionalProperties: false
+      required: [code, name, minAmount, commission, address, ttlMinutes, confirmationsRequired]
+      properties:
+        code: { $ref: "#/components/schemas/FundingMethodCode" }
+        name: { type: string }
+        minAmount: { type: number }
+        commission: { type: number }
+        address: { type: string }
+        ttlMinutes: { type: integer }
+        confirmationsRequired: { type: integer }
+
+    FundingMethodsResponse:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/FundingMethod" }
+
+    FundingInvoice:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - methodCode
+        - amountExpected
+        - commission
+        - credited
+        - address
+        - status
+        - createdAt
+        - expiresAt
+      properties:
+        id: { type: string }
+        methodCode: { $ref: "#/components/schemas/FundingMethodCode" }
+        amountExpected: { type: number }
+        commission: { type: number }
+        credited: { type: number }
+        memoTag: { type: string, nullable: true }
+        address: { type: string }
+        txHash: { type: string, nullable: true }
+        status: { $ref: "#/components/schemas/FundingStatus" }
+        confirmationsRequired: { type: integer, nullable: true }
+        confirmations: { type: integer, nullable: true }
+        createdAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+        direction: { type: string, default: incoming }
+
+    FundingInvoiceList:
+      type: object
+      additionalProperties: false
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/FundingInvoice" }
+        total: { type: integer }
+
+    FundingInvoiceCreateRequest:
+      type: object
+      additionalProperties: false
+      required: [methodCode, amount]
+      properties:
+        methodCode: { $ref: "#/components/schemas/FundingMethodCode" }
+        amount: { type: number, exclusiveMinimum: 0 }
+
+    FundingInvoiceTimeLeft:
+      type: object
+      additionalProperties: false
+      required: [invoiceId, expiresAt, secondsLeft, expired]
+      properties:
+        invoiceId: { type: string }
+        expiresAt: { type: string, format: date-time }
+        secondsLeft: { type: integer }
+        expired: { type: boolean }
+
+    TonDepositState:
+      type: object
+      additionalProperties: false
+      required: [address, memoTag]
+      properties:
+        address: { type: string }
+        memoTag: { type: string }
+
+    BybitState:
+      type: object
+      additionalProperties: false
+      required: [recipientUid, linked]
+      properties:
+        recipientUid: { type: string }
+        linked: { type: boolean }
+        yourUid: { type: string, nullable: true }
+
+    BybitAttachRequest:
+      type: object
+      additionalProperties: false
+      required: [uid]
+      properties:
+        uid: { type: string, minLength: 5, maxLength: 32 }
+
+    EnvelopeAccountList:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/AccountListResponse" }
+
+    EnvelopeAccountTransactionPage:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/AccountTransactionPage" }
+
+    EnvelopeProductList:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/ProductListResponse" }
+
+    EnvelopeProduct:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/Product" }
+
+    EnvelopeProductStock:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/ProductStockResponse" }
+
+    EnvelopePurchase:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/PurchaseResponse" }
+
+    EnvelopeTransactionStatus:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/TransactionStatusResponse" }
+
+    EnvelopeTransactionList:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/TransactionListResponse" }
+
+    EnvelopeFundingMethods:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/FundingMethodsResponse" }
+
+    EnvelopeFundingInvoice:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/FundingInvoice" }
+
+    EnvelopeFundingInvoiceList:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/FundingInvoiceList" }
+
+    EnvelopeFundingTimeLeft:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/FundingInvoiceTimeLeft" }
+
+    EnvelopeTonDeposit:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/TonDepositState" }
+
+    EnvelopeBybitState:
+      allOf:
+        - $ref: "#/components/schemas/EnvelopeBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            data: { $ref: "#/components/schemas/BybitState" }
