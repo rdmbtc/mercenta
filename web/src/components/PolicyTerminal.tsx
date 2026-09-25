@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CASES, POLICY, evaluatePolicy, percent, tone, usdc, type SupplierState } from "@/lib/policy";
+import { RotateCcw } from "lucide-react";
+import { CASES, POLICY, evaluatePolicy, percent, tone, usdc, type PolicyCase, type SupplierState } from "@/lib/policy";
 
 const NEXT_STEP: Record<string, string> = {
   Cleared: "The supplier purchase may be submitted; settlement and delivery are then written to the same order record.",
@@ -9,7 +10,8 @@ const NEXT_STEP: Record<string, string> = {
   "Human approval required": "Execution pauses. The intent is queued for a human decision and nothing is bought automatically.",
 };
 
-const PRESETS = [CASES.order, CASES.thin, CASES.uncertain, CASES.overLimit];
+const PRESETS: PolicyCase[] = [CASES.order, CASES.thin, CASES.uncertain, CASES.overLimit];
+const SLIDER_MAX = 20_000;
 
 export default function PolicyTerminal() {
   const [amount, setAmount] = useState<number>(CASES.order.amount);
@@ -19,8 +21,12 @@ export default function PolicyTerminal() {
   const result = useMemo(() => evaluatePolicy(amount, cost, supplier), [amount, cost, supplier]);
   const resultTone = tone(result.decision);
   const marginWidth = Math.max(0, Math.min(1, result.margin / 0.4)) * 100;
+  const activePreset = PRESETS.find(
+    (preset) => preset.amount === amount && preset.cost === cost && preset.supplier === supplier,
+  );
+  const passed = result.checks.filter((check) => check.state === "pass").length;
 
-  const applyPreset = (preset: (typeof PRESETS)[number]) => {
+  const applyPreset = (preset: PolicyCase) => {
     setAmount(preset.amount);
     setCost(preset.cost);
     setSupplier(preset.supplier);
@@ -29,15 +35,35 @@ export default function PolicyTerminal() {
   return (
     <div className="terminal">
       <div className="terminal-top">
-        <span className="terminal-dot" aria-hidden="true" />
+        <span className="terminal-lights" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </span>
         <span className="terminal-path">agent://policy/evaluate</span>
         <span className="chip">{POLICY.version}</span>
+        <button
+          type="button"
+          className="terminal-reset"
+          onClick={() => applyPreset(CASES.order)}
+          aria-label="Reset to this page's order"
+          disabled={activePreset === CASES.order}
+        >
+          <RotateCcw size={13} aria-hidden="true" /> Reset
+        </button>
       </div>
       <div className="terminal-body">
         <div className="terminal-controls">
+          <p className="field-label">Load a sample order</p>
           <p className="terminal-presets" role="group" aria-label="Load a sample order">
             {PRESETS.map((preset) => (
-              <button key={preset.label} type="button" onClick={() => applyPreset(preset)}>
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => applyPreset(preset)}
+                aria-pressed={activePreset === preset}
+                className={activePreset === preset ? "is-active" : undefined}
+              >
                 {preset.label}
               </button>
             ))}
@@ -51,15 +77,17 @@ export default function PolicyTerminal() {
               value={amount}
               onChange={(event) => setAmount(Math.max(0, Number(event.target.value) || 0))}
             />
+            <small>USDC</small>
           </label>
           <input
             className="terminal-range"
             type="range"
             min={0}
-            max={20000}
+            max={SLIDER_MAX}
             step={10}
-            value={Math.min(amount, 20000)}
+            value={Math.min(amount, SLIDER_MAX)}
             aria-label="Order amount slider"
+            style={{ "--fill": (Math.min(amount, SLIDER_MAX) / SLIDER_MAX) * 100 + "%" } as React.CSSProperties}
             onChange={(event) => setAmount(Number(event.target.value))}
           />
           <label className="terminal-field">
@@ -71,15 +99,17 @@ export default function PolicyTerminal() {
               value={cost}
               onChange={(event) => setCost(Math.max(0, Number(event.target.value) || 0))}
             />
+            <small>USDC</small>
           </label>
           <input
             className="terminal-range"
             type="range"
             min={0}
-            max={20000}
+            max={SLIDER_MAX}
             step={10}
-            value={Math.min(cost, 20000)}
+            value={Math.min(cost, SLIDER_MAX)}
             aria-label="Supplier cost slider"
+            style={{ "--fill": (Math.min(cost, SLIDER_MAX) / SLIDER_MAX) * 100 + "%" } as React.CSSProperties}
             onChange={(event) => setCost(Number(event.target.value))}
           />
           <label className="terminal-field">
@@ -107,13 +137,25 @@ export default function PolicyTerminal() {
               <dt>Gross margin</dt>
               <dd>floor {percent(POLICY.grossMarginFloor)}</dd>
             </div>
+            <div>
+              <dt>Auto-approval limit</dt>
+              <dd>{usdc(POLICY.autoApprovalLimit)}</dd>
+            </div>
           </dl>
         </div>
-        <div className="terminal-output">
-          <p className="field-label">Agent decision</p>
-          <p className={"terminal-decision tone-" + resultTone} aria-live="polite">
-            {result.decision}
-          </p>
+        <div className={"terminal-output tone-" + resultTone}>
+          <div className="terminal-verdict">
+            <div>
+              <p className="field-label">Agent decision</p>
+              <p className={"terminal-decision tone-" + resultTone} aria-live="polite">
+                {result.decision}
+              </p>
+            </div>
+            <p className="terminal-score" aria-label={passed + " of 5 checks passed"}>
+              <b>{passed}</b>/5
+              <small>checks passed</small>
+            </p>
+          </div>
           <div className="terminal-margin">
             <p>
               Projected Gross margin <b>{percent(result.margin)}</b>
@@ -128,7 +170,7 @@ export default function PolicyTerminal() {
           </div>
           <ul className="checklist">
             {result.checks.map((check) => (
-              <li key={check.label} className={"check-row check-" + check.state}>
+              <li key={check.id} className={"check-row check-" + check.state}>
                 <span className="check-mark" aria-hidden="true">
                   {check.state === "pass" ? "✓" : check.state === "hold" ? "!" : "×"}
                 </span>
