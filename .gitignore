@@ -39,8 +39,14 @@ yarn-error.log*
 # OMP & Local State
 .local/
 
+# Local generation artifacts
+outputs/
+work/
+*.sqlite3
+
 # OS / Editor
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+

@@ -1,70 +1,413 @@
-"use client";
-
 import Image from "next/image";
-import { useState } from "react";
-import { motion, MotionConfig } from "framer-motion";
-import { ArrowUpRight, ArrowRight, Check, ShieldCheck, Globe2, Layers3, Wallet, Menu, X, ChevronRight, Sparkles, Activity, LockKeyhole } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {
+  Activity,
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  ChevronRight,
+  Globe2,
+  Layers3,
+  LockKeyhole,
+  Menu,
+  ShieldCheck,
+  Wallet,
+} from "lucide-react";
+import OrderJourney from "@/components/OrderJourney";
+import PolicyTerminal from "@/components/PolicyTerminal";
+import { ORDER, POLICY, percent, usdc } from "@/lib/policy";
 
-const scenarios = {
-  approved: { label: "Healthy margin", status: "Approved & fulfilled", color: "cyan", cost: "$7.20", margin: "28%", explanation: "Payment confirmed. Margin and supplier liquidity meet your policy. Order cleared for fulfillment.", steps: ["USDC payment verified", "Margin policy passed", "Supplier purchase cleared", "Digital delivery complete"] },
-  blocked: { label: "Price increase", status: "Purchase blocked", color: "amber", cost: "$10.80", margin: "−8%", explanation: "Supplier cost exceeds the sale price. No supplier purchase is submitted. Seller review is required.", steps: ["USDC payment verified", "Supplier price changed", "Margin protection triggered", "Seller review required"] },
-  approval: { label: "Above limit", status: "Approval required", color: "purple", cost: "$12.00", margin: "40%", explanation: "Supplier purchase exceeds the $10 automatic-purchase limit. Execution stays paused until the seller approves.", steps: ["USDC payment verified", "Margin policy passed", "Automatic limit exceeded", "Waiting for seller approval"] },
-};
-type Scenario = keyof typeof scenarios;
-const faqs = [
-  ["What is Mercenta?", "Mercenta is a digital-commerce platform in development. It brings a supplier-backed catalogue, USDC checkout and a policy-controlled AI assistant into one merchant workspace."],
-  ["Can I buy products or launch a store today?", "Not yet. This is our early-access landing page, not a live storefront. Follow @mercentaxyz on X for pilot availability and launch updates."],
-  ["Does the AI have unrestricted access to my money?", "No. The planned execution flow validates every proposal against deterministic margin, budget and liquidity rules. Exceptions require seller approval. The preview above is illustrative and does not move funds."],
-  ["How will payments work?", "We are building USDC checkout on Arc, starting on testnet. Fiat funding through Arc App Kit Onramp is planned, subject to provider eligibility, KYC and regional availability. Funding a wallet and paying for an order are separate steps."],
+const ECOSYSTEM = [
+  { host: "app.mercenta.xyz", role: "Merchant console" },
+  { host: "catalog.mercenta.xyz", role: "Supplier catalogue" },
+  { host: "testnet.mercenta.xyz", role: "Testnet preview" },
+  { host: "mainnet.mercenta.xyz", role: "Mainnet" },
+  { host: "docs.mercenta.xyz", role: "Documentation" },
+  { host: "status.mercenta.xyz", role: "Status" },
+];
+
+const SECTIONS = [
+  ["Order journey", "#order-journey"],
+  ["Policy engine", "#policy"],
+  ["Catalogue", "#catalogue"],
+  ["Settlement", "#settlement"],
+  ["Status", "#status"],
+];
+
+const STEPS = [
+  {
+    index: "01",
+    title: "Intent",
+    detail: "An agent proposes a listing, a quantity and a supplier. Nothing is committed.",
+  },
+  {
+    index: "02",
+    title: "Deterministic checks",
+    detail: "Balance, Reserved liquidity, margin floor, supplier status and the approval limit, in order.",
+  },
+  {
+    index: "03",
+    title: "Authorization boundary",
+    detail: "Cleared, Policy blocked, or Human approval required. The rules decide, not the model.",
+  },
+  {
+    index: "04",
+    title: "Settlement and receipt",
+    detail: "USDC settlement and the delivery record land on the same order.",
+  },
+];
+
+const CATALOGUE = [
+  {
+    icon: <Layers3 />,
+    name: "Cloud Compute Vouchers",
+    sku: "MR-CMP-250",
+    blurb: "Compute vouchers for GPU and general workloads, sourced from regional providers and issued to the buyer.",
+    wholesale: "$0.71 per compute hour",
+    margin: "19%",
+    liquidity: "Capacity on request",
+    order: ORDER.id,
+  },
+  {
+    icon: <Globe2 />,
+    name: "API Credit Bundles",
+    sku: "MR-API-1000",
+    blurb: "Prepaid model and API credit bought at supplier wholesale rates and delivered as redeemable codes.",
+    wholesale: "$0.84 per $1.00 of credit",
+    margin: "22%",
+    liquidity: "Programmatic · same-day",
+    order: null,
+  },
+  {
+    icon: <Wallet />,
+    name: "Enterprise SaaS Seats",
+    sku: "MR-SAS-12",
+    blurb: "Seat licences for business software, provisioned per contract and invoiced against the buying entity.",
+    wholesale: "$0.66 per seat-month",
+    margin: "24%",
+    liquidity: "Allocated per contract",
+    order: null,
+  },
+];
+
+const COSTS = [
+  ["Supplier wholesale", "Paid at the supplier\u2019s published rate, with no markup applied by Mercenta."],
+  ["Platform fee", "Charged on settled order value. Illustrative rate in this preview: 1.5%."],
+  ["Network fee", "Pass-through of the actual settlement network cost."],
+  ["Settlement", "USDC, verifiable by transaction hash once a settlement network is live."],
+];
+
+const STATUS = [
+  { label: "Live today", value: "This landing page and the browser policy demo, running on illustrative configuration.", state: "pass" },
+  { label: "Not live yet", value: "No production storefront, merchant console, wallet or supplier execution is running.", state: "fail" },
+  { label: "Planned next", value: "Merchant console, supplier catalogue sync and USDC settlement on Arc, then Base and Solana.", state: "hold" },
 ];
 
 export default function Home() {
-  const [menu, setMenu] = useState(false);
-  const [scenario, setScenario] = useState<Scenario>("approved");
-  const current = scenarios[scenario];
-  return <MotionConfig reducedMotion="user"><div className="site-shell">
-    <a className="skip-link" href="#main">Skip to content</a>
-    <header className="header"><a className="brand" href="#" aria-label="Mercenta home"><span className="brand-icon"><Image src="/mercenta-logo.png" alt="" width={44} height={44} priority /></span>mercenta<span className="brand-dot">.</span></a>
-      <nav className="desktop-nav" aria-label="Main navigation"><a href="#platform">Platform</a><a href="#how-it-works">How it works</a><a href="#questions">FAQ</a></nav>
-      <a className="nav-cta" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">Get early access <ArrowUpRight size={15}/></a>
-      <Button variant="ghost" size="icon" className="mobile-toggle" aria-label={menu ? "Close navigation" : "Open navigation"} aria-expanded={menu} aria-controls="mobile-nav" onClick={()=>setMenu(!menu)}>{menu ? <X/> : <Menu/>}</Button>
-      {menu && <nav id="mobile-nav" className="mobile-nav" aria-label="Mobile navigation">{[["Platform", "#platform"],["How it works", "#how-it-works"],["FAQ", "#questions"]].map(([label,href])=><a key={href} href={href} onClick={()=>setMenu(false)}>{label}<ArrowUpRight size={16}/></a>)}</nav>}
-    </header>
-    <main id="main">
-      <section className="hero">
-        <div className="hero-grid" aria-hidden="true"/><div className="hero-halo" aria-hidden="true"/>
-        <motion.div className="hero-copy" initial={{opacity:0,y:18}} animate={{opacity:1,y:0}} transition={{duration:.65}}>
-          <div className="eyebrow"><span className="live-dot"/> THE NEXT CHAPTER OF DIGITAL COMMERCE <ArrowUpRight size={13}/></div>
-          <h1>Your ambition.<br/>Your business.<br/><span>On autopilot.</span></h1>
-          <p>Sell digital products. Settle in USDC. Let your AI assistant handle the busywork — while you stay in control.</p>
-          <div className="hero-actions"><a className="primary-link" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">Build with Mercenta <ArrowUpRight size={18}/></a><a className="secondary-link" href="#platform">Explore the platform <ArrowRight size={17}/></a></div>
-          <div className="hero-footnote"><span className="tiny-dot"/> Early access · Building on Arc™ Network <span className="separator">/</span> Your rules. Every transaction.</div>
-        </motion.div>
-        <motion.div className="hero-art" initial={{opacity:0,scale:.96}} animate={{opacity:1,scale:1}} transition={{duration:.9,delay:.15}} aria-label="Mercenta commerce network illustration">
-          <div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="orbit orbit-three"/>
-          <div className="orbit-label top-label"><span className="tiny-dot"/> INTELLIGENCE IN MOTION</div>
-          <div className="core-logo"><Image src="/mercenta-logo.png" alt="Mercenta ribbon M logo" width={330} height={330} priority /></div>
-          <div className="floating-note note-one"><span className="note-icon"><ShieldCheck size={19}/></span><div>Margin protected<small>Your policy comes first</small></div><Check size={14}/></div>
-          <div className="floating-note note-two"><span className="coin-symbol">$</span><div>USDC native<small>Building on Arc</small></div><ArrowUpRight size={14}/></div>
-          <span className="orb orb-a"/><span className="orb orb-b"/><div className="orbit-label bottom-label">SELL <span>·</span> SETTLE <span>·</span> FULFILL</div>
-        </motion.div>
-      </section>
-      <div className="ecosystem"><span>ONE CONNECTED<br/><b>COMMERCE STACK</b></span><div>Arc</div><div><span className="usdc-mark">$</span> USDC</div><div><Layers3 size={23}/> AppRoute</div><div><Sparkles size={23}/> AI assisted</div><small>Planned integrations<br/>Not an endorsement</small></div>
-      <section id="platform" className="section platform">
-        <div className="section-heading"><div><span className="kicker">01 / THE MERCHANT ADVANTAGE</span><h2>Less operating.<br/><span>More building.</span></h2></div><p>A storefront is just the start. Give your business an operating layer that connects products, payments and decisions.</p></div>
-        <div className="feature-grid"><article className="feature-card catalogue-card"><div className="feature-icon"><Layers3/></div><h3>A catalogue.<br/>Not a blank canvas.</h3><p>Bring supplier-backed digital products to your customers. One connected catalogue, without stocking physical inventory.</p><div className="product-tiles" aria-label="Planned catalogue categories">{[["G", "Gaming", "cyan"],["↗", "Gift cards", "purple"],["S", "Software", "blue"]].map(([icon,label,color])=><div key={label} className={color}><strong>{icon}</strong><span>{label}</span></div>)}</div><span className="card-caption">CATALOGUE SYNC / APPRoute</span></article>
-          <article className="feature-card payment-card"><div className="feature-icon"><Wallet/></div><h3>Digital money.<br/>Real possibilities.</h3><p>USDC payments on Arc. Planned fiat onramp support helps customers fund their wallets without a crypto scavenger hunt.</p><div className="payment-visual"><span className="payment-node"><Globe2 size={26}/></span><span className="dashed-line"/><span className="big-coin">$</span><span className="dashed-line"/><span className="payment-node"><Image src="/mercenta-logo.png" alt="Mercenta" width={48} height={48}/></span></div><span className="card-caption">USDC / Arc · ONRAMP PLANNED</span></article>
-          <article className="feature-card policy-card"><div className="feature-icon"><ShieldCheck/></div><h3>Autonomy.<br/>With boundaries.</h3><p>Your assistant works inside your rules. Margin floors, spending limits and human approval keep you in the driver’s seat.</p><div className="policy-lines"><div><span>Minimum margin</span><b>15% <Check size={13}/></b></div><div><span>Purchase limit</span><b>Defined by you <LockKeyhole size={13}/></b></div><div><span>Outside policy</span><b className="amber-text">Ask the seller <ArrowUpRight size={13}/></b></div></div><span className="card-caption">ILLUSTRATIVE POLICY CONFIGURATION</span></article></div>
-      </section>
-      <section className="section operator-section" aria-labelledby="operator-title"><div className="operator-copy"><span className="kicker">02 / MEET YOUR OPERATOR</span><h2 id="operator-title">Works for you.<br/><span>Answers to you.</span></h2><p>Not another chatbot with a checkout button. An assistant built around the decisions that keep a business healthy.</p><ul>{["Checks margin before purchasing", "Escalates decisions outside your limits", "Leaves a clear trail of every action"].map(t=><li key={t}><Check size={16}/>{t}</li>)}</ul><div className="preview-disclaimer"><Activity size={16}/><span>Interactive product preview.<br/>Illustrative data. No funds move.</span></div></div>
-        <div className="console"><div className="console-top"><span><span className="tiny-dot"/> MERC / OPERATOR</span><span className="preview-badge">PREVIEW</span></div><div className="scenario-picker" aria-label="Choose a preview scenario">{(Object.keys(scenarios) as Scenario[]).map(key=><Button key={key} variant="ghost" className={scenario===key ? "selected" : ""} aria-pressed={scenario===key} onClick={()=>setScenario(key)}>{scenarios[key].label}</Button>)}</div><div className="console-order"><div><span className="muted-label">EXAMPLE ORDER · #MRC-1042</span><h3>Digital gift card</h3></div><span className="order-price">{scenario === "approval" ? "20.00" : "10.00"} <small>USDC</small></span></div><div className="console-metrics"><div><span>Supplier quote</span><strong>{current.cost}</strong></div><div><span>Est. gross margin¹</span><strong className={scenario==="blocked" ? "amber-text" : "cyan-text"}>{current.margin}</strong></div></div><div aria-live="polite"><div className="decision-list">{current.steps.map((step,i)=><motion.div key={scenario+step} initial={{opacity:0,x:6}} animate={{opacity:1,x:0}} transition={{delay:i*.08}}><span className={i>1 && scenario!=="approved" ? "step-warning" : "step-check"}>{i>1 && scenario!=="approved" ? "!" : <Check size={12}/>}</span>{step}<span className="step-index">0{i+1}</span></motion.div>)}</div><div className={"decision-result "+current.color}><ShieldCheck size={19}/><div><strong>{current.status}</strong><p>{current.explanation}</p></div></div></div><div className="console-bottom">¹ Assumes USD/USDC parity; excludes fees.<span><LockKeyhole size={11}/> POLICY FIRST</span></div></div>
-      </section>
-      <section id="how-it-works" className="section workflow"><div className="section-heading"><div><span className="kicker">03 / FROM IDEA TO OPERATION</span><h2>Your next business.<br/><span>A clearer path.</span></h2></div><p>We’re connecting the moving parts, so you can focus on the part that matters: your customers.</p></div><div className="steps">{[["01", "Make it yours", "Choose your catalogue. Set prices, margin floors and the limits your assistant must follow."],["02", "Let commerce flow", "Customers pay in USDC. Verified orders move through policy checks to supplier fulfillment."],["03", "Stay in control", "See every decision, review exceptions and understand what your business earns."]].map(([n,title,body])=><article key={n}><span className="step-number">{n}</span><ArrowRight size={19}/><h3>{title}</h3><p>{body}</p></article>)}</div></section>
-      <section id="questions" className="section faq"><div><span className="kicker">A LITTLE MORE CLARITY</span><h2>Good questions.<br/><span>Honest answers.</span></h2></div><div className="faq-list">{faqs.map(([q,a])=><details key={q}><summary>{q}<ChevronRight size={18}/></summary><p>{a}</p></details>)}</div></section>
-      <section className="final-cta"><div className="cta-glow"/><span className="kicker">YOUR NEXT CHAPTER STARTS HERE</span><h2>Small team.<br/><span>Big merchant energy.</span></h2><p>Follow the build. Help shape Mercenta. Be first in line for the pilot.</p><a className="primary-link" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">Meet us on X <ArrowUpRight size={18}/></a><span className="cta-foot">@mercentaxyz · Early access</span></section>
-    </main>
-    <footer><a className="brand" href="#">mercenta<span className="brand-dot">.</span></a><span>Sell. Settle. Fulfill.</span><div><a href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">X / Twitter <ArrowUpRight size={13}/></a><a href="#questions">FAQ</a><span>© {new Date().getFullYear()} Mercenta</span></div></footer>
-    <p className="brand-attribution">Arc is a trademark of Circle Internet Group, Inc. and/or its affiliates. Mercenta is independently developed; no Circle partnership or endorsement is implied.</p>
-  </div></MotionConfig>;
+  return (
+    <div className="shell" id="top">
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <header className="header">
+        <a className="brand" href="#top" aria-label="Mercenta home">
+          <span className="brand-mark">
+            <Image src="/mercenta-logo.png" alt="" width={40} height={40} priority />
+          </span>
+          mercenta<span className="brand-dot">.</span>
+        </a>
+        <nav className="nav" aria-label="Sections">
+          {SECTIONS.map(([label, href]) => (
+            <a key={href} href={href}>
+              {label}
+            </a>
+          ))}
+        </nav>
+        <details className="eco">
+          <summary>
+            Ecosystem <ChevronRight size={14} />
+          </summary>
+          <div className="eco-panel">
+            <p className="eco-note">Planned addresses for each part of the product. None of them is offered today.</p>
+            {ECOSYSTEM.map((item) => (
+              <a key={item.host} className="eco-link" href={"https://" + item.host}>
+                <span className="eco-host">{item.host}</span>
+                <span className="eco-role">{item.role}</span>
+                <span className="eco-status">planned</span>
+              </a>
+            ))}
+          </div>
+        </details>
+        <a className="nav-cta" href="#policy">
+          Open the demo <ArrowRight size={15} />
+        </a>
+        <details className="mobile">
+          <summary aria-label="Open navigation">
+            <Menu size={18} />
+          </summary>
+          <nav className="mobile-panel" aria-label="Sections">
+            {SECTIONS.map(([label, href]) => (
+              <a key={href} href={href}>
+                {label}
+                <ArrowRight size={16} />
+              </a>
+            ))}
+            <p className="eco-note">Planned addresses, not offered today:</p>
+            {ECOSYSTEM.map((item) => (
+              <a key={item.host} className="eco-link" href={"https://" + item.host}>
+                <span className="eco-host">{item.host}</span>
+                <span className="eco-status">planned</span>
+              </a>
+            ))}
+          </nav>
+        </details>
+      </header>
+      <main id="main">
+        <section className="hero" aria-labelledby="hero-title">
+          <div className="hero-copy">
+            <p className="hero-tags">
+              <span className="chip chip--accent">Commerce OS for Autonomous Agents</span>
+              <span className="chip">Pre-launch · illustrative data</span>
+            </p>
+            <h1 id="hero-title">
+              Commerce, <span>with control.</span>
+            </h1>
+            <p className="hero-lead">
+              A policy-controlled checkout for software agents. Agents propose what to buy; published rules decide
+              whether anything is authorised; settlement and delivery are recorded on one order a finance team can read.
+            </p>
+            <div className="hero-actions">
+              <a className="btn btn--primary" href="#policy">
+                Open the interactive demo <ArrowRight size={16} />
+              </a>
+              <a className="btn" href="#order-journey">
+                Follow one order <ChevronRight size={16} />
+              </a>
+            </div>
+            <dl className="hero-facts">
+              <div>
+                <dt>Available to spend</dt>
+                <dd>{usdc(POLICY.availableToSpend)}</dd>
+              </div>
+              <div>
+                <dt>Reserved</dt>
+                <dd>{usdc(POLICY.reserved)}</dd>
+              </div>
+              <div>
+                <dt>Gross margin</dt>
+                <dd>
+                  floor <b>{percent(POLICY.grossMarginFloor)}</b>
+                </dd>
+              </div>
+            </dl>
+            <p className="note">Illustrative configuration, shown the same way everywhere on this page.</p>
+          </div>
+          <div className="hero-panel">
+            <p className="kicker">How an order moves</p>
+            <ol className="pipeline">
+              {STEPS.map((step) => (
+                <li key={step.index}>
+                  <span className="pipeline-index">{step.index}</span>
+                  <span className="pipeline-title">{step.title}</span>
+                  <span className="pipeline-detail">{step.detail}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="pipeline-foot">
+              Every step writes to the same order record: what was asked, what the rules said, what was authorised and
+              what settled.
+            </p>
+          </div>
+        </section>
+
+        <OrderJourney />
+
+        <section className="section section--split" id="policy" aria-labelledby="policy-title">
+          <div className="head head--narrow">
+            <p className="kicker">Policy engine</p>
+            <h2 id="policy-title">
+              Rules first. <span>Then money moves.</span>
+            </h2>
+            <p className="head-note">
+              Every intent an agent proposes runs through the same five checks in the same order. Change the inputs and
+              the decision updates; the outcome never depends on a model&apos;s judgement.
+            </p>
+            <ul className="plain-list">
+              <li>
+                <LockKeyhole size={16} /> Balances, floor and approval limit are an illustrative configuration for this
+                preview
+              </li>
+              <li>
+                <Activity size={16} /> Deterministic and ordered — the same inputs always give the same decision
+              </li>
+              <li>
+                <ShieldCheck size={16} /> A failed check blocks the order; a held check escalates to a human
+              </li>
+            </ul>
+          </div>
+          <PolicyTerminal />
+        </section>
+
+        <section className="section" id="catalogue" aria-labelledby="catalogue-title">
+          <div className="head">
+            <p className="kicker">The catalogue</p>
+            <h2 id="catalogue-title">
+              Business inputs, bought wholesale. <span>Sold at a margin you set.</span>
+            </h2>
+            <p className="head-note">
+              Agents order from a supplier-backed catalogue — compute, credit and seats. You set the margin floor, the
+              spend limit and who approves an exception.
+            </p>
+          </div>
+          <p className="note note--inline">
+            <ShieldCheck size={14} /> Illustrative demo catalogue: example listings, not actual inventory and not live
+            supplier pricing.
+          </p>
+          <div className="cards">
+            {CATALOGUE.map((item) => (
+              <article className="card" key={item.name}>
+                <header className="card-top">
+                  <span className="card-icon">{item.icon}</span>
+                  <span className="card-sku">{item.sku}</span>
+                </header>
+                <h3>{item.name}</h3>
+                <p className="card-blurb">{item.blurb}</p>
+                <dl className="card-rows">
+                  <div>
+                    <dt>Supplier wholesale price</dt>
+                    <dd>{item.wholesale}</dd>
+                  </div>
+                  <div>
+                    <dt>Gross margin</dt>
+                    <dd>{item.margin}</dd>
+                  </div>
+                  <div>
+                    <dt>Liquidity</dt>
+                    <dd>{item.liquidity}</dd>
+                  </div>
+                </dl>
+                <p className="card-chips">
+                  <span className="chip">
+                    <Check size={12} /> Supplier verified
+                  </span>
+                  <span className="chip chip--accent">Fulfilled after settlement</span>
+                </p>
+                {item.order ? (
+                  <a className="card-link" href="#order-journey">
+                    Follow this order, {item.order} <ChevronRight size={14} />
+                  </a>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section" id="settlement" aria-labelledby="settlement-title">
+          <div className="head">
+            <p className="kicker">Settlement</p>
+            <h2 id="settlement-title">
+              One record for the payment <span>and the delivery.</span>
+            </h2>
+            <p className="head-note">
+              Settlement and delivery are written against the same order, so each charge can be matched to what it
+              bought instead of trusted as a total.
+            </p>
+          </div>
+          <div className="ledger" aria-hidden="true">
+            <div className="ledger-node">
+              <span className="ledger-label">Settlement</span>
+              <span className="ledger-value">USDC</span>
+              <span className="ledger-note">Arc · Base · Solana — planned</span>
+            </div>
+            <span className="ledger-link" />
+            <div className="ledger-node ledger-node--core">
+              <span className="ledger-label">Order record</span>
+              <span className="ledger-value">{ORDER.id}</span>
+              <span className="ledger-note">intent · checks · authorisation · delivery</span>
+            </div>
+            <span className="ledger-link" />
+            <div className="ledger-node">
+              <span className="ledger-label">Delivery</span>
+              <span className="ledger-value tone-ok">Fulfilled</span>
+              <span className="ledger-note">recorded after settlement confirms</span>
+            </div>
+          </div>
+          <dl className="costs">
+            {COSTS.map(([term, value]) => (
+              <div key={term}>
+                <dt>{term}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="note note--inline">
+            <ShieldCheck size={14} /> Illustrative pricing model and fictional order. Rates are not final, no network is
+            connected, and nothing on this page moves funds.
+          </p>
+        </section>
+
+        <section className="section section--split" id="status" aria-labelledby="status-title">
+          <div className="head head--narrow">
+            <p className="kicker">Status</p>
+            <h2 id="status-title">What is live today</h2>
+            <p className="head-note">
+              Mercenta is pre-launch. We would rather describe the gap than imply a product that does not run yet.
+            </p>
+          </div>
+          <dl className="status">
+            {STATUS.map((row) => (
+              <div key={row.label} className={"status-row status-" + row.state}>
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section className="cta">
+          <p className="kicker">Early access</p>
+          <h2>
+            Put a boundary in front of <span>the next purchase.</span>
+          </h2>
+          <p>Pre-launch. No signup form is wired into this preview.</p>
+          <div className="hero-actions">
+            <a className="btn btn--primary" href="#policy">
+              Open the interactive demo <ArrowRight size={16} />
+            </a>
+            <a className="btn" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">
+              Follow the build on X <ArrowUpRight size={16} />
+            </a>
+          </div>
+        </section>
+      </main>
+      <footer className="footer">
+        <div className="footer-brand">
+          <a className="brand" href="#top">
+            mercenta<span className="brand-dot">.</span>
+          </a>
+          <p>Propose. Check. Authorise. Settle.</p>
+        </div>
+        <nav className="footer-eco" aria-label="Ecosystem">
+          <p className="kicker">Ecosystem — planned, not live</p>
+          {ECOSYSTEM.map((item) => (
+            <a key={item.host} href={"https://" + item.host}>
+              {item.host}
+              <span className="eco-status">planned</span>
+            </a>
+          ))}
+        </nav>
+        <div className="footer-meta">
+          <a href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">
+            X / Twitter <ArrowUpRight size={13} />
+          </a>
+          <a href="#status">Status</a>
+          <a href="#order-journey">Order journey</a>
+          <span>© {new Date().getFullYear()} Mercenta</span>
+        </div>
+      </footer>
+      <p className="attribution">
+        Arc is a trademark of Circle Internet Group, Inc. and/or its affiliates. Mercenta is independently developed; no
+        Circle partnership or endorsement is implied. Network coverage described on this page is planned, not live.
+      </p>
+    </div>
+  );
 }
