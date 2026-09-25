@@ -1,78 +1,94 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CASES, ORDER, POLICY, evaluatePolicy, percent, tone, usdc, type PolicyResult } from "@/lib/policy";
+import { ArrowRight, ChevronRight } from "lucide-react";
+import MagneticLink from "@/components/MagneticLink";
+import { CASES, ORDER, POLICY, credential, evaluatePolicy, percent, tone, usdc, type PolicyResult } from "@/lib/policy";
 
 const VIDEO_SRC = "/videos/mercenta-vault.mp4";
 const POSTER_SRC = "/videos/mercenta-vault-poster.jpg";
 const LOAD_TIMEOUT_MS = 9000;
 
 /** Half-width of a chapter crossfade, in story progress. Adjacent fades overlap, so no frame is ever empty. */
-const FADE = 0.06;
+const FADE = 0.05;
 /** Below roughly one frame of film there is nothing worth seeking to. */
 const SEEK_STEP = 0.035;
 /** A seek that never reports back must not lock the pipeline. */
 const SEEK_WATCHDOG_MS = 900;
-/** Interpolation rate of the animation progress toward the scroll target. */
-const EASE = 0.18;
+/** Interpolation rate of the animation progress toward the scroll target: the "silk" in the scrub. */
+const EASE = 0.16;
 /** Progress closer than this is treated as settled: the frame loop stops instead of spinning. */
 const SETTLED = 0.0004;
 
+type Body = "hero" | "intent" | "checks" | "decision" | "receipt";
+
 type Chapter = {
-  id: string;
+  id: Body;
   index: string;
+  short: string;
   from: number;
   to: number;
   kicker: string;
   title: string;
   lead: string;
-  body: "intent" | "checks" | "decision" | "receipt";
 };
 
 const CHAPTERS: Chapter[] = [
   {
+    id: "hero",
+    index: "00",
+    short: "Mercenta",
+    from: 0,
+    to: 0.2,
+    kicker: "Commerce OS for autonomous agents",
+    title: "Commerce, with control.",
+    lead: "A policy-controlled checkout for software agents. Agents propose what to buy; published rules decide whether anything is authorised; settlement and delivery are recorded on one order a finance team can read.",
+  },
+  {
     id: "intent",
     index: "01",
-    from: 0,
-    to: 0.26,
-    kicker: "Act 01 · Order intent",
+    short: "Intent",
+    from: 0.2,
+    to: 0.42,
+    kicker: "Act 01 · Intent captured",
     title: "A buying agent asks for 250 compute hours.",
     lead: "The agent submits an intent — listing, quantity, supplier, price. Nothing is committed yet: no balance is touched and no supplier purchase exists.",
-    body: "intent",
   },
   {
     id: "checks",
     index: "02",
-    from: 0.26,
-    to: 0.55,
-    kicker: "Act 02 · Deterministic checks",
+    short: "Policy gate",
+    from: 0.42,
+    to: 0.66,
+    kicker: "Act 02 · Policy interception",
     title: "Five rules run in a fixed order.",
     lead: "Amount against Available to spend, supplier cost against the balance free after Reserved, Gross margin against the floor, supplier status, then the auto-approval limit. Same inputs, same decision, every time.",
-    body: "checks",
   },
   {
     id: "decision",
     index: "03",
-    from: 0.55,
-    to: 0.8,
+    short: "Decision",
+    from: 0.66,
+    to: 0.84,
     kicker: "Act 03 · Authorization boundary",
     title: "Agent decision",
     lead: "The boundary is drawn by the rules, not by the model. Step through the three outcomes for this order: all checks pass, a check fails, or a check holds for a human.",
-    body: "decision",
   },
   {
     id: "receipt",
     index: "04",
-    from: 0.8,
+    short: "Settlement",
+    from: 0.84,
     to: 1,
     kicker: "Act 04 · Settlement and receipt",
     title: "Settled, delivered, written to one record.",
     lead: "Settlement and delivery land on the same order record, so what was paid and what came back can be inspected together instead of reconciled after the fact.",
-    body: "receipt",
   },
 ];
 
 const LAST = CHAPTERS.length - 1;
+const GATE = CHAPTERS[2];
+const RECEIPT = CHAPTERS[4];
 
 const OUTCOMES = [
   { id: "cleared", label: "Cleared", source: CASES.order },
@@ -93,21 +109,11 @@ function fmtTime(seconds: number) {
   return (m < 10 ? "0" + m : String(m)) + ":" + (s < 10 ? "0" + s : String(s));
 }
 
-function ChipRow() {
-  return (
-    <p className="film-chiprow">
-      <span className="chip chip--accent">Illustrative order</span>
-      <span className="chip">No live funds</span>
-      <span className="chip">Pre-launch preview</span>
-    </p>
-  );
-}
-
 function CheckList({ result }: { result: PolicyResult }) {
   return (
     <ul className="checklist">
       {result.checks.map((check) => (
-        <li key={check.label} className={"check-row check-" + check.state}>
+        <li key={check.id} className={"check-row check-" + check.state}>
           <span className="check-mark" aria-hidden="true">
             {check.state === "pass" ? "✓" : check.state === "hold" ? "!" : "×"}
           </span>
@@ -119,9 +125,55 @@ function CheckList({ result }: { result: PolicyResult }) {
   );
 }
 
+function HeroContent() {
+  return (
+    <div className="hero-card">
+      <p className="hero-tags">
+        <span className="tag">
+          <i className="dot dot--cyan" aria-hidden="true" /> Commerce OS for autonomous agents
+        </span>
+        <span className="tag">
+          <i className="dot" aria-hidden="true" /> Pre-launch preview · illustrative data · no live funds
+        </span>
+      </p>
+      <h1 id="hero-title" className="metal">
+        Commerce, <span className="grad">with control.</span>
+      </h1>
+      <p className="hero-lead">{CHAPTERS[0].lead}</p>
+      <div className="hero-actions">
+        <MagneticLink className="btn btn--primary btn--lg" href="#policy">
+          Run the policy terminal <ArrowRight size={16} aria-hidden="true" />
+        </MagneticLink>
+        <MagneticLink className="btn btn--glass btn--lg" href="#order-journey">
+          Follow one order <ChevronRight size={16} aria-hidden="true" />
+        </MagneticLink>
+      </div>
+      <dl className="hero-facts">
+        <div>
+          <dt>Available to spend</dt>
+          <dd>{usdc(POLICY.availableToSpend)}</dd>
+        </div>
+        <div>
+          <dt>Reserved</dt>
+          <dd>{usdc(POLICY.reserved)}</dd>
+        </div>
+        <div>
+          <dt>Gross margin floor</dt>
+          <dd>{percent(POLICY.grossMarginFloor)}</dd>
+        </div>
+        <div>
+          <dt>Auto-approval limit</dt>
+          <dd>{usdc(POLICY.autoApprovalLimit)}</dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
 function IntentCard() {
   const rows: Array<[string, string]> = [
     ["Order", ORDER.id],
+    ["Agent", "research-agent · signed intent"],
     ["Listing", ORDER.listing + " · " + ORDER.sku],
     ["Quantity", ORDER.units + " " + ORDER.unit],
     ["Supplier", ORDER.supplier],
@@ -129,14 +181,65 @@ function IntentCard() {
     ["Status", "Proposed · nothing committed"],
   ];
   return (
-    <dl className="intent-card">
-      {rows.map(([term, value]) => (
-        <div key={term}>
-          <dt>{term}</dt>
-          <dd>{value}</dd>
+    <div className="hud">
+      <span className="hud-corner hud-corner--tl" aria-hidden="true" />
+      <span className="hud-corner hud-corner--tr" aria-hidden="true" />
+      <span className="hud-corner hud-corner--bl" aria-hidden="true" />
+      <span className="hud-corner hud-corner--br" aria-hidden="true" />
+      <p className="hud-head">
+        <span className="tag">
+          <i className="dot dot--cyan" aria-hidden="true" /> Telemetry · intent
+        </span>
+        <span className="hud-blips" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+        </span>
+      </p>
+      <dl className="intent-card">
+        {rows.map(([term, value]) => (
+          <div key={term}>
+            <dt>{term}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
+function GateBody() {
+  const result = evaluatePolicy(CASES.order.amount, CASES.order.cost, CASES.order.supplier);
+  return (
+    <>
+      <dl className="film-stats">
+        <div>
+          <dt>Available to spend</dt>
+          <dd>{usdc(POLICY.availableToSpend)}</dd>
         </div>
-      ))}
-    </dl>
+        <div>
+          <dt>Reserved</dt>
+          <dd>{usdc(POLICY.reserved)}</dd>
+        </div>
+        <div>
+          <dt>Gross margin</dt>
+          <dd>
+            floor <b>{percent(POLICY.grossMarginFloor)}</b>
+          </dd>
+        </div>
+      </dl>
+      <div className="gate">
+        <CheckList result={result} />
+        <p className="gate-verdict" aria-hidden="true">
+          <span className="tag">
+            <i className="dot" aria-hidden="true" /> Agent decision
+          </span>
+          <b className="tone-ok">{result.decision}</b>
+          <span className="gate-score">5 / 5 checks · rules only, no model in the path</span>
+        </p>
+      </div>
+    </>
   );
 }
 
@@ -146,13 +249,17 @@ function DecisionConsole() {
   const result = evaluatePolicy(current.source.amount, current.source.cost, current.source.supplier);
   const marginWidth = Math.max(0, Math.min(1, result.margin / 0.4)) * 100;
   return (
-    <div className="decision-console">
+    <div className="decision-console glass">
       <div className="decision-picker" role="group" aria-label="Choose an agent decision outcome">
         {OUTCOMES.map((outcome) => (
           <button
             key={outcome.id}
             type="button"
-            className={"decision-tab tone-" + tone(evaluatePolicy(outcome.source.amount, outcome.source.cost, outcome.source.supplier).decision) + (outcome.id === selected ? " is-active" : "")}
+            className={
+              "decision-tab tone-" +
+              tone(evaluatePolicy(outcome.source.amount, outcome.source.cost, outcome.source.supplier).decision) +
+              (outcome.id === selected ? " is-active" : "")
+            }
             aria-pressed={outcome.id === selected}
             onClick={() => setSelected(outcome.id)}
           >
@@ -180,29 +287,28 @@ function DecisionConsole() {
       </div>
       <CheckList result={result} />
       <p className="decision-detail">{OUTCOME_DETAIL[current.id]}</p>
-      <p className="note">
-        Evaluated in the browser with the configuration above. No order is submitted and no funds move.
-      </p>
     </div>
   );
 }
 
 function Receipt() {
-  const fee = CASES.order.amount * 0.015;
+  const fee = CASES.order.amount * POLICY.platformFee;
+  const token = credential(CASES.order.amount, CASES.order.cost, CASES.order.supplier);
   const rows: Array<[string, string, string?]> = [
     ["Order", ORDER.id],
     ["Line item", ORDER.listing + " · " + ORDER.units + " " + ORDER.unit],
     ["Supplier", ORDER.supplier],
     ["Supplier purchase", usdc(CASES.order.cost)],
-    ["Platform fee", usdc(fee) + " · 1.5% illustrative"],
+    ["Platform fee", usdc(fee) + " · " + percent(POLICY.platformFee) + " illustrative"],
     ["Network fee", "Pass-through of the settlement network cost"],
     ["Settlement asset", "USDC"],
     ["Network coverage", "Arc · Base · Solana — planned"],
+    ["Settlement token", "•••• " + token.tail + " · illustrative"],
     ["Agent decision", "Cleared", "tone-ok"],
     ["Delivery", "Fulfilled", "tone-ok"],
   ];
   return (
-    <div className="receipt">
+    <div className="receipt foil">
       <div className="receipt-head">
         <p className="receipt-title">Order receipt</p>
         <span className="chip">Illustrative</span>
@@ -219,6 +325,9 @@ function Receipt() {
         <span>Order value</span>
         <b>{usdc(CASES.order.amount)}</b>
       </p>
+      <p className="receipt-seal" aria-hidden="true">
+        seal · {token.seal}
+      </p>
       <p className="receipt-stamp" aria-hidden="true">
         Fulfilled
       </p>
@@ -232,61 +341,37 @@ function Receipt() {
 }
 
 function ChapterBody({ chapter }: { chapter: Chapter }) {
-  if (chapter.body === "intent") {
-    return (
-      <>
-        <ChipRow />
-        <IntentCard />
-      </>
-    );
-  }
-  if (chapter.body === "checks") {
-    const result = evaluatePolicy(CASES.order.amount, CASES.order.cost, CASES.order.supplier);
-    return (
-      <>
-        <dl className="film-stats">
-          <div>
-            <dt>Available to spend</dt>
-            <dd>
-              {usdc(POLICY.availableToSpend)}
-            </dd>
-          </div>
-          <div>
-            <dt>Reserved</dt>
-            <dd>
-              {usdc(POLICY.reserved)}
-            </dd>
-          </div>
-          <div>
-            <dt>Gross margin</dt>
-            <dd>
-              floor <b>{percent(POLICY.grossMarginFloor)}</b>
-            </dd>
-          </div>
-        </dl>
-        <CheckList result={result} />
-      </>
-    );
-  }
-  if (chapter.body === "decision") {
-    return <DecisionConsole />;
-  }
+  if (chapter.id === "intent") return <IntentCard />;
+  if (chapter.id === "checks") return <GateBody />;
+  if (chapter.id === "decision") return <DecisionConsole />;
   return <Receipt />;
 }
 
 function ChapterContent({ chapter }: { chapter: Chapter }) {
+  if (chapter.id === "hero") return <HeroContent />;
   return (
     <div className="film-card">
       <p className="kicker">{chapter.kicker}</p>
-      <h2 className="film-title">{chapter.title}</h2>
+      <h2 className="film-title metal">{chapter.title}</h2>
       <p className="film-lead">{chapter.lead}</p>
       <ChapterBody chapter={chapter} />
     </div>
   );
 }
 
-export default function OrderJourney() {
+function Anchors() {
+  // Deep links land inside the story: `top: p · (height − 100vh) + header` puts the anchor at story progress p.
+  return (
+    <>
+      <span id="order-journey" className="film-anchor" style={{ top: "calc(0.23 * (100% - 100vh) + 88px)" }} />
+      <span id="policy-gate" className="film-anchor" style={{ top: "calc(0.45 * (100% - 100vh) + 88px)" }} />
+    </>
+  );
+}
+
+export default function StoryCanvas() {
   const rootRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const panelsRef = useRef<Array<HTMLDivElement | null>>([]);
   const barRef = useRef<HTMLSpanElement>(null);
@@ -322,7 +407,8 @@ export default function OrderJourney() {
   useEffect(() => {
     if (reduced) return;
     const root = rootRef.current;
-    if (!root) return;
+    const stage = stageRef.current;
+    if (!root || !stage) return;
 
     const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
     const smooth = (value: number) => {
@@ -336,6 +422,7 @@ export default function OrderJourney() {
     let pending: number | null = null;
     let inFlight = false;
     let watchdog = 0;
+    let lastLit = -1;
 
     /* One seek in flight at a time. Further scrolls only overwrite the pending target,
        so the film converges on the latest position instead of queueing stale seeks. */
@@ -370,16 +457,35 @@ export default function OrderJourney() {
       const duration = video && Number.isFinite(video.duration) ? video.duration : 0;
       if (duration > 0) pending = progress * duration;
 
+      const opacities: number[] = [];
       for (let i = 0; i <= LAST; i += 1) {
         const chapter = CHAPTERS[i];
         const panel = panelsRef.current[i];
-        if (!panel) continue;
         const rise = i === 0 ? 1 : smooth((progress - (chapter.from - FADE)) / (2 * FADE));
         const fall = i === LAST ? 1 : smooth((chapter.to + FADE - progress) / (2 * FADE));
         const opacity = Math.min(rise, fall);
+        opacities.push(opacity);
+        if (!panel) continue;
         panel.style.opacity = opacity.toFixed(3);
-        panel.style.transform = "translate3d(0," + ((1 - opacity) * 18).toFixed(2) + "px,0)";
+        panel.style.transform = "translate3d(0," + ((1 - opacity) * 22).toFixed(2) + "px,0)";
         panel.inert = opacity < 0.5;
+      }
+
+      /* Stage-level variables drive the frame, the scanline sweep, the reticle and the receipt unfold in CSS. */
+      const gateSub = clamp((progress - GATE.from) / (GATE.to - GATE.from), 0, 1);
+      stage.style.setProperty("--p", progress.toFixed(4));
+      stage.style.setProperty("--frame", smooth((progress - 0.08) / 0.16).toFixed(3));
+      stage.style.setProperty("--hero", opacities[0].toFixed(3));
+      stage.style.setProperty("--intent", opacities[1].toFixed(3));
+      stage.style.setProperty("--gate", opacities[2].toFixed(3));
+      stage.style.setProperty("--scan", gateSub.toFixed(3));
+      stage.style.setProperty("--unfold", smooth((progress - (RECEIPT.from - FADE)) / 0.14).toFixed(3));
+
+      const lit = Math.min(5, Math.floor(gateSub * 6.4));
+      if (lit !== lastLit) {
+        lastLit = lit;
+        const gatePanel = panelsRef.current[2];
+        if (gatePanel) gatePanel.dataset.lit = String(lit);
       }
 
       if (barRef.current) barRef.current.style.transform = "scaleX(" + progress.toFixed(4) + ")";
@@ -454,13 +560,13 @@ export default function OrderJourney() {
 
   if (reduced) {
     return (
-      <section className="film film--static" id="order-journey" aria-label="One illustrative order, from intent to receipt">
+      <section className="film film--static" aria-labelledby="hero-title">
         <p className="sr-only">
-          Animation is off because reduced motion is enabled. The four acts are shown as static sections; the decision
-          console and the receipt stay interactive.
+          Animation is off because reduced motion is enabled. The story is shown as static sections; the decision console
+          and the receipt stay interactive.
         </p>
         {CHAPTERS.map((chapter) => (
-          <article key={chapter.id} className="film-block">
+          <article key={chapter.id} className={"film-block film-block--" + chapter.id} id={chapter.id === "intent" ? "order-journey" : undefined}>
             <ChapterContent chapter={chapter} />
           </article>
         ))}
@@ -469,32 +575,54 @@ export default function OrderJourney() {
   }
 
   return (
-    <section className="film" id="order-journey" ref={rootRef} aria-label="One illustrative order, from intent to receipt">
-      <div className="film-stage">
-        <div className="film-media" aria-hidden="true">
-          {status !== "error" && (
-            <video
-              ref={videoRef}
-              className="film-video"
-              key={attempt}
-              src={attempt === 0 ? VIDEO_SRC : VIDEO_SRC + "?retry=" + attempt}
-              poster={POSTER_SRC}
-              muted
-              playsInline
-              preload="auto"
-              disablePictureInPicture
-              tabIndex={-1}
-              onLoadedMetadata={ready}
-              onLoadedData={ready}
-              onError={failed}
-            />
-          )}
+    <section className="film" ref={rootRef} aria-labelledby="hero-title">
+      <Anchors />
+      <div className="film-stage" ref={stageRef}>
+        <div className="film-frame">
+          <div className="film-media" aria-hidden="true">
+            {status !== "error" && (
+              <video
+                ref={videoRef}
+                className="film-video"
+                key={attempt}
+                src={attempt === 0 ? VIDEO_SRC : VIDEO_SRC + "?retry=" + attempt}
+                poster={POSTER_SRC}
+                muted
+                playsInline
+                preload="auto"
+                disablePictureInPicture
+                tabIndex={-1}
+                onLoadedMetadata={ready}
+                onLoadedData={ready}
+                onError={failed}
+              />
+            )}
+          </div>
+          <div className="film-veil" aria-hidden="true" />
+          <div className="film-vignette" aria-hidden="true" />
+          <div className="film-flare" aria-hidden="true" />
+          <div className="film-scan" aria-hidden="true" />
+          <div className="film-reticle" aria-hidden="true">
+            <svg viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="92" />
+              <circle cx="100" cy="100" r="64" className="reticle-pulse" />
+              <circle cx="100" cy="100" r="6" className="reticle-core" />
+              <path d="M100 0v34M100 166v34M0 100h34M166 100h34" />
+              <path d="M100 60v12M100 128v12M60 100h12M128 100h12" className="reticle-ticks" />
+            </svg>
+          </div>
+          <div className="film-corners" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
         </div>
-        <div className="film-veil" aria-hidden="true" />
+
         {CHAPTERS.map((chapter, i) => (
           <div
             key={chapter.id}
-            className="film-panel"
+            className={"film-panel film-panel--" + chapter.id}
             data-chapter={chapter.id}
             ref={(element) => {
               panelsRef.current[i] = element;
@@ -504,6 +632,16 @@ export default function OrderJourney() {
             <ChapterContent chapter={chapter} />
           </div>
         ))}
+
+        <ol className="film-rail" aria-hidden="true">
+          {CHAPTERS.slice(1).map((chapter, i) => (
+            <li key={chapter.id} className={active === i + 1 ? "is-active" : active > i + 1 ? "is-done" : undefined}>
+              <span className="film-rail-index">{chapter.index}</span>
+              <span className="film-rail-label">{chapter.short}</span>
+            </li>
+          ))}
+        </ol>
+
         {status === "loading" && (
           <p className="film-status" role="status">
             Loading the film
@@ -511,12 +649,13 @@ export default function OrderJourney() {
         )}
         {status === "error" && (
           <p className="film-status" role="status">
-            Film unavailable — the order journey is shown without it.
+            Film unavailable — the story is shown without it.
           </p>
         )}
+
         <div className="film-chrome">
-          <a className="film-skip" href="#policy">
-            Skip the film — open the interactive demo
+          <a className="film-skip" href="#engine">
+            Skip the story
           </a>
           <div className="film-hud" aria-hidden="true">
             <span className="film-count">
@@ -529,6 +668,10 @@ export default function OrderJourney() {
               00:00
             </span>
           </div>
+          <a className="hero-scroll" href="#order-journey">
+            <span className="hero-scroll-line" aria-hidden="true" />
+            Scroll
+          </a>
         </div>
       </div>
     </section>

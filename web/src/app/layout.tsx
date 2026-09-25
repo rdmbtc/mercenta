@@ -55,7 +55,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   // Font variables live on <html> so :root tokens such as --sans can resolve them.
   return (
     <html lang="en" className={sans.variable + " " + mono.variable}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <div className="grain" aria-hidden="true" />
+      </body>
     </html>
   );
 }
