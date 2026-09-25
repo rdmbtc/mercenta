@@ -80,8 +80,8 @@ Run `npm run dev`, open the page, and confirm:
    to `progress × duration`, and no crossfade leaves the stage blank.
 3. **Fling.** Throw the page up and down, then sample the network/animation state: `seeking` and `seeked` stay paired
    (one seek in flight, no overlap) and the rAF loop stops shortly after the last scroll event.
-4. **Reduced motion.** Emulate `prefers-reduced-motion: reduce` and reload: four static acts, no `<video>`, no aurora,
-   ticker or reveal animation, every `[data-reveal]` block visible, terminals still interactive.
+4. **Reduced motion.** Emulate `prefers-reduced-motion: reduce` and reload: five static blocks (hero plus four acts),
+   no `<video>`, no flare, ticker or reveal animation, every `[data-reveal]` block visible, terminals still interactive.
 5. **Keyboard.** Tab from the top: the skip link focuses first, no focused element sits inside an `inert` or
    zero-opacity panel, the mobile menu closes on Escape.
 6. **Narrow viewports.** At 390×844 and 320×568 there is no horizontal overflow, and an act taller than the stage

@@ -289,7 +289,9 @@ export default function DecisionFeed() {
         })}
       </ol>
 
-      <p className="feed-log" ref={logRef} aria-live="off">
+      {/* Keyed by line so React mounts a fresh <p> per decision; the typewriter then owns that element's text
+          without leaving React holding a detached text node. */}
+      <p className="feed-log" key={line} ref={logRef} aria-live="off">
         {line}
       </p>
       <p className="feed-foot">
