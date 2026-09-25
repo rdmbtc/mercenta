@@ -26,10 +26,10 @@ export default function Home() {
   return <MotionConfig reducedMotion="user"><div className="site-shell">
     <a className="skip-link" href="#main">Skip to content</a>
     <header className="header"><a className="brand" href="#" aria-label="Mercenta home"><span className="brand-icon"><Image src="/mercenta-logo.png" alt="" width={44} height={44} priority /></span>mercenta<span className="brand-dot">.</span></a>
-      <nav className="desktop-nav" aria-label="Main navigation"><a href="#platform">Platform</a><a href="#how-it-works">How it works</a><a href="#questions">FAQ</a></nav>
-      <a className="nav-cta" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">Get early access <ArrowUpRight size={15}/></a>
-      <Button variant="ghost" size="icon" className="mobile-toggle" aria-label={menu ? "Close navigation" : "Open navigation"} aria-expanded={menu} aria-controls="mobile-nav" onClick={()=>setMenu(!menu)}>{menu ? <X/> : <Menu/>}</Button>
-      {menu && <nav id="mobile-nav" className="mobile-nav" aria-label="Mobile navigation">{[["Platform", "#platform"],["How it works", "#how-it-works"],["FAQ", "#questions"]].map(([label,href])=><a key={href} href={href} onClick={()=>setMenu(false)}>{label}<ArrowUpRight size={16}/></a>)}</nav>}
+      <nav className="desktop-nav" aria-label="Site links"><a href="#platform">Platform</a><a href="#how-it-works">How it works</a><a href="#questions">FAQ</a></nav>
+      <a className="nav-cta" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">Follow updates on X <ArrowUpRight size={15}/></a>
+      <Button variant="ghost" size="icon" className="mobile-toggle" aria-label={menu ? "Close menu" : "Open menu"} aria-expanded={menu} aria-controls="mobile-nav" onClick={()=>setMenu(!menu)}>{menu ? <X/> : <Menu/>}</Button>
+      {menu && <nav id="mobile-nav" className="mobile-nav" aria-label="Mobile site links">{[["Platform", "#platform"],["How it works", "#how-it-works"],["FAQ", "#questions"]].map(([label,href])=><a key={href} href={href} onClick={()=>setMenu(false)}>{label}<ArrowUpRight size={16}/></a>)}</nav>}
     </header>
     <main id="main">
       <section className="hero">
@@ -38,7 +38,7 @@ export default function Home() {
           <div className="eyebrow"><span className="live-dot"/> THE NEXT CHAPTER OF DIGITAL COMMERCE <ArrowUpRight size={13}/></div>
           <h1>Your ambition.<br/>Your business.<br/><span>On autopilot.</span></h1>
           <p>Sell digital products. Settle in USDC. Let your AI assistant handle the busywork — while you stay in control.</p>
-          <div className="hero-actions"><a className="primary-link" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">Build with Mercenta <ArrowUpRight size={18}/></a><a className="secondary-link" href="#platform">Explore the platform <ArrowRight size={17}/></a></div>
+          <div className="hero-actions"><a className="primary-link" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">Follow the build on X <ArrowUpRight size={18}/></a><a className="secondary-link" href="#platform">Explore the platform <ArrowRight size={17}/></a></div>
           <div className="hero-footnote"><span className="tiny-dot"/> Early access · Building on Arc™ Network <span className="separator">/</span> Your rules. Every transaction.</div>
         </motion.div>
         <motion.div className="hero-art" initial={{opacity:0,scale:.96}} animate={{opacity:1,scale:1}} transition={{duration:.9,delay:.15}} aria-label="Mercenta commerce network illustration">
@@ -62,7 +62,7 @@ export default function Home() {
       </section>
       <section id="how-it-works" className="section workflow"><div className="section-heading"><div><span className="kicker">03 / FROM IDEA TO OPERATION</span><h2>Your next business.<br/><span>A clearer path.</span></h2></div><p>We’re connecting the moving parts, so you can focus on the part that matters: your customers.</p></div><div className="steps">{[["01", "Make it yours", "Choose your catalogue. Set prices, margin floors and the limits your assistant must follow."],["02", "Let commerce flow", "Customers pay in USDC. Verified orders move through policy checks to supplier fulfillment."],["03", "Stay in control", "See every decision, review exceptions and understand what your business earns."]].map(([n,title,body])=><article key={n}><span className="step-number">{n}</span><ArrowRight size={19}/><h3>{title}</h3><p>{body}</p></article>)}</div></section>
       <section id="questions" className="section faq"><div><span className="kicker">A LITTLE MORE CLARITY</span><h2>Good questions.<br/><span>Honest answers.</span></h2></div><div className="faq-list">{faqs.map(([q,a])=><details key={q}><summary>{q}<ChevronRight size={18}/></summary><p>{a}</p></details>)}</div></section>
-      <section className="final-cta"><div className="cta-glow"/><span className="kicker">YOUR NEXT CHAPTER STARTS HERE</span><h2>Small team.<br/><span>Big merchant energy.</span></h2><p>Follow the build. Help shape Mercenta. Be first in line for the pilot.</p><a className="primary-link" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">Meet us on X <ArrowUpRight size={18}/></a><span className="cta-foot">@mercentaxyz · Early access</span></section>
+      <section className="final-cta"><div className="cta-glow"/><span className="kicker">YOUR NEXT CHAPTER STARTS HERE</span><h2>Small team.<br/><span>Big merchant energy.</span></h2><p>Follow the build and pilot announcements on X. No signup is available yet.</p><a className="primary-link" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">Follow @mercentaxyz <ArrowUpRight size={18}/></a><span className="cta-foot">Pilot updates on X · No registration yet</span></section>
     </main>
     <footer><a className="brand" href="#">mercenta<span className="brand-dot">.</span></a><span>Sell. Settle. Fulfill.</span><div><a href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">X / Twitter <ArrowUpRight size={13}/></a><a href="#questions">FAQ</a><span>© {new Date().getFullYear()} Mercenta</span></div></footer>
     <p className="brand-attribution">Arc is a trademark of Circle Internet Group, Inc. and/or its affiliates. Mercenta is independently developed; no Circle partnership or endorsement is implied.</p>
