@@ -4,7 +4,7 @@
 /* Tokens                                                              */
 /* ------------------------------------------------------------------ */
 :root {
-  --bg: #04060c;
+  --bg: #06070a;
   --bg-2: #070a12;
   --surface: #0b1018;
   --surface-2: #111823;
@@ -27,7 +27,13 @@
   --gutter: clamp(20px, 5vw, 56px);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --mono: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* Headings only. If Sora has not loaded, this falls back to a system face rather than a serif. */
+  --display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --edge: rgba(255, 255, 255, 0.07);
+  /* Cool steel for headline numerals, warm pale for body figures: the two never appear adjacent. */
+  --metal: linear-gradient(174deg, #ffffff 0%, #dbe8f6 34%, #9fb6d4 68%, #ffffff 100%);
+  --metal-warm: linear-gradient(174deg, #ffffff 0%, #f4e9d6 60%, #cbb894 100%);
 }
 
 @theme inline {
@@ -59,6 +65,8 @@ body {
   margin: 0;
   min-height: 100%;
   background: var(--bg);
+  background-image: radial-gradient(140% 92% at 50% -14%, #0d1119 0%, #07090e 52%, #04050a 100%);
+  background-attachment: fixed;
   color: var(--fg);
   font-family: var(--sans);
   font-size: 15px;
@@ -167,6 +175,9 @@ video {
   font-size: 13px;
   font-weight: 700;
   transition: top 0.2s;
+}
+.grain {
+  z-index: 3;
 }
 .skip-link:focus {
   top: 14px;
@@ -292,6 +303,23 @@ video {
   color: var(--accent-ink);
   box-shadow: 0 10px 30px rgba(61, 220, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
+/* A sheen that follows the pointer across the primary button. Decorative only: the button keeps its
+   own background, border and focus ring, so contrast never depends on this layer. */
+.btn--primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s;
+  background: radial-gradient(120px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.5), transparent 62%);
+  mix-blend-mode: soft-light;
+}
+.btn--primary:hover::after,
+.btn--primary:focus-visible::after {
+  opacity: 0.9;
+}
 .btn--primary:hover {
   color: var(--accent-ink);
   background: linear-gradient(120deg, #8cf0ff, #5ce3ff 40%, #5b98ff);
@@ -349,6 +377,125 @@ video {
   height: 10px;
   border-radius: 1px;
   background: rgba(238, 242, 247, 0.7);
+}
+
+/* ------------------------------------------------------------------ */
+/* Signature material                                                  */
+/* ------------------------------------------------------------------ */
+/* One non-interactive grain plane over the whole document. It is the only texture in the build:
+   no per-card noise, no gradients standing in for depth. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='220'%20height='220'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.82'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='220'%20height='220'%20filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+/* Frosted obsidian: a faint blur behind the card, an inset reflection along its top edge, and a
+   lit rim on the border box. The blur is what makes the film read through a card as glass. */
+.glass {
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+  backdrop-filter: blur(14px) saturate(125%);
+  border-color: var(--edge);
+  background:
+    linear-gradient(158deg, rgba(26, 34, 46, 0.66), rgba(8, 10, 16, 0.86) 46%, rgba(4, 5, 10, 0.92)),
+    rgba(6, 7, 10, 0.55);
+  box-shadow:
+    0 34px 90px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+}
+/* Decorative figures: a metal face on large values, never on prose. */
+.num {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  background: var(--metal-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.num--cool {
+  background: var(--metal);
+}
+.metric-value .num {
+  font-size: 1em;
+}
+
+/* The page is read in two columns that are deliberately not symmetric: recto runs full width,
+   verso is indented and aims at a different rail. */
+.section--left .head {
+  margin-inline: 0;
+}
+.section--recto {
+  max-width: none;
+  padding-inline: 0;
+}
+.section--recto > * {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.section--recto .bento {
+  padding-inline: 0;
+}
+.section--verso .head {
+  max-width: 54rem;
+  margin-inline: 0 auto;
+}
+.card-edition {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  font-family: var(--display);
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(238, 242, 247, 0.14);
+  pointer-events: none;
+}
+/* The first module is taller than the rest: a catalogue is a set of editions, not a grid of equals. */
+.card:first-child {
+  padding-top: 34px;
+}
+/* Spotlight: the pointer writes --mx/--my on [data-spotlight] via components/Spotlight.tsx.
+   Falls back to the centre of the card, so keyboard focus lights the same ring without a pointer. */
+[data-spotlight]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-out);
+  background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), rgba(61, 220, 255, 0.13), transparent 64%);
+}
+[data-spotlight] > * {
+  position: relative;
+  z-index: 2;
+}
+[data-spotlight]:hover::after,
+[data-spotlight]:focus-within::after {
+  opacity: 1;
+}
+[data-spotlight]:focus-within {
+  border-color: rgba(61, 220, 255, 0.5);
+}
+/* The film owns its own surface: a backdrop blur under a full-bleed video is a paint tax with
+   nothing to show for it. */
+.film-stage .glass {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: linear-gradient(158deg, rgba(12, 15, 21, 0.72), rgba(5, 6, 10, 0.82));
+}
+/* The key cell of the settlement record is the only one lit at rest. */
+.ledger-cell--key {
+  border-color: rgba(61, 220, 255, 0.38);
 }
 
 /* ------------------------------------------------------------------ */
@@ -707,10 +854,11 @@ video {
   gap: 8px;
 }
 .hero h1 {
+  font-family: var(--display);
+  font-weight: 600;
   font-size: clamp(44px, 6.6vw, 92px);
   line-height: 0.98;
-  letter-spacing: -0.05em;
-  font-weight: 700;
+  letter-spacing: -0.045em;
   text-wrap: balance;
 }
 .hero-lead {
@@ -1067,6 +1215,8 @@ video {
 }
 .head h2,
 .cta h2 {
+  font-family: var(--display);
+  font-weight: 600;
   font-size: clamp(30px, 4vw, 54px);
   line-height: 1.04;
   letter-spacing: -0.04em;
@@ -1155,7 +1305,8 @@ video {
 /* ------------------------------------------------------------------ */
 .film {
   position: relative;
-  height: 360vh;
+  z-index: 1;
+  height: 350vh;
 }
 .film-stage {
   position: sticky;
@@ -1200,10 +1351,11 @@ video {
   width: min(1040px, 100%);
 }
 .film-title {
+  font-family: var(--display);
+  font-weight: 600;
   font-size: clamp(32px, 5.2vw, 72px);
   line-height: 1.02;
-  letter-spacing: -0.045em;
-  font-weight: 700;
+  letter-spacing: -0.04em;
   max-width: 22ch;
   text-wrap: balance;
   text-shadow: 0 10px 60px rgba(0, 0, 0, 0.6);
@@ -1889,6 +2041,7 @@ video {
   background: linear-gradient(165deg, rgba(17, 24, 35, 0.85), rgba(7, 10, 18, 0.92));
   overflow: hidden;
   transition: border-color 0.3s, transform 0.4s var(--ease-out), box-shadow 0.4s;
+  isolation: isolate;
 }
 .bento-card:hover {
   border-color: var(--line-2);
@@ -1898,39 +2051,9 @@ video {
 .bento-card--wide {
   grid-column: span 2;
 }
-.spot::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s;
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(61, 220, 255, 0.14), transparent 60%);
-}
-.spot:hover::before {
-  opacity: 1;
-}
-.spot::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  padding: 1px;
-  opacity: 0;
-  transition: opacity 0.4s;
-  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(61, 220, 255, 0.6), transparent 60%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
-.spot:hover::after {
-  opacity: 1;
-}
 .bento-card > * {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 .bento-head {
   display: flex;
@@ -2227,6 +2350,7 @@ video {
   background: linear-gradient(165deg, rgba(17, 24, 35, 0.85), rgba(7, 10, 18, 0.92));
   overflow: hidden;
   transition: border-color 0.3s, transform 0.4s var(--ease-out), box-shadow 0.4s;
+  isolation: isolate;
 }
 .card::before {
   content: "";
@@ -2328,6 +2452,7 @@ video {
   margin-bottom: 24px;
 }
 .ledger-cell {
+  position: relative;
   display: grid;
   gap: 8px;
   padding: 22px;
@@ -3077,6 +3202,17 @@ nav.footer-col[aria-label="Ecosystem"] a {
   .film-stats > div {
     padding: 11px 14px;
   }
+  .grain {
+    opacity: 0.22;
+  }
+  .card-edition {
+    font-size: 34px;
+    top: 16px;
+    right: 16px;
+  }
+  .section--verso .head {
+    max-width: none;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -3114,5 +3250,14 @@ nav.footer-col[aria-label="Ecosystem"] a {
   }
   .has-js [data-reveal]:not(.is-in) {
     opacity: 1;
+  }
+  /* The grain is a texture, not motion: keep it. The spotlight hover reaction and the CTA sheen
+     are reactions to a moving pointer, so they go. */
+  .grain {
+    animation: none;
+  }
+  [data-spotlight]::after,
+  .btn--primary::after {
+    display: none;
   }
 }

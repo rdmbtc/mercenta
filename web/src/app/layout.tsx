@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono, Sora } from "next/font/google";
 import "./globals.css";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
-const mono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
+const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"], display: "swap" });
+// Display face for headings only. Sora ships the latin subset this build needs, and the CSS
+// fallback is a system sans, so a failed fetch degrades to a plain heading rather than a serif.
+const display = Sora({ variable: "--font-display", subsets: ["latin"], weight: ["500", "600", "700"], display: "swap" });
 
 const TITLE = "Mercenta — Commerce, with control.";
 const DESCRIPTION =
@@ -45,7 +48,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#04060c",
+  themeColor: "#06070a",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -54,8 +57,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   // Font variables live on <html> so :root tokens such as --sans can resolve them.
   return (
-    <html lang="en" className={sans.variable + " " + mono.variable}>
-      <body>{children}</body>
+    <html lang="en" className={sans.variable + " " + display.variable + " " + mono.variable}>
+      <body>
+        {/* One non-interactive grain plane for the whole document. */}
+        <div className="grain" aria-hidden="true" />
+        {children}
+      </body>
     </html>
   );
 }
