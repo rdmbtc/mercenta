@@ -9,19 +9,21 @@ import {
   Check,
   ChevronRight,
   Coins,
+  Cpu,
   FileCheck2,
   Fingerprint,
+  Gamepad2,
   Gauge,
   Globe2,
-  Layers3,
+  HeartHandshake,
   ListChecks,
   LockKeyhole,
   Route,
   Scale,
   ShieldCheck,
   Sparkles,
+  Tv,
   UserCheck,
-  Wallet,
   Workflow,
 } from "lucide-react";
 import DecisionFeed from "@/components/DecisionFeed";
@@ -29,16 +31,17 @@ import OrderJourney from "@/components/OrderJourney";
 import PolicyTerminal from "@/components/PolicyTerminal";
 import ScrollEffects from "@/components/ScrollEffects";
 import SiteHeader from "@/components/SiteHeader";
-import SpotlightGrid from "@/components/SpotlightGrid";
+import Spotlight from "@/components/Spotlight";
 import { CASES, ORDER, POLICY, evaluatePolicy, percent, usdc } from "@/lib/policy";
 
 const ECOSYSTEM = [
-  { host: "app.mercenta.xyz", role: "Merchant console" },
-  { host: "catalog.mercenta.xyz", role: "Supplier catalogue" },
-  { host: "testnet.mercenta.xyz", role: "Testnet preview" },
-  { host: "mainnet.mercenta.xyz", role: "Mainnet" },
-  { host: "docs.mercenta.xyz", role: "Documentation" },
-  { host: "status.mercenta.xyz", role: "Status" },
+  { host: "mercenta.xyz", role: "Primary Flagship & Policy Engine" },
+  { host: "app.mercenta.xyz", role: "Merchant & Agent Console (Hub)" },
+  { host: "catalog.mercenta.xyz", role: "Digital Goods & Services Catalogue" },
+  { host: "testnet.mercenta.xyz", role: "Developer Sandbox & Faucet" },
+  { host: "mainnet.mercenta.xyz", role: "Production USDC Clearing Rail" },
+  { host: "docs.mercenta.xyz", role: "Mintlify Developer Documentation" },
+  { host: "status.mercenta.xyz", role: "Uptime & Sub-25ms Latency SLA" },
 ];
 
 const SECTIONS = [
@@ -91,34 +94,54 @@ const STEPS = [
 
 const CATALOGUE = [
   {
-    icon: <Layers3 />,
-    name: "Cloud Compute Vouchers",
-    sku: ORDER.sku,
-    blurb: "Compute vouchers for GPU and general workloads, sourced from regional providers and issued to the buyer.",
-    wholesale: "$" + ORDER.wholesaleRate.toFixed(2) + " / compute hour",
-    margin: "19%",
-    liquidity: "Capacity on request",
-    order: ORDER.id,
+    icon: <Gamepad2 />,
+    name: "Gaming Keys & Platform Vouchers",
+    sku: "MR-GMG-ST01",
+    blurb: "Wholesale activation keys & gift vouchers for Steam, PlayStation, Xbox, Epic, Riot and Battle.net for automated bot distribution.",
+    wholesale: "$18.50 / $20.00 card",
+    margin: "14%",
+    liquidity: "Instant API dispatch",
+    order: "ord_gmg_882",
+  },
+  {
+    icon: <Tv />,
+    name: "Streaming & Media Subscriptions",
+    sku: "MR-STM-PREM",
+    blurb: "Prepaid video and audio service vouchers (1, 3, 12 months) delivered as instant digital codes.",
+    wholesale: "$8.40 / month",
+    margin: "18%",
+    liquidity: "Instant delivery",
+    order: null,
+  },
+  {
+    icon: <HeartHandshake />,
+    name: "Creator & Stream Micro-Donations",
+    sku: "MR-DON-INST",
+    blurb: "Programmatic agentic micro-tips and in-game rewards directly settled via USDC nanopayment rails.",
+    wholesale: "$0.05 min / nanopayment",
+    margin: "12%",
+    liquidity: "Real-time stream rail",
+    order: null,
   },
   {
     icon: <Globe2 />,
-    name: "API Credit Bundles",
+    name: "Developer API & Token Bundles",
     sku: "MR-API-1000",
-    blurb: "Prepaid model and API credit bought at supplier wholesale rates and delivered as redeemable codes.",
+    blurb: "Prepaid model and API credit bought at wholesale rates and delivered as redeemable credentials.",
     wholesale: "$0.84 / $1.00 credit",
     margin: "16%",
     liquidity: "Programmatic · same-day",
     order: null,
   },
   {
-    icon: <Wallet />,
-    name: "Enterprise SaaS Seats",
-    sku: "MR-SAS-12",
-    blurb: "Seat licences for business software, provisioned per contract and invoiced against the buying entity.",
-    wholesale: "$63.00 / seat-month",
+    icon: <Cpu />,
+    name: "Cloud Compute & GPU Vouchers",
+    sku: ORDER.sku,
+    blurb: "Dedicated on-demand H100 and A100 GPU cluster vouchers, sourced from regional providers with SLA verification.",
+    wholesale: "$" + ORDER.wholesaleRate.toFixed(2) + " / compute hour",
     margin: "19%",
-    liquidity: "Allocated per contract",
-    order: null,
+    liquidity: "Capacity on request",
+    order: ORDER.id,
   },
 ];
 
@@ -126,10 +149,12 @@ const COSTS = [
   ["Supplier wholesale", "Paid at the supplier\u2019s published rate, with no markup applied by Mercenta."],
   [
     "Platform fee",
-    "Charged on settled order value. Illustrative rate in this preview: " + percent(POLICY.platformFee) + ".",
+    "Charged on settled order value and included in the settled amount. Illustrative rate in this preview: " +
+      percent(POLICY.platformFee) +
+      ".",
   ],
   ["Network fee", "Pass-through of the actual settlement network cost."],
-  ["Settlement", "USDC, verifiable by transaction hash once a settlement network is live."],
+  ["Settlement", "USDC, verifiable by transaction hash once a settlement network is live. Nothing on this page settles."],
 ];
 
 const STATUS = [
@@ -214,6 +239,8 @@ export default function Home() {
         Skip to content
       </a>
       <ScrollEffects />
+      <Spotlight />
+
       <SiteHeader sections={SECTIONS} ecosystem={ECOSYSTEM} />
 
       <main id="main">
@@ -298,7 +325,7 @@ export default function Home() {
           </div>
         </div>
 
-        <section className="section" id="how" aria-labelledby="how-title">
+        <section className="section section--left" id="how" aria-labelledby="how-title">
           <div className="head head--center" data-reveal>
             <p className="kicker">How an order moves</p>
             <h2 id="how-title">
@@ -366,7 +393,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section" id="platform" aria-labelledby="platform-title">
+        <section className="section section--recto" id="platform" aria-labelledby="platform-title">
           <div className="head head--center" data-reveal>
             <p className="kicker">Platform</p>
             <h2 id="platform-title">
@@ -378,8 +405,8 @@ export default function Home() {
             </p>
           </div>
 
-          <SpotlightGrid className="bento">
-            <article className="bento-card spot bento-card--wide" data-reveal>
+          <div className="bento">
+            <article className="bento-card bento-card--wide glass" data-reveal data-spotlight>
               <div className="bento-head">
                 <span className="bento-icon">
                   <ListChecks size={18} aria-hidden="true" />
@@ -387,8 +414,8 @@ export default function Home() {
                 <h3>Deterministic policy engine</h3>
               </div>
               <p>
-                Five ordered checks, no model in the decision path. The order on this page clears every one of them,
-                and the same code decides in the terminal above.
+                Five ordered checks, no model in the decision path. The order on this page clears every one of them.
+                The interactive demo above runs the same code on inputs you set yourself, so its decision is its own.
               </p>
               <ul className="mini-checks" aria-label="Checks for this page's order">
                 {cleared.checks.map((check) => (
@@ -403,7 +430,7 @@ export default function Home() {
               </ul>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card glass" data-reveal data-spotlight>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Gauge size={18} aria-hidden="true" />
@@ -434,7 +461,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card glass" data-reveal data-spotlight>
               <div className="bento-head">
                 <span className="bento-icon">
                   <UserCheck size={18} aria-hidden="true" />
@@ -447,7 +474,7 @@ export default function Home() {
               </p>
               <div className="queue-viz" aria-hidden="true">
                 <span className="queue-item tone-hold">
-                  <span className="queue-id">MR-ORD-2484</span>
+                  <span className="queue-id">0x7f31…c84a</span>
                   <span>{usdc(CASES.overLimit.amount)}</span>
                   <span className="queue-state">{held.decision}</span>
                 </span>
@@ -455,7 +482,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card glass" data-reveal data-spotlight>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Blocks size={18} aria-hidden="true" />
@@ -463,7 +490,7 @@ export default function Home() {
                 <h3>Supplier rails</h3>
               </div>
               <p>
-                Catalogue, stock and purchase calls run through the AppRoute SDK — TypeScript, Python, Go and PHP —
+                Catalogue, stock and purchase calls run through the Mercenta Supplier Gateway SDK — TypeScript, Python, Go and PHP —
                 only after the policy gate has cleared the intent.
               </p>
               <pre className="code" aria-label="Illustrative integration snippet">
@@ -481,7 +508,7 @@ export default function Home() {
               </pre>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card glass" data-reveal data-spotlight>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Coins size={18} aria-hidden="true" />
@@ -502,7 +529,7 @@ export default function Home() {
               </ul>
             </article>
 
-            <article className="bento-card spot bento-card--wide" data-reveal>
+            <article className="bento-card bento-card--wide glass" data-reveal data-spotlight>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Fingerprint size={18} aria-hidden="true" />
@@ -533,7 +560,7 @@ export default function Home() {
               </ol>
             </article>
 
-            <article className="bento-card spot" data-reveal>
+            <article className="bento-card glass" data-reveal data-spotlight>
               <div className="bento-head">
                 <span className="bento-icon">
                   <Workflow size={18} aria-hidden="true" />
@@ -552,7 +579,7 @@ export default function Home() {
                 ))}
               </ol>
             </article>
-          </SpotlightGrid>
+          </div>
         </section>
 
         <section className="metrics" aria-label="Structural facts about the policy engine">
@@ -569,7 +596,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section" id="catalogue" aria-labelledby="catalogue-title">
+        <section className="section section--verso" id="catalogue" aria-labelledby="catalogue-title">
           <div className="head" data-reveal>
             <p className="kicker">The catalogue</p>
             <h2 id="catalogue-title">
@@ -586,7 +613,10 @@ export default function Home() {
           </p>
           <div className="cards">
             {CATALOGUE.map((item, index) => (
-              <article className="card" key={item.name} data-reveal style={{ "--i": index } as CSSProperties}>
+              <article className="card glass" key={item.name} data-reveal data-spotlight style={{ "--i": index } as CSSProperties}>
+                <span className="card-edition" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <header className="card-top">
                   <span className="card-icon">{item.icon}</span>
                   <span className="card-sku">{item.sku}</span>
@@ -609,7 +639,7 @@ export default function Home() {
                 </dl>
                 <p className="card-chips">
                   <span className="chip">
-                    <Check size={12} aria-hidden="true" /> Supplier verified
+                    <Check size={12} aria-hidden="true" /> Illustrative listing
                   </span>
                   <span className="chip chip--accent">Fulfilled after settlement</span>
                 </p>
@@ -621,9 +651,38 @@ export default function Home() {
               </article>
             ))}
           </div>
+
+          <div
+            className="catalogue-portal-card"
+            data-reveal
+            style={{
+              marginTop: "28px",
+              padding: "24px 28px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "16px",
+              borderRadius: "14px",
+              border: "1px solid var(--border)",
+              background: "var(--card-bg, rgba(255, 255, 255, 0.03))",
+            }}
+          >
+            <div>
+              <span className="chip chip--accent" style={{ marginBottom: "8px", display: "inline-flex" }}>
+                Dedicated Digital Goods Storefront
+              </span>
+              <p style={{ margin: 0, color: "var(--muted)", maxWidth: "600px", fontSize: "14px" }}>
+                Explore wholesale digital vouchers, streaming packages, gaming activation keys and GPU cluster capacity at our dedicated portal.
+              </p>
+            </div>
+            <a className="btn btn--primary" href="https://catalog.mercenta.xyz" target="_blank" rel="noreferrer">
+              catalog.mercenta.xyz <ChevronRight size={14} aria-hidden="true" />
+            </a>
+          </div>
         </section>
 
-        <section className="section" id="settlement" aria-labelledby="settlement-title">
+        <section className="section section--left" id="settlement" aria-labelledby="settlement-title">
           <div className="head" data-reveal>
             <p className="kicker">Settlement</p>
             <h2 id="settlement-title">
@@ -635,7 +694,7 @@ export default function Home() {
             </p>
           </div>
           <div className="ledger" data-reveal aria-hidden="true">
-            <div className="ledger-cell">
+            <div className="ledger-cell glass">
               <span className="ledger-label">Order</span>
               <span className="ledger-value">{ORDER.id}</span>
               <span className="ledger-note">
@@ -643,19 +702,21 @@ export default function Home() {
               </span>
             </div>
             <span className="ledger-link" />
-            <div className="ledger-cell">
+            <div className="ledger-cell glass">
               <span className="ledger-label">Supplier purchase</span>
               <span className="ledger-value">{usdc(CASES.order.cost)}</span>
               <span className="ledger-note">paid at the supplier&apos;s wholesale rate</span>
             </div>
             <span className="ledger-link" />
-            <div className="ledger-cell">
+            <div className="ledger-cell ledger-cell--key glass">
               <span className="ledger-label">Settlement</span>
               <span className="ledger-value">{usdc(CASES.order.amount)}</span>
-              <span className="ledger-note">USDC · platform fee {usdc(fee)} · network planned</span>
+              <span className="ledger-note">
+                USDC · platform fee {usdc(fee)} inside this total · network planned
+              </span>
             </div>
             <span className="ledger-link" />
-            <div className="ledger-cell">
+            <div className="ledger-cell glass">
               <span className="ledger-label">Delivery</span>
               <span className="ledger-value tone-ok">Fulfilled</span>
               <span className="ledger-note">recorded after settlement confirms</span>

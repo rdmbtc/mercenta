@@ -1,0 +1,319 @@
+/* Scene chrome for the order film: a scripted walk-through of the four acts.
+   Deliberately quiet — thin rules, tabular figures, one accent. Nothing here animates on its own. */
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.sceneStatic {
+  position: static;
+  grid-template-rows: auto;
+  margin-bottom: 18px;
+}
+
+.railLeft,
+.railRight {
+  position: absolute;
+  top: 96px;
+  width: 232px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3, rgba(233, 238, 245, 0.55));
+}
+
+.sceneStatic .railLeft {
+  position: static;
+  width: auto;
+}
+
+.railLeft {
+  left: clamp(16px, 3vw, 48px);
+}
+
+.railRight {
+  right: clamp(16px, 3vw, 48px);
+  text-align: right;
+}
+
+.railRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+  padding: 3px 8px;
+  border-left: 1px solid rgba(233, 238, 245, 0.12);
+  background: linear-gradient(90deg, rgba(9, 12, 20, 0.55), rgba(9, 12, 20, 0));
+}
+
+.railRight .railRow {
+  border-left: 0;
+  border-right: 1px solid rgba(233, 238, 245, 0.12);
+  background: linear-gradient(270deg, rgba(9, 12, 20, 0.55), rgba(9, 12, 20, 0));
+}
+
+.railTerm {
+  color: rgba(233, 238, 245, 0.38);
+}
+
+.railOk {
+  color: var(--ok, #6ee7a8);
+}
+
+.ticker {
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 clamp(16px, 3vw, 48px);
+  padding: 8px 14px;
+  border: 1px solid rgba(233, 238, 245, 0.12);
+  border-radius: 999px;
+  background: rgba(9, 12, 20, 0.62);
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(233, 238, 245, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.sceneStatic .ticker {
+  margin: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.rowLabel {
+  color: var(--ink, #eef3fa);
+  font-weight: 600;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.flag {
+  color: rgba(233, 238, 245, 0.5);
+}
+
+.spacer {
+  flex: 1;
+  min-width: 12px;
+}
+
+.pulse,
+.hold {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok, #6ee7a8);
+}
+
+.hold {
+  background: rgba(233, 238, 245, 0.35);
+}
+
+.tag {
+  color: rgba(233, 238, 245, 0.5);
+}
+
+.tile {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(233, 238, 245, 0.12);
+}
+
+.tileLabel {
+  color: rgba(233, 238, 245, 0.38);
+}
+
+.tileValue,
+.tileRoute {
+  color: var(--ink, #eef3fa);
+  font-variant-numeric: tabular-nums;
+}
+
+.tileRoute {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+}
+
+.doneWrap {
+  width: 96px;
+  height: 2px;
+  background: rgba(233, 238, 245, 0.16);
+  overflow: hidden;
+}
+
+.doneBar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: var(--accent, #7cc4ff);
+}
+
+.lanes {
+  position: absolute;
+  left: 50%;
+  bottom: 96px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 0;
+  z-index: 3;
+}
+
+.lane {
+  display: grid;
+  gap: 2px;
+  min-width: 108px;
+  padding: 8px 10px;
+  border: 1px solid rgba(233, 238, 245, 0.14);
+  border-radius: 10px;
+  background: rgba(9, 12, 20, 0.6);
+  color: rgba(233, 238, 245, 0.6);
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.laneOn {
+  border-color: rgba(124, 196, 255, 0.55);
+  color: var(--ink, #eef3fa);
+}
+
+.laneIndex {
+  font-family: var(--mono, ui-monospace, monospace);
+  color: rgba(233, 238, 245, 0.4);
+}
+
+.laneLabel {
+  font-weight: 600;
+}
+
+.laneTitle {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 11px;
+  color: rgba(233, 238, 245, 0.5);
+}
+
+.notice {
+  position: absolute;
+  left: 50%;
+  bottom: 48px;
+  transform: translateX(-50%);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: rgba(233, 238, 245, 0.5);
+  z-index: 3;
+}
+
+.sceneStatic + .film-card .notice,
+article .notice {
+  position: static;
+  transform: none;
+}
+
+.noticeInner {
+  padding: 5px 10px;
+  border: 1px dashed rgba(233, 238, 245, 0.2);
+  border-radius: 6px;
+}
+
+.noticeSeal {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(233, 238, 245, 0.08);
+  color: rgba(233, 238, 245, 0.62);
+}
+
+.scrubber {
+  position: absolute;
+  right: clamp(16px, 3vw, 48px);
+  bottom: 96px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 3;
+}
+
+.scrubLabel {
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(233, 238, 245, 0.5);
+}
+
+.scrubTrack {
+  width: 180px;
+  accent-color: var(--accent, #7cc4ff);
+}
+
+@media (max-width: 980px) {
+  .railLeft,
+  .railRight {
+    display: none;
+  }
+
+  .lanes {
+    bottom: 84px;
+    max-width: 92vw;
+    overflow-x: auto;
+  }
+
+  .laneTitle {
+    display: none;
+  }
+
+  .scrubber {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .ticker {
+    gap: 8px;
+    padding: 6px 10px;
+    overflow-x: auto;
+  }
+
+  .tileRoute,
+  .doneWrap {
+    display: none;
+  }
+
+  .notice {
+    bottom: 36px;
+    max-width: 92vw;
+  }
+}
