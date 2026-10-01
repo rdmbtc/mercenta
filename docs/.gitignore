@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# Next.js & Fumadocs
+.next/
+.source/
+.unmint/
+.turbo/
+dist/
+build/
+.vercel/
+
+# TypeScript & logs
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment
+.env*
+.env.local

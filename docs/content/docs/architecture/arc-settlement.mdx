@@ -1,0 +1,12 @@
+---
+title: "Arc settlement"
+description: "Evidence before credit."
+---
+
+Arc Testnet is chain `5042002`. Direct deposits verify chain ID, receipt success, canonical block hash, sender, receiver, asset, amount and two confirmations. Transaction hashes are unique across account deposits and order payments.
+
+Native USDC has 18-decimal transport precision; the account accepts exact six-decimal monetary units. ERC-20 USDC uses six decimals. Unsupported fractions are rejected rather than silently rounded for ledger credit.
+
+A chain receipt may be pending, failed, unrelated or too old for the intent. None creates spendable credit. Wallet-balance display may be unavailable during RPC failure; the confirmed journal balance remains separate.
+
+The backend does not sign transactions. The browser wallet requires explicit user approval for a transfer. Two confirmations are an application verification rule, not a claim that any network event is infallible.

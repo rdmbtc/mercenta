@@ -1,0 +1,30 @@
+---
+title: "First test order"
+description: "Wallet, funding and account history in five steps."
+---
+
+## 1. Open the account
+
+Open the deployed Mercenta console or `http://localhost:3011/app` locally. Choose **Connect Wallet** and sign the authentication message. This signature proves wallet ownership; it does not authorize payment.
+
+## 2. Select Arc Testnet
+
+- Chain ID: `5042002` (`0x4cef52`)
+- RPC: `https://testnet.arc.network`
+- Native asset: test USDC
+
+Obtain test assets through the official Arc/Circle testnet resources. Never send Mainnet assets to this MVP. Keep a gas reserve.
+
+## 3. Create a deposit intent
+
+Open Funds, choose Top up USDC and enter an exact amount with up to six decimal places. If the receiver is not configured, funding is unavailable. Do not invent a destination address.
+
+## 4. Transfer and verify
+
+The wallet signs a direct test-USDC transfer to the address stored on the intent. Alternatively transfer manually. Paste the transaction hash and select Verify & credit after two confirmations. Submission alone never creates balance.
+
+## 5. Place a test order
+
+Choose a test product in Shop. Confirm the quantity and your reference. The backend reserves and captures exact test USDC atomically and records simulated fulfillment. Inspect Orders and Transactions.
+
+See [funding safety](/docs/account/funds) before transferring. Withdrawals are not implemented in this MVP.

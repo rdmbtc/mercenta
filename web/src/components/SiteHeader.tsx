@@ -82,13 +82,19 @@ export default function SiteHeader({
             <button type="button" className="eco-trigger" aria-haspopup="true">
               Ecosystem <ChevronDown size={13} aria-hidden="true" />
             </button>
-            <div className="eco-panel" role="menu" aria-label="Ecosystem addresses">
-              <p className="eco-note">Planned addresses for each part of the product. None of them is live today.</p>
+            <div className="eco-panel" aria-label="Ecosystem addresses">
+              <p className="eco-note">Seven dedicated infrastructure nodes across the Mercenta network.</p>
               {ecosystem.map((item) => (
-                <a key={item.host} className="eco-link" href={"https://" + item.host} role="menuitem">
-                  <span className="eco-host">{item.host}</span>
-                  <span className="eco-role">{item.role}</span>
-                  <span className="eco-status">planned</span>
+                <a
+                  key={item.host}
+                  href={"https://" + item.host}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="eco-link hover:bg-white/5 transition-colors p-1.5 rounded"
+                >
+                  <span className="eco-host font-mono font-semibold text-white">{item.host}</span>
+                  <span className="eco-role text-[11px] text-[#b2b6bd]">{item.role}</span>
+                  <span className="eco-status font-mono text-[10px] text-[#00ca8e]">node</span>
                 </a>
               ))}
             </div>
@@ -99,8 +105,8 @@ export default function SiteHeader({
           <a className="btn btn--ghost btn--sm" href="https://x.com/mercentaxyz" target="_blank" rel="noopener noreferrer">
             Follow <ArrowUpRight size={14} aria-hidden="true" />
           </a>
-          <a className="btn btn--primary btn--sm" href="#policy">
-            Open the demo <ArrowRight size={14} aria-hidden="true" />
+          <a className="btn btn--primary btn--sm" href="/app">
+            Launch Console <ArrowRight size={14} aria-hidden="true" />
           </a>
           <button
             type="button"
@@ -126,16 +132,22 @@ export default function SiteHeader({
           ))}
         </nav>
         <div className="mobile-eco">
-          <p className="kicker">Ecosystem · planned, not live</p>
+          <p className="kicker">Ecosystem Nodes</p>
           {ecosystem.map((item) => (
-            <a key={item.host} href={"https://" + item.host}>
+            <a
+              key={item.host}
+              href={"https://" + item.host}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="eco-link"
+            >
               <span className="eco-host">{item.host}</span>
-              <span className="eco-status">planned</span>
+              <span className="eco-status">node</span>
             </a>
           ))}
         </div>
-        <a className="btn btn--primary" href="#policy" onClick={() => setOpen(false)}>
-          Open the interactive demo <ArrowRight size={16} aria-hidden="true" />
+        <a className="btn btn--primary" href="/app" onClick={() => setOpen(false)}>
+          Launch Console <ArrowRight size={16} aria-hidden="true" />
         </a>
       </div>
     </header>

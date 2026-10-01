@@ -1,0 +1,1 @@
+import {proxyBackend} from '@/lib/backend-proxy';export const dynamic='force-dynamic';async function handle(req:Request,ctx:{params:Promise<{id:string}>}){return proxyBackend(req,'approvals/'+(await ctx.params).id+'/decide')}export {handle as GET,handle as POST};

@@ -1,16 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, JetBrains_Mono, Sora } from "next/font/google";
+import { DM_Serif_Display, Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import "./product.css";
+import "./liquidity.css";
+import Atmosphere from "@/components/Atmosphere";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
 const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"], display: "swap" });
-// Display face for headings only. Sora ships the latin subset this build needs, and the CSS
-// fallback is a system sans, so a failed fetch degrades to a plain heading rather than a serif.
-const display = Sora({ variable: "--font-display", subsets: ["latin"], weight: ["500", "600", "700"], display: "swap" });
+// Display face is kept separate from the functional UI and mono data faces.
+const display = DM_Serif_Display({ variable: "--font-display", subsets: ["latin"], weight: "400", display: "swap" });
 
 const TITLE = "Mercenta — Commerce, with control.";
 const DESCRIPTION =
-  "The policy-controlled commerce layer for software agents. Agents propose purchases; deterministic spend, margin and supplier rules decide what is authorised; USDC settlement and delivery land on one order record. Pre-launch preview with illustrative data and no live funds.";
+  "Pre-launch preview of policy-controlled commerce for software agents. Explore illustrative spend and margin checks, an order record, and planned USDC settlement and delivery. No live orders or funds.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mercenta.xyz"),
@@ -32,7 +34,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Mercenta",
     title: TITLE,
-    description: "Business inputs bought wholesale, sold at a margin you set, under spend rules your agents cannot bypass.",
+    description: "Explore illustrative agent purchases governed by spend, margin and supplier rules. Pre-launch preview; no live orders or settlement.",
     images: [{ url: "/mercenta-logo.png", width: 1254, height: 1254, alt: "Mercenta" }],
     url: "https://mercenta.xyz",
   },
@@ -41,14 +43,14 @@ export const metadata: Metadata = {
     site: "@mercentaxyz",
     creator: "@mercentaxyz",
     title: TITLE,
-    description: "Business inputs bought wholesale, sold at a margin you set, under spend rules your agents cannot bypass.",
+    description: "Explore illustrative agent purchases governed by spend, margin and supplier rules. Pre-launch preview; no live orders or settlement.",
     images: ["/mercenta-logo.png"],
   },
   robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#06070a",
+  themeColor: "#000000",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -59,8 +61,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={sans.variable + " " + display.variable + " " + mono.variable}>
       <body>
-        {/* One non-interactive grain plane for the whole document. */}
-        <div className="grain" aria-hidden="true" />
+        {/* One non-interactive atmosphere plane for the whole document. */}
+        <Atmosphere />
         {children}
       </body>
     </html>

@@ -1,0 +1,19 @@
+---
+title: "Troubleshooting"
+description: "Understand failure without inventing settlement."
+---
+
+| Symptom | Action |
+| --- | --- |
+| Sign in required | Connect the wallet and sign the auth nonce |
+| Receiver not configured | Operator must configure the Arc receiver before transfer |
+| Deposit not final | Wait for two confirmations, then verify the same hash |
+| No matching USDC payment | Check chain, sender, receiver, asset and direct-transfer method |
+| Evidence rejected | Check amount and that transfer occurred after intent creation |
+| Already used | Do not reuse a credited transaction hash |
+| Insufficient account balance | Wallet funds do not count until verified deposit |
+| Testnet order limit | Keep the simulated order at or below 10 test USDC |
+| API scope required | Create a minimum-scope key for the requested operation |
+| Backend unavailable | Check private backend, RPC and persistent secrets; do not assume success |
+
+Retain the transaction hash and deposit intent ID for operator recovery. Do not repeatedly transfer when verification is pending. A missing success message is not proof that an on-chain transfer failed.

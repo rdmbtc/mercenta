@@ -1,0 +1,97 @@
+.progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: 2px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.headline {
+  display: block;
+  max-width: 17ch;
+  animation: none !important;
+  text-wrap: balance;
+}
+
+.word {
+  display: inline-block;
+  white-space: pre;
+  will-change: transform, opacity;
+}
+
+.quiet {
+  color: var(--muted);
+}
+
+.answer {
+  display: block;
+  color: var(--fg);
+}
+
+.factMark {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 8px 2px 0;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.factMark[data-tone="hold"] {
+  background: var(--hold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hold) 12%, transparent);
+}
+
+.factMark[data-tone="stop"] {
+  background: var(--stop);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--stop) 12%, transparent);
+}
+
+.cardWrap {
+  will-change: transform, opacity;
+  transform-origin: 50% 0;
+}
+
+.cardCaption {
+  max-width: 42ch;
+  margin: 14px 0 0 auto;
+  color: var(--muted-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.55;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .headline {
+    max-width: 12ch;
+  }
+
+  .cardCaption {
+    margin-left: 0;
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress {
+    display: none;
+  }
+
+  .word {
+    will-change: auto;
+  }
+}
+
+
+/* Rotating answer line: blue-white, lit like the atmosphere's cold layer. */
+.answerLive {
+  color: #dceaff;
+  text-shadow: 0 0 24px rgba(24, 104, 242, 0.45), 0 0 64px rgba(24, 104, 242, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .answerLive { text-shadow: none; }
+}

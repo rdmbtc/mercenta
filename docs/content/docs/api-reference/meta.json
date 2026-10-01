@@ -1,0 +1,8 @@
+{
+  "title": "Developer API",
+  "pages": [
+    "authentication",
+    "endpoints",
+    "sdks"
+  ]
+}

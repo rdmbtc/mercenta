@@ -1,0 +1,23 @@
+# Mercenta backend
+Independent Node/TypeScript/Fastify service. `npm install`, copy `.env.example` to `.env`, supply secrets, `npm test`, `npm run build`, `npm start`. Default loopback port 3012; the Next.js BFF signs requests. No signing key is loaded by the LLM service.
+
+## Truthful capabilities
+- Arc Testnet Viem payment evidence: chain, successful receipt, canonical block, 2 confirmations, buyer, recipient, ERC-20 contract and replay exclusion. Native 18-decimal value converts exactly to internal 6-decimal BigInt; ERC-20 uses 6.
+- P1–P11 deterministic checks; USD/USDC journal balances separately; persistent double entry with immutable sealed batches, payment and decision witnesses. Sandbox treasury lives in a different table and never enters the real ledger.
+- Circle App Kit 1.16 interfaces are installed and typed: Earn discovery, Earn/Borrow execution boundaries, Swap, Bridge, Gateway, server-only Onramp session minting. No fictional addresses or ratings. A submitted SDK operation is not settlement evidence.
+- Earn 5.4%, cirBTC $92,400, 75% LTV and 82.5% liquidation threshold are explicit sandbox assumptions. Simulated deposits/withdrawals/loans are atomic, per-session and idempotent. They do not sign transactions or accrue real yield.
+- Onramp card/Apple Pay preview collects no payment details. Hosted session minting needs Circle onboarding and `ONRAMP_API_KEY`; client events cannot credit the ledger.
+- 10 consultations per authenticated wallet or server-created visitor session. Provider outage restores quota. No LLM credential means a labelled rule-based advisor, not a fake live model. Mainnet paid mode is disabled.
+- A durable PURCHASING claim precedes one purchase attempt. Crash/timeout moves to SUPPLIER_UNKNOWN. Reconciler only performs reference lookup; never blindly re-purchases. Unknown state retains reserve. Delivery codes AES-256-GCM encrypted, revealed once to order owner.
+
+## Production release gates still required
+This is not a claim that real treasury execution or fulfillment is production-certified. Configure verified merchant quotes and recipient; fund and reconcile opening treasury via evidence-backed journal; implement merchant allowlist and approval resolution/revalidation; confirm the Supply Node API contract against its actual documentation; validate Circle sandbox widget/session schema and origin binding; implement signed provider webhook verification with durable replay protection before accepting webhooks; integrate reviewed human signing and independently verify SDK settlement; deploy TLS, private networking, backups, monitoring, secret rotation, compliance and load/penetration tests. Do not enable fulfillment until these gates pass. Mainnet is not enabled.
+
+`ENABLE_FULFILLMENT=false` by default. Generic Supply Node contract is POST `/orders` with `{request_ref,sku,quantity}` and GET `/orders/by-reference/:ref`; it must be mapped and tested against the actual private upstream contract before enablement. Customer quote cost is explicitly USD-parity modelling; no unverified FX conversion may be used for live orders.
+
+## API
+`/api/orders`, `/api/orders/:id/verify`, `/api/orders/:id/reveal`, `/api/catalog`, `/api/agent/chat`, `/api/agent/quota`, `/api/liquidity/summary`, `/api/liquidity/earn/{vaults,project,deposit,withdraw}`, `/api/liquidity/borrow/{market,preview,originate,repay}`, `/api/liquidity/onramp/session`, `/api/liquidity/unified-balance`, `/api/liquidity/swap`, `/api/health`, `/api/status`.
+Money requests are decimal strings. JSON responses encode micro-units as integer strings. Mutations require HMAC-authenticated BFF actor and UUID request IDs for sandbox operations. Never trust body-supplied wallet identity. Empty live catalog means not configured, not verified stock.
+
+## Customer testnet account
+`/api/account/*` is wallet-session/BFF protected. `/api/v1/*` is scoped API-key protected. Deposit intents alone never credit. Successful direct Arc receipts credit a per-wallet immutable journal; native and ERC-20 USDC evidence is checked before credit. Deposit hashes cannot be reused as order payments. Test shop fulfillment is explicitly simulated and capped at 10 test USDC per order, not production supply purchasing. Wallet funds, customer account funds and treasury lab simulations are separate. Withdrawals/refunds and unattended deposit recovery are not implemented. Cross-chain and Onramp account funding remain disabled. Configure `MERCHANT_WALLET` to an operator-owned Arc Testnet receiver before allowing deposit transfers. Review `docs/content/docs/guides/testnet-launch.mdx` for deployment prerequisites.

@@ -1,0 +1,82 @@
+import Fastify from "fastify";
+import helmet from "@fastify/helmet";
+import rateLimit from "@fastify/rate-limit";
+import { ZodError } from "zod";
+import { loadConfig, type Config } from "./config.js";
+import { openDb } from "./db.js";
+import { loadProducts, type Product } from "./services/catalog.js";
+import { SupplyNode } from "./services/fulfillment/index.js";
+import { Orders } from "./services/orders.js";
+import { startReconciler } from "./services/fulfillment/reconciler.js";
+import { registerRoutes } from "./routes/index.js";
+import {registerAccountRoutes} from "./routes/account.js";
+export async function buildServer(c: Config, products?: Product[]) {
+  const app = Fastify({
+    logger: {
+      level: "info",
+      redact: [
+        "req.headers.authorization",
+        "req.headers.cookie",
+        "req.headers.x-mercenta-signature",
+        "req.body",
+        "res.body",
+      ],
+    },
+    bodyLimit: 32768,
+    requestTimeout: 30000,
+    trustProxy: false,
+  });
+  await app.register(helmet);
+  await app.register(rateLimit, { max: 60, timeWindow: "1 minute" });
+  const db = openDb(c.DATABASE_PATH),
+    catalog = products ?? loadProducts(c.CATALOG_QUOTES_PATH),
+    node = new SupplyNode(c),
+    orders = new Orders(db, c, catalog, node);
+  registerRoutes(app, db, c, catalog, orders);
+  registerAccountRoutes(app, db, c);
+  const stop = startReconciler(db, orders, node);
+  app.setErrorHandler((e, _req, reply) => {
+    const message = e instanceof Error ? e.message : "REQUEST_REJECTED";
+    const status =
+      message === "UNAUTHORIZED" || message === "WALLET_AUTH_REQUIRED"
+        ? 401
+        : e instanceof ZodError
+          ? 400
+          : message === "ORDER_NOT_FOUND"
+            ? 404
+            : message.includes("CONFLICT") || message === "REQUEST_IN_PROGRESS"
+              ? 409
+              : message.includes("NOT_CONFIGURED")
+                ? 503
+                : 400;
+    reply
+      .code(status)
+      .send({
+        code:
+          e instanceof ZodError
+            ? "INVALID_REQUEST"
+            : /^[A-Z_]+$/.test(message)
+              ? message
+              : "REQUEST_REJECTED",
+        message:
+          "Request could not be completed. No unverified operation is reported as settled.",
+      });
+  });
+  app.addHook("onClose", async () => {
+    stop();
+    db.close();
+  });
+  return app;
+}
+if (
+  process.argv[1]?.endsWith("server.ts") ||
+  process.argv[1]?.endsWith("server.js")
+) {
+  const c = loadConfig();
+  const app = await buildServer(c);
+  await app.listen({ host: c.HOST, port: c.PORT });
+  for (const signal of ["SIGTERM", "SIGINT"])
+    process.once(signal, () => {
+      void app.close();
+    });
+}
