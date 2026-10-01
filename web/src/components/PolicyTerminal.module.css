@@ -1,0 +1,390 @@
+/* Scoped styles for PolicyTerminal: the in-browser policy evaluator.
+   Tokens are inherited from :root in globals.css — --bg --surface --surface-2 --line --line-2
+   --fg --muted --muted-2 --accent --ok --hold --stop --mono --ease-out. No global rule is set here.
+   Colour discipline: purple (--accent) marks a rule under evaluation, green/amber/red mark only the
+   outcome of that evaluation. Nothing on this page issues, charges or settles anything.
+   The route packet is an inline SVG: .packetMarker travels by transform between five real check nodes. */
+
+.wrap {
+  display: grid;
+  gap: 16px;
+}
+
+.sim {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.simHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.title {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.presets {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.preset {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 4px 14px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: var(--bg);
+  text-align: left;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.preset:hover {
+  border-color: var(--muted-2);
+}
+
+/* A loaded intent is the subject of the policy evaluation, so the selected tile takes the rule accent. */
+.preset[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.preset:focus-visible,
+.action:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+.presetName {
+  font-size: 12.5px;
+  color: var(--fg);
+}
+
+.presetAmount {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.presetNote {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted-2);
+}
+
+.hud {
+  display: grid;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.agentLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: 0;
+}
+
+.agentName {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--fg);
+}
+
+/* Readable prose inside the simulation: the intro note and the loaded intent. */
+.prose {
+  margin: 0;
+  max-width: 68ch;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.packet {
+  display: grid;
+  gap: 12px;
+}
+
+.packetHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.packetLabel {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.packetStep {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.182em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+
+.verdict {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.route {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.routeLine {
+  stroke: var(--line-2);
+  stroke-width: 1;
+}
+
+.routeNode {
+  fill: var(--surface-2);
+  stroke: var(--line-2);
+  stroke-width: 1;
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+.routeNodeOn {
+  fill: color-mix(in srgb, currentColor 24%, var(--surface-2));
+  stroke: currentColor;
+}
+
+.routeNodeStop {
+  stroke-dasharray: 2 2;
+}
+
+.packetMarker {
+  transition: transform 0.34s var(--ease-out);
+}
+
+.packetDot {
+  fill: currentColor;
+  stroke: var(--bg);
+  stroke-width: 1;
+}
+
+.packetHalo {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0;
+}
+
+.packetHaloRun {
+  animation: ping 0.6s var(--ease-out) infinite;
+}
+
+.packetHaloDone {
+  animation: none;
+  opacity: 0.3;
+}
+
+/* Outcome of the evaluation. */
+.pass {
+  color: var(--ok);
+}
+
+.fail {
+  color: var(--stop);
+}
+
+.hold {
+  color: var(--hold);
+}
+
+/* Rule currently being evaluated: the policy accent, never an outcome. */
+.evaluating {
+  color: var(--accent);
+}
+
+.idle {
+  color: var(--muted-2);
+}
+
+.checks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.check {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.checkOn {
+  border-color: currentColor;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  animation: pop 0.4s var(--ease-out);
+}
+
+.checkIndex {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--muted-2);
+}
+
+.checkLabel {
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.checkState {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.record {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted-2);
+}
+
+.recordKey {
+  display: block;
+  margin-bottom: 4px;
+  letter-spacing: 0.182em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: var(--bg);
+  font-size: 12.5px;
+  color: var(--fg);
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.action:hover:not(:disabled) {
+  border-color: var(--muted-2);
+}
+
+.action:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.handoff {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left-color: var(--hold);
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.buzz {
+  animation: buzz 0.28s var(--ease-out);
+}
+
+@keyframes ping {
+  from {
+    opacity: 0.85;
+    transform: scale(0.45);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@keyframes buzz {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-2px, 1px, 0); }
+  45% { transform: translate3d(2px, -1px, 0); }
+  70% { transform: translate3d(-1px, 1px, 0); }
+}
+
+@keyframes pop {
+  from { transform: translate3d(0, 4px, 0); opacity: 0.5; }
+  to { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+@media (max-width: 980px) {
+  .checks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .checks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .preset {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preset,
+  .action,
+  .packetMarker,
+  .routeNode,
+  .check,
+  .checkOn,
+  .buzz {
+    transition: none;
+    animation: none;
+  }
+  .packetHalo {
+    animation: none;
+    opacity: 0.3;
+  }
+}

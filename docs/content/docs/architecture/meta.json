@@ -1,0 +1,8 @@
+{
+  "title": "Architecture",
+  "pages": [
+    "policy-authority",
+    "arc-settlement",
+    "order-fsm"
+  ]
+}

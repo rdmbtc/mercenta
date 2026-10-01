@@ -1,7 +1,37 @@
-# Environment variables and secrets
+# Environment variables and secrets (STRICT)
+**/.env
+**/.env.*
+**/.env.local
 .env
-.env.local
 .env.*
+.env.local
+!**/.env.example
+!.env.example
+
+# Node, Next.js, and dependencies
+**/node_modules/
+node_modules/
+**/.next/
+.next/
+**/.source/
+.source/
+**/.unmint/
+.unmint/
+**/.turbo/
+.turbo/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Build outputs
+**/dist/
+dist/
+**/build/
+build/
 
 # Python
 __pycache__/
@@ -10,9 +40,7 @@ __pycache__/
 *.so
 .Python
 env/
-build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -25,28 +53,34 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+main.py
 
-# Node & Next.js
-node_modules/
-.next/
-.vercel/
-*.tsbuildinfo
-next-env.d.ts
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# OMP & Local State
+# OMP, CLI, IDE configs and temporary scripts
 .local/
+**/.omp/
+.omp/
+**/.agents/
+.agents/
+**/.mcp.json
+.mcp.json
+**/opencode.json
+opencode.json
+web/qa-morph.js
 
-# Local generation artifacts
+# Local generation artifacts and databases
 outputs/
 work/
+*.sqlite
 *.sqlite3
+*.db
+backend/data/
+web/data/
+web/artifacts/
 
 # OS / Editor
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-
+sdk/
+IMPLEMENTATION_PLAN.md

@@ -1,0 +1,39 @@
+---
+title: "Mercenta Documentation"
+description: "A practical guide to the Arc Testnet commerce account."
+---
+
+# Test the complete commerce cycle
+
+Mercenta connects wallet identity, verified test-USDC deposits, scoped API access and an auditable account history. The model may propose actions. It cannot sign transactions or edit balances.
+
+## Start here
+
+1. [Connect your wallet](/docs/quickstart).
+2. [Fund your account](/docs/account/funds) with test USDC on Arc.
+3. [Place a test order](/docs/account/orders).
+4. [Inspect dashboard and transactions](/docs/account/dashboard).
+5. [Create a scoped API key](/docs/api-reference/authentication).
+
+## Capability status
+
+| Capability | Current boundary |
+| --- | --- |
+| Wallet sign-in | Signed nonce and server session |
+| Arc account deposit | Requires configured receiver; on-chain proof before credit |
+| Customer account balance | Immutable double-entry journal; no sample opening credit |
+| Test shop orders | Simulated fulfillment only; maximum 10 test USDC per order |
+| Dashboard, histories, CSV | Private account data; UTC date filters |
+| API access | Hash-only keys, scopes, expiry and revocation |
+| Cross-chain funding | Disabled until destination attribution and route validation |
+| Card / Apple Pay | Preview only until Circle onboarding and settlement validation |
+| Earn / Borrow | Separate labelled treasury sandbox |
+| Mainnet and real goods | Disabled |
+
+**Test USDC has no purchasing power for real digital goods.** The test shop never delivers redeemable gift codes, credits a real external account or calls the Wholesale Provider.
+
+## Before publishing
+
+Public domains require DNS, TLS and deployment. Local builds do not deploy a website. [Review the launch checklist](/docs/guides/testnet-launch).
+
+Mercenta is independently developed. No Circle partnership or endorsement is implied.

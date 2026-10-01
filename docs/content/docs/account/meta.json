@@ -1,0 +1,10 @@
+{
+  "title": "Account",
+  "pages": [
+    "dashboard",
+    "funds",
+    "orders",
+    "transactions",
+    "support"
+  ]
+}

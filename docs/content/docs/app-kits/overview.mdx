@@ -1,0 +1,16 @@
+---
+title: "Circle integration status"
+description: "Installed interfaces are not live settlement."
+---
+
+Circle App Kit and its Viem adapter are installed and typed. This documents the implementation boundary, not a claim that every Circle product or deployment is available on the chosen test network.
+
+| Module | Current state |
+| --- | --- |
+| Earn | Discovery boundary and sandbox calculator |
+| Borrow | Sandbox risk calculator; no live signer |
+| Onramp | Preview and server session-minting boundary |
+| Swap / Bridge | Execution integration boundary; no account funding enabled |
+| Gateway | Unified-balance integration boundary; no verified account attribution |
+
+Validate network support, contract addresses, SDK versions and user-signing flows against official Circle documentation before enabling a route. A returned SDK operation is not confirmed settlement.

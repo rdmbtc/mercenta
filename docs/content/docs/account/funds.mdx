@@ -1,0 +1,32 @@
+---
+title: "Funds and deposits"
+description: "Distinguish wallet funds from your Mercenta spending balance."
+---
+
+## Two different balances
+
+**Wallet USDC** is read from the authenticated wallet on Arc. It remains in your wallet. **Account available** is confirmed deposits less account spending. **Reserved** cannot be spent twice.
+
+These are testnet balances only. No fiat/USD exchange is assumed. UI and exports label funds as USDC.
+
+## Direct Arc deposit
+
+1. Authenticate the sending wallet.
+2. Create a deposit intent with a configured receiver and expected amount.
+3. Send test USDC from that wallet to that receiver after intent creation.
+4. Verify the transaction hash.
+5. Credit only after successful canonical Arc receipt, matching sender and recipient, matching asset and at least two confirmations.
+
+Native 18-decimal test USDC is converted exactly to six-decimal internal units. ERC-20 evidence uses the verified USDC contract. A receipt cannot be credited twice or reused for a per-order payment. Deposits from a different sender are rejected. Intent validity is 24 hours. Amounts below the expected amount do not credit. Confirmed overpayments credit the full verified amount.
+
+Funding history includes intent number, transaction hash, method, status, requested/received amount and credited USDC. An Awaiting transfer row is an uncredited intent, not a successful payment. Verification is currently initiated by the user; automated detection and support recovery must be added before a broader public launch.
+
+## Other chains and fiat
+
+These routes are not enabled. A bridge destination transaction is not necessarily sent by the buyer wallet, so it requires reviewed attribution to the account and independently verified destination settlement. Never paste a source-chain transaction into the direct Arc verifier.
+
+Onramp requires Circle onboarding, allowed origins, hosted session validation and authoritative destination evidence. A browser success event never credits the account.
+
+## Safety boundary
+
+Withdrawals and refunds are not implemented for the test account. Send only disposable test assets. Do not fund with Mainnet assets or real money. Treasury lab balances are independent simulations.
