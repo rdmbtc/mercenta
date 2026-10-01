@@ -1,0 +1,10 @@
+---
+title: "Transactions"
+description: "Your immutable account trail."
+---
+
+Transactions show timestamp, transaction ID, category, balance after movement, signed amount, order ID and comment. Deposit rows are positive; Shop and Direct Top-Up rows are negative.
+
+Amounts are integer micro-units: `1 USDC = 1000000`. Display retains six decimal places. No JavaScript floating-point number is used for accounting. Journal batches balance by currency and are sealed; SQLite triggers reject updates, deletes and late insertion. Account activity is also append-only.
+
+CSV preserves exact unit strings and neutralizes spreadsheet-formula prefixes. Each export includes the selected account and date filters. Filter narrower if an export exceeds 10,000 records.

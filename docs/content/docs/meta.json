@@ -1,0 +1,20 @@
+{
+  "title": "Mercenta Documentation",
+  "pages": [
+    "index",
+    "quickstart",
+    "---Account---",
+    "account",
+    "---Developers---",
+    "api-reference",
+    "---Architecture---",
+    "architecture",
+    "---Circle App Kits---",
+    "app-kits",
+    "---Catalog & Agents---",
+    "catalog",
+    "agents",
+    "---Operations---",
+    "guides"
+  ]
+}

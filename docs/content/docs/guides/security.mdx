@@ -1,0 +1,15 @@
+---
+title: "Security"
+description: "Privacy and financial invariants."
+---
+
+- Wallet signatures grant scoped identity, not payment authority.
+- The BFF derives the actor from the signed session and authenticates to the backend with HMAC.
+- Portal mutations require matching Origin. Private account routes reject visitor identities.
+- API keys are random, hash-only, scoped, expiring and revocable; bearer secrets are redacted from backend logs.
+- Receipts are unique across deposit and payment tables. Ledger batches are balanced, sealed and immutable.
+- Money is integer micro-units. CSV output guards formula injection.
+- SQLite WAL and backups require protected storage; production needs monitoring, restore drills and retention controls.
+- Public docs never disclose upstream supplier identity, private model routing, credentials or implementation codenames.
+
+Source scans do not erase old Git objects, CDN caches or already deployed builds. Review all of those before publication. This MVP is not an audited custody or Mainnet financial service.

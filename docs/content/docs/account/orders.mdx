@@ -1,0 +1,14 @@
+---
+title: "Shop and orders"
+description: "Test purchases with exact account debits."
+---
+
+The console test shop covers five Mercenta categories. Its products and prices are clearly test fixtures, not claims about live stock.
+
+A test order has an ID, wallet owner, initiator, customer reference, product, country, quantity, amount, timestamp and `SIMULATED_FULFILLED` status. The same request UUID and payload return the original order. A changed payload under the same UUID is rejected.
+
+The server validates the quantity, available balance and a 10-USDC per-order maximum. It reserves and captures exact amounts within one database transaction. A failed transaction leaves no partial debit. Simulation performs no external purchase and generates no redeemable delivery code.
+
+Order history supports date, initiator, country, product and status filters, pagination and CSV download. A Direct Top-Up test is only a channel demonstration; it never credits a real social or gaming account.
+
+The separate live-order state machine is disabled for real fulfillment until verified quotes, policy approval, supply reconciliation and refund handling are complete.

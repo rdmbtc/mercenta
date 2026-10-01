@@ -1,0 +1,1 @@
+import {NextResponse} from 'next/server';export async function POST(req:Request){if(req.headers.get('origin')!==new URL(req.url).origin)return NextResponse.json({error:'origin_rejected'},{status:403});const res=NextResponse.json({ok:true});res.cookies.set('mercenta_session','',{httpOnly:true,sameSite:'lax',path:'/',maxAge:0});return res}

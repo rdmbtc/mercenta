@@ -1,0 +1,10 @@
+---
+title: "Fiat Onramp"
+description: "A hosted integration boundary, not a card-payment promise."
+---
+
+The preview shows card and Apple Pay options without collecting payment-card details or charging a card. Hosted session creation requires server-side Circle credentials, onboarding and validated configuration.
+
+Card/Apple Pay availability and testnet compatibility depend on the provider's supported routes. Real fiat must not be collected for valueless testnet assets. Never assume a fiat onramp directly mints supported test USDC on Arc.
+
+Before enabling account funding: verify the hosted schema, allowed origins, destination binding, durable event replay protection and authoritative destination credit. A client `onDepositSettled` event is untrusted. Until these checks pass, Onramp remains disabled as an account top-up method.

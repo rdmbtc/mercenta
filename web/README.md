@@ -1,8 +1,8 @@
 # Mercenta landing — Commerce, with control.
 
 Pre-launch landing for mercenta.xyz. Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4, lucide-react.
-Everything is server-rendered; the handful of client components are listed below and each one is a progressive
-enhancement over markup that already reads correctly without JavaScript.
+The page is server-rendered; client components listed below provide the interactive demo and navigation.
+The policy examples are evaluated locally; they are not connected to supplier or payment services.
 
 ```bash
 npm install
@@ -10,22 +10,24 @@ npm run dev      # http://localhost:3000
 npm run build    # production check
 ```
 
+The catalogue, balances, decisions and receipts are illustrative browser examples, not connected services.
+No supplier call, wallet action or USDC transfer is performed.
+
 ## Structure
 
 | Path | Role |
 | --- | --- |
-| `src/app/page.tsx` | Server-rendered page: hero, vocabulary ticker, pipeline, film, policy engine, platform bento, metrics, catalogue, settlement, status, CTA, footer. |
+| `src/app/page.tsx` | Server-rendered page: hero with the order card, problem, solution pipeline + policy sandbox, methodology, vault film, entitlements, catalogue, settlement ledger, CTA, status, footer. |
 | `src/app/layout.tsx` | Metadata (title, description, OpenGraph, Twitter, theme colour) and the Geist fonts. The font variables live on `<html>` so `:root` tokens can resolve them. |
 | `src/app/globals.css` | All tokens and rules, grouped by section. No CSS framework layer beyond Tailwind's import. |
 | `src/lib/policy.ts` | Single source of truth: `POLICY`, `ORDER`, `CASES`, `evaluatePolicy`, `usdc`, `percent`, `tone`. |
 | `src/components/SiteHeader.tsx` | Fixed header: compacts on scroll, highlights the current section, mobile menu. Client. |
-| `src/components/DecisionFeed.tsx` | Hero console: a fixed sequence of illustrative intents run through `evaluatePolicy`, one new row every 2.6 s. Pauses on hover, off-screen, hidden tab, or via its button. Client. |
 | `src/components/OrderJourney.tsx` | The scroll film: one illustrative order, four acts. Client. |
 | `src/components/PolicyTerminal.tsx` | The interactive policy terminal, with presets, reset and a checks-passed score. Client. |
 | `src/components/ScrollEffects.tsx` | Adds `.is-in` to `[data-reveal]` elements as they enter the viewport and counts `[data-count]` numbers up. Hiding is scoped to `html.has-js`, so nothing is invisible without JavaScript. Client. |
-| `src/components/SpotlightGrid.tsx` | Pointer-tracking glow for the platform bento cards. Client. |
+| `src/components/Spotlight.tsx` | Pointer-tracking enhancement for fine pointers, disabled for reduced motion. Client. |
 
-The hero facts, the decision feed, the film, the terminal and the platform cards all read the same numbers from
+The hero facts, the hero order card, the film, the terminal and the platform cards all read the same numbers from
 `src/lib/policy.ts`, so no two sections can disagree about a balance, a floor or an outcome. Change a case there and
 everything follows.
 
@@ -34,7 +36,7 @@ everything follows.
 
 ## The film
 
-One illustrative order (MR-ORD-2481, 250 cloud-compute hours from CloudCore Compute) is followed end to end:
+One fictional order (MR-ORD-2481, 250 cloud-compute hours from CloudCore Compute) illustrates the intended flow:
 **intent → the five ordered checks → the authorization boundary → settlement and delivery receipt.** Four acts
 share one sticky stage, crossfading on scroll, with a video scrubbed by native scroll position.
 
@@ -69,7 +71,7 @@ Run `npm run dev`, open the page, and confirm:
 1. **Server render.** View source (or `curl -s localhost:3000`): "Commerce, with control.", "Commerce OS for
    autonomous agents", "Illustrative order", "Simulated", "Available to spend", "Reserved", "Gross margin",
    "Agent decision", "Policy blocked", "Human approval required", "Fulfilled" and "Supplier uncertain" are all present
-   in the HTML, and the decision feed already contains its first four rows.
+   in the HTML, and the hero order card shows five passed checks.
 2. **Scrub.** Scroll through `#order-journey`. The time and act counters track scroll, `video.currentTime` converges
    to `progress × duration`, and no crossfade leaves the stage blank.
 3. **Fling.** Throw the page up and down, then sample the network/animation state: `seeking` and `seeked` stay paired
@@ -83,17 +85,16 @@ Run `npm run dev`, open the page, and confirm:
 7. **Terminal.** Presets, amount and cost inputs, and the supplier select re-evaluate immediately; a failed check
    blocks the order, a held check escalates to a human, "This page's order" matches the film's figures, and Reset is
    disabled while that preset is loaded.
-8. **Feed.** The top row changes every few seconds, the tally in the footer grows with it, the pause button stops it
-   (dot turns amber), and hovering the card holds the current rows still.
-9. **Build.** `npm run build`, `npx tsc --noEmit` and `npx eslint src` must pass before shipping.
+8. **Build.** `npm run build`, `npx tsc --noEmit` and `npx eslint src` must pass before shipping.
+
+Local verification: the production build, type check and lint passed. In Chromium (1440px and 390px), all sections revealed on scroll (the reveal observer uses `threshold: 0`, so fast flings cannot skip tall blocks), the catalogue grid, settlement ledger, status panel and footer rendered without overlap or horizontal overflow, and the mobile menu opened and closed on Escape. Policy presets yielded Cleared, Policy blocked (thin margin and uncertain supplier) and Human approval required (over limit). Reduced-motion reload rendered four static film acts with no video element. These checks do not establish live payment or supplier behavior; every catalogue rate, latency target and ecosystem address is illustrative or planned.
 
 ## Truthfulness rules
 
 Nothing on this page is live. The merchant console, catalogue sync, checkout and settlement are all described as
 planned; the six ecosystem subdomains are each labelled `planned`; the catalogue, balances, rates and fees are
 labelled illustrative and are not real inventory or final pricing. The terminal is labelled
-"illustrative configuration", the decision feed is labelled "Simulated" and states that it is evaluated in the
-browser, and no order is submitted and no funds move anywhere on this site. The metrics strip states structural
+"illustrative configuration", and no order is submitted and no funds move anywhere on this site. The metrics strip states structural
 facts about the engine (five checks, three outcomes, one record, no model authority), not performance figures. No
 cashback, subsidy or fee promise is made, and nothing claims delivery before payment.
 
@@ -103,3 +104,25 @@ Mercenta is the primary brand. Arc is referenced as infrastructure under develop
 endorsement. Trademark attribution sits below the footer. No recreated Arc logo is used; any future logo must come
 unchanged from the [Circle Brand Kit](https://www.circle.com/pressroom#brandkit) and comply with the Circle Brand Use
 Policy. Branding questions: trademarks@circle.com.
+
+
+## catalog.mercenta.xyz
+
+The catalog site lives in this app at `/catalog`. `src/middleware.ts` rewrites any `catalog.*` host to it, so the subdomain serves the catalog at its root.
+
+Live supply feed (server-side only; the supplier key never reaches the client):
+
+```env
+SUPPLIER_API_URL=https://supplier.example/api/v1
+SUPPLIER_API_KEY=sk_live_...
+```
+
+Without these, `src/lib/supplier.ts` serves a curated snapshot and the page flags "CURATED SNAPSHOT" in the telemetry strip. Responses are cached 5 min (`revalidate: 300`). Read-only: no order endpoints are used.
+
+### Catalog features
+
+- `⌘K` / `/` command bar — fuzzy search over SKU, brand, denomination, region tag; Enter jumps and flashes the card.
+- Facets: 5 institutional category rails with live counts, region, format (Voucher / Top-Up / eSIM), denomination pills ($5–$100), in-stock toggle, price/stock sort.
+- Cards: generative brand art (deterministic per product id), resolver logos with monogram fallback, stock status (INSTANT / LOW RESERVE / OUT), dual USDC ≈ USD pricing, `<1.2s` delivery SLA badge.
+- Hover a card → Instant API Purchase opens the Pre-Flight Clearance drawer (Agent ID, budget cap status, settlement network Arc/Base/Solana, live SHA-256 receipt proof preview). Simulation only — no orders are placed.
+- Agent Batch mode: select SKUs, floating manifest bar, copy or download a `mercenta-agent-sdk` JSON purchase manifest.

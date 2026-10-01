@@ -51,7 +51,9 @@ export default function ScrollEffects() {
           observer.unobserve(element);
         }
       },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.12 },
+      // threshold 0: tall blocks (catalogue grid, film) must reveal on any intersection —
+      // a percentage threshold can be skipped entirely by fast flings between IO samples.
+      { rootMargin: "0px 0px -8% 0px", threshold: 0 },
     );
     reveals.forEach((element) => observer.observe(element));
     counters.forEach((element) => observer.observe(element));

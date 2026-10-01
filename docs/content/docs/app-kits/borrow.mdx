@@ -1,0 +1,10 @@
+---
+title: "Borrow sandbox"
+description: "cirBTC risk modelling, not live credit."
+---
+
+The lab assumes a cirBTC price of 92,400 USDC, 75% maximum LTV and an 82.5% liquidation threshold. These are labelled scenario inputs, not a live oracle.
+
+The model calculates maximum borrowing, health factor and liquidation price with integer arithmetic. It does not deposit real collateral, create debt on-chain or credit the customer account.
+
+Live borrowing requires verified market availability, fresh oracle evidence, human signing and independently checked settlement. Do not sell a simulator as a credit product.
