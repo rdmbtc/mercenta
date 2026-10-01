@@ -1,0 +1,28 @@
+---
+title: "Arc Testnet launch checklist"
+description: "The minimum defensible public test deployment."
+---
+
+## P0: Before accepting test deposits
+
+- Confirm the public domain spelling and control of app/docs DNS.
+- Deploy web, private backend and docs with TLS. Do not expose SQLite or the BFF secret.
+- Configure an operator-owned Arc Testnet receiver address. Publish it through the deposit intent, not a guessed constant.
+- Set persistent, strong session/BFF secrets and encrypted backups. Keep operator private keys out of the LLM and public code.
+- Configure Arc RPC and monitor its chain ID and availability.
+- Test wallet sign-in, direct deposit verification, duplicate receipt rejection and wrong-owner rejection.
+- Test one account-funded simulated order, exact spend, API revocation and CSV output.
+- Add verified support contact and a deposit-recovery procedure; MVP intents require user verification.
+- Clearly disclose: test USDC only, simulated fulfillment, no withdrawals/refunds yet, no live APY, no real fiat collection.
+
+## Local process layout
+
+Web uses port 3011, docs use 3012 and backend uses 3013 in the development environment. Backend listens on loopback. Configure `BACKEND_URL` accordingly. Defaults alone do not establish a deployment.
+
+## P1: Additional funding methods
+
+Enable cross-chain deposits only after supported CCTP/Gateway route validation and destination-account attribution. Enable Onramp only after Circle onboarding, supported network checks and verified settlement. Until then, keep these methods disabled.
+
+## Release acceptance
+
+Retain test/build results for backend, web and docs. Scan source, client bundles, prerendered HTML, search and LLM-readable documentation output. Review old deployments, caches and Git history separately; a clean working tree does not erase previous publication.

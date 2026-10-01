@@ -1,0 +1,10 @@
+---
+title: "Swap and cross-chain deposits"
+description: "Destination evidence is the credit boundary."
+---
+
+Source-network success does not credit an Arc account. A complete route must validate supported source chain, USDC contract, destination chain, recipient and amount, then attribute the destination transfer to one account.
+
+CCTP/Bridge and Gateway require different accounting paths. Implement the chosen path explicitly, including idempotency, relayer failures and destination receipt reconciliation. Never assume bridge transfers originate from the user's wallet at the destination.
+
+Cross-chain funding is disabled in this MVP. Direct Arc verification accepts only direct transfers from the signed-in wallet; it is not a bridge verifier.

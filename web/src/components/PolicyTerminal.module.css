@@ -1,5 +1,8 @@
-/* Scoped styles for PolicyTerminal's simulation layer.
-   Tokens are inherited from :root in globals.css; no global rules are touched here.
+/* Scoped styles for PolicyTerminal: the in-browser policy evaluator.
+   Tokens are inherited from :root in globals.css — --bg --surface --surface-2 --line --line-2
+   --fg --muted --muted-2 --accent --ok --hold --stop --mono --ease-out. No global rule is set here.
+   Colour discipline: purple (--accent) marks a rule under evaluation, green/amber/red mark only the
+   outcome of that evaluation. Nothing on this page issues, charges or settles anything.
    The route packet is an inline SVG: .packetMarker travels by transform between five real check nodes. */
 
 .wrap {
@@ -9,12 +12,11 @@
 
 .sim {
   display: grid;
-  gap: 14px;
-  padding: 22px;
+  gap: 20px;
+  padding: 24px;
   border: 1px solid var(--line-2);
-  border-radius: var(--radius);
-  background: rgba(7, 10, 18, 0.92);
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  background: var(--surface);
 }
 
 .simHead {
@@ -25,10 +27,12 @@
 }
 
 .title {
+  flex: 1 1 auto;
   margin: 0;
-  font-size: 16px;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
 .presets {
@@ -45,19 +49,26 @@
   width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--line-2);
-  border-radius: 12px;
-  background: var(--surface);
+  border-radius: 8px;
+  background: var(--bg);
   text-align: left;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .preset:hover {
-  border-color: rgba(61, 220, 255, 0.55);
+  border-color: var(--muted-2);
 }
 
+/* A loaded intent is the subject of the policy evaluation, so the selected tile takes the rule accent. */
 .preset[aria-pressed="true"] {
   border-color: var(--accent);
-  background: rgba(61, 220, 255, 0.1);
+  background: var(--surface-2);
+}
+
+.preset:focus-visible,
+.action:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
 }
 
 .presetName {
@@ -80,11 +91,9 @@
 
 .hud {
   display: grid;
-  gap: 12px;
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: rgba(11, 16, 24, 0.6);
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
 }
 
 .agentLine {
@@ -97,30 +106,51 @@
 
 .agentName {
   font-family: var(--mono);
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--fg);
 }
 
-.intent {
+/* Readable prose inside the simulation: the intro note and the loaded intent. */
+.prose {
   margin: 0;
+  max-width: 68ch;
   font-size: 12.5px;
   line-height: 1.7;
   color: var(--muted);
 }
 
+.packet {
+  display: grid;
+  gap: 12px;
+}
+
 .packetHead {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 12px;
+}
+
+.packetLabel {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
 }
 
 .packetStep {
   font-family: var(--mono);
   font-size: 10.5px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.182em;
   text-transform: uppercase;
   color: var(--muted-2);
+}
+
+.verdict {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--muted);
 }
 
 .route {
@@ -132,19 +162,18 @@
 .routeLine {
   stroke: var(--line-2);
   stroke-width: 1;
-  stroke-dasharray: 3 4;
 }
 
 .routeNode {
   fill: var(--surface-2);
   stroke: var(--line-2);
   stroke-width: 1;
-  transition: fill 0.3s, stroke 0.3s;
+  transition: fill 0.3s ease, stroke 0.3s ease;
 }
 
 .routeNodeOn {
-  fill: var(--node-fill, var(--surface-3));
-  stroke: var(--node-stroke, var(--line-2));
+  fill: color-mix(in srgb, currentColor 24%, var(--surface-2));
+  stroke: currentColor;
 }
 
 .routeNodeStop {
@@ -156,14 +185,14 @@
 }
 
 .packetDot {
-  fill: var(--dot, var(--muted-2));
+  fill: currentColor;
   stroke: var(--bg);
   stroke-width: 1;
 }
 
 .packetHalo {
   fill: none;
-  stroke: var(--dot, var(--muted-2));
+  stroke: currentColor;
   stroke-width: 1;
   opacity: 0;
 }
@@ -177,32 +206,26 @@
   opacity: 0.3;
 }
 
+/* Outcome of the evaluation. */
 .pass {
   color: var(--ok);
-  --dot: var(--ok);
-  --node-fill: rgba(52, 211, 153, 0.16);
-  --node-stroke: var(--ok);
 }
 
 .fail {
   color: var(--stop);
-  --dot: var(--stop);
-  --node-fill: rgba(255, 122, 122, 0.16);
-  --node-stroke: var(--stop);
 }
 
 .hold {
   color: var(--hold);
-  --dot: var(--hold);
-  --node-fill: rgba(245, 181, 68, 0.16);
-  --node-stroke: var(--hold);
+}
+
+/* Rule currently being evaluated: the policy accent, never an outcome. */
+.evaluating {
+  color: var(--accent);
 }
 
 .idle {
   color: var(--muted-2);
-  --dot: var(--muted-2);
-  --node-fill: var(--surface-3);
-  --node-stroke: var(--line-2);
 }
 
 .checks {
@@ -217,16 +240,15 @@
 .check {
   display: grid;
   gap: 6px;
-  padding: 10px 9px;
+  padding: 10px;
   border: 1px solid var(--line);
-  border-radius: 11px;
-  background: rgba(11, 16, 24, 0.7);
-  transition: border-color 0.3s, box-shadow 0.3s;
+  border-radius: 6px;
+  transition: border-color 0.3s ease, background 0.3s ease;
 }
 
 .checkOn {
   border-color: currentColor;
-  box-shadow: 0 0 0 1px currentColor, 0 0 22px rgba(61, 220, 255, 0.16);
+  background: color-mix(in srgb, currentColor 12%, transparent);
   animation: pop 0.4s var(--ease-out);
 }
 
@@ -250,96 +272,46 @@
   text-transform: uppercase;
 }
 
-.card {
-  position: relative;
-  display: grid;
-  gap: 10px;
-  justify-items: start;
-  padding: 16px 18px;
-  border: 1px solid var(--line-2);
-  border-radius: 15px;
-  background: linear-gradient(178deg, rgba(19, 26, 38, 0.94), rgba(7, 10, 18, 0.94));
-}
-
-.cardTitle {
+.record {
   margin: 0;
-  font-size: 12.5px;
-  color: var(--fg);
-}
-
-.cardMask {
-  margin: 0;
-  font-family: var(--mono);
-  font-size: 19px;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-}
-
-.cardBox {
-  display: grid;
-  gap: 3px;
-  margin: 0;
-  font-family: var(--mono);
-}
-
-.cardBox dt {
-  font-size: 9.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted-2);
-}
-
-.cardBox dd {
-  margin: 0;
-  font-size: 12.5px;
-  color: var(--fg);
-}
-
-.cardNote {
-  margin: 0;
-  font-size: 11px;
-  line-height: 1.6;
-  color: var(--muted-2);
-}
-
-.stamp {
-  position: absolute;
-  top: -12px;
-  right: 12px;
-  z-index: 2;
-  padding: 5px 11px;
-  border: 1px solid currentColor;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(4, 6, 12, 0.95);
   font-family: var(--mono);
-  font-size: 9.5px;
-  letter-spacing: 0.18em;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted-2);
+}
+
+.recordKey {
+  display: block;
+  margin-bottom: 4px;
+  letter-spacing: 0.182em;
   text-transform: uppercase;
-  transform: rotate(-4deg);
+  color: var(--muted);
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px;
+  gap: 8px;
 }
 
 .action {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border: 1px solid var(--line-2);
-  border-radius: 11px;
-  background: var(--surface);
+  border-radius: 8px;
+  background: var(--bg);
   font-size: 12.5px;
   color: var(--fg);
-  transition: border-color 0.2s, color 0.2s, opacity 0.2s;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
 }
 
 .action:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--muted-2);
 }
 
 .action:disabled {
@@ -349,12 +321,10 @@
 
 .handoff {
   margin: 0;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid var(--line);
-  border-left-width: 3px;
   border-left-color: var(--hold);
-  border-radius: 10px;
-  background: rgba(11, 16, 24, 0.8);
+  border-radius: 8px;
   font-size: 12px;
   line-height: 1.65;
   color: var(--muted);
@@ -366,12 +336,12 @@
 
 @keyframes ping {
   from {
-    opacity: 0.9;
-    transform: scale(0.4);
+    opacity: 0.85;
+    transform: scale(0.45);
   }
   to {
     opacity: 0;
-    transform: scale(1.7);
+    transform: scale(1.6);
   }
 }
 
@@ -383,8 +353,8 @@
 }
 
 @keyframes pop {
-  from { transform: translate3d(0, 5px, 0) scale(0.94); opacity: 0.4; }
-  to { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+  from { transform: translate3d(0, 4px, 0); opacity: 0.5; }
+  to { transform: translate3d(0, 0, 0); opacity: 1; }
 }
 
 @media (max-width: 980px) {
@@ -403,6 +373,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .preset,
+  .action,
   .packetMarker,
   .routeNode,
   .check,

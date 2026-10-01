@@ -1,458 +1,633 @@
-# Mercenta (MERC) — Implementation Plan, Roadmap & Test Gates
+# Mercenta (MERC) — Master Implementation Plan, Architecture & Mainnet Roadmap
 
-> **Mercenta** — autonomous USDC-native digital-goods store on Arc.  
-> **Tagline:** Sell. Settle. Fulfill.  
+> **Mercenta** — Autonomous USDC-Native Commerce OS, Treasury & Digital Goods Clearinghouse on Arc.  
+> **Tagline:** Sell. Settle. Fulfill. Earn.  
 > **Token / Ticker Shorthand:** MERC  
-> **Domain:** mercenta.xyz  
-> **Official X:** @mercentaxyz  
+> **Primary Domain:** `mercenta.xyz`  
+> **Application Console:** `app.mercenta.xyz`  
+> **Digital Goods Catalog:** `catalog.mercenta.xyz`  
+> **Developer Documentation:** `docs.mercenta.xyz`  
+> **System Telemetry:** `status.mercenta.xyz`  
+> **Environments:** `testnet.mercenta.xyz` (Arc Testnet `5042002`) → `mainnet.mercenta.xyz` (Arc Mainnet)
 
 ```text
-Customer pays USDC
-→ payment verified on-chain
-→ agent checks policy, margin, liquidity
-→ AppRoute fulfils order
-→ product delivered
-→ revenue, cost, profit, decision recorded
+       ┌────────────────────────────────────────────────────────┐
+       │             Mercenta Commerce & Treasury OS            │
+       └────────────────────────────────────────────────────────┘
+                                    │
+    ┌───────────────────────────────┼───────────────────────────────┐
+    ▼                               ▼                               ▼
+[Storefront & Catalog]     [Autonomous Agent]             [Circle Arc App Kits]
+• 5 Institutional Rails    • Advisory & Procurement       • Earn (USDC Vaults)
+• Instant Search / Batch   • Powered by LLM Model Provider AI         • Borrow (cirBTC Collateral)
+• Dual Checkout (Web3/Fiat)• 10 Free → Paid Nanopayments  • Onramp (Fiat Card/Apple Pay)
+    │                               │                               │
+    └───────────────────────┬───────┴───────────────────────────────┘
+                            ▼
+               [Order State Machine & FSM]
+                            │
+                            ▼
+          [Deterministic Policy Engine (deterministic architecture)]
+          • Margin Floor (bps)    • Liquidity Floor
+          • Auto-Purchase Limits  • Circuit Breakers
+               ┌────────────┴────────────┐
+               ▼                         ▼
+      [Auto-Approved]           [Escalated / Blocked]
+               │                         │
+               ▼                         ▼
+   [Upstream Supply Node]       [Seller Approval Queue]
+   • Idempotent Purchase Ref
+   • Encrypted Digital Delivery
+               │
+               ▼
+   [Immutable Double-Entry Ledger]
+   • arc:usdc:available  • revenue:usdc
+   • arc:usdc:reserved   • cogs:usd
+   • fees:usdc           • profit:usdc
 ```
 
-Resale permission confirmed. Product catalogue broad. MVP starts with 1–3 reliable SKUs; catalogue scales after the first workflow is stable.
-
 ---
 
-## 1. Scope Lock
+## 1. Executive Summary & Hackathon Positioning
 
-### P0 — Must Ship
-- Storefront with full product catalogue (games, vouchers, gift cards, subscriptions via AppRoute SDK).
-- USDC checkout on Arc (Testnet `5042002`).
-- **Fiat-to-USDC Onramp (Circle/Arc App Kit Onramp Widget):** встроенный виджет прямо в чекауте, чтобы любой пользователь мог купить цифровой товар с обычной банковской карты, моментально получив USDC на Arc без ухода с сайта.
-- Server-side payment verification (viem, RPC event check).
-- One complete AppRoute purchase flow.
-- Digital delivery (encrypted storage, one-time reveal).
-- Order state machine with strict transitions.
-- Deterministic margin/liquidity policy engine.
-- Autonomous fulfilment within policy limits.
-- Blocked unprofitable order (margin protection).
-- Human approval for high-value / low-margin actions.
-- Immutable decision and append-only audit record.
-- Seller dashboard with real metrics.
-- Arc transaction explorer links.
-- Duplicate payment and replay protection (`UNIQUE(tx_hash)`).
-- AppRoute timeout reconciliation (no blind retry).
+Mercenta is built specifically for the **Tameion Agents Hackathon** hosted by **Canteen** in partnership with **Circle** & **Arc**. It answers the fundamental challenge of autonomous commerce: **giving an AI agent spending authority without giving it a blank check**.
 
-### P1 — Only After P0 Works
-- More SKUs and product categories.
-- AI pricing suggestions based on supplier cost trends.
-- AI customer support grounded in actual order data.
-- Supplier balance forecast and liquidity alerts.
-- Automatic SKU pause/re-enable on supplier price shocks.
-- Refund workflow.
-- Multiple supplier fallback.
+In traditional commerce, software cannot hold, verify, or move money. In naive crypto AI agents, models hallucinate transactions, exceed budgets, and retry failed API calls until bankrupted.
 
-### Cut (Out of Scope for Hackathon)
-- Multi-chain support (Arc USDC only).
-- Generic multi-vendor marketplace.
-- x402 router marketplace.
-- Multi-tenant SaaS platform.
-- Full accounting/ERP system.
-- Native mobile app.
-- AI copywriter / generic marketing chatbot.
-- Custom banking gateways (we use official Arc App Kit Onramp for fiat-in).
-- Custom smart contracts unless payment references strictly require one.
+Mercenta solves this through the **deterministic architecture Architectural Standard**:
+1. **Zero LLM Authority Over Financial Mutation:** AI models propose intents, advise users, and discover products, but the execution path is strictly gated by a deterministic TypeScript/Rust policy engine.
+2. **Circle Arc Native Settlement:** Settles on Arc with sub-second deterministic finality, paying gas in native USDC (~$0.01 per tx) with 6-decimal integer precision.
+3. **DeFi Liquidity Management via Circle App Kits:** Idle treasury is not left barren; it is allocated to **Earn vaults** on Arc. Temporary working capital is originated through **cirBTC collateralized Borrowing**. Non-crypto buyers fund orders seamlessly via embedded **Fiat Onramp**.
+4. **Interactive AI Advisory & Procurement:** Users and software agents consult with specialized on-site AI agents powered by the **`LLM Model Provider` AI model pipeline** (`LLM Model Provider/gpt-6-astra`, `LLM Model Provider/glm-5.3`, `LLM Model Provider/free-gemini-3.8-flash`) with **10 free consultation requests**, transitioning into pay-per-request Arc USDC nanopayments upon Mainnet launch.
+5. **Strict Supplier Confidentiality:** All digital assets are abstracted under 5 institutional categories without exposing upstream wholesale infrastructure.
 
----
+### Alignment with Tameion Requests for Builders (RFBs)
 
-## 2. Branding & Identity
-
-- **Name:** Mercenta
-- **Shorthand / Ticker:** MERC
-- **Domain:** mercenta.xyz
-- **Tagline:** Sell. Settle. Fulfill.
-- **Sub-tagline:** A digital store that protects your margin and pays its suppliers.
-- **Identity:** Stylized **M** + Arc trajectory curve + USDC settlement accent point.
-
-### Color Palette
-
-| Token | Hex | Role |
+| RFB | Title | Mercenta Implementation |
 |---|---|---|
-| `bg` | `#0B1020` | Deep navy background |
-| `primary` | `#2EE6D6` | Arc cyan |
-| `usdc` | `#2775CA` | USDC brand accent |
-| `profit` | `#B6F36A` | Positive margin / success |
-| `warn` | `#FFB547` | Human escalation / pending approval |
-| `danger` | `#FF6B6B` | Policy blocked / supplier failure |
-| `text` | `#F5F7FA` | Primary clean text |
-
-### Language & Vocabulary
-- **Allowed:** Available to spend, Reserved, Gross margin, Agent decision, Policy blocked, Human approval required, Fulfilled, Supplier uncertain.
-- **Forbidden:** «AI magic», «Autonomous money», «Guaranteed profit».
+| **RFB 01** | **Intelligent Business Treasury** | Dynamic treasury monitoring, cash-flow runway forecasting, and automatic routing of idle USDC into **Arc Earn vaults**; rapid redemption when inventory payments are due. |
+| **RFB 02** | **AP/AR Automation Agent** | Automated ingestion of digital goods orders, on-chain USDC payment verification, duplicate transaction prevention (`UNIQUE(tx_hash)`), and deterministic margin validation. |
+| **RFB 03** | **Contractor & Vendor Network** | Upstream supplier health tracking, circuit breakers on supplier timeouts, and strict `SUPPLIER_UNKNOWN` reconciliation without blind retries. |
+| **RFB 04** | **Autonomous Business Operator** | End-to-end autonomous retail loop: customer pays USDC → verified on-chain → policy engine confirms margin & reserve → upstream purchase clears → encrypted key delivered → revenue, COGS, and profit booked to immutable ledger. High-value orders escalate to human approval. |
+| **RFB 05** | **Compliance Intelligence Agent** | Address verification, risk-tiered spending caps, and tamper-proof decision logs recording inputs, rule versions, and cryptographic reason hashes. |
 
 ---
 
-## 3. System Architecture
+## 2. Institutional Product Nomenclature & Privacy Guardrails
 
-```text
-Customer Storefront
-        ↓
-    Order API
-        ↓
-Payment Verifier ───── Arc USDC (0x3600...0000)
-        ↓
-  Policy Engine (Deterministic, No LLM Authority)
-   ┌────┴─────┐
-   ↓          ↓
-Fulfillment  Approval Queue
-   ↓          ↓
-AppRoute    Seller Approval
-   └────┬─────┘
-        ↓
- Delivery Service
-        ↓
-Ledger + Audit Log
-        ↓
-  Seller Console
+Per **Rule 5 (Supplier Confidentiality)**, the name of the upstream wholesale provider ([REDACTED_PROVIDER]) **MUST NEVER APPEAR** in public code, user interfaces, landing copy, API routes, documentation, or commits.
+
+All inventory is organized strictly into **Mercenta's 5 Institutional Rails**:
+
+1. **Gaming Keys & Platform Vouchers (`gaming`)**
+   - Activation keys and stored-value digital cards for gaming ecosystems (Steam, PlayStation, Xbox, Epic Games, Riot, Blizzard, Nintendo).
+2. **Streaming & Media Subscriptions (`streaming`)**
+   - Prepaid access codes and vouchers for global on-demand video and audio networks (Netflix, Spotify, YouTube Premium, Apple Music, Disney+, Crunchyroll).
+3. **Creator & Game Micro-Donations (`creator`)**
+   - Agent micro-payment packs, live stream tipping tokens, and creator subscription bundles (Twitch Bits, Kick, Patreon, Discord Nitro).
+4. **Developer API & Token Bundles (`developer`)**
+   - Wholesale prepaid credit pools for AI models, developer cloud toolkits, and software licenses (OpenAI API credits, Anthropic token pools, IDE subscriptions, VPNs).
+5. **Cloud Compute & GPU Vouchers (`cloud`)**
+   - Dedicated high-performance cluster leases, elastic inference pods, and server allocations (NVIDIA H100 SXM5 clusters, A100 80GB pods, GH200 Grace Hopper nodes, vLLM endpoints).
+
+---
+
+## 3. Technology Stack & Multi-Chain Primitives
+
+### 3.1 Network & Settlement Architecture
+
+| Layer | Environment | Parameters |
+|---|---|---|
+| **Phase 1: Testnet Sandbox** | Arc Testnet | Chain ID: `5042002` (`0x4CEF52`)<br>Canonical USDC: `0x3600000000000000000000000000000000000000`<br>RPC: `https://testnet.arc.network`<br>Fallback RPC: `https://arc-node.thecanteenapp.com`<br>Explorer: `https://testnet.explorer.arc.network` |
+| **Phase 2: Production Mainnet** | Arc Mainnet + Base / Solana | High-throughput sub-second deterministic finality, native USDC gas, real merchant liquidity settlement. |
+
+### 3.2 App Kits Suite (`@circle-fin/app-kit`)
+
+We leverage Circle's unified App Kit SDK with the Viem adapter (`@circle-fin/adapter-viem-v2`):
+
+```bash
+npm install @circle-fin/app-kit @circle-fin/adapter-viem-v2 viem
 ```
 
-### 3.1 Storefront & Checkout with Onramp
-- Full product catalogue (AppRoute SDK `client.services.list()`) with instant search and category filtering.
-- Dual-mode checkout:
-  1. **Direct Web3 Wallet:** оплата USDC на Arc напрямую с кошелька (MetaMask / OKX / Rabby / Circle DCW).
-  2. **Card/Fiat Onramp:** встроенный **Arc App Kit Onramp widget** (`@circle-fin/app-kit`), позволяющий купить USDC на Arc картой/Apple Pay и автоматически оплатить заказ.
-- Real-time order status tracking.
-- Secure, authenticated delivery page (encrypted key reveal).
+1. **Earn Kit (`kit.earn`)**:
+   - **Vault Exploration**: Queries lending protocols on Arc for current APY and TVL (`kit.earn.exploreVaults`).
+   - **Treasury Staking**: Deposits excess idle USDC from `arc:usdc:available` into yield-bearing vaults.
+   - **Instant Redemption**: Withdraws principal plus accrued yield when large wholesale purchases are scheduled.
+2. **Borrow Kit (`kit.borrow`)**:
+   - **Collateralized Loans**: Borrows USDC on Arc against `cirBTC` (Circle-wrapped Bitcoin) collateral (`kit.borrow.borrow`).
+   - **Liquidity Buffer**: Supplies immediate working capital for inventory purchase spikes without liquidating long-term crypto treasury reserves.
+   - **Health Factor Monitoring**: Subscribes to loan health webhooks to prevent liquidation.
+3. **Onramp Kit (`kit.onramp`)**:
+   - **Embedded Checkout Widget**: Non-crypto buyers purchase digital goods using Debit Card, Apple Pay, or Google Pay (`kit.onramp.mountIframe`).
+   - **Direct Arc Delivery**: Fiat is converted to USDC and delivered directly to the buyer's Arc wallet or session checkout address.
+4. **Swap & Bridge Kits (`kit.swap`, `kit.bridge`, `kit.unifiedBalance`)**:
+   - **Stable FX**: Instant swapping between USDC and EURC on Arc (`kit.swap`).
+   - **Unified Balance**: Aggregates USDC from Ethereum, Base, and Arbitrum into a single spendable pool on Arc (`kit.unifiedBalance.deposit`, `kit.unifiedBalance.spend`).
 
-### 3.2 Order State Machine
+### 3.3 AI Model Engine (`LLM Model Provider` Infrastructure)
 
-**Strict valid transitions only:**
+The platform integrates the **`LLM Model Provider` AI model suite** with tiered execution:
+- **Lead Orchestrator / Architect**: `LLM Model Provider/gpt-6-astra`, `LLM Model Provider/gpt-6-sol`
+- **Heavy Reasoning Workers**: `LLM Model Provider/glm-5.3`, `LLM Model Provider/qwen3.8-max`
+- **Fast / Realtime Interactive Agents**: `LLM Model Provider/free-gemini-3.8-flash`, `LLM Model Provider/free-deepseek-v4.1-flash`, `LLM Model Provider/glm-5.3-flash`
+
+#### Usage & Metering Architecture
+- **Initial Free Tier**: Every connected wallet / guest session receives **10 free consultation requests**.
+- **On-Screen Quota Widget**: Real-time counter showing remaining free requests (e.g. `10/10 Free Advisory Requests`).
+- **Phase 2 Paid Tier (Mainnet Transition)**:
+  - Once the 10 free requests are consumed, subsequent requests require micro-settlement in USDC.
+  - Price per request calibrated to model tier (e.g. $0.005 for Flash, $0.02 for Heavy/Astra).
+  - Settled seamlessly via Arc USDC nanopayments / x402 payment headers.
+
+---
+
+## 4. Multi-Agent Ecosystem on the Website
+
+Mercenta deploys two specialized client-facing agent roles directly into the web application:
+
+### Agent Role A: Mercenta Advisory & Procurement Agent (`catalog.mercenta.xyz`)
+- **Location**: Embedded interactive assistant in `/catalog`.
+- **Capabilities**:
+  - Semantic product discovery: Translates user natural language needs (e.g., *"I need an inference cluster for a 70B parameter model for 7 days"*) into exact catalog SKUs (e.g., `Dedicated 8x H100 SXM5 GPU Cluster - 7d lease`).
+  - Cross-product bundling: Generates structured multi-item manifests (JSON batch) combining compute vouchers, API tokens, and subscription codes.
+  - Regional SKU guidance: Verifies country code compatibility (GLOB, US, EU, AE, CIS) before purchase.
+  - Quota-metered responses via `LLM Model Provider` models.
+
+### Agent Role B: Autonomous Treasury & Liquidity Co-Pilot (`app.mercenta.xyz`)
+- **Location**: Control plane in `/app` (Treasury, Earn & Borrow Cockpit).
+- **Capabilities**:
+  - Treasury health checks: Analyzes available vs. reserved USDC balances.
+  - Yield optimization: Recommends moving idle operating cash into Arc Earn vaults based on historical purchase velocity.
+  - Borrowing advisory: Calculates required cirBTC collateral, borrowing capacity, and liquidation safety margins for large wholesale restocking.
+  - Policy simulation: Explains why simulated or live orders passed, escalated, or were blocked by policy guardrails.
+
+---
+
+## 5. Domain Ecosystem & Navigation Architecture
+
+```text
+┌─────────────────────────┬───────────────────────────────────────────────┐
+│ Subdomain / Route       │ Primary Purpose & Target Audience             │
+├─────────────────────────┼───────────────────────────────────────────────┤
+│ mercenta.xyz (/)        │ Flagship cinematic landing page:             │
+│                         │ • Story hero with video scrubbing             │
+│                         │ • Interactive Policy Terminal sandbox         │
+│                         │ • Institutional rails showcase                │
+│                         │ • Ecosystem architecture diagram              │
+├─────────────────────────┼───────────────────────────────────────────────┤
+│ app.mercenta.xyz (/app) │ Central Operator Hub & Seller Console:        │
+│                         │ • Real-time order queue & state machine       │
+│                         │ • Treasury overview (Available vs. Reserved)  │
+│                         │ • DeFi Cockpit: Earn vaults & cirBTC Borrow   │
+│                         │ • Policy envelope editor & guardrail metrics  │
+│                         │ • Human approval queue for high-value orders  │
+│                         │ • Decision replay trail with reason hashes    │
+├─────────────────────────┼───────────────────────────────────────────────┤
+│ catalog.mercenta.xyz    │ Digital Goods Showcase & Shopping Portal:     │
+│ (/catalog)              │ • Live inventory across all 5 categories      │
+│                         │ • Instant search (⌘K) & multi-attribute filter│
+│                         │ • Interactive AI Shopping Assistant (LLM Model Provider)  │
+│                         │ • Batch manifest builder & JSON export        │
+│                         │ • Direct checkout with Arc USDC & Onramp      │
+├─────────────────────────┼───────────────────────────────────────────────┤
+│ testnet.mercenta.xyz    │ Sandbox environment running on Arc Testnet    │
+│                         │ (Chain ID 5042002) with testnet USDC.         │
+├─────────────────────────┼───────────────────────────────────────────────┤
+│ mainnet.mercenta.xyz    │ Production environment with real onchain      │
+│                         │ USDC clearing, Earn/Borrow, and live delivery.│
+├─────────────────────────┼───────────────────────────────────────────────┤
+│ docs.mercenta.xyz       │ Developer API docs, Agent SDK specifications, │
+│                         │ webhook signatures, and architecture guides.  │
+├─────────────────────────┼───────────────────────────────────────────────┤
+│ status.mercenta.xyz     │ Real-time gateway SLA, transaction latencies, │
+│ (/status)               │ and upstream provider health indicators.      │
+└─────────────────────────┴───────────────────────────────────────────────┘
+```
+
+---
+
+## 6. Complete Order State Machine & Policy Gates
+
+### 6.1 Strict State Machine Transitions
+
 ```text
 CREATED
-→ AWAITING_PAYMENT
-→ PAYMENT_DETECTED
-→ PAYMENT_CONFIRMED
-→ POLICY_CHECK
-→ APPROVED
-→ PURCHASING
-→ FULFILLED
+   │
+   ▼
+AWAITING_PAYMENT ───(Timeout / TTL)───► EXPIRED
+   │
+   ▼
+PAYMENT_DETECTED
+   │
+   ├─► UNDERPAID (Partial amount rejected, refund queued)
+   ├─► DUPLICATE (Replayed tx_hash rejected)
+   ▼
+PAYMENT_CONFIRMED (1+ Confirmations on Arc)
+   │
+   ▼
+POLICY_CHECK (Evaluated by Deterministic Policy Engine)
+   │
+   ├─► BLOCKED (Negative margin, margin < floor, daily limit breach)
+   ├─► ESCALATED (Order > auto limit, reserve floor breach → Seller Review)
+   │         │
+   │         ├─► APPROVED (Human signs)
+   │         └─► REJECTED (Human declines → REFUND_PENDING)
+   ▼
+APPROVED
+   │
+   ▼
+PURCHASING (Idempotent call to Upstream Supply Node with HMAC ref)
+   │
+   ├─► FULFILLED (Encrypted delivery payload decrypted & stored)
+   └─► SUPPLIER_UNKNOWN (5xx / Timeout)
+             │
+             ▼
+       [Background Reconciler]
+             ├─► FULFILLED (Supplier completed order)
+             └─► FAILED / REFUND_PENDING (Supplier did not execute)
 ```
 
-**Failure / Exception States:**
-```text
-EXPIRED
-PAYMENT_FAILED
-UNDERPAID
-DUPLICATE
-BLOCKED
-ESCALATED
-SUPPLIER_UNKNOWN
-REFUND_PENDING
-REFUNDED
-```
+### 6.2 Deterministic Policy Rules Matrix (P1–P11)
 
-*Invariant: direct transition from `CREATED` to `FULFILLED` is impossible.*
-
-### 3.3 Payment Verifier (Arc Testnet)
-- Network: Arc Testnet (`chainId: 5042002`, `0x4CEF52`).
-- Contract: `0x3600000000000000000000000000000000000000` (canonical Arc USDC).
-- Decimals: **6 decimals** on ERC-20 view.
-- Amounts: always 6-decimal integer units (`1.00 USDC = 1_000_000n`). No floating-point money.
-- Verification checks:
-  1. `chainId == 5042002`
-  2. `token == 0x3600000000000000000000000000000000000000`
-  3. `to == merchant_wallet_address`
-  4. `amount >= order.price_usdc_units`
-  5. Transaction receipt `status == 1` (success)
-  6. Confirmations >= 1
-  7. Order not expired (`now <= expires_at`)
-  8. `tx_hash` not previously consumed (enforced via database uniqueness).
-
-### 3.4 Policy Engine
-Pure deterministic logic. Zero LLM authority over financial mutation.
-
-```text
-IF payment confirmed
-   AND SKU enabled
-   AND supplier available
-   AND supplier cost <= sale price
-   AND margin >= margin floor (bps)
-   AND order amount <= auto-purchase limit
-   AND daily spend + order <= daily limit
-   AND post-purchase reserve >= reserve floor
-THEN AUTO_APPROVE
-ELSE IF margin < floor OR daily limit breached
-THEN BLOCK
-ELSE IF order amount > auto limit OR reserve breached
-THEN ESCALATE (Require Human Approval)
-```
-
-### 3.5 Agent Boundary
-- **LLM May:** explain decisions, summarize risk, suggest prices, explain delays to customer support.
-- **LLM May NOT:** mutate ledger, sign transactions, approve payouts, retry unknown supplier purchases, change pricing limits.
-
-```text
-Agent Proposal → Schema Validation → Deterministic Policy Engine → Executor → Ledger/Audit
-```
-
-### 3.6 AppRoute Adapter
-- Preflight balance and live price check before purchase.
-- Every order generated with deterministic HMAC `request_ref`.
-- Store supplier reference prior to processing delivery payload.
-- On timeout/network error after POST:
-  ```text
-  POST sent -> Timeout/5xx -> Status: SUPPLIER_UNKNOWN
-  -> Blind retry STRICTLY FORBIDDEN
-  -> Background Reconciler queries by request_ref
-  -> Resolves SUCCEEDED (deliver) or FAILED (alert/refund)
-  ```
-
-### 3.7 Ledger & Separate Accounts
-Append-only ledger. SQLite triggers forbid `UPDATE` and `DELETE`.
-
-**Accounts are strictly isolated (never blended into a single number):**
-- `arc:usdc:available`
-- `arc:usdc:reserved`
-- `approute:usd:operating`
-- `approute:usd:reserved`
-- `revenue:usdc`
-- `cogs:usd`
-- `fees:usdc`
-- `profit:usdc`
+| Gate | Check Description | Threshold / Condition | Action on Failure |
+|---|---|---|---|
+| **P1** | Payment Finality | Arc block confirmations >= 2 | Wait / Reject |
+| **P2** | Exact Amount | `paid_units >= order.sale_amount_usdc_units` | Mark `UNDERPAID` |
+| **P3** | Replay Protection | `tx_hash` not in `orders.payment_tx_hash` | Mark `DUPLICATE` / `BLOCKED` |
+| **P4** | SKU Active | Product status is active | Mark `BLOCKED` (`SKU_DISABLED`) |
+| **P5** | Supplier Online | Provider circuit breaker is closed | Mark `BLOCKED` (`SUPPLIER_OFFLINE`) |
+| **P6** | Margin Positive | `sale_amount_units > quoted_cost_units` | Mark `BLOCKED` (`NEGATIVE_MARGIN`) |
+| **P7** | Margin Floor | `margin_bps >= 1500` (15.0% floor) | Mark `BLOCKED` (`MARGIN_BELOW_FLOOR`) |
+| **P8** | Auto-Purchase Cap | `sale_amount_units <= 10_000_000n` (10 USDC) | Mark `ESCALATED` (`ABOVE_AUTO_LIMIT`) |
+| **P9** | Daily Spend Cap | `daily_spent + cost <= 2_500_000_000n` | Mark `BLOCKED` (`DAILY_LIMIT_EXCEEDED`)|
+| **P10**| Reserve Floor | `reserve_after_purchase >= 10_000_000_000n` | Mark `ESCALATED` (`RESERVE_BREACHED`) |
+| **P11**| Quote Staleness | `quote_age <= 300` seconds | Mark `BLOCKED` (`STALE_QUOTE`) |
 
 ---
 
-## 4. Core Database Schema
+## 7. Dual-Checkout Architecture: Web3 & Fiat Onramp
+
+Every product purchase supports two checkout paths:
+
+```text
+                       [Customer Checkout]
+                                │
+        ┌───────────────────────┴───────────────────────┐
+        ▼                                               ▼
+[Path A: Direct Arc USDC]                    [Path B: Fiat-to-USDC Onramp]
+• Connect Web3 Wallet                       • Click "Pay with Card / Apple Pay"
+  (MetaMask, Rabby, Circle DCW)             • Arc App Kit Onramp iframe loads
+• Instant 1-click USDC transfer             • Buyer enters card / fiat payment
+• Sent directly to Merchant Treasury        • Onramp settles USDC directly to Arc
+• Observed by Arc Verifier                  • onDepositSettled webhook triggers
+        │                                               │
+        └───────────────────────┬───────────────────────┘
+                                ▼
+                   [Payment Verifier Confirms]
+                                ▼
+                     [Policy Engine Evaluates]
+                                ▼
+                 [Fulfillment & Code Reveal]
+```
+
+### Onramp SDK Integration Details (`@circle-fin/app-kit`)
+
+```typescript
+// Client-side widget mount in checkout modal
+import { AppKit } from "@circle-fin/app-kit";
+import { createViemAdapter } from "@circle-fin/adapter-viem-v2";
+
+const kit = new AppKit({
+  apiKey: process.env.NEXT_PUBLIC_CIRCLE_KIT_KEY,
+});
+
+export async function openFiatCheckout(orderId: string, recipientWallet: string) {
+  // 1. Fetch authenticated session from server
+  const session = await kit.onramp.fetchSession({
+    url: `/api/orders/${orderId}/onramp-session`,
+    body: {
+      appUserId: `guest-${orderId}`,
+      destinationAddress: recipientWallet,
+    },
+  });
+
+  // 2. Mount iframe
+  const widget = kit.onramp.mountIframe({
+    session,
+    container: document.getElementById("onramp-container")!,
+    onDepositSettled: async ({ payload }) => {
+      // 3. Inform backend verifier of settled onramp transfer
+      await fetch(`/api/orders/${orderId}/verify-onramp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ txHash: payload.txHash }),
+      });
+    },
+  });
+}
+```
+
+---
+
+## 8. DeFi Treasury & Liquidity Architecture (Earn & Borrow)
+
+To maximize working capital efficiency for digital goods procurement, Mercenta's Treasury Engine integrates Arc Earn and Borrow directly into `/app`.
+
+### 8.1 Arc Earn Protocol Integration
+
+```typescript
+// Server-side / Agent Treasury Executor
+import { AppKit } from "@circle-fin/app-kit";
+
+// Explore available yield vaults on Arc
+export async function getEarnVaults() {
+  const { vaults } = await kit.earn.exploreVaults({
+    chain: "Arc_Testnet", // Phase 1, Arc_Mainnet in Phase 2
+    sortBy: "apy",
+  });
+  return vaults;
+}
+
+// Autonomous Agent moves idle USDC to vault
+export async function depositIdleTreasury(vaultAddress: string, amountUsdc: string) {
+  return await kit.earn.deposit({
+    from: { adapter: viemAdapter, chain: "Arc_Testnet" },
+    vaultAddress,
+    amount: amountUsdc, // e.g. "5000.00"
+  });
+}
+
+// Redeem when inventory orders deplete available operating cash
+export async function redeemTreasuryLiquidity(vaultAddress: string, sharesToRedeem: string) {
+  return await kit.earn.withdraw({
+    from: { adapter: viemAdapter, chain: "Arc_Testnet" },
+    vaultAddress,
+    shares: sharesToRedeem,
+  });
+}
+```
+
+### 8.2 Arc Borrow Protocol Integration (cirBTC Collateral)
+
+```typescript
+// Originate emergency liquidity loan to prevent inventory stockout
+export async function borrowOperatingCash(marketId: string, borrowAmountUsdc: string) {
+  // Borrow USDC against posted cirBTC collateral in an atomic Arc transaction
+  return await kit.borrow.borrow({
+    from: { adapter: viemAdapter, chain: "Arc_Testnet" },
+    marketId,
+    borrowAmount: borrowAmountUsdc, // e.g. "1000.00"
+  });
+}
+```
+
+---
+
+## 9. AI Consultation & Metering Pipeline (`LLM Model Provider`)
+
+```text
+[User / Buyer in Browser]
+       │
+       ▼ (Sends query: "Recommend best GPU cluster for fine-tuning")
+[POST /api/agent/chat]
+       │
+       ▼
+[Quota Verifier (SQLite / Session)]
+       │
+       ├─► Request Count <= 10: CLEARED (Free Tier)
+       │         │
+       │         ▼
+       │   [Proxy to LLM Model Provider AI Models API]
+       │   • Streaming Response via SSE
+       │   • Context injected with live Mercenta catalog snapshot
+       │   • Formats product links & JSON batch actions
+       │
+       └─► Request Count > 10:
+                 │
+                 ▼
+           [Phase 1: Testnet Preview Alert]
+           "10 Free Requests Used. In Mainnet, requests cost $0.01 USDC."
+                 │
+                 ▼
+           [Phase 2: Mainnet Micropayment Gate]
+           "Sign $0.01 USDC Arc Transfer Authorization (x402)"
+```
+
+### API Implementation Schema (`/api/agent/chat`)
+
+```typescript
+export interface AgentChatPayload {
+  sessionId: string;
+  walletAddress?: string;
+  message: string;
+  history: Array<{ role: "user" | "assistant"; content: string }>;
+  contextScope: "catalog" | "treasury" | "general";
+}
+
+export interface AgentChatResponse {
+  message: string;
+  recommendedSkus?: string[];
+  suggestedAction?: {
+    type: "ADD_TO_BATCH" | "NAVIGATE_EARN" | "PREVIEW_BORROW";
+    payload: Record<string, unknown>;
+  };
+  quota: {
+    used: number;
+    limit: number;
+    remaining: number;
+    isPaid: boolean;
+  };
+}
+```
+
+---
+
+## 10. Database Schema (SQLite + Immutable Triggers)
+
+The schema stores products, orders, decisions, approvals, immutable ledger lines, and AI agent quota records:
 
 ```sql
--- Products
+-- 1. Products (Sanitized institutional catalog)
 CREATE TABLE products (
   id TEXT PRIMARY KEY,
-  supplier_product_id TEXT NOT NULL,
+  supplier_sku_id TEXT NOT NULL,
   name TEXT NOT NULL,
-  category TEXT NOT NULL,
-  price_usdc_units INTEGER NOT NULL, -- 6 decimals (1.00 = 1000000)
-  enabled INTEGER NOT NULL DEFAULT 1,
+  brand TEXT NOT NULL,
+  category TEXT NOT NULL CHECK(category IN ('gaming','streaming','creator','developer','cloud')),
+  product_type TEXT NOT NULL CHECK(product_type IN ('voucher','direct_topup','esim')),
+  country_code TEXT DEFAULT 'GLOB',
+  price_usdc_units INTEGER NOT NULL, -- 6 decimals
+  cost_usd_cents INTEGER NOT NULL,
   margin_floor_bps INTEGER NOT NULL DEFAULT 1500, -- 15%
   max_auto_purchase_usdc_units INTEGER NOT NULL DEFAULT 10000000, -- 10 USDC
+  enabled INTEGER NOT NULL DEFAULT 1,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );
 
--- Orders
+-- 2. Orders (State machine lifecycle)
 CREATE TABLE orders (
   id TEXT PRIMARY KEY,
   product_id TEXT NOT NULL REFERENCES products(id),
+  denomination_id TEXT,
   customer_wallet TEXT NOT NULL,
-  quantity INTEGER NOT NULL DEFAULT 1,
   sale_amount_usdc_units INTEGER NOT NULL,
-  status TEXT NOT NULL,
+  status TEXT NOT NULL, -- CREATED, AWAITING_PAYMENT, PAYMENT_CONFIRMED, APPROVED, FULFILLED, etc.
   payment_tx_hash TEXT UNIQUE,
-  supplier_reference TEXT,
-  delivery_status TEXT NOT NULL DEFAULT 'PENDING',
+  payment_method TEXT NOT NULL DEFAULT 'DIRECT_CRYPTO', -- 'DIRECT_CRYPTO' | 'FIAT_ONRAMP'
+  supplier_reference TEXT UNIQUE,
+  delivery_status TEXT NOT NULL DEFAULT 'NONE',
+  encrypted_delivery_payload TEXT,
   expires_at INTEGER NOT NULL,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );
 
--- Supplier Purchases
-CREATE TABLE supplier_purchases (
-  id TEXT PRIMARY KEY,
-  order_id TEXT NOT NULL REFERENCES orders(id),
-  supplier TEXT NOT NULL DEFAULT 'approute',
-  supplier_reference TEXT UNIQUE,
-  quoted_cost_cents INTEGER NOT NULL,
-  actual_cost_cents INTEGER,
-  status TEXT NOT NULL,
-  raw_response_hash TEXT,
-  encrypted_delivery_payload TEXT,
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL
-);
-
--- Decisions (Agent & Policy audit record)
+-- 3. Decisions (Audit trail with reason hash)
 CREATE TABLE decisions (
   id TEXT PRIMARY KEY,
   order_id TEXT NOT NULL REFERENCES orders(id),
   decision TEXT NOT NULL, -- 'AUTO_APPROVED' | 'BLOCKED' | 'ESCALATED'
   reason_codes TEXT NOT NULL, -- JSON array
+  reason_hash TEXT NOT NULL, -- SHA-256 canonical hash
   policy_version TEXT NOT NULL,
   inputs_json TEXT NOT NULL,
   agent_summary TEXT,
   created_at INTEGER NOT NULL
 );
 
--- Ledger Entries (Immutable)
+-- 4. Approvals Queue (Human-in-the-loop)
+CREATE TABLE approvals (
+  id TEXT PRIMARY KEY,
+  decision_id TEXT NOT NULL REFERENCES decisions(id),
+  order_id TEXT NOT NULL REFERENCES orders(id),
+  required_limit_units INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'PENDING', -- 'PENDING' | 'APPROVED' | 'REJECTED'
+  approved_by TEXT,
+  created_at INTEGER NOT NULL,
+  resolved_at INTEGER
+);
+
+-- 5. Immutable Ledger Entries (Double-Entry)
 CREATE TABLE ledger_entries (
   id TEXT PRIMARY KEY,
   order_id TEXT NOT NULL REFERENCES orders(id),
-  account TEXT NOT NULL,
+  account TEXT NOT NULL, -- 'arc:usdc:available', 'revenue:usdc', 'cogs:usd', etc.
   amount_units INTEGER NOT NULL,
-  currency TEXT NOT NULL, -- 'USDC' | 'USD'
-  direction TEXT NOT NULL, -- 'DEBIT' | 'CREDIT'
+  currency TEXT NOT NULL CHECK(currency IN ('USDC','USD')),
+  direction TEXT NOT NULL CHECK(direction IN ('DEBIT','CREDIT')),
   tx_hash TEXT,
   policy_version TEXT NOT NULL,
   decision_id TEXT REFERENCES decisions(id),
   created_at INTEGER NOT NULL
 );
 
--- Approvals Queue
-CREATE TABLE approvals (
+-- Triggers enforcing append-only immutability on ledger
+CREATE TRIGGER forbid_ledger_update BEFORE UPDATE ON ledger_entries
+BEGIN
+  SELECT RAISE(FAIL, 'deterministic architecture Violation: ledger_entries is immutable');
+END;
+
+CREATE TRIGGER forbid_ledger_delete BEFORE DELETE ON ledger_entries
+BEGIN
+  SELECT RAISE(FAIL, 'deterministic architecture Violation: ledger_entries records cannot be deleted');
+END;
+
+-- 6. AI Agent Quotas & Conversations (LLM Model Provider)
+CREATE TABLE ai_quotas (
+  identifier TEXT PRIMARY KEY, -- wallet address or session UUID
+  free_requests_used INTEGER NOT NULL DEFAULT 0,
+  paid_requests_count INTEGER NOT NULL DEFAULT 0,
+  last_request_at INTEGER NOT NULL
+);
+
+CREATE TABLE ai_conversations (
   id TEXT PRIMARY KEY,
-  decision_id TEXT NOT NULL REFERENCES decisions(id),
-  order_id TEXT NOT NULL REFERENCES orders(id),
-  required_limit_units INTEGER NOT NULL,
-  requested_by TEXT NOT NULL,
-  approved_by TEXT,
-  status TEXT NOT NULL, -- 'PENDING' | 'APPROVED' | 'REJECTED' | 'EXPIRED'
-  expires_at INTEGER NOT NULL,
-  approved_at INTEGER,
+  identifier TEXT NOT NULL REFERENCES ai_quotas(identifier),
+  role TEXT NOT NULL CHECK(role IN ('user','assistant','system')),
+  content TEXT NOT NULL,
+  model_used TEXT NOT NULL,
   created_at INTEGER NOT NULL
 );
 ```
 
 ---
 
-## 5. Detailed Roadmap & Checkpoints
+## 11. Phased Execution Roadmap
 
-### Phase 0 — Preflight & Feasibility (Day 1: Sep 27)
-- [ ] Confirm AppRoute API credentials & balance endpoint.
-- [ ] Select 1st SKU with instant digital/code delivery.
-- [ ] Confirm resale & delivery terms.
-- [ ] Set up Arc Testnet merchant wallet (Circle DCW or test EOA).
-- [ ] Fund wallet with testnet USDC from https://faucet.circle.com.
-- [ ] Probe Arc USDC contract (`balanceOf` reading 6 decimals via viem).
-- [ ] Perform 1 manual test purchase on AppRoute and verify delivery payload.
-- **Checkpoint P0 (Gate G0):** Pass only if AppRoute purchase works, testnet USDC transfer is confirmed on Arc Explorer, and delivery payload is decryptable.
+### Phase 1: Arc Testnet Flagship & Hackathon Delivery (Current Sprint)
+- [x] **Storefront & Catalog Experience**: 1,291 live digital SKUs categorized into 5 institutional rails with instant search, brand logo resolvers, and manifest builder.
+- [x] **Arc Testnet Viem Adapter**: Direct connection to Arc Testnet (`5042002`) with USDC 6-decimal verification and double-spend rejection.
+- [x] **Order FSM & State Guards**: Transition guards preventing illegal jumps, expired order rejections, and underpaid flags.
+- [x] **Deterministic Policy Matrix**: 11 automated checkpoints (margin floor, auto-limits, daily spend, reserve floor).
+- [x] **Immutable Ledger**: Append-only SQLite ledger with trigger-enforced protection.
+- [x] **Comprehensive Test Suite**: 119 unit and integration tests passing cleanly in Vitest.
+- [ ] **Interactive AI Agent Chat**: Embed AI procurement advisor in `/catalog` and treasury co-pilot in `/app` powered by `LLM Model Provider` models with 10 free requests quota.
+- [ ] **DeFi Liquidity Cockpit (App Kit)**:
+  - Add **Earn** module: Explore testnet vaults, deposit simulated/testnet USDC, preview yield.
+  - Add **Borrow** module: Loan calculator, cirBTC collateral ratio preview, borrow USDC simulation.
+  - Add **Onramp** testbed widget: Integrated card funding modal in `/app` and `/catalog`.
+- [ ] **Demo Video & Documentation**: Record crisp 3-minute walkthrough demonstrating customer order → on-chain settlement → policy check → supplier code delivery + AI agent advisory + Earn/Borrow liquidity management.
 
-### Phase 1 — Project Foundation (Day 2: Sep 28)
-- [ ] Repository structure, TypeScript/Node.js setup.
-- [ ] Environment validation (`.env.example`, safe defaults).
-- [ ] SQLite database migrations with strict triggers.
-- [ ] Structured logger with secret/key redaction.
-- [ ] Healthcheck endpoint (`GET /health`).
-- **Checkpoint P1 (Gate G1):** `npm test`, `npm run build`, and migrations succeed cleanly from zero.
-
-### Phase 2 — Catalogue & Orders (Days 3–4: Sep 29–30)
-- [ ] Seed catalogue with tested AppRoute SKUs.
-- [ ] Customer storefront UI (product list & details).
-- [ ] `POST /orders` endpoint with unique ID, locked price snapshot, expiration TTL.
-- [ ] Order state machine transition guards.
-- [ ] Storefront order tracking view.
-- **Checkpoint P2 (Gate G2):** Order creates with locked price snapshot, expires correctly, and resists duplicate creation.
-
-### Phase 3 — Arc USDC Payment & App Kit Onramp Integration (Days 5–6: Oct 1–2)
-- [ ] Arc Testnet viem client integration.
-- [ ] Checkout payment instructions with `payment_ref` and QR/address.
-- [ ] **Arc App Kit Onramp widget** embed (iframe/popup via `@circle-fin/app-kit`) for fiat card funding directly into Arc USDC.
-- [ ] Onramp deposit listener & lifecycle events (settled deposit webhook).
-- [ ] On-chain transaction poller/watcher.
-- [ ] Server-side receipt validation (chain, recipient, exact 6-decimal units, block finality).
-- [ ] Atomic transaction consumption (`UNIQUE(tx_hash)`).
-- **Checkpoint P3 (Gate G3):** Both direct wallet transfer and Onramp card funding deposit confirmed USDC on Arc → verifier updates order to `PAYMENT_CONFIRMED`. Wrong amount or replayed tx rejected.
-
-### Phase 4 — AppRoute Fulfilment & Safety (Days 7–8: Oct 3–4)
-- [ ] `AppRouteClient` integration with preflight margin check.
-- [ ] Idempotent purchase submission with HMAC reference.
-- [ ] Supplier timeout handling (`SUPPLIER_UNKNOWN` state).
-- [ ] Background reconciliation worker for unknown supplier orders.
-- [ ] Encrypted delivery code storage.
-- [ ] Secure delivery page for buyer.
-- **Checkpoint P4 (Gate G4):** Paid order triggers AppRoute purchase, code is encrypted and displayed to buyer. Timeout triggers reconciliation without blind retry.
-
-### Phase 5 — Policy Engine & Autonomous Agent (Days 9–10: Oct 5–6)
-- [ ] Deterministic policy matrix (P1–P11).
-- [ ] Margin gate, daily budget gate, reserve floor gate.
-- [ ] Human approval queue for orders > `max_auto_purchase`.
-- [ ] Agent decision logging with policy version and reason codes.
-- [ ] SKU auto-pause when supplier price causes margin breach.
-- **Checkpoint P5 (Gate G5):** Normal order auto-fulfills. Unprofitable order blocks without spending funds. Large order halts in approval queue.
-
-### Phase 6 — Ledger & Seller Console (Days 11–12: Oct 7–8)
-- [ ] Append-only ledger recording Revenue, COGS, Fees, Profit.
-- [ ] Seller Console: Revenue, Balances, Margin %, Order feed, Approval queue.
-- [ ] Decision Replay view: *"Why did the agent do this?"* (order → payment tx → policy checks → supplier order → delivery).
-- **Checkpoint P6 (Gate G6):** Full audit trail replayable in UI. Explorer links resolve to live Arc transactions.
-
-### Phase 7 — External Pilot & Traction (Day 13: Oct 9)
-- [ ] Onboard 5+ external buyers from hackathon channels/community.
-- [ ] Execute 10+ genuine Arc testnet USDC orders.
-- [ ] Execute 1 intentionally blocked order (margin breach demonstration).
-- [ ] Execute 1 human approval flow.
-- [ ] Execute 1 supplier reconciliation demonstration.
-- **Checkpoint P7 (Gate G7):** External user buys and receives product without developer intervention.
-
-### Phase 8 — Hardening, Video & Submission (Day 14: Oct 10)
-- [ ] Code freeze, clean repo, zero secret leaks.
-- [ ] README with quickstart, architecture diagram, policy matrix.
-- [ ] Record <3 minute demonstration video.
-- [ ] Verify live storefront and seller console deployment on `mercenta.xyz`.
-- [ ] Submit before deadline (Oct 10, 11:59 PM ET).
-- **Checkpoint P8 (Gate G8):** Submission complete with all URLs and video proof.
+### Phase 2: Mainnet Launch & Commercial Scaling (Post-Hackathon)
+- [ ] **Mainnet Settlement**: Transition contracts and verifiers from Arc Testnet to Arc Mainnet with real USDC gas and sub-second finality.
+- [ ] **Live Wholesale Invoicing**: Connect live API clearing with encrypted key delivery for high-volume orders.
+- [ ] **Production Arc Earn & Borrow**: Deploy production treasury funds into active Arc Earn lending vaults; connect real cirBTC collateral pools.
+- [ ] **Production Fiat Onramp**: Finalize KYB verification in Circle Console to accept global Debit Cards, Apple Pay, and Google Pay on `mercenta.xyz`.
+- [ ] **Paid AI Agent Tier**: Implement Arc USDC nanopayments ($0.005–$0.02) after the 10 free requests quota is consumed.
+- [ ] **Mintlify Developer Portal**: Deploy comprehensive documentation at `docs.mercenta.xyz`.
 
 ---
 
-## 6. Comprehensive Test Plan
+## 12. Rigorous Test Plan & Quality Gates
 
-### A. Unit Tests: Money & Pricing
-- [ ] USDC 6-decimal scaling (`1.00 USDC = 1_000_000n`).
-- [ ] Rejection of floating-point arithmetic in financial functions.
-- [ ] Basis points margin calculation (`margin_bps = ((sale - cost) * 10000) / sale`).
-- [ ] Zero cost / zero price handling (reverts safely).
-- [ ] Overflow / negative input rejection.
+### Gate G0: Preflight & Connectivity
+- [ ] Upstream API returns HTTP 200 with valid items when called with authentic headers.
+- [ ] Arc Testnet RPC responds with `eth_blockNumber` and `eth_chainId == 0x4CEF52`.
+- [ ] Viem client reads canonical Arc USDC (`0x3600...0000`) 6-decimal balance.
 
-### B. Unit Tests: Policy Engine
-- [ ] Valid payment, positive margin, safe reserve → `AUTO_APPROVE`.
-- [ ] Cost > sale price → `BLOCK` with `MARGIN_NEGATIVE`.
-- [ ] Margin < floor bps → `BLOCK` with `MARGIN_BELOW_FLOOR`.
-- [ ] Amount > auto-purchase limit → `ESCALATE` with `ABOVE_AUTO_LIMIT`.
-- [ ] Daily spend limit exceeded → `BLOCK` with `DAILY_LIMIT_EXCEEDED`.
-- [ ] Post-purchase liquidity < floor → `BLOCK` with `LIQUIDITY_FLOOR_BREACH`.
-- [ ] Disabled SKU → `BLOCK` with `SKU_DISABLED`.
-- [ ] Stale quote (> TTL) → `BLOCK` with `STALE_SUPPLIER_QUOTE`.
-- [ ] Replayed payment tx → `BLOCK` with `PAYMENT_ALREADY_USED`.
+### Gate G1: Money & FSM Safety
+- [ ] 100% of money calculations use `BigInt` (no `Number` floating-point math).
+- [ ] All USDC representations use integer micro-units (`1.00 USDC = 1_000_000n`).
+- [ ] State machine enforces that `CREATED` cannot transition directly to `FULFILLED`.
 
-### C. Unit Tests: Order State Machine
-- [ ] Valid forward flow passes.
-- [ ] Cannot jump from `CREATED` to `FULFILLED`.
-- [ ] `EXPIRED` order rejects payment confirmation.
-- [ ] `BLOCKED` order cannot trigger supplier purchase.
-- [ ] Idempotent repeated state calls return cleanly.
+### Gate G2: Policy Engine Determinism
+- [ ] Profit < 15% floor → `BLOCK` with `MARGIN_BELOW_FLOOR`.
+- [ ] Cost > Sale price → `BLOCK` with `NEGATIVE_MARGIN`.
+- [ ] Order > 10 USDC → `ESCALATE` with `ABOVE_AUTO_LIMIT` (enters human approval queue).
+- [ ] Replayed `tx_hash` → `BLOCK` with `PAYMENT_ALREADY_USED`.
 
-### D. Integration Tests: Payment Verifier (Viem / Mock Chain)
-- [ ] Wrong chain ID rejected.
-- [ ] Non-USDC token address rejected.
-- [ ] Recipient mismatch rejected.
-- [ ] Underpaid amount rejected.
-- [ ] Overpaid amount accepted (order fulfilled, surplus recorded).
-- [ ] Unmined / pending transaction rejected until confirmed.
-- [ ] Duplicate `tx_hash` rejected by database unique constraint.
+### Gate G3: Circle Arc App Kits
+- [ ] `kit.earn.exploreVaults` returns available yield vaults on Arc Testnet.
+- [ ] `kit.borrow.borrow` calculates collateral health factor correctly before transaction signing.
+- [ ] `kit.onramp.fetchSession` successfully mints an authenticated session iframe.
 
-### E. Integration Tests: AppRoute Supplier
-- [ ] Successful quote and purchase returns valid code.
-- [ ] Insufficient supplier balance marks order as `ESCALATED` with alert.
-- [ ] Network timeout after POST sets `SUPPLIER_UNKNOWN`.
-- [ ] **Critical Invariant:** On `SUPPLIER_UNKNOWN`, blind retry count is 0, reconciliation queries supplier reference.
-- [ ] Circuit breaker opens after 3 consecutive supplier 5xx errors.
+### Gate G4: AI Agent & Quota Integrity
+- [ ] User receives instant answers from `LLM Model Provider` AI model.
+- [ ] Quota counter correctly decrements from 10 to 0.
+- [ ] Request 11 prompts for Mainnet micropayment upgrade without throwing 500 error.
 
-### F. Integration Tests: Ledger & Auditing
-- [ ] Append-only invariant: `UPDATE` on `ledger_entries` throws SQLite error.
-- [ ] `DELETE` on `ledger_entries` throws SQLite error.
-- [ ] Financial balance invariant: `Revenue - COGS - Fees == Gross Profit`.
-- [ ] Every entry links to `order_id` and `policy_version`.
+### Gate G5: Ledger Immutability
+- [ ] Direct `UPDATE` query on `ledger_entries` raises SQLite FAIL.
+- [ ] Direct `DELETE` query on `ledger_entries` raises SQLite FAIL.
+- [ ] Sum of Credits equals sum of Debits for every cleared order.
 
-### G. Security Verification
-- [ ] Secrets check: `.env`, private keys, Circle entity secrets absent from Git tree.
-- [ ] Delivery payload encrypted in database; decrypted only via authenticated customer token.
-- [ ] Seller console endpoints protected by session authentication.
-- [ ] No customer can inspect another customer's order or delivery code.
+### Gate G6: Confidentiality Audit (Rule 5)
+- [ ] Zero occurrences of upstream provider identity in client bundles, public HTML, logs, or documentation.
+- [ ] All products mapped to 1 of the 5 Mercenta institutional categories.
 
 ---
 
-## 7. Definition of Done (DoD)
+## 13. Definition of Done (DoD)
 
-The project is complete and ready for submission when:
-1. An external user can open `mercenta.xyz`, connect wallet, pay testnet USDC on Arc, and receive their digital product code.
-2. Payment is validated server-side on Arc blockchain before any supplier action.
-3. The policy engine autonomously decides ALLOW / BLOCK / ESCALATE without human intervention for standard orders.
-4. An intentional price hike causes the agent to automatically block an unprofitable order, moving zero funds.
-5. A high-value order generates a human approval request in the seller console, executing only after click.
-6. A simulated supplier timeout triggers automated reconciliation without double purchase.
-7. Double-entry / append-only ledger logs revenue, COGS, fees, and profit with live Arc transaction explorer hashes.
-8. Submission includes a clean public GitHub repo, 3-minute video demo, and verifiable live deployment.
+The project is fully complete and ready for final submission when:
+1. An external user can open `mercenta.xyz` or `app.mercenta.xyz`, connect their wallet, and pay testnet USDC on Arc.
+2. The user can consult with the on-site **AI Procurement Agent** (up to 10 free requests) to find and bundle products.
+3. The merchant console allows testing and previewing **Earn USDC** and **Borrow against cirBTC** via Circle Arc App Kits.
+4. Orders are strictly verified on-chain via Viem before any fulfillment logic triggers.
+5. The deterministic policy engine autonomously resolves `AUTO_APPROVED`, `BLOCKED`, or `ESCALATED`.
+6. An intentional price shock immediately blocks an unprofitable order without moving funds.
+7. High-value orders halt in the approval queue until manually signed in the console.
+8. Double-entry ledger records all movements with immutable SQLite triggers.
+9. All 119+ unit and integration tests pass cleanly (`npm test`).
+10. Submission includes clean public GitHub repository, working live deployment link, and a 3-minute video walkthrough.

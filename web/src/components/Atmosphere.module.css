@@ -1,0 +1,213 @@
+/* Settlement-network atmosphere. Fixed plane, never interactive.
+   All motion is transform/opacity only and measured in tens of seconds. */
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+
+/* 1. Depth: off-axis cold source upper-left, warm-free counterweight right,
+      floor vignette. Off-centre on purpose. */
+.depth {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      980px 720px at 14% -8%,
+      color-mix(in oklab, var(--atmo-cold) 42%, transparent) 0%,
+      transparent 64%
+    ),
+    radial-gradient(
+      760px 620px at 88% 18%,
+      color-mix(in oklab, var(--atmo-deep) 34%, transparent) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      1200px 560px at 62% 108%,
+      color-mix(in oklab, var(--atmo-cold) 16%, transparent) 0%,
+      transparent 70%
+    ),
+    linear-gradient(180deg, #05070c 0%, #04050a 46%, #02030699 100%);
+  animation: atmo-breathe 44s var(--atmo-ease) infinite;
+}
+
+/* 2. Horizon: two dashed clearing rings, counter-rotating, anchored low-right. */
+.horizon {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+}
+
+.ring,
+.ringInner {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in oklab, var(--accent) 22%, transparent);
+  will-change: transform;
+}
+
+.ring {
+  width: 168vmax;
+  height: 78vmax;
+  right: -46vmax;
+  bottom: -34vmax;
+  animation: atmo-spin 240s linear infinite;
+}
+
+.ringInner {
+  width: 104vmax;
+  height: 48vmax;
+  right: -18vmax;
+  bottom: -14vmax;
+  border-color: color-mix(in oklab, var(--accent-2) 26%, transparent);
+  animation: atmo-spin 320s linear infinite reverse;
+}
+
+/* 3. Mesh: the settlement graph. Drifts a few pixels over ~160s. */
+.mesh {
+  position: absolute;
+  inset: -6% -4%;
+  opacity: var(--atmo-mesh-opacity);
+  animation: atmo-drift 160s var(--atmo-ease) infinite alternate;
+  will-change: transform;
+}
+
+.meshSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.links line {
+  stroke: color-mix(in oklab, var(--muted) 24%, transparent);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.routes path {
+  fill: none;
+  stroke: color-mix(in oklab, var(--accent) 60%, transparent);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-dasharray: 4 190;
+  vector-effect: non-scaling-stroke;
+  animation: atmo-settle 26s linear infinite;
+}
+
+.routes path[data-route="1"] {
+  stroke: color-mix(in oklab, var(--accent-2) 62%, transparent);
+  animation-duration: 34s;
+  animation-delay: -11s;
+}
+
+.nodes circle {
+  fill: color-mix(in oklab, var(--muted) 46%, transparent);
+}
+
+.nodeLit {
+  fill: var(--accent);
+  opacity: 0.72;
+}
+
+/* 4. Grain: breaks up gradient banding. Static texture, no animation. */
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: var(--atmo-grain-opacity);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+@keyframes atmo-breathe {
+  0%,
+  100% {
+    opacity: 0.92;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes atmo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes atmo-drift {
+  from {
+    transform: translate3d(-1.1%, -0.6%, 0) scale(1.01);
+  }
+  to {
+    transform: translate3d(1.1%, 0.6%, 0) scale(1.03);
+  }
+}
+
+@keyframes atmo-settle {
+  from {
+    stroke-dashoffset: 194;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Small viewports: fewer layers, cheaper texture, still a finished composition. */
+@media (max-width: 720px) {
+  .horizon {
+    opacity: 0.34;
+  }
+
+  .ringInner {
+    display: none;
+  }
+
+  .mesh {
+    inset: -2% -18%;
+    opacity: calc(var(--atmo-mesh-opacity) * 0.6);
+    animation: none;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .grain {
+    opacity: calc(var(--atmo-grain-opacity) * 0.7);
+    background-size: 140px 140px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .depth,
+  .ring,
+  .ringInner,
+  .mesh,
+  .routes path {
+    animation: none;
+  }
+
+  .mesh {
+    transform: translate3d(0, 0, 0) scale(1.02);
+  }
+
+  .ring {
+    transform: rotate(-7deg);
+  }
+
+  .ringInner {
+    transform: rotate(5deg);
+  }
+
+  .routes path {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    opacity: 0.5;
+  }
+}

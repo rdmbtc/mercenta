@@ -1,0 +1,12 @@
+---
+title: "Authority boundaries"
+description: "Models propose; deterministic controls authorize."
+---
+
+The LLM Model Provider can recommend a product or propose a treasury action. It cannot sign, debit an account, update a ledger or bypass policy.
+
+The live-order engine evaluates P1–P11: finality, payment amount, replay protection, SKU activation, supply readiness, positive margin, 15% margin floor, 10-USDC automatic threshold, daily limit, reserve floor and fresh quote. Escalation requires an authorized merchant decision and policy revalidation.
+
+The customer test shop is a separate explicit simulation with its own exact-balance check and 10-USDC limit. Do not claim it invokes every live supply policy. It never calls an upstream purchase endpoint.
+
+Balances and ownership are derived server-side. Signed wallet identity grants account access, not unrestricted treasury authority. API keys have explicit minimum scopes.

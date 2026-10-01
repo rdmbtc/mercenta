@@ -1,0 +1,16 @@
+---
+title: "Order lifecycle"
+description: "Separate simulated orders from live fulfillment."
+---
+
+## Customer test orders
+
+Verified deposit → available test-USDC balance → atomic reserve → atomic capture → simulated fulfilled → account history. No real digital goods leave the Supply Node.
+
+## Live fulfillment boundary
+
+Awaiting payment → verified payment → deterministic policy decision → approved or escalated → durable purchasing claim → fulfilled, supplier uncertain or refund required.
+
+A timeout is an unknown outcome, not permission to purchase again. Reconciliation queries the deterministic request reference; it never performs a blind repeat purchase. Unknown state retains the reserve. Live delivery codes are encrypted and revealed once to the owning customer.
+
+Real fulfillment remains disabled. Merchant approval, quote freshness, reserve funding, provider contract validation and refund execution must pass before it can be enabled.

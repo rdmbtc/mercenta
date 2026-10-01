@@ -1,0 +1,40 @@
+---
+title: "Endpoints"
+description: "Implemented portal and integration APIs."
+---
+
+## Integration API
+
+| Method | Endpoint | Scope |
+| --- | --- | --- |
+| GET | `/api/v1/account` | `account:read` |
+| GET | `/api/v1/dashboard?period=30d` | `account:read` |
+| GET | `/api/v1/orders?period=all&page=1&pageSize=25` | `orders:read` |
+| POST | `/api/v1/orders` | `orders:create` |
+
+Example test order body:
+
+```json
+{"requestId":"00000000-0000-4000-8000-000000000001","productId":"test-creator","quantity":1,"reference":"my-test-1"}
+```
+
+Generate a new UUID for each distinct request. Retrying the same request uses the same UUID and unchanged body. All deliveries are simulated; maximum order amount is 10 test USDC.
+
+## Portal API
+
+Wallet session and same-origin request protection are required. The Next.js BFF authenticates requests to the private backend with HMAC; client-supplied wallet identity is ignored.
+
+| Method | Endpoint |
+| --- | --- |
+| GET | `/api/account/summary` |
+| GET | `/api/account/dashboard` |
+| GET / POST | `/api/account/orders` |
+| GET | `/api/account/funds` |
+| GET | `/api/account/transactions` |
+| GET | `/api/account/catalog` |
+| POST | `/api/account/deposits` |
+| POST | `/api/account/deposits/:id/verify` |
+| GET / POST | `/api/account/keys` |
+| POST | `/api/account/keys/:id/revoke` |
+
+List filters include `period=7d|30d|all|custom`, `from`, `to`, `initiator`, `status`, `country`, `product`, `method`, `page` and `pageSize` up to 100. Money responses are integer micro-unit strings. Errors never imply settlement. Exact response fields should be taken from the current implementation; no production SLA is implied.

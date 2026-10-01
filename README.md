@@ -20,7 +20,7 @@ Unlike unbounded autonomous agents, Mercenta enforces strict deterministic guard
 - **Spend & Margin Floor Protection**: Automatically cancels or requests human approval if gross margin drops or purchase price exceeds limits.
 - **Settlement**: USDC settlement, planned for the Arc™ Network first, then Base and Solana. Not live: no
   network is connected and no funds move anywhere in this repository today.
-- **Supplier Integration Rails**: Catalog synchronization described here runs through the AppRoute API/SDK.
+- **Supplier Integration Rails**: Catalog synchronization described here runs through the Wholesale Provider API/SDK.
   The supplier, listing and prices in the preview are fictional.
 
 ---
@@ -59,7 +59,7 @@ Mercenta rejects vague promises and operates strictly on deterministic state mac
 .
 ├── assets/                 # Brand assets, logos, and badges
 ├── sdk/
-│   └── approute-sdk/       # Multi-language AppRoute SDK (Python, TS, Go, PHP)
+│   └── Wholesale Provider-sdk/       # Multi-language Wholesale Provider SDK (Python, TS, Go, PHP)
 ├── web/                    # Next.js 15, React 19, Tailwind CSS Web Application
 ├── main.py                 # Higgsfield Seedance 2.5 video generation pipeline
 ├── IMPLEMENTATION_PLAN.md  # Detailed architecture and engineering plan
@@ -67,6 +67,19 @@ Mercenta rejects vague promises and operates strictly on deterministic state mac
 ```
 
 ---
+
+## Local liquidity workspace
+
+The independent `backend/` service is connected through authenticated Next.js BFF routes. The current local preview uses web port **3011** and backend port **3013** (3012 is reserved for documentation).
+
+- `/`: technology bento and direct navigation.
+- `/app`: Liquidity with Earn, cirBTC Borrow and Fiat Onramp tabs.
+- `/catalog`: shopping advisor and product batch selection.
+- `/status`: capability and service status.
+
+Earn, Borrow and card/Apple Pay are clearly labelled sandbox models, not live investment or payment services. LLM access requires server-only provider configuration; otherwise the advisor is labelled rule-based. Ten free consultations are enforced server-side. Real fulfillment and Mainnet payments are disabled by default. See `backend/README.md` for deployment prerequisites and remaining production release gates.
+
+Run `npm test` and `npm run build` separately in `backend/` and `web/`. Publication audits exclude private environment files, private backups and historical Git objects; existing Git history must be reviewed before public release.
 
 ## Web Application Quickstart
 

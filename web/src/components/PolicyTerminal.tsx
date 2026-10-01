@@ -42,8 +42,6 @@ const SIMS: Sim[] = [
   { id: "rogue", agent: "Rogue Bot", hash: "9f04", amount: 45_000, cost: 37_800, supplier: "uncertain", intent: "Unverified Supplier Spend" },
 ];
 
-const CARD_MASK = "•••• 9412";
-
 const CHECK_TITLE: Record<PolicyCheck["id"], string> = {
   balance: "Available to spend",
   reserved: "Reserved liquidity",
@@ -54,19 +52,8 @@ const CHECK_TITLE: Record<PolicyCheck["id"], string> = {
 
 const STATE_WORD: Record<PolicyCheck["state"], string> = { pass: "Pass", fail: "Fail", hold: "Hold" };
 
-const STAMP_WORD: Record<PolicyResult["decision"], string> = {
-  Cleared: "Simulated",
-  "Policy blocked": "Blocked",
-  "Human approval required": "Pending",
-};
-
-const STAMP_CLASS: Record<PolicyResult["decision"], string> = {
-  Cleared: css.pass,
-  "Policy blocked": css.fail,
-  "Human approval required": css.hold,
-};
-
-const CARD_STATE: Record<PolicyResult["decision"], string> = {
+/** One honest sentence per outcome, used by the record strip below the route. */
+const SPEND_STATE: Record<PolicyResult["decision"], string> = {
   Cleared: "Cleared",
   "Policy blocked": "Blocked, nothing charged",
   "Human approval required": "Pending approval, nothing charged",
@@ -133,13 +120,8 @@ function RoutePacket({
   const at = Math.min(open, total - 1);
   const settled = open >= total;
   const stop = settled && result.decision !== "Cleared";
-  const dotTone = settled
-    ? result.decision === "Cleared"
-      ? css.pass
-      : css.fail
-    : checks[at].state === "pass"
-      ? css.pass
-      : css.hold;
+  // Purple while a rule is being evaluated; the outcome colour only lands once the route settles.
+  const dotTone = settled ? (result.decision === "Cleared" ? css.pass : css.fail) : css.evaluating;
   const label = settled
     ? result.decision === "Cleared"
       ? "Route cleared after 5 of 5 checks"
@@ -149,12 +131,14 @@ function RoutePacket({
   return (
     <div className={css.packet}>
       <div className={css.packetHead}>
-        <p className="field-label">SVG route packet</p>
+        <p className={css.packetLabel}>Evaluation route</p>
         <span className={css.packetStep}>{label}</span>
       </div>
-      <p className="sr-only">
-        Route animation is off because reduced motion is enabled. The five check states below are the completed result.
-      </p>
+      {reduced ? (
+        <p className="sr-only">
+          Route animation is off because reduced motion is enabled. The five check states below are the completed result.
+        </p>
+      ) : null}
       <svg
         className={css.route}
         viewBox={"0 0 " + ROUTE_W + " " + ROUTE_H}
@@ -191,7 +175,7 @@ function RoutePacket({
           const locked = stop && index === total - 1;
           const toneClass =
             index === at && !settled
-              ? css.hold
+              ? css.evaluating
               : state === null
                 ? css.idle
                 : state === "pass"
@@ -232,7 +216,6 @@ export default function PolicyTerminal() {
   );
   const passed = result.checks.filter((check) => check.state === "pass").length;
   const routed = result.checks.map((check) => (check.id === "limit" && check.state === "hold" ? "fail" : check.state));
-  const runTag = sim ? sim.agent + ": " + sim.intent : null;
   const simVerdict = selection !== null && selection.id === "rogue";
   const handoff = routed.indexOf("fail") === routed.length - 1 && result.decision === "Human approval required";
   const shown = result.checks.map((check) => {
@@ -284,7 +267,7 @@ export default function PolicyTerminal() {
 
   return (
     <div className={css.wrap}>
-      <section className={css.sim + " spot glass"} aria-labelledby="sim-title">
+      <section className={css.sim} aria-labelledby="sim-title">
         <div className={css.simHead}>
           <h3 className={css.title} id="sim-title">
             Agent intent simulation
@@ -293,9 +276,9 @@ export default function PolicyTerminal() {
           <span className="chip">No live settlement</span>
           <span className="chip">No card issued</span>
         </div>
-        <p className={css.packetStep}>
-          Illustrative agents, illustrative amounts. Each button loads numbers into the manual controls below; the same
-          deterministic policy evaluates them and nothing leaves this page.
+        <p className={css.prose}>
+                Illustrative agents, illustrative amounts. Each button loads numbers into the controls below; the same five
+                rules judge them, and nothing leaves this page.
         </p>
 
         <div className={css.presets} role="group" aria-label="Agent intent simulations">
@@ -307,7 +290,7 @@ export default function PolicyTerminal() {
               aria-pressed={selection !== null && selection.id === item.id}
               onClick={() => runSim(item)}
             >
-              <span className={css.presetName}>{item.agent}: {item.intent} ({usdc(item.amount)})</span>
+              <span className={css.presetName}>{item.agent}: {item.intent}</span>
               <span className={css.presetAmount}>{usdc(item.amount)}</span>
               <span className={css.presetNote}>
                 {item.agent} requests {usdc(item.amount)} for this, from a{" "}
@@ -320,14 +303,14 @@ export default function PolicyTerminal() {
 
         <div className={css.hud}>
           <p className={css.agentLine}>
-            <span className="chip chip--accent">Simulated route</span>
+            <span className="chip">Simulated route</span>
             <span className={css.agentName}>
               {sim
                 ? sim.agent + " \u00b7 agent://policy/evaluate \u00b7 run " + String(runKey).padStart(2, "0")
                 : "agent://policy/evaluate \u00b7 awaiting an intent"}
             </span>
           </p>
-          <p className={css.intent}>
+          <p className={css.prose}>
             {sim
               ? sim.agent + ' requests "' + sim.intent + '" for ' + usdc(sim.amount) + " (" + usdc(sim.cost) + " supplier cost, hash " + sim.hash + ")."
               : "Run a simulated intent to watch the packet cross all five checks."}
@@ -336,35 +319,16 @@ export default function PolicyTerminal() {
 
           <RoutePacket checks={shown} result={result} runKey={runKey} routed={sim !== null} />
 
-          <div className={css.card + " spot glass"}>
-            <span className={css.stamp + " " + STAMP_CLASS[result.decision]}>{STAMP_WORD[result.decision]}</span>
-            <p className={css.cardTitle}>Synthetic card preview</p>
-            <p className={css.cardMask}>{CARD_MASK}</p>
-            <dl className={css.cardBox}>
-              <div>
-                <dt>Billing name</dt>
-                <dd>{runTag ?? "No intent loaded"}</dd>
-              </div>
-              <div>
-                <dt>Requested</dt>
-                <dd>
-                  {usdc(amount)} {"\u00b7"} {percent(result.margin)} gross margin
-                </dd>
-              </div>
-              <div>
-                <dt>Card state</dt>
-                <dd className={"tone-" + resultTone}>
-                  {CARD_STATE[result.decision]} {"\u00b7 never issued or charged"}
-                </dd>
-              </div>
-            </dl>
-            <p className={css.cardNote}>
-              A rendering, not a credential. No card is issued, stored, charged or settled anywhere on this page - no PAN,
-              no bank, no processor, no on-chain transaction.
-            </p>
-          </div>
+          <p className={css.record}>
+            <span className={css.recordKey}>Illustrative record</span>
+            {"Requested " + usdc(amount) + " \u00b7 " + percent(result.margin) + " gross margin \u00b7 "}
+            <span className={"tone-" + resultTone}>{SPEND_STATE[result.decision]}</span>
+            {
+              ". Nothing is issued, stored, charged or settled anywhere on this page - no card, no PAN, no bank, no processor, no on-chain transaction."
+            }
+          </p>
 
-          <p className={css.packetStep} aria-live="polite">
+          <p className={css.verdict} aria-live="polite">
             {sim
               ? sim.agent + ": " + result.decision + " \u00b7 " + passed + " of 5 checks passed \u00b7 " + verdictNote(result)
               : "Nothing has been evaluated since the page loaded."}
@@ -571,7 +535,7 @@ export default function PolicyTerminal() {
             </ul>
             <p className={"terminal-next tone-" + resultTone}>{NEXT_STEP[result.decision]}</p>
             <p className="note">
-              Deterministic rules evaluated in order: a failed check blocks the order, then a held check escalates to a
+            The five rules run in order: a failed rule stops the purchase, a held rule hands it to you. This runs in
               human. This evaluation runs in the browser against the illustrative configuration above - no order is
               submitted and no funds move. The simulation above this terminal and the card it draws are illustrative
               previews; a spend that fails a check stays blocked or pending, with nothing authorised, charged or settled.

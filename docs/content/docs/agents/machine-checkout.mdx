@@ -1,0 +1,8 @@
+---
+title: "Machine checkout"
+description: "Scoped API actions with deterministic checks."
+---
+
+An integration with `orders:create` may place simulated test orders against its own account balance. API initiator identity comes from the verified key, never a request field. Every distinct request has a UUID and customer reference.
+
+No integration can arbitrarily change balances, bypass a spending check or sign a transaction. Real agent-driven purchasing remains subject to the live policy engine and explicit merchant approval boundaries.

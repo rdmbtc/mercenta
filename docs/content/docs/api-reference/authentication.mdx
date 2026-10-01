@@ -1,0 +1,18 @@
+---
+title: "API authentication"
+description: "Scoped, expiring and revocable integration keys."
+---
+
+Create a key from API Access after wallet sign-in. Name it, select scopes and choose a lifetime from 1 to 90 days. Ten active keys per account are allowed.
+
+The full secret is shown once. The server stores a SHA-256 hash of a cryptographically random 256-bit secret, not plaintext. Lists show only a mask, expiry, scopes, last-used timestamp and status. Keep secrets in your server environment, never in browser code, URLs or chat.
+
+Send `Authorization: Bearer YOUR_API_KEY` to `/api/v1/*`.
+
+| Scope | Allowed operations |
+| --- | --- |
+| `account:read` | Balance and dashboard |
+| `orders:read` | This account's order history |
+| `orders:create` | Testnet simulated orders using this account's balance |
+
+Revocation takes effect immediately. Keys cannot withdraw, create other keys, modify balances, impersonate another account or sign transactions. Expired keys are rejected. Use one key per integration and minimum scopes. Never copy a sample credential from documentation.
