@@ -1,5 +1,0 @@
-import Link from 'next/link';
-import {Compass,ArrowRight,ArrowLeft,LifeBuoy} from 'lucide-react';
-import BrandMark from '@/components/landing/BrandMark';
-import '@/components/guides/guide-hub.css';
-export default function NotFound(){return <div className="gh"><header className="gh-header gh-wrap"><Link href="/" className="gh-brand" aria-label="Mercenta home"><BrandMark/>mercenta.</Link></header><main className="gh-wrap gh-recovery"><Compass size={40} strokeWidth={1.4}/><p className="gh-overline">404 / A DIFFERENT DIRECTION</p><h1>This page isn’t here.<br/><em>Your next step is.</em></h1><p>The link may have changed, or the address may be incomplete. Head home, explore the catalogue or find an answer in the help centre.</p><nav className="gh-recovery-links" aria-label="Find your way"><Link href="/"><ArrowLeft size={17}/>Back home</Link><Link href="/catalog">Catalogue<ArrowRight size={17}/></Link><Link href="/support"><LifeBuoy size={17}/>Help centre</Link></nav><p>Opening a page never authorizes a payment.</p></main></div>}
