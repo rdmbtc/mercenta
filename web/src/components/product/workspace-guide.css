@@ -4,3 +4,5 @@
 .mg-shop-filter{display:flex;flex-wrap:wrap;gap:15px;align-items:flex-end;margin:20px 0}.mg-shop-filter label{display:grid;gap:8px;font-size:12px}.mg-shop-filter input,.mg-shop-filter select{padding:10px;background:transparent;border:1px solid #7992a044;color:inherit;border-radius:6px}.mg-shop-filter select option{color:#162532}.mg-shop-filter input{min-width:200px}
 
 .ma .mg-review{display:flex;flex-direction:row;align-items:flex-start}.ma .mg-review input{margin-right:0}
+
+.ma-sidebar,.ma-drawer{overflow-y:auto;overscroll-behavior:contain}
