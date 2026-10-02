@@ -14,20 +14,34 @@
     "check": "npm test && npm run build"
   },
   "dependencies": {
-    "fastify": "^5.6.0",
-    "@fastify/rate-limit": "^10.3.0",
-    "@fastify/helmet": "^13.0.0",
-    "better-sqlite3": "^13.0.3",
-    "viem": "^2.57.1",
-    "@circle-fin/app-kit": "^1.16.0",
     "@circle-fin/adapter-viem-v2": "^1.19.0",
-    "zod": "^4.6.5",
-    "dotenv": "^17.2.0"
+    "@circle-fin/app-kit": "^1.16.0",
+    "@circle-fin/developer-controlled-wallets": "10.8.1",
+    "@circle-fin/x402-batching": "3.5.0",
+    "@fastify/helmet": "^13.0.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "@x402/evm": "2.28.0",
+    "better-sqlite3": "^13.0.3",
+    "dotenv": "^17.2.0",
+    "fastify": "^5.6.0",
+    "ioredis": "^5.8.2",
+    "pg": "^8.16.3",
+    "viem": "^2.57.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
-    "typescript": "^5.9.0",
-    "tsx": "^4.20.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.0.0",
-    "@types/better-sqlite3": "^7.6.13"
+    "@types/pg": "^8.15.6",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  },
+  "overrides": {
+    "@coral-xyz/anchor": {
+      "toml": "4.2.0"
+    },
+    "@solana/web3.js": {
+      "jayson": "5.0.0"
+    }
   }
 }

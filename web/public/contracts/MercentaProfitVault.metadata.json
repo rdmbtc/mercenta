@@ -1,0 +1,594 @@
+{
+  "compiler": {
+    "version": "0.8.28+commit.7893614a"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+      },
+      {
+        "inputs": [],
+        "name": "AlreadySettled",
+        "type": "error"
+      },
+      {
+        "inputs": [],
+        "name": "InsufficientBucket",
+        "type": "error"
+      },
+      {
+        "inputs": [],
+        "name": "InvalidInput",
+        "type": "error"
+      },
+      {
+        "inputs": [],
+        "name": "MarginBelowFloor",
+        "type": "error"
+      },
+      {
+        "inputs": [],
+        "name": "ProfitLocked",
+        "type": "error"
+      },
+      {
+        "inputs": [],
+        "name": "ReentrancyGuardReentrantCall",
+        "type": "error"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          }
+        ],
+        "name": "SafeERC20FailedOperation",
+        "type": "error"
+      },
+      {
+        "inputs": [],
+        "name": "WrongChain",
+        "type": "error"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "seller",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint8",
+            "name": "bucket",
+            "type": "uint8"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "BucketWithdrawn",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "seller",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "throughLot",
+            "type": "uint256"
+          }
+        ],
+        "name": "ProfitClaimed",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "seller",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "internalType": "bytes32",
+            "name": "saleId",
+            "type": "bytes32"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "gross",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "cogs",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "fees",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "refundReserve",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "margin",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "profit",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "ownersPay",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "tax",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "opex",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "unlockAt",
+            "type": "uint256"
+          }
+        ],
+        "name": "SaleAllocated",
+        "type": "event"
+      },
+      {
+        "inputs": [],
+        "name": "CHAIN_ID",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "MAX_SALE",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "USDC",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "allocatedMarginTotal",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          },
+          {
+            "internalType": "uint8",
+            "name": "",
+            "type": "uint8"
+          }
+        ],
+        "name": "buckets",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "maxLots",
+            "type": "uint256"
+          }
+        ],
+        "name": "claimProfit",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "name": "nextQuarter",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "profitCursor",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "seller",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          }
+        ],
+        "name": "profitLot",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "units",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "unlockAt",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "seller",
+            "type": "address"
+          }
+        ],
+        "name": "profitLotCount",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "profitTotal",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "saleId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "gross",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cogs",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fees",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "refundReserve",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16[4]",
+            "name": "taps",
+            "type": "uint16[4]"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minMarginBps",
+            "type": "uint16"
+          }
+        ],
+        "name": "settleSale",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "name": "settled",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint8",
+            "name": "bucket",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "withdrawBucket",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ],
+    "devdoc": {
+      "errors": {
+        "ReentrancyGuardReentrantCall()": [
+          {
+            "details": "Unauthorized reentrant call."
+          }
+        ],
+        "SafeERC20FailedOperation(address)": [
+          {
+            "details": "An operation with an ERC-20 token failed."
+          }
+        ]
+      },
+      "kind": "dev",
+      "methods": {},
+      "version": 1
+    },
+    "userdoc": {
+      "kind": "user",
+      "methods": {},
+      "notice": "Testnet-only, non-upgradeable seller-owned USDC budget vault. No admin, yield, external lending or customer-account access. COGS/fees/reserve are seller-declared, not certified supplier quotes. Direct token transfers are NOT credited. ",
+      "version": 1
+    }
+  },
+  "settings": {
+    "compilationTarget": {
+      "src/MercentaProfitVault.sol": "MercentaProfitVault"
+    },
+    "evmVersion": "paris",
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "remappings": []
+  },
+  "sources": {
+    "@openzeppelin/contracts/interfaces/IERC1363.sol": {
+      "keccak256": "0xd5ea07362ab630a6a3dee4285a74cf2377044ca2e4be472755ad64d7c5d4b69d",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://da5e832b40fc5c3145d3781e2e5fa60ac2052c9d08af7e300dc8ab80c4343100",
+        "dweb:/ipfs/QmTzf7N5ZUdh5raqtzbM11yexiUoLC9z3Ws632MCuycq1d"
+      ]
+    },
+    "@openzeppelin/contracts/interfaces/IERC165.sol": {
+      "keccak256": "0x0afcb7e740d1537b252cb2676f600465ce6938398569f09ba1b9ca240dde2dfc",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://1c299900ac4ec268d4570ecef0d697a3013cd11a6eb74e295ee3fbc945056037",
+        "dweb:/ipfs/Qmab9owJoxcA7vJT5XNayCMaUR1qxqj1NDzzisduwaJMcZ"
+      ]
+    },
+    "@openzeppelin/contracts/interfaces/IERC20.sol": {
+      "keccak256": "0x1a6221315ce0307746c2c4827c125d821ee796c74a676787762f4778671d4f44",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://1bb2332a7ee26dd0b0de9b7fe266749f54820c99ab6a3bcb6f7e6b751d47ee2d",
+        "dweb:/ipfs/QmcRWpaBeCYkhy68PR3B4AgD7asuQk7PwkWxrvJbZcikLF"
+      ]
+    },
+    "@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "keccak256": "0x74ed01eb66b923d0d0cfe3be84604ac04b76482a55f9dd655e1ef4d367f95bc2",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://5282825a626cfe924e504274b864a652b0023591fa66f06a067b25b51ba9b303",
+        "dweb:/ipfs/QmeCfPykghhMc81VJTrHTC7sF6CRvaA1FXVq2pJhwYp1dV"
+      ]
+    },
+    "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+      "keccak256": "0xd6fa4088198f04eef10c5bce8a2f4d60554b7ec4b987f684393c01bf79b94d9f",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://f95ee0bbd4dd3ac730d066ba3e785ded4565e890dbec2fa7d3b9fe3bad9d0d6e",
+        "dweb:/ipfs/QmSLr6bHkPFWT7ntj34jmwfyskpwo97T9jZUrk5sz3sdtR"
+      ]
+    },
+    "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
+      "keccak256": "0x982c5cb790ab941d1e04f807120a71709d4c313ba0bfc16006447ffbd27fbbd5",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://8150ceb4ac947e8a442b2a9c017e01e880b2be2dd958f1fa9bc405f4c5a86508",
+        "dweb:/ipfs/QmbcBmFX66AY6Kbhnd5gx7zpkgqnUafo43XnmayAM7zVdB"
+      ]
+    },
+    "@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+      "keccak256": "0x11a5a79827df29e915a12740caf62fe21ebe27c08c9ae3e09abe9ee3ba3866d3",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://3cf0c69ab827e3251db9ee6a50647d62c90ba580a4d7bbff21f2bea39e7b2f4a",
+        "dweb:/ipfs/QmZiKwtKU1SBX4RGfQtY7PZfiapbbu6SZ9vizGQD9UHjRA"
+      ]
+    },
+    "@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+      "keccak256": "0x8891738ffe910f0cf2da09566928589bf5d63f4524dd734fd9cedbac3274dd5c",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://971f954442df5c2ef5b5ebf1eb245d7105d9fbacc7386ee5c796df1d45b21617",
+        "dweb:/ipfs/QmadRjHbkicwqwwh61raUEapaVEtaLMcYbQZWs9gUkgj3u"
+      ]
+    },
+    "src/MercentaProfitVault.sol": {
+      "keccak256": "0x3224b4b521de1de884658a90540914f1dde19ef41347287e933b2b9f2720a6d8",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://a2b66b7254388aaa46ff979e33b0e05174224f9e602a975650981074203a3651",
+        "dweb:/ipfs/QmZi2cS4wsrsrohBKcpAAqt1PmFdS2JWT6CFMVXYY1FEBV"
+      ]
+    }
+  },
+  "version": 1
+}

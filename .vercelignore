@@ -1,0 +1,13 @@
+backend/
+work/
+.git/
+**/.env
+**/.env.*
+**/node_modules/
+**/.next/
+**/.vercel/
+**/data/
+**/*.sqlite
+**/*.sqlite-*
+*.zip
+*.log

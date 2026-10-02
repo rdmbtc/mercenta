@@ -113,16 +113,12 @@ export function LiquidityBento() {
           </a>
           <button
             className="mx-liquidity-agent"
-            onClick={() =>
-              document
-                .querySelector<HTMLButtonElement>(".ml-chat-trigger")
-                ?.click()
-            }
+            onClick={()=>location.assign("https://app.mercenta.xyz/agent")}
           >
             <div>
               <Bot size={24} />
-              <span className="mx-label">AI ADVISORY</span>
-              <span className="mx-liquidity-tag">10 FREE REQUESTS</span>
+              <span className="mx-label">AGENT WORKSPACE</span>
+              <span className="mx-liquidity-tag">OPEN AGENT CHAT</span>
             </div>
             <h3>
               A proposal.

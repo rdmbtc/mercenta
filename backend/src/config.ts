@@ -2,6 +2,14 @@ import "dotenv/config";
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
 const schema = z.object({
+  CIRCLE_AGENT_CONFIG_FILE: z.string().optional(),
+  MEMORY_SOFT_LIMIT_MB: z.coerce.number().int().min(128).max(4096).default(768),
+  MAX_INFLIGHT_REQUESTS: z.coerce.number().int().min(4).max(128).default(32),
+  TEMP_REDIS_URL: z.string().optional(),
+  TEMP_POSTGRES_URL: z.string().optional(),
+  TEMP_POSTGRES_CA_PATH: z.string().optional(),
+  TEMP_POSTGRES_CA_BASE64: z.string().optional(),
+  TEMP_SERVICES_EXPIRES_AT: z.string().optional(),
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
@@ -15,7 +23,7 @@ const schema = z.object({
     .regex(/^[a-fA-F0-9]{64}$/)
     .optional(),
   REQUEST_REF_SECRET: z.string().min(32).optional(),
-  ARC_RPC_URL: z.string().url().default("https://testnet.arc.network"),
+  ARC_RPC_URL: z.string().url().default("https://rpc.testnet.arc.network"),
   MERCHANT_WALLET: z
     .string()
     .regex(/^0x[a-fA-F0-9]{40}$/)
@@ -28,6 +36,7 @@ const schema = z.object({
   ONRAMP_API_KEY: z.string().optional(),
   ONRAMP_WIDGET_ORIGIN: z.string().url().optional(),
   WEB_ORIGIN: z.string().url().default("http://localhost:3011"),
+  LLM_PROVIDERS_FILE: z.string().optional(),
   LLM_API_URL: z.string().url().optional(),
   LLM_API_KEY: z.string().optional(),
   LLM_MODEL: z.string().optional(),

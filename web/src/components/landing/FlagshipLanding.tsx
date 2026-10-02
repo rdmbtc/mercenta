@@ -6,7 +6,6 @@ import ScrollStory from "./ScrollStory";
 import { MorphHeadline, SupplySection, BusinessPlaybooks, BuildSection, LandingFAQ } from "./LandingExperience";
 import { CASES, ORDER, POLICY, evaluatePolicy, percent, usdc, type SupplierState } from "@/lib/policy";
 import {LiquidityBento} from './LiquidityBento';
-import { AIAssistantWidget } from "@/components/product/AIAssistantWidget";
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d={diagonal ? "M6 18 18 6M6 6h12v12" : "M4 12h16m-6-6 6 6-6 6"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -203,6 +202,6 @@ export default function FlagshipLanding() {
     </main>
     <footer className="mx-footer"><div className="mx-wrap"><a href="#" className="mx-brand"><BrandMark /><span>mercenta.</span></a><p>© {new Date().getFullYear()} Mercenta · Pre-launch preview</p><div><a href="/catalog">Catalog <Arrow diagonal /></a><a href="/app">Console <Arrow diagonal /></a><a href="/status">Status <Arrow diagonal /></a><a href="#">Back to top ↑</a></div></div></footer>
     <dialog ref={dialog} className="mx-record-dialog" aria-labelledby="mx-record-title" onCancel={dismissReceipt} onClick={e => { if (e.target === e.currentTarget) dismissReceipt(); }}><div className="mx-record-inner"><div className="mx-record-heading"><span className="mx-label">ILLUSTRATIVE / NO LIVE SETTLEMENT</span><button ref={closeReceipt} type="button" onClick={dismissReceipt} aria-label="Close order record">×</button></div><h2 id="mx-record-title">{ORDER.id}</h2><p>{ORDER.units} {ORDER.unit} · {ORDER.supplier}</p><dl>{[["Client price", usdc(CASES.order.amount)], ["Supplier cost", usdc(CASES.order.cost)], ["Platform fee", usdc(CASES.order.amount * POLICY.platformFee)], ["Gross margin", percent(example.margin)], ["Decision", example.decision], ["Policy", POLICY.version]].map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl><p className="mx-record-note">This is an example record, not a signed receipt or proof of settlement.</p><button type="button" className="mx-button mx-button-primary" onClick={copyReceipt} aria-live="polite">{copied ? "Copied JSON ✓" : "Copy record as JSON"}<Arrow /></button></div></dialog>
-    <AIAssistantWidget scope="general" />
+
   </div>;
 }

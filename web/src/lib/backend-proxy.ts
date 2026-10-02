@@ -1,10 +1,11 @@
+import {fallbackSnapshot} from './backend-fallback';
 import "server-only";
 import { NextResponse } from "next/server";
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { requireSession } from "@/lib/auth";
 import { getCatalog, CATEGORIES } from "@/lib/supplier";
 const cookieName = "mercenta_advisor";
-const allowed=/^(account\/[a-z0-9/-]+|agent\/(chat|quota)|liquidity\/(summary|earn\/(vaults|project|deposit|withdraw)|borrow\/(market|preview|originate|repay)|onramp\/(session|onDepositSettled)|unified-balance|swap)|approvals(?:\/[a-f0-9-]{36}\/decide)?|orders(?:\/[a-f0-9-]{36}(?:\/(verify|reveal))?)?|health|status|catalog)$/;
+const allowed=/^(auth\/(nonce|verify)|account\/[a-z0-9/-]+|agent\/(chat|quota)|liquidity\/(summary|earn\/(vaults|project|deposit|withdraw)|borrow\/(market|preview|originate|repay)|onramp\/(session|onDepositSettled)|unified-balance|swap)|approvals(?:\/[a-f0-9-]{36}\/decide)?|orders(?:\/[a-f0-9-]{36}(?:\/(verify|reveal))?)?|health|status|catalog)$/;
 function sign(s: string, key: string) {
   return createHmac("sha256", key).update(s).digest("hex");
 }
@@ -115,6 +116,7 @@ export async function proxyBackend(req: Request, path: string) {
         signal: AbortSignal.timeout(25000),
       },
     );
+    if(res.status>=500&&req.method==='GET'&&wallet){const cached=await fallbackSnapshot(req.method,path,requestUrl.search,actor);if(cached)return NextResponse.json(cached,{headers:{'Cache-Control':'no-store'}});}
     const data = await res.json();
     const out = NextResponse.json(data, {
       status: res.status,
@@ -134,6 +136,7 @@ export async function proxyBackend(req: Request, path: string) {
     }
     return out;
   } catch {
+    if(req.method==='GET'&&wallet){const cached=await fallbackSnapshot(req.method,path,requestUrl.search,actor);if(cached)return NextResponse.json(cached,{headers:{'Cache-Control':'no-store'}});}
     return NextResponse.json(
       {
         code: "BACKEND_UNAVAILABLE",

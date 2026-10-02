@@ -13,7 +13,7 @@ export const siteConfig = {
 
   // Logo configuration
   logo: {
-    src: '/logo.svg',
+    src: '/mercenta-mark.webp',
     alt: 'Mercenta',
     width: 36,
     height: 36,
@@ -23,7 +23,7 @@ export const siteConfig = {
   links: {
     github: '',
     discord: '',
-    twitter: 'https://x.com/mercenta',
+    twitter: 'https://x.com/mercentaxyz',
     support: '',
   },
 

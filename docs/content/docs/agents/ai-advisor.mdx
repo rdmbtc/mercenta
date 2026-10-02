@@ -1,10 +1,33 @@
 ---
-title: "AI advisor"
-description: "Ten consultations without financial authority."
+title: Agent Chat
+description: A dedicated agent workspace with verifiable tools, explicit confirmations and wallet-owned signing.
 ---
 
-The advisor proposes catalog recommendations and treasury explanations. It cannot sign or spend. Ten free consultations are enforced per authenticated wallet or server-created visitor session.
+# Your intent. A checked next step.
 
-Without valid server-side LLM credentials, the UI labels a rule-based advisor. It does not pretend to be a live model. Provider failures restore quota according to the backend's request handling. On the eleventh request, free access is exhausted. Mainnet paid AI micropayments are not enabled.
+[Open Agent Chat](https://app.mercenta.xyz/agent). The former floating assistant and its “10 free requests” offer have been removed.
 
-Only the neutral label LLM Model Provider is public. Never publish provider credentials or private model-routing details.
+## What works
+
+- Read the authenticated wallet's account balance and trusted test catalogue.
+- Prepare a simulated purchase, with the backend price and quantity pinned in an immutable proposal.
+- Confirm that purchase explicitly. The deterministic ledger checks funds and the 10-test-USDC order cap; retries return the same receipt without a second debit.
+- Read current Arc gas price, clearly separated from total transaction cost.
+- Calculate a six-decimal Profit First split and prepare a seller-owned Arc Testnet wallet allocation.
+- Verify the allocation receipt and contract event before reporting execution.
+
+## What does not work yet
+
+Real digital goods, live staking/Earn, fiat onramp and automatic cross-chain credit remain disabled. A locked-profit bucket is not staking and has no APY. A message asking to stake never silently deposits into an unreviewed vault.
+
+The model only selects a permitted intent. It cannot supply prices, wallets, arbitrary contract calls or private signing keys. A deterministic rules fallback is labelled `rules-fallback` when no model is configured or the provider fails; this is not advertised as live LLM reasoning.
+
+## Confirmation boundaries
+
+Account purchases require a separate **Confirm simulated purchase** click. Profit allocations require wallet signatures, exact token approval and a verified Arc receipt. A chat reply, signed approval or broadcast transaction is not proof of settlement.
+
+Plans belong to the authenticated wallet and expire after ten minutes. Messages have an independent daily fair-use guard of 40; no autonomous spending permission is created. Monetary writes fail closed during backend outage.
+
+Never paste keys, seed phrases, passwords, supplier credentials or delivery codes. Messages are persisted for the signed-in wallet; recent messages may be sent to the configured model provider for intent classification. Obvious secret patterns are rejected, but detection is not a guarantee.
+
+See [Profit First contract](./profit-first).

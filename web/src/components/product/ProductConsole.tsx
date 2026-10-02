@@ -6,7 +6,6 @@ import { checkIntent,defaultWorkspacePolicy,type WorkspacePolicy } from '@/lib/p
 import React,{ useEffect,useMemo,useState } from 'react';
 import { Coins } from 'lucide-react';
 import { LiquidityCockpit } from './LiquidityCockpit';
-import { AIAssistantWidget } from './AIAssistantWidget';
 import { Activity,ArrowRight,ArrowUpRight,Badge,Bot,Brand,CategoryIcon,Check,ChevronRight,Clock,Copy,CopyJson,DownloadJson,Eyebrow,FileText,LayoutGrid,Menu,Modal,Plus,Settings2,ShieldCheck,Terminal,Wallet,X } from './ProductShell';
 type Section='Overview'|'Orders'|'Liquidity'|'Agents'|'Policy'|'Activity';
 const sections=[{name:'Overview',Icon:LayoutGrid},{name:'Orders',Icon:FileText},{name:'Liquidity',Icon:Coins},{name:'Agents',Icon:Bot},{name:'Policy',Icon:ShieldCheck},{name:'Activity',Icon:Activity}] as const;
@@ -38,7 +37,7 @@ export function ProductConsole(){
  {record&&<Modal title={record.id} onClose={()=>setRecord(null)}><RecordDetails order={record} policy={policy}/></Modal>}
  {simulation&&<Modal title="Test your guardrails." onClose={()=>setSimulation(false)}><IntentLab policy={policy}/></Modal>}
  {agentEdit!==null&&<Modal title="Configure demo agent." onClose={()=>setAgentEdit(null)}><AgentEditor agent={agents[agentEdit]} onSave={a=>{setAgents(prev=>prev.map((x,i)=>i===agentEdit?a:x));setAgentEdit(null);setMessage('Local agent preview updated. No live process changed.')}}/></Modal>}
- <AIAssistantWidget scope="treasury" onOpenEarn={()=>{location.href='/app?section=liquidity&tab=earn'}} onOpenBorrow={()=>{location.href='/app?section=liquidity&tab=borrow'}}/>
+
  </div>
 }
 function CheckRows({result}:{result:ReturnType<typeof checkIntent>}){return <div className="mp-check-rows">{result.checks.map((c,i)=><div key={c.id}><span className="mp-index">0{i+1}</span><div><strong>{c.label}</strong><small>{c.note}</small></div><span className={`mp-check-result ${c.state}`}>{c.state==='pass'?<Check size={15}/>:c.state==='hold'?<Clock size={15}/>:<X size={15}/>} {c.state==='pass'?'PASS':c.state==='hold'?'REVIEW':'BLOCK'}</span></div>)}</div>}

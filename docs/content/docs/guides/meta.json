@@ -2,8 +2,12 @@
   "title": "Operations",
   "pages": [
     "testnet-launch",
+    "funded-test",
+    "resilience",
     "troubleshooting",
     "security",
-    "mainnet-readiness"
+    "mainnet-readiness",
+    "guided-commerce",
+    "submission"
   ]
 }

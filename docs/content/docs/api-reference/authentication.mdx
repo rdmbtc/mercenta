@@ -7,7 +7,7 @@ Create a key from API Access after wallet sign-in. Name it, select scopes and ch
 
 The full secret is shown once. The server stores a SHA-256 hash of a cryptographically random 256-bit secret, not plaintext. Lists show only a mask, expiry, scopes, last-used timestamp and status. Keep secrets in your server environment, never in browser code, URLs or chat.
 
-Send `Authorization: Bearer YOUR_API_KEY` to `/api/v1/*`.
+The public testnet API base URL is `https://api.mercenta.xyz`. Send `Authorization: Bearer YOUR_API_KEY` to `/api/v1/*` on that host. For example, `GET https://api.mercenta.xyz/api/v1/account`. The browser portal uses its wallet session through a server-side proxy; do not send integration secrets in the browser.
 
 | Scope | Allowed operations |
 | --- | --- |

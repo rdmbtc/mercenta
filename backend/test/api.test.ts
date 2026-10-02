@@ -96,47 +96,4 @@ test("HTTP sandbox idempotency, unsafe borrowing, hosted wallet gate", async () 
     await app.close();
   }
 });
-test("HTTP quota ten then limit; no customer client settled event credits ledger", async () => {
-  const app = await buildServer(c);
-  try {
-    const u = "/api/agent/chat";
-    for (let i = 0; i < 10; i++) {
-      const b = { requestId: randomUUID(), message: "USDC" };
-      assert.equal(
-        (
-          await app.inject({
-            method: "POST",
-            url: u,
-            headers: headers("POST", u, b),
-            payload: b,
-          })
-        ).json().quota.remaining,
-        9 - i,
-      );
-    }
-    const b = { requestId: randomUUID(), message: "USDC" };
-    assert.equal(
-      (
-        await app.inject({
-          method: "POST",
-          url: u,
-          headers: headers("POST", u, b),
-          payload: b,
-        })
-      ).json().code,
-      "FREE_LIMIT_REACHED",
-    );
-    assert.equal(
-      (
-        await app.inject({
-          method: "POST",
-          url: "/api/liquidity/onramp/onDepositSettled",
-          payload: { amount: "1000" },
-        })
-      ).json().accepted,
-      false,
-    );
-  } finally {
-    await app.close();
-  }
-});
+test('legacy helper retired; no customer event credits ledger',async()=>{const app=await buildServer(c);try{const u='/api/agent/chat',b={requestId:randomUUID(),message:'USDC'};assert.equal((await app.inject({method:'POST',url:u,headers:headers('POST',u,b),payload:b})).statusCode,410);assert.equal((await app.inject({method:'POST',url:u,payload:b})).statusCode,401);assert.equal((await app.inject({method:'POST',url:'/api/liquidity/onramp/onDepositSettled',payload:{amount:'1000'}})).json().accepted,false);}finally{await app.close()}});

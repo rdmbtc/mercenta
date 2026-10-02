@@ -105,49 +105,9 @@ export function registerRoutes(
       source: products.length ? "configured-server-quotes" : "not-configured",
     };
   });
-  app.get("/api/agent/quota", (req) => ({
-    quota: quota(db, actor(req, c)),
-    mode: c.LLM_API_KEY ? "llm-advisor" : "rules-advisor",
-  }));
-  app.post("/api/agent/chat", (req) => {
-    const a = actor(req, c),
-      b = z
-        .object({
-          requestId: id,
-          message: z.string().min(1).max(2000),
-          contextScope: z.enum(["catalog", "treasury", "general"]).optional(),
-          catalog: z
-            .array(
-              z.object({
-                id: z.string().max(100),
-                name: z.string().max(250),
-                category: z.string().max(120),
-                price: z.string().max(30),
-                currency: z.string().max(10),
-              }),
-            )
-            .max(100)
-            .optional(),
-          history: z
-            .array(
-              z.object({
-                role: z.enum(["user", "assistant"]),
-                content: z.string().max(6000),
-              }),
-            )
-            .max(10)
-            .optional(),
-        })
-        .parse(req.body);
-    return advise(
-      db,
-      c,
-      a,
-      b.requestId,
-      b.message,
-      b.catalog ?? publicProducts(products),
-    );
-  });
+  app.get("/api/agent/quota", (req,reply)=>{actor(req,c);return reply.code(410).send({code:'AGENT_REPLACED',path:'/agent'});});
+  app.post("/api/agent/chat",(req,reply)=>{actor(req,c);return reply.code(410).send({code:'AGENT_REPLACED',path:'/agent'});});
+
   app.get("/api/liquidity/summary", (req) => ({
     mode: "sandbox",
     treasury: treasury(db, actor(req, c)),

@@ -1,0 +1,18 @@
+{
+  "kind": "engineering-readiness-not-paid-execution",
+  "chainId": 5042002,
+  "backendRelease": "backend-circle-seller-20261002-171622",
+  "service": "mercenta-margin-report",
+  "priceTestUsdc": "0.001000",
+  "unpaidSellerStatus": 402,
+  "ownerConfirmationRequired": true,
+  "profitContractRuntimeVerified": true,
+  "tests": {
+    "backend": 107,
+    "web": 142,
+    "docs": 27
+  },
+  "signaturesCreatedByRelease": 0,
+  "paidExecutionClaimed": false,
+  "externalCustomerTractionClaimed": false
+}
