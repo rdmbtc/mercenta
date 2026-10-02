@@ -1,3 +1,8 @@
+import {registerCircleDemoSeller} from './routes/circle-demo-seller.js';
+import {registerCircleAgent} from './routes/circle-agent.js';
+import {registerCommerce} from './routes/commerce.js';
+import {registerAgentChat} from './routes/agent-chat.js';
+import {registerAuthRoutes} from './routes/auth.js';
 import Fastify from "fastify";
 import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
@@ -10,6 +15,7 @@ import { Orders } from "./services/orders.js";
 import { startReconciler } from "./services/fulfillment/reconciler.js";
 import { registerRoutes } from "./routes/index.js";
 import {registerAccountRoutes} from "./routes/account.js";
+import {registerResilience} from "./services/resilience.js";
 export async function buildServer(c: Config, products?: Product[]) {
   const app = Fastify({
     logger: {
@@ -32,8 +38,14 @@ export async function buildServer(c: Config, products?: Product[]) {
     catalog = products ?? loadProducts(c.CATALOG_QUOTES_PATH),
     node = new SupplyNode(c),
     orders = new Orders(db, c, catalog, node);
+  registerResilience(app, db, c);
+  registerAuthRoutes(app,db,c);
   registerRoutes(app, db, c, catalog, orders);
   registerAccountRoutes(app, db, c);
+  registerCommerce(app, db, c);
+  registerCircleAgent(app, db, c);
+  registerCircleDemoSeller(app, db, c);
+  registerAgentChat(app, db, c);
   const stop = startReconciler(db, orders, node);
   app.setErrorHandler((e, _req, reply) => {
     const message = e instanceof Error ? e.message : "REQUEST_REJECTED";

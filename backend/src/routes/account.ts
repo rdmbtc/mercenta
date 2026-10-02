@@ -1,3 +1,5 @@
+import {initSettings,settings,saveSettings} from '../services/settings.js';
+import {memoryState} from '../services/runtime.js';
 import type {FastifyInstance,FastifyRequest} from 'fastify';
 import {createHmac,timingSafeEqual} from 'node:crypto';
 import {z} from 'zod';
@@ -9,7 +11,9 @@ const uuid=z.string().uuid(),money=z.string().regex(/^(0|[1-9]\d*)(\.\d{1,6})?$/
 const query=z.object({period:z.enum(['7d','30d','all','custom']).default('30d'),from:z.string().optional(),to:z.string().optional(),initiator:z.string().max(100).optional(),status:z.string().max(40).optional(),country:z.string().max(20).optional(),product:z.string().max(100).optional(),method:z.string().max(40).optional(),page:z.coerce.number().int().min(1).default(1),pageSize:z.coerce.number().int().min(1).max(100).default(25)});
 function filters(req:FastifyRequest){const q=query.parse(req.query);return {q,f:{...range(q.period,q.from,q.to),initiator:q.initiator,status:q.status,country:q.country,product:q.product,method:q.method}}}
 function page<T>(rows:T[],q:{page:number;pageSize:number}){return {items:rows.slice((q.page-1)*q.pageSize,q.page*q.pageSize),total:rows.length,page:q.page,pageSize:q.pageSize}}
-export function registerAccountRoutes(app:FastifyInstance,db:DB,c:Config){initAccount(db);
+export function registerAccountRoutes(app:FastifyInstance,db:DB,c:Config){initAccount(db);initSettings(db);
+ app.get('/api/account/settings',req=>{const a=accountActor(req,c);return {...settings(db,a),wallet:a.slice(7),merchantAddress:c.MERCHANT_WALLET??null,resources:memoryState(c)}});
+ app.post('/api/account/settings',req=>{const a=accountActor(req,c),b=z.object({theme:z.enum(['dark','light','system'])}).parse(req.body);return {...saveSettings(db,a,b.theme),wallet:a.slice(7),merchantAddress:c.MERCHANT_WALLET??null,resources:memoryState(c)}});
  app.get('/api/account/summary',async req=>{const a=accountActor(req,c);let walletBalanceUnits:string|null=null;try{walletBalanceUnits=((await arcClient(c.ARC_RPC_URL).getBalance({address:a.slice(7) as Address}))/1_000_000_000_000n).toString()}catch{/* RPC outage cannot create money. */}return {...funds(db,a),wallet:a.slice(7),walletBalanceUnits,depositConfigured:!!c.MERCHANT_WALLET,merchantAddress:c.MERCHANT_WALLET??null,bridge:{enabled:false,reason:'Reviewed CCTP/Gateway route and destination receipt attribution required'},onramp:{enabled:false,reason:'Circle onboarding and validated hosted sandbox settlement required'},withdrawals:{enabled:false},fulfillment:'simulated-only'};});
  app.get('/api/account/dashboard',req=>{const a=accountActor(req,c),{f}=filters(req);return dashboard(db,a,f)});
  app.get('/api/account/catalog',req=>{accountActor(req,c);return {products:TEST_PRODUCTS,mode:'testnet-sandbox',message:'Test USDC only. No real digital goods or live supplier stock.'}});

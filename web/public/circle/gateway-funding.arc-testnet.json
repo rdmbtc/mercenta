@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kind": "platform-testnet-funding-not-a-sale",
+  "chainId": 5042002,
+  "agentWallet": "0x83758c71386c873d5c518251613bf340f5bd558d",
+  "depositUsdc": "0.100000",
+  "gasTotalUsdc": "0.003574125",
+  "gasCapUsdc": "0.020000",
+  "generatedAt": "2026-10-02T14:17:26.150Z",
+  "transactions": [
+    {
+      "step": "approval",
+      "hash": "0xe3013b4d0aa1fb66b52052b11e66385c1c729e1e78049a53e3d277178ed4c859",
+      "explorer": "https://testnet.arcscan.app/tx/0xe3013b4d0aa1fb66b52052b11e66385c1c729e1e78049a53e3d277178ed4c859"
+    },
+    {
+      "step": "deposit",
+      "hash": "0xde98cb9bcb47a2faf27a928f972156f535974a410dca906cc1cc677b51cd9f7e",
+      "explorer": "https://testnet.arcscan.app/tx/0xde98cb9bcb47a2faf27a928f972156f535974a410dca906cc1cc677b51cd9f7e"
+    }
+  ],
+  "paidServiceRequests": 0,
+  "statement": "Real testnet funding. No paid service or verified business sale is claimed."
+}

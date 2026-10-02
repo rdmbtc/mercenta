@@ -1,3 +1,4 @@
+import {MercentaDocsHome} from '../../components/docs/mercenta-docs-home';
 import { source } from '@/lib/docs-source'
 import { notFound } from 'next/navigation'
 import { DocsTOC } from '../../components/docs/docs-toc'
@@ -36,6 +37,7 @@ function findSectionName(tree: Root, pageUrl: string): string {
 
 export default async function DocsPage({ params }: PageProps) {
   const { slug } = await params
+  if(!slug?.length)return <MercentaDocsHome/>
   const page = source.getPage(slug)
 
   if (!page) notFound()

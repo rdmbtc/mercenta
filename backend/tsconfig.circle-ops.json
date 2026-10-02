@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true
+  },
+  "include": [
+    "ops/circle-create-agent-wallet.ts",
+    "src/services/circle-policy.ts",
+    "ops/circle-create-local-eoa.ts"
+  ]
+}

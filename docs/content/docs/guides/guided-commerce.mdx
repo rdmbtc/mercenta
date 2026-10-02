@@ -1,0 +1,53 @@
+---
+title: Guided commerce demo
+description: Intent, bounded purchase, sale accounting, verified testnet payment and seller-owned allocation — with inspectable evidence.
+---
+
+# From intent to protected margin
+
+[Open the guided demo](https://app.mercenta.xyz/demo). This guide describes an implemented testnet workflow, not a production digital-goods or yield service.
+
+## Rehearsal requirements
+
+- A seller wallet on Arc Testnet, signed in to Mercenta.
+- Prepaid account funds for the test purchase, separate wallet USDC for gas and allocation.
+- A different buyer wallet with test USDC if demonstrating verified sale payment.
+- Never paste signing keys, passwords or API credentials into chat or forms.
+
+The native gas view uses 18 decimals; the ERC20 USDC view uses six. They represent the same asset and must not be added together.
+
+## Six steps
+
+1. **Plan.** Provide a budget up to ten test USDC, country, category and quantity. The bounded planner uses only the trusted test catalogue, pins prices, checks funds and produces an explicit tool trace. Maximum three line items and five units per line. Chat can propose these constraints, but the backend—not the LLM—owns prices and policy.
+2. **Confirm.** Review exact quantity, total, budget and expiration. One explicit confirmation executes the simulated bundle inside one database transaction. Insufficient funds, stale quotes or any failing line roll back the whole bundle. Repeating the same confirmation returns the same orders without a second debit.
+3. **Record sale.** A purchased order establishes test-order COGS. Enter gross resale, variable fees and refund reserve. This starts as `DECLARED_UNVERIFIED`; a deposit, purchased order or typed gross amount is not automatically revenue. Goods remain simulated.
+4. **Verify payment.** A different buyer wallet sends exactly the declared gross to the seller wallet on Arc after the sale record was created. Supply the public buyer address and transaction hash. The server checks sender, receiver, exact amount, canonical block, time and at least two confirmations. Receipt reuse across customer deposits, supplier payments and sale records is rejected. This transfer never credits the prepaid Mercenta account.
+5. **Allocate.** Prepare the seller-owned Profit Vault allocation. Verified testnet payment is the default prerequisite. A declared scenario is allowed only after an explicit acknowledgement and remains excluded from verified revenue metrics. Sign exact token approval and allocation in your wallet; broadcasting is not settlement. A stable per-sale contract ID prevents a second settlement across renewed proposals. Profit locks until the next UTC quarter; no yield is generated.
+6. **Inspect evidence.** Download owner-scoped JSON containing workflow policy, prices, orders, sealed balanced journals, payment proof metadata and allocation receipt. Open transaction hashes in the explorer. Evidence exports are not independent audits or proof of real invoices.
+
+## Example economics
+
+For a one-unit Creator test purchase, COGS is `1.532000` USDC. A declared gross of `2.000000`, variable fee `0.010000` and refund reserve `0.020000` produce allocatable margin `0.438000`.
+
+With illustrative 10/25/25/40 allocation percentages, Profit is `0.043800`, Owner's Pay `0.109500`, Tax Budget `0.109500` and OPEX `0.175200`. Restock, fees and refund reserve are isolated separately. Percentages are budgeting examples, not tax advice. A verified testnet transfer is not a certified commercial invoice.
+
+## Failure demonstrations
+
+- Confirm the same workflow twice: no second debit or order.
+- Use an expired quote or exceed the budget: no purchase.
+- Reuse a payment receipt or send from the seller to themselves: sale proof rejected.
+- Request staking: blocked by deterministic policy because live Earn is not connected.
+- Close the browser after broadcasting: recover the hash and verify the existing allocation, rather than sending again.
+
+## Current boundaries
+
+| Capability | State |
+| --- | --- |
+| Arc deposits / USDC receipts | Verified testnet transfers |
+| Account purchase ledger | Immutable double-entry journals |
+| Digital goods | Explicitly simulated fulfillment |
+| Sale gross without payment proof | Seller-declared scenario only |
+| Sale payment proof | Verified testnet transfer, not invoice certification |
+| Profit Vault | Deployed, wallet-owned, no independent audit |
+| Earn / fiat onramp / automatic cross-chain credit | Not connected |
+| Hackathon eligibility | Must be checked against the official brief |

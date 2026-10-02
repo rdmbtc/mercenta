@@ -1,0 +1,26 @@
+---
+title: "Memory pressure and recovery"
+description: "Fail closed on writes, serve labelled snapshots, and survive temporary-service expiry."
+---
+
+## Source of truth
+
+Account funds and the sealed double-entry journal remain in persistent SQLite WAL on the VPS. Redis and PostgreSQL are optional read-only snapshot stores, not replacement ledgers. A cached balance can never authorize spending.
+
+## Memory protection
+
+The backend has a bounded request count, a 768-MB RSS soft threshold and a supervised memory ceiling. At the soft threshold, monetary mutations return a retryable error before execution. Authenticated account reads may return snapshots no older than one hour. Responses explicitly include `stale`, `readOnly`, `asOf` and `SNAPSHOT_NOT_SETTLEMENT`.
+
+The frontend disables monetary actions while displaying snapshot mode. If no trustworthy snapshot exists, the request fails rather than inventing funds. A VPS process killed by its memory limit is restarted by systemd; SQLite durability and idempotent requests prevent a restart from becoming a duplicate purchase.
+
+## Expiring external services
+
+Both temporary services require `TEMP_SERVICES_EXPIRES_AT`. Clients stop after this deadline. Provider availability may end earlier, so an unavailable service is always optional. The configured date is a conservative 30-day setup deadline; confirm the actual provider billing/expiry date.
+
+Seven-day warnings appear in infrastructure status and Settings. Primary funds do not disappear when Redis or PostgreSQL expire. Protected daily local database backups remain independent of those services. A local backup is not protection against destruction of the entire VPS; maintain a long-lived off-host encrypted backup before production.
+
+## TLS and credentials
+
+Redis uses verified TLS. PostgreSQL also requires verified TLS and its Aiven CA when the provider uses a private certificate authority. Missing CA does not justify disabling verification. Infrastructure URLs, passwords, HMAC keys and API secrets stay in server-only environment files.
+
+Do not publish a Mainnet or audited-custody claim based on these safeguards. Test deposits, simulated fulfillment and recovery operations must still be verified end to end.

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { ThemeProvider } from './providers/theme-provider'
 import { siteConfig } from '@/lib/theme-config'
 import './globals.css'
+import './mercenta-docs.css'
 
 export const metadata: Metadata = {
   title: {
@@ -21,7 +22,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

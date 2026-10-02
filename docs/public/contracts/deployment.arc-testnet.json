@@ -1,0 +1,21 @@
+{
+  "address": "0xf6802aef42935d78b56830c8b5d40616bf716995",
+  "chainId": 5042002,
+  "network": "Arc Testnet",
+  "deployer": "0x46a59E6d774cD7eb722B30fFc3425F8e69A7Da54",
+  "deployTx": "0x52476d334d05082fa99195faa1ff82a98b9ba663aa58b0e866249134f58f0679",
+  "allocationTx": "0xef98c97209f828536341b69e1b7ec31d3d4b89126ba77216b5100b56f352be90",
+  "sourceSha256": "915146383b6f76492c4ddd3ca666670930485e86430026ae9b2018d7fe639a40",
+  "runtimeCodeHash": "0xf661c9ed6abda3fe0e9dfdb662eeb88310a3e43165b5e90e3f605a7a85459d91",
+  "compiler": "0.8.28+commit.7893614a.Emscripten.clang",
+  "evmVersion": "paris",
+  "explorer": "https://testnet.arcscan.app/address/0xf6802aef42935d78b56830c8b5d40616bf716995",
+  "simulation": {
+    "gross": "0.100000",
+    "cogs": "0.070000",
+    "fees": "0.001000",
+    "profit": "0.002900"
+  },
+  "independentAudit": false,
+  "liveEarn": false
+}

@@ -1,0 +1,22 @@
+---
+title: "Funded Arc Testnet acceptance"
+description: "How to verify a real test deposit without implying real goods."
+---
+
+## Run a funded acceptance test
+
+Use Arc Testnet, chain 5042002, and RPC `https://rpc.testnet.arc.network`. Its native currency is USDC with 18 decimal places; account amounts use exact 6-decimal micro-USDC. Native and ERC-20 balance views must not be summed.
+
+Use a separate buyer wallet. A receiving treasury cannot credit its own self-transfer. Create a deposit intent, send test USDC to its receiver, then verify receipt success, canonical block, authenticated sender, amount, chain ID and at least two confirmations. Intent creation is not credit.
+
+An illustrative acceptance cycle deposits 10.000000 test USDC, spends 5.273400 on a simulated Shop order and 1.532000 on a simulated Direct Top-Up. Expected available balance: 3.194600 USDC; reserved: zero. Gas remaining in the wallet is separate from account funds. These fixture amounts are not another customer's private balance.
+
+Repeat deposit verification and both order requests with the same identities: there must be no extra credit or debit. Compare Funds, Transactions, Orders and 7-day/30-day/all-time/custom UTC dashboard totals. Verify API scopes, revoke the key and confirm rejection.
+
+## Infrastructure and privacy
+
+Verified-TLS Aiven CA support is configured. Redis and PostgreSQL mirror only read-only, owner-bound snapshots; neither is the ledger. Test PostgreSQL-only reads, expiry failure, and primary recovery. Keep actual wallet addresses, private account histories, keys and session cookies in private test reports rather than public docs.
+
+## Still gated
+
+No additional smart contract is necessary for this custodial-account testnet MVP. This does not provide an on-chain withdrawal or custody guarantee. Cross-chain credit, fiat Onramp, withdrawals, real goods and Mainnet remain disabled until reviewed integrations are ready. Never use a chat-exposed key for real assets.

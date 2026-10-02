@@ -2,7 +2,7 @@
  * Arc Testnet chain descriptor + Viem client factory.
  *
  * Group B infrastructure. Arc Testnet: chainId 5042002 (0x4CEF52),
- * native RPC https://testnet.arc.network, fallback
+ * native RPC https://rpc.testnet.arc.network, fallback
  * https://arc-node.thecanteenapp.com.
  *
  * deterministic architecture: read-only chain access for payment verification. No
@@ -17,16 +17,16 @@ export type ArcPublicClient = ReturnType<typeof createArcPublicClient>;
 export const ARC_TESTNET = defineChain({
   id: 5042002,
   name: "Arc Testnet",
-  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+  nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
   rpcUrls: {
     default: {
-      http: ["https://testnet.arc.network"],
+      http: ["https://rpc.testnet.arc.network"],
     },
   },
   blockExplorers: {
     default: {
       name: "Arc Testnet Explorer",
-      url: "https://testnet.explorer.arc.network",
+      url: "https://testnet.arcscan.app",
     },
   },
   testnet: true,

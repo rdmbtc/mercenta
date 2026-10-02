@@ -1,0 +1,41 @@
+---
+title: Profit First on Arc
+description: Seller-owned test-USDC budgeting, separate from customer account funds and live yield.
+---
+
+# Protect restock. Allocate the margin.
+
+Customer deposits and wholesale purchase payments are **not** merchant profit. Only seller-declared realised sales and documented costs can form an allocation proposal.
+
+```text
+Real revenue = gross sales − direct COGS
+Allocatable margin = real revenue − variable fees − refund reserve
+Profit + owner's pay + tax reserve + OPEX = allocatable margin
+```
+
+The illustrative default is 10% profit, 25% owner's pay, 25% tax reserve, 40% OPEX, calculated on allocatable margin. These are budget examples, not tax or investment advice. Rounding remainder belongs to OPEX; every USDC micro-unit is conserved.
+
+## Contract boundaries
+
+`MercentaProfitVault` is non-upgradeable, limited to Arc Testnet (5042002), using six-decimal USDC at `0x3600000000000000000000000000000000000000`. It has no admin custody, no lending/yield adapter and no access to the Mercenta customer ledger.
+
+A settlement transfers **the seller's wallet USDC** into isolated Restock, Fees, Refund Reserve, Owner's Pay, Tax and OPEX buckets plus a quarterly locked-profit lot. Each caller can withdraw only their own unlocked buckets to their own wallet. Profit can be claimed in bounded batches after the next UTC January/April/July/October boundary.
+
+- Maximum: 10 test USDC per allocation.
+- Minimum allocatable-margin floor: 5% of gross.
+- Profit budget: 5–30%; all target percentages must sum to 100%.
+- Sale IDs are unique per wallet; duplicate settlement reverts.
+- Non-positive margin, dust-profit and invalid allocations revert.
+- COGS, fees, reserves and sales are seller declarations, not onchain-certified invoices.
+- Never send tokens directly: direct token transfers are not attributed or recoverable through an admin rescue.
+- Exact gross approval only. Network gas uses native test USDC (18 decimals); the token view uses six decimals. They describe the same asset, not additive balances.
+
+## No automatic Earn
+
+Profit locking does not produce yield. Live Earn is disabled until supported network/vault addresses, reviewed adapter behaviour, loss and liquidity disclosures, accounting, and withdrawal evidence are implemented. A hypothetical APR formula is a scenario, not an available or guaranteed return.
+
+## Testnet warning
+
+The contract has automated tests but **no independent security audit**. Do not send mainnet funds or depend on this test deployment for production financial custody. The source and ABI are downloadable from the deployment page linked in the app.
+
+[Deployment record](/contracts/deployment.arc-testnet.json) · [Solidity source](/contracts/MercentaProfitVault.sol) · [ABI](/contracts/MercentaProfitVault.abi.json) · [Compiler metadata](/contracts/MercentaProfitVault.metadata.json)

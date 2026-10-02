@@ -1,0 +1,77 @@
+---
+title: Circle Gateway and checked payments
+description: Real Arc Testnet funding, exact spending boundaries, and inspectable evidence.
+---
+
+# One checked payment. A traceable receipt.
+
+Mercenta separates the agent wallet, Circle Gateway balance and prepaid commerce account. Funding Gateway is not a sale and does not increase revenue. Digital goods remain simulated on this testnet release.
+
+## Verified platform funding
+
+The separate demo agent EOA is `0x83758C71386c873d5c518251613Bf340f5BD558d` on Arc Testnet, chain `5042002`, Gateway domain `26`.
+
+- Deposit: **0.100000 test USDC**.
+- Total gas for approval plus deposit: **0.003574125 test USDC**, within the approved **0.020000** cap.
+- [Inspect exact approval](https://testnet.arcscan.app/tx/0xe3013b4d0aa1fb66b52052b11e66385c1c729e1e78049a53e3d277178ed4c859).
+- [Inspect confirmed deposit](https://testnet.arcscan.app/tx/0xde98cb9bcb47a2faf27a928f972156f535974a410dca906cc1cc677b51cd9f7e).
+
+These are real testnet transfers, not a paid service request, customer sale or hackathon traction claim. Balances can change; use the authenticated application for current RPC/API readings.
+
+## Custody and control
+
+This integration uses a **server-managed local EOA**, not a Circle MPC wallet. The signing key is kept outside source and frontend bundles, with restricted access. Existing Circle wallets and their entity-secret registration are not changed.
+
+Execution is off until an approved service is configured and activation checks pass. A chat message does not spend funds. Backend limits are application controls, not onchain delegated spending authority.
+
+Never paste private keys, seed phrases or provider credentials into agent chat. Use test assets only; this release is not independently audited for mainnet custody.
+
+## Payment lifecycle
+
+1. Select a fixed operator-approved HTTPS service.
+2. Fetch its x402 v2 quote without making a payment.
+3. Validate Arc Testnet, canonical USDC/Gateway addresses, recipient and exact amount.
+4. Review the amount and recipient and explicitly confirm.
+5. Check available Gateway funds and reserve the rolling-day budget.
+6. Sign only the bounded authorization and persist it before the paid request.
+7. Treat queued or uncertain requests as pending; reconcile the original nonce rather than making a replacement payment.
+8. Mark settlement only after attributed Circle transfer evidence and a successful canonical Arc receipt with confirmations.
+
+Defaults: at most **0.010000 USDC per payment**, **0.100000 USDC per rolling day**, and a five-minute quote expiry. No arbitrary URL, recipient, mainnet chain or calldata from chat is accepted.
+
+## Mercenta-owned demo service
+
+Ask `Prepare a paid margin report` in Agent Chat. This prepares an idempotent quote only; exact owner confirmation is separate. The fixed service is `mercenta-margin-report` at 0.001000 test USDC, paid to the configured Mercenta receiver. It is our own declared margin scenario, not an external supplier or verified customer sale.
+
+The seller uses the official Circle facilitator, independently verifies EIP-712 scope/signature and reserves the nonce durably before settlement. Uncertain requests are reconciled, never re-settled automatically. Original-resource recovery uses the same authorization in cached-only mode and cannot initiate settlement.
+
+## Account API
+
+All routes require the normal authenticated account proxy. Wallet addresses alone are not authentication.
+
+| Method | Route | Meaning |
+| --- | --- | --- |
+| GET | `/api/account/circle/status` | Configuration and execution gates; no secrets |
+| GET | `/api/account/circle/balances` | Current wallet and Gateway balances from Arc RPC/Circle API |
+| GET | `/api/account/circle/payments` | Latest 50 actor-isolated payment records |
+| POST | `/api/account/circle/payments` | Idempotent quote using `requestId` and approved `serviceId`; no spend |
+| POST | `/api/account/circle/payments/:id/confirm` | Explicit confirmation of the saved quote |
+| POST | `/api/account/circle/payments/:id/reconcile` | Check the same authorization; no new spend |
+| GET | `/api/account/circle/payments/:id/evidence` | Inspect payment evidence and trust boundaries |
+| POST | `/api/account/circle/payments/:id/recover-resource` | Recover the original cached result after verified settlement; no new authorization |
+| GET | `/api/account/circle/payments/:id/resource` | Private, untrusted service output |
+
+Service output is rendered as escaped text. It is not executed or treated as an instruction to the agent.
+
+## What is not connected
+
+No live Earn/APY, mainnet spending, automatic Gateway deposits, unrestricted autonomous purchases or guaranteed supplier fulfilment is implied. If no approved Arc Testnet service is available, the service list stays empty; mainnet services are not silently substituted.
+
+## Sources
+
+- [Circle nanopayments buyer quickstart](https://developers.circle.com/gateway-nanopayments/quickstarts/buyer).
+- [Gateway nanopayments SDK](https://developers.circle.com/sdks/gateway-nanopayments-sdk).
+- [Gateway technical guide](https://developers.circle.com/gateway/references/technical-guide).
+
+- [Official Circle seller quickstart](https://developers.circle.com/gateway-nanopayments/quickstarts/seller).
+- [Seller reconciliation](https://developers.circle.com/gateway-nanopayments/howtos/x402-seller-reconciliation).

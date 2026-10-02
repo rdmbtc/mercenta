@@ -35,20 +35,8 @@ export function postJournal(
     db.prepare("UPDATE ledger_batches SET sealed=1 WHERE id=?").run(id);
   })();
 }
-export function balance(
-  db: DB,
-  account: string,
-  currency: "USDC" | "USD" = "USDC",
-): bigint {
-  const rows = db
-    .prepare(
-      "SELECT e.amount_units,e.direction FROM ledger_entries e JOIN ledger_batches b ON b.id=e.batch_id WHERE e.account=? AND e.currency=? AND b.sealed=1",
-    )
-    .all(account, currency) as { amount_units: string; direction: string }[];
-  return rows.reduce(
-    (a, r) => a + (r.direction === "DEBIT" ? 1n : -1n) * BigInt(r.amount_units),
-    0n,
-  );
+export function balance(db:DB,account:string,currency:'USDC'|'USD'='USDC'):bigint {
+ const row=db.prepare("SELECT COALESCE(signed_micro_sum(CASE WHEN e.direction='DEBIT' THEN e.amount_units ELSE '-'||e.amount_units END),'0') amount FROM ledger_entries e JOIN ledger_batches b ON b.id=e.batch_id WHERE e.account=? AND e.currency=? AND b.sealed=1").get(account,currency) as {amount:string};return BigInt(row.amount);
 }
 export function transfer(
   db: DB,

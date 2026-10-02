@@ -1,105 +1,67 @@
-# Mercenta (`MERC`)
+# Mercenta — commerce treasury with checked agent actions
 
-Latest landing-page verification: production build and ESLint passed; desktop and 390px mobile preview checked with no horizontal overflow, mobile navigation works, and the OpenClaw simulation responds to pointer input. The film uses a 350vh native-scroll stage and reaches the end of the existing clip. Chromium reduced-motion emulation confirmed that the video is absent and all four acts render as static sections.
+Mercenta helps a digital-goods reseller plan bounded purchases, separate procurement cost from resale margin, and inspect USDC payment evidence. The model proposes; deterministic policy checks; the owner confirms.
 
-> **The Commerce OS for Autonomous AI Agents.**  
-> Policy-governed procurement, verifiable supplier rails, and deterministic USDC settlement.  
-> *Not magic. Just math & margins.*
+## Live entry points
+- App: https://app.mercenta.xyz/agent
+- Guided commerce: https://app.mercenta.xyz/demo
+- Documentation: https://docs.mercenta.xyz
+- Public funding proof: https://app.mercenta.xyz/circle/gateway-funding.arc-testnet.json
+- Repository: https://github.com/rdmbtc/mercenta
 
----
+## What is real, and what is simulated
+| Area | Status |
+| --- | --- |
+| Arc Testnet agent funding | Real: exact 0.100000 test-USDC Gateway deposit, canonical receipts checked |
+| Gateway funding gas | 0.003574125 test USDC, below the approved 0.020000 cap |
+| Account balance and orders | Persistent SQLite ledger; digital-goods fulfillment is simulated |
+| Circle x402 seller | Mercenta-owned margin scenario report, 0.001000 test USDC; explicit confirmation required |
+| x402 paid execution | Do not infer a paid request from a quote, funded wallet or successful mock test. Inspect actual private payment evidence |
+| Profit First | Declared inputs or separately verified test buyer payment; customer deposits are not sales |
+| Profit vault | Arc Testnet contract deployed; owner wallet signatures required |
+| Earn/APY, mainnet, live suppliers | Not enabled |
+| Customer traction | Internal project funding/testing is not external business adoption |
 
-> **Status: pre-launch.** Everything in this repository is an illustrative simulation. No network is
-> connected, no card is issued, no order is placed and no funds move. Prices, suppliers, orders and
-> addresses shown in the web preview are fictional.
+The Circle signer is a separate **server-managed local EOA**, not Circle MPC or a noncustodial browser wallet. Server key holders have spending authority; backend limits are not onchain delegated authority.
 
-## Overview
-
-**Mercenta** is an infrastructure layer and autonomous commerce platform enabling AI agents and merchants to trade digital goods, compute vouchers, and API licenses safely. 
-
-Unlike unbounded autonomous agents, Mercenta enforces strict deterministic guardrails:
-- **Spend & Margin Floor Protection**: Automatically cancels or requests human approval if gross margin drops or purchase price exceeds limits.
-- **Settlement**: USDC settlement, planned for the Arc™ Network first, then Base and Solana. Not live: no
-  network is connected and no funds move anywhere in this repository today.
-- **Supplier Integration Rails**: Catalog synchronization described here runs through the Wholesale Provider API/SDK.
-  The supplier, listing and prices in the preview are fictional.
-
----
-
-## Platform Subdomains Ecosystem
-
-| Subdomain | Purpose |
-| :--- | :--- |
-| **`mercenta.xyz`** | Official landing page and protocol overview. |
-| **`testnet.mercenta.xyz`** | Sandbox environment for agent testing and simulated orders. |
-| **`app.mercenta.xyz`** | Production merchant portal and autonomous agent dashboard. |
-| **`docs.mercenta.xyz`** | Protocol documentation, SDK references, and API specs. |
-| **`catalog.mercenta.xyz`** | B2B catalogue of digital goods, software licenses, and compute (planned). |
-| **`status.mercenta.xyz`** | Health status of payment gateways, suppliers, and nodes (planned). |
-
----
-
-## Key Terminology & Policy Controls
-
-Mercenta rejects vague promises and operates strictly on deterministic state machines:
-
-- **Available to spend**: Unallocated agent budget for the current operational window.
-- **Reserved**: Budget committed to settlements that have not settled yet.
-- **Gross margin**: Margin verified against the merchant's policy floor on every transaction.
-- **Agent decision**: The procurement decision an agent proposes. The policy engine, not the agent, decides.
-- **Policy blocked**: Automated halting of transactions that violate margin, budget, or liquidity rules.
-- **Human approval required**: Automated escalation to merchant operators when conditions require human intervention.
-- **Fulfilled**: A delivery recorded against the order after settlement confirms.
-- **Supplier uncertain**: Status trigger when supplier availability or pricing cannot be confirmed.
-
----
-
-## Project Structure
-
+## Architecture
+```text
+Wallet-authenticated app / Agent Chat
+  -> bounded proposal and immutable quote
+  -> exact owner confirmation
+  -> policy + balance + recipient + network checks
+  -> persistent authorization BEFORE transmission
+  -> Circle Gateway x402 / Arc Testnet
+  -> original-payment reconciliation + canonical receipt
+  -> actor-isolated evidence and exact ledger entries
 ```
-.
-├── assets/                 # Brand assets, logos, and badges
-├── sdk/
-│   └── Wholesale Provider-sdk/       # Multi-language Wholesale Provider SDK (Python, TS, Go, PHP)
-├── web/                    # Next.js 15, React 19, Tailwind CSS Web Application
-├── main.py                 # Higgsfield Seedance 2.5 video generation pipeline
-├── IMPLEMENTATION_PLAN.md  # Detailed architecture and engineering plan
-└── README.md
-```
+The self-hosted seller independently checks EIP-712 signature, network, recipient, exact amount and authorization validity. It reserves the nonce durably before settlement. Cached-result replay cannot initiate settlement; uncertain receipts are reconciled, never silently paid again.
 
----
+## Run locally
+Use Node 24 (minimum Node 22). Never put keys into chat, source, frontend environment variables or git.
 
-## Local liquidity workspace
-
-The independent `backend/` service is connected through authenticated Next.js BFF routes. The current local preview uses web port **3011** and backend port **3013** (3012 is reserved for documentation).
-
-- `/`: technology bento and direct navigation.
-- `/app`: Liquidity with Earn, cirBTC Borrow and Fiat Onramp tabs.
-- `/catalog`: shopping advisor and product batch selection.
-- `/status`: capability and service status.
-
-Earn, Borrow and card/Apple Pay are clearly labelled sandbox models, not live investment or payment services. LLM access requires server-only provider configuration; otherwise the advisor is labelled rule-based. Ten free consultations are enforced server-side. Real fulfillment and Mainnet payments are disabled by default. See `backend/README.md` for deployment prerequisites and remaining production release gates.
-
-Run `npm test` and `npm run build` separately in `backend/` and `web/`. Publication audits exclude private environment files, private backups and historical Git objects; existing Git history must be reviewed before public release.
-
-## Web Application Quickstart
-
-```bash
-cd web
-npm install
+```sh
+cd backend
+npm ci
+# Copy .env.example to .env and configure local/server-only values.
+npm run check
 npm run dev
 ```
+```sh
+cd web
+npm ci
+npm test
+npm run dev
+```
+```sh
+cd docs
+npm ci
+npm test
+npm run dev
+```
+Backend configuration, local EOA key files and model-provider credentials stay outside the public release. SQLite WAL is the primary store; temporary Redis/PostgreSQL services are optional and are not authoritative balances. Keep their explicit expiry and do not depend on trial availability.
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+## Acceptance and submission
+See `submission/DEMO-SCRIPT.md`, `submission/READINESS.md` and the public Circle documentation. The demo must distinguish proposal, Gateway acceptance, final Arc settlement and useful resource delivery. Mocks prove code behavior, not live payments or external customers.
 
----
-
-## Social & Community
-
-- **X (Twitter)**: [@mercentaxyz](https://x.com/mercentaxyz)
-- **Website**: [mercenta.xyz](https://mercenta.xyz)
-
----
-
-## Disclaimer
-
-*Arc is a trademark of Circle Internet Group, Inc. and/or its affiliates. Mercenta is independently developed; no Circle partnership or endorsement is implied.*
+There is no independent contract/security audit. Backend and frontend dependency audits retain low-severity elliptic propagation; broader SDK branches need review before production use. Rotate credentials previously disclosed in chat before a production/mainnet launch.
