@@ -1,3 +1,4 @@
+import {initWorkspace,checkBudget} from './workspace.js';
 import {randomUUID,randomBytes,createHash} from 'node:crypto';
 import type {DB} from '../db.js';
 import {postJournal,balance} from './ledger/index.js';
@@ -11,7 +12,7 @@ export const TEST_PRODUCTS=[
  {id:'test-streaming',name:'Media subscription · test voucher',category:'streaming',country:'EU',price:'4.500000',kind:'Shop'},
 ] as const;
 export const SCOPES=['account:read','orders:read','orders:create'] as const;
-export function initAccount(db:DB){db.exec(`
+export function initAccount(db:DB){initWorkspace(db);db.exec(`
 CREATE TABLE IF NOT EXISTS account_deposits(id TEXT PRIMARY KEY,actor TEXT NOT NULL,request_id TEXT NOT NULL,receiver TEXT NOT NULL,expected_units TEXT NOT NULL,amount_units TEXT,tx_hash TEXT UNIQUE,block_hash TEXT,status TEXT NOT NULL,created_at INTEGER NOT NULL,credited_at INTEGER,UNIQUE(actor,request_id));
 CREATE TABLE IF NOT EXISTS account_orders(id TEXT PRIMARY KEY,actor TEXT NOT NULL,request_id TEXT NOT NULL,fingerprint TEXT NOT NULL,product_id TEXT NOT NULL,name TEXT NOT NULL,country TEXT NOT NULL,kind TEXT NOT NULL,quantity INTEGER NOT NULL,amount_units TEXT NOT NULL,status TEXT NOT NULL,initiator TEXT NOT NULL,reference TEXT NOT NULL,created_at INTEGER NOT NULL,UNIQUE(actor,request_id));
 CREATE TABLE IF NOT EXISTS account_activity(id TEXT PRIMARY KEY,actor TEXT NOT NULL,category TEXT NOT NULL,available_delta TEXT NOT NULL,balance_units TEXT NOT NULL,order_id TEXT,deposit_id TEXT,comment TEXT NOT NULL,created_at INTEGER NOT NULL);
@@ -40,7 +41,7 @@ function activity(db:DB,actor:string,category:string,delta:bigint,order:string|n
 export type AccountOrder={id:string;actor:string;product_id:string;name:string;country:string;kind:string;quantity:number;amount_units:string;status:string;initiator:string;reference:string;created_at:number;fingerprint:string};
 export function placeTestOrder(db:DB,actor:string,requestId:string,productId:string,quantity:number,reference:string,initiator='Portal'){
  owner(actor);if(!Number.isInteger(quantity)||quantity<1||quantity>100||reference.length>100)throw new Error('INVALID_ORDER');const product=TEST_PRODUCTS.find(p=>p.id===productId);if(!product)throw new Error('TEST_PRODUCT_NOT_FOUND');const amount=parseMoney(product.price)*BigInt(quantity);if(amount>10_000_000n)throw new Error('TESTNET_ORDER_LIMIT_10_USDC');
- const fp=createHash('sha256').update(JSON.stringify({productId,quantity,reference,initiator})).digest('hex');return db.transaction(()=>{const previous=db.prepare('SELECT * FROM account_orders WHERE actor=? AND request_id=?').get(actor,requestId) as AccountOrder|undefined;if(previous){if(previous.fingerprint!==fp)throw new Error('IDEMPOTENCY_CONFLICT');return previous;}if(BigInt(funds(db,actor).availableUnits)<amount)throw new Error('INSUFFICIENT_ACCOUNT_BALANCE');const id=randomUUID();
+ const fp=createHash('sha256').update(JSON.stringify({productId,quantity,reference,initiator})).digest('hex');return db.transaction(()=>{const previous=db.prepare('SELECT * FROM account_orders WHERE actor=? AND request_id=?').get(actor,requestId) as AccountOrder|undefined;if(previous){if(previous.fingerprint!==fp)throw new Error('IDEMPOTENCY_CONFLICT');return previous;}checkBudget(db,actor,amount);if(BigInt(funds(db,actor).availableUnits)<amount)throw new Error('INSUFFICIENT_ACCOUNT_BALANCE');const id=randomUUID();
  // Atomic reserve and capture for the explicitly simulated fulfillment only. No upstream call or redeemable product is made.
  postJournal(db,'account-reserve:'+id,'testnet-order:'+id,[{account:liability(actor,'available'),currency:'USDC',direction:'DEBIT',amount},{account:liability(actor,'reserved'),currency:'USDC',direction:'CREDIT',amount}]);
  postJournal(db,'account-capture:'+id,'testnet-simulated:'+id,[{account:liability(actor,'reserved'),currency:'USDC',direction:'DEBIT',amount},{account:'testnet:simulated-sales',currency:'USDC',direction:'CREDIT',amount}]);

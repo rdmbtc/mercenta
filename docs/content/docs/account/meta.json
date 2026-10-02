@@ -1,6 +1,7 @@
 {
   "title": "Account",
   "pages": [
+    "getting-started",
     "dashboard",
     "funds",
     "orders",

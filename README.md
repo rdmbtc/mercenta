@@ -65,3 +65,10 @@ Backend configuration, local EOA key files and model-provider credentials stay o
 See `submission/DEMO-SCRIPT.md`, `submission/READINESS.md` and the public Circle documentation. The demo must distinguish proposal, Gateway acceptance, final Arc settlement and useful resource delivery. Mocks prove code behavior, not live payments or external customers.
 
 There is no independent contract/security audit. Backend and frontend dependency audits retain low-severity elliptic propagation; broader SDK branches need review before production use. Rotate credentials previously disclosed in chat before a production/mainnet launch.
+
+
+## Buyer onboarding and financial journal
+
+Open Getting Started in the account workspace for the EN/RU buyer/reseller journey, then Budget, Shop, Orders and Financial Journal. Saved prepaid Shop caps are atomic; manual diary entries never change the ledger. Journal text is server-encrypted at rest. The educational coach shares question + numeric aggregates only after explicit consent and has no tools.
+
+Source tests: backend 119, web 147, docs 27. New backend publication is currently blocked by VPS SSH timeout; AppRoute read-only catalog returned HTTP 403. UI previews are simulated and read-only during outages. Do not claim live journal persistence, AppRoute fulfillment or mainnet activation until verified. See submission/ONBOARDING-RELEASE.md and submission/MAINNET-READINESS.md.
