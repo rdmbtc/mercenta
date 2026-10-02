@@ -1,3 +1,4 @@
+import {registerWorkspace} from './routes/workspace.js';
 import {registerCircleDemoSeller} from './routes/circle-demo-seller.js';
 import {registerCircleAgent} from './routes/circle-agent.js';
 import {registerCommerce} from './routes/commerce.js';
@@ -42,6 +43,7 @@ export async function buildServer(c: Config, products?: Product[]) {
   registerAuthRoutes(app,db,c);
   registerRoutes(app, db, c, catalog, orders);
   registerAccountRoutes(app, db, c);
+  registerWorkspace(app, db, c);
   registerCommerce(app, db, c);
   registerCircleAgent(app, db, c);
   registerCircleDemoSeller(app, db, c);

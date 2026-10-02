@@ -1,0 +1,19 @@
+{
+  "kind": "onboarding-engineering-readiness",
+  "tests": {
+    "backend": 119,
+    "web": 147,
+    "docs": 27
+  },
+  "backendDeployment": "blocked-ssh-timeout",
+  "supplierReadOnlyCheck": {
+    "provider": "AppRoute",
+    "httpStatus": 403,
+    "ordersCreated": 0
+  },
+  "mainnetEnabled": false,
+  "liveGoodsEnabled": false,
+  "financialJournalAuthority": "manual-declarations-not-ledger",
+  "budgetScope": "prepaid-Shop-orders-only",
+  "modelAuthority": "read-only-educational-no-tools"
+}
