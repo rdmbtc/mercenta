@@ -1,0 +1,229 @@
+{
+  "release": "catalog-ai-refinement-2026-10-03",
+  "backendRelease": "backend-catalog-ai-20261003-final",
+  "frontendDeployment": "mercenta-1381vjprr-drrdms-projects.vercel.app",
+  "docsDeployment": "mercenta-docs-8999df2pr-drrdms-projects.vercel.app",
+  "tests": {
+    "backend": 124,
+    "web": 163,
+    "docs": 34,
+    "allPassed": true,
+    "buildsAndTypechecksPassed": true
+  },
+  "live": {
+    "checks": [
+      {
+        "name": "five demo product covers",
+        "passed": true
+      },
+      {
+        "name": "visible covers loaded",
+        "passed": true
+      },
+      {
+        "name": "desktop shop no overflow",
+        "passed": true
+      },
+      {
+        "name": "review has product cover",
+        "passed": true
+      },
+      {
+        "name": "guest cannot confirm purchase",
+        "passed": true
+      },
+      {
+        "name": "exact review amount retained",
+        "passed": true
+      },
+      {
+        "name": "review Escape works",
+        "passed": true
+      },
+      {
+        "name": "blocked supplier has no invented listings",
+        "passed": true
+      },
+      {
+        "name": "supplier denial explained",
+        "passed": true
+      },
+      {
+        "name": "guest send is enabled",
+        "passed": true
+      },
+      {
+        "name": "live guest AI request succeeds",
+        "passed": true
+      },
+      {
+        "name": "live model used",
+        "passed": true
+      },
+      {
+        "name": "guest has read-only authority",
+        "passed": true
+      },
+      {
+        "name": "guest has no purchase plans",
+        "passed": true
+      },
+      {
+        "name": "useful model response",
+        "passed": true
+      },
+      {
+        "name": "no raw bold markup rendered",
+        "passed": true
+      },
+      {
+        "name": "guest guidance labelled",
+        "passed": true
+      },
+      {
+        "name": "390px shop no overflow",
+        "passed": true
+      },
+      {
+        "name": "mobile review no overflow",
+        "passed": true
+      },
+      {
+        "name": "mobile review amount visible",
+        "passed": true
+      },
+      {
+        "name": "public catalog uses same covers",
+        "passed": true
+      },
+      {
+        "name": "public examples labelled",
+        "passed": true
+      },
+      {
+        "name": "no invented snapshot stock",
+        "passed": true
+      },
+      {
+        "name": "source access denial visible",
+        "passed": true
+      },
+      {
+        "name": "mobile catalog no overflow",
+        "passed": true
+      },
+      {
+        "name": "desktop catalog no overflow",
+        "passed": true
+      },
+      {
+        "name": "catalog never labels denied feed live",
+        "passed": true
+      },
+      {
+        "name": "illustrations have no invented availability",
+        "passed": true
+      },
+      {
+        "name": "asset gaming",
+        "passed": true
+      },
+      {
+        "name": "asset creator",
+        "passed": true
+      },
+      {
+        "name": "asset developer",
+        "passed": true
+      },
+      {
+        "name": "asset cloud",
+        "passed": true
+      },
+      {
+        "name": "asset streaming",
+        "passed": true
+      },
+      {
+        "name": "asset steam",
+        "passed": true
+      },
+      {
+        "name": "asset playstation",
+        "passed": true
+      },
+      {
+        "name": "asset xbox",
+        "passed": true
+      },
+      {
+        "name": "no JavaScript errors",
+        "passed": true
+      },
+      {
+        "name": "no financial mutations",
+        "passed": true
+      }
+    ],
+    "passed": 38,
+    "failed": 0,
+    "pageErrors": [],
+    "financialMutations": [],
+    "modelProof": {
+      "mode": "llm-read-only-preview",
+      "provider": "groq",
+      "authority": "READ_ONLY",
+      "responseChars": 1422,
+      "plans": 0
+    },
+    "authenticatedPurchaseTested": false
+  },
+  "narrowLayoutAndDocs": {
+    "checks": [
+      {
+        "name": "360px shop no horizontal overflow",
+        "passed": true
+      },
+      {
+        "name": "360px assistant no horizontal overflow",
+        "passed": true
+      },
+      {
+        "name": "deployed docs describe guest preview",
+        "passed": true
+      },
+      {
+        "name": "docs describe guest without transaction authority",
+        "passed": true
+      },
+      {
+        "name": "360px docs no horizontal overflow",
+        "passed": true
+      },
+      {
+        "name": "no page errors",
+        "passed": true
+      }
+    ],
+    "errors": [],
+    "passed": 6,
+    "failed": 0
+  },
+  "supplier": {
+    "endpoint": "https://approute.io/api/v1/services",
+    "configuredHeaderStatus": 403,
+    "legacyBearerStatus": 401,
+    "coverage": "unverified",
+    "realCatalogueImported": false,
+    "procurementEnabled": false
+  },
+  "imageProvenance": "16 original locally rendered illustrative WebP covers; not supplier or official brand imagery",
+  "mainnetEnabled": false,
+  "liveEarnEnabled": false,
+  "notes": [
+    "No paid service request, deposit, procurement or financial mutation performed in this phase.",
+    "Wallet-authenticated purchase was not exercised in live browser checks.",
+    "Model guidance remains untrusted; grounding is not an accuracy guarantee.",
+    "Failed final activation safely rolled back due to owner-only source permissions; service group read permissions corrected, then health and browser checks passed."
+  ]
+}

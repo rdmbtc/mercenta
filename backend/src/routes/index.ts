@@ -33,7 +33,7 @@ const actionBody = z.object({
   amount,
   mode: z.literal("sandbox"),
 });
-function actor(req: FastifyRequest, c: Config) {
+export function actor(req: FastifyRequest, c: Config) {
   const a = req.headers["x-mercenta-actor"],
     ts = req.headers["x-mercenta-timestamp"],
     sig = req.headers["x-mercenta-signature"];

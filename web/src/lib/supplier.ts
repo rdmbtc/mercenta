@@ -1,3 +1,4 @@
+import {illustrationFor,safeProductImage} from './product-images';
 // Server-side supplier catalog adapter.
 //
 // The upstream supplier identity and key never leave the server: this module is
@@ -42,6 +43,8 @@ export interface CatalogProduct {
   brand: string;
   /** Brand mark from a resolver; 404 falls back to a monogram. */
   logoUrl?: string;
+  imageUrl?: string;
+  imageSource?: "supplier" | "illustration";
   category: CategoryId;
   type: ProductType;
   countryCode?: string;
@@ -57,6 +60,8 @@ export interface Catalog {
   products: CatalogProduct[];
   live: boolean;
   generatedAt: string;
+  sourceStatus?: string;
+  coverage?: string;
 }
 
 const CATEGORY_BY_ID = Object.fromEntries(CATEGORIES.map((c) => [c.id, c])) as Record<CategoryId, Category>;
@@ -114,6 +119,8 @@ interface RawProduct {
   categoryName?: string;
   subcategoryName?: string;
   items?: RawItem[];
+  imageUrl?: string;
+  image?: string;
 }
 
 const STOP_WORDS = /(gift\s*card|voucher|digital\s*code|top.?up|recharge|prepaid|e-?sim|code|card|bundle|subscription|sub|wallet)/gi;
@@ -124,23 +131,17 @@ function brandOf(name: string): string {
   return clean.replace(/\s{2,}/g, " ") || name.trim();
 }
 
-function domainGuess(brand: string): string | undefined {
-  const d = brand.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9.]+/g, "");
-  if (d.length < 2) return undefined;
-  return d.includes(".") ? d : `${d}.com`;
-}
-
-function normalize(raw: RawProduct[]): CatalogProduct[] {
+export function normalizeCatalog(raw: RawProduct[]): CatalogProduct[] {
   const out: CatalogProduct[] = [];
   for (const p of raw) {
-    const denominations: CatalogDenomination[] = (p.items ?? []).map((it) => {
+    const denominations: CatalogDenomination[] = (p.items ?? []).filter(it=>Number.isFinite(it.price)&&it.price>=0&&typeof it.currency==='string').map((it) => {
       const stock = it.inStock ?? it.stock;
       return {
         id: it.id,
         name: it.name ?? (it.nominal != null ? String(it.nominal) : "Standard"),
         price: it.price,
         currency: it.currency,
-        available: it.available ?? (stock == null ? true : stock > 0),
+        available: it.available ?? (stock == null ? false : stock > 0),
         stock,
         isLongOrder: it.isLongOrder,
       };
@@ -149,14 +150,15 @@ function normalize(raw: RawProduct[]): CatalogProduct[] {
     const prices = denominations.map((d) => d.price);
     const name = p.name ?? "Unnamed product";
     const brand = brandOf(name);
-    const domain = domainGuess(brand);
+    const image=safeProductImage(p.imageUrl??p.image);
     const type: ProductType =
       p.type === "direct_topup" || p.type === "esim" ? p.type : "voucher";
     out.push({
       id: p.id,
       name,
       brand,
-      logoUrl: domain ? `https://unavatar.io/${domain}?fallback=false` : undefined,
+      imageUrl:image??illustrationFor(name,categorize(p.categoryName,name)),
+      imageSource:image?"supplier":"illustration",
       category: categorize(p.categoryName, `${name} ${p.subcategoryName ?? ""} ${p.type ?? ""}`),
       type,
       countryCode: p.countryCode,
@@ -192,109 +194,11 @@ function diversify(products: CatalogProduct[]): CatalogProduct[] {
 }
 
 
-export const INSTITUTIONAL_CLOUD_PRODUCTS: CatalogProduct[] = [
-  {
-    id: "inst-cloud-h100",
-    name: "Dedicated 8x H100 SXM5 GPU Cluster",
-    brand: "NVIDIA DGX Cloud",
-    logoUrl: "https://unavatar.io/nvidia.com?fallback=false",
-    category: "cloud",
-    type: "voucher",
-    countryCode: "US",
-    denominations: [
-      { id: "h100-24h", name: "24h Cluster Lease", price: 624.0, currency: "USD", available: true, stock: 12 },
-      { id: "h100-7d", name: "7d Cluster Lease", price: 3950.0, currency: "USD", available: true, stock: 4, isLongOrder: true },
-      { id: "h100-30d", name: "30d Dedicated Pod", price: 14800.0, currency: "USD", available: true, stock: 2, isLongOrder: true },
-    ],
-    minPrice: 624.0,
-    maxPrice: 14800.0,
-    currency: "USD",
-    inStock: 3,
-    totalStock: 18,
-  },
-  {
-    id: "inst-cloud-a100",
-    name: "Elastic 4x A100 80GB High-Memory Pod",
-    brand: "Lambda Cloud",
-    logoUrl: "https://unavatar.io/lambdalabs.com?fallback=false",
-    category: "cloud",
-    type: "voucher",
-    countryCode: "US",
-    denominations: [
-      { id: "a100-100h", name: "100 Compute Hours", price: 290.0, currency: "USD", available: true, stock: 45 },
-      { id: "a100-500h", name: "500 Compute Hours", price: 1350.0, currency: "USD", available: true, stock: 18 },
-    ],
-    minPrice: 290.0,
-    maxPrice: 1350.0,
-    currency: "USD",
-    inStock: 2,
-    totalStock: 63,
-  },
-  {
-    id: "inst-cloud-gh200",
-    name: "NVIDIA GH200 Grace Hopper Inference Node",
-    brand: "CoreWeave",
-    logoUrl: "https://unavatar.io/coreweave.com?fallback=false",
-    category: "cloud",
-    type: "voucher",
-    countryCode: "EU",
-    denominations: [
-      { id: "gh200-50h", name: "50 Node Hours", price: 195.0, currency: "USD", available: true, stock: 28 },
-      { id: "gh200-200h", name: "200 Node Hours", price: 720.0, currency: "USD", available: true, stock: 15 },
-    ],
-    minPrice: 195.0,
-    maxPrice: 720.0,
-    currency: "USD",
-    inStock: 2,
-    totalStock: 43,
-  },
-  {
-    id: "inst-cloud-vllm",
-    name: "Autonomous High-Throughput vLLM Endpoint",
-    brand: "Together AI",
-    logoUrl: "https://unavatar.io/together.ai?fallback=false",
-    category: "cloud",
-    type: "voucher",
-    countryCode: "GLOB",
-    denominations: [
-      { id: "vllm-100m", name: "100M Token Credit Pool", price: 85.0, currency: "USD", available: true, stock: 120 },
-      { id: "vllm-500m", name: "500M Token Credit Pool", price: 380.0, currency: "USD", available: true, stock: 50 },
-    ],
-    minPrice: 85.0,
-    maxPrice: 380.0,
-    currency: "USD",
-    inStock: 2,
-    totalStock: 170,
-  },
-];
-
 export async function getCatalog(): Promise<Catalog> {
-  const key = process.env.SUPPLIER_API_KEY;
-  const url = process.env.SUPPLIER_API_URL;
-  if (key && url) {
-    try {
-      const res = await fetch(`${url.replace(/\/$/, "")}/services`, {
-        headers: {
-          "X-API-Key": key,
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          Accept: "application/json",
-        },
-        signal: AbortSignal.timeout(15_000),
-        next: { revalidate: 300 },
-      });
-      if (res.ok) {
-        const envelope = (await res.json()) as { data?: { items?: RawProduct[] } };
-        const products = normalize(envelope.data?.items ?? []);
-        if (products.length > 0) {
-          const merged = products.some((p) => p.category === "cloud") ? products : [...INSTITUTIONAL_CLOUD_PRODUCTS, ...products];
-          return { products: diversify(merged), live: true, generatedAt: new Date().toISOString() };
-        }
-      }
-    } catch {
-      // Fall through to the snapshot; a stale catalog beats an empty one.
-    }
-  }
-  return { products: normalize(FALLBACK), live: false, generatedAt: new Date().toISOString() };
+ let sourceStatus='backend-unavailable';
+ try {const res=await fetch((process.env.BACKEND_URL??'https://api.mercenta.xyz').replace(/\/$/,'')+'/api/account/supplier-catalog',{signal:AbortSignal.timeout(10000),next:{revalidate:60}});if(res.ok){const feed=await res.json() as {status:string;products:RawProduct[];fetchedAt:string;coverage:string};sourceStatus=feed.status;if(feed.status==='ready'){return {products:diversify(normalizeCatalog(feed.products)),live:true,generatedAt:feed.fetchedAt,sourceStatus,coverage:feed.coverage}}}}catch{/* Never label examples as a successful supplier import. */}
+ const examples=FALLBACK.map(p=>({...p,items:p.items?.map(i=>({...i,inStock:0,stock:0,available:false}))}));
+ return {products:normalizeCatalog(examples),live:false,sourceStatus,coverage:'examples-only',generatedAt:new Date().toISOString()};
 }
 
 // Curated snapshot used until SUPPLIER_API_KEY/SUPPLIER_API_URL are configured

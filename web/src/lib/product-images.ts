@@ -1,0 +1,4 @@
+export function illustrationFor(name:string,category:string='gaming') {
+ const n=name.toLowerCase();const brands=['steam','playstation','xbox','roblox','apple','google','netflix','spotify','openai','discord','twitch'];const brand=brands.find(b=>n.includes(b));return '/products/'+(brand??(['gaming','creator','developer','cloud','streaming'].includes(category)?category:'gaming'))+'.webp';
+}
+export function safeProductImage(raw:unknown):string|undefined {if(typeof raw!=='string'||raw.length>2048)return;try{const u=new URL(raw);if(u.protocol!=='https:'||u.username||u.password||u.port||!u.hostname.includes('.')||/^(localhost|127\.|10\.|192\.168\.|169\.254\.|0\.|\[)/i.test(u.hostname)||/\.(local|internal|localhost)$/.test(u.hostname)||/^172\.(1[6-9]|2\d|3[01])\./.test(u.hostname)||[...u.searchParams.keys()].some(k=>/key|token|secret|signature|auth/i.test(k)))return;return u.toString()}catch{return}}
