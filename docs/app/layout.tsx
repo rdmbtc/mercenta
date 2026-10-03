@@ -1,8 +1,11 @@
+import { Geist } from 'next/font/google'
 import type { Metadata } from 'next'
 import { ThemeProvider } from './providers/theme-provider'
 import { siteConfig } from '@/lib/theme-config'
 import './globals.css'
 import './mercenta-docs.css'
+
+const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans', display: 'swap' })
 
 export const metadata: Metadata = {
   title: {
@@ -19,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className={geist.variable}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

@@ -1,23 +1,27 @@
 ---
-title: Getting started — wallet, budget, products, journal
+title: Your first purchase
 description: A complete first-use guide for buyers and digital-goods resellers.
 ---
-# Start with confidence
+## Explore before signing in
 
-Open **Getting Started** in [the account workspace](https://app.mercenta.xyz/app?section=getting-started). Choose EN/RU and whether you buy for yourself or run a resale business. Reviewed checkboxes mean that you read instructions; they are not transaction evidence.
+Open [Mercenta](https://app.mercenta.xyz). Home, Shop, Account and Assistant are the four main destinations. Browse the **test catalogue** without a wallet. Choose a product, check its region and select **View details**.
+
+The current products are simulations, not redeemable codes. Display prices are previews; the purchase review shows the exact six-decimal total. Wallet sign-in does not authorize payment.
+
+For optional setup, choose **Plan my budget** on Home or **Quick setup** in the workspace options. Choose your purpose, edit an example monthly plan, then preview the next step. A guest draft is not saved and does not move funds.
 
 ## 1. Connect and sign in
 Use **Connect Wallet** in the top-right and sign the login message. Authentication is not payment authorization. Never paste keys, seed phrases or API credentials into the agent or journal.
 
 ## 2. Plan a budget
-Open **Budget**. Enter a monthly total, per-order cap and daily cap. Allocate 100% across purchases/restock, reserve, profit goal and tax reserve. Templates are editable examples, not financial or tax advice.
+Open **Account → Budget**. Enter a monthly total, per-order cap and daily cap. Allocate 100% across purchases/restock, reserve, profit goal and tax reserve. Templates are editable examples, not financial or tax advice.
 
 Save your plan after wallet sign-in. Amounts use exact six-decimal accounting. The backend checks per-order, daily and calendar-month UTC spending caps inside the same transaction as each new prepaid Shop debit, including agent/API purchases. Replaying the same completed order never charges again. A changed plan in another tab produces a revision conflict instead of silently overwriting it.
 
 **Scope:** these caps do not cover Gateway payments, external wallet transfers, manual journal entries or Profit First contract allocations. Percentages do not reserve, lock or transfer money.
 
 ## 3. Top up the account
-Open **Funds** → **Top up USDC** → create a deposit intent → send the requested **test USDC** from the signed-in Arc Testnet wallet → wait for confirmations → verify the transaction. Keep test USDC for gas. Submission alone is not credit.
+Open **Account → Balance** → **Top up USDC** → create a deposit intent → send the requested **test USDC** from the signed-in Arc Testnet wallet → wait for confirmations → verify the transaction. Keep test USDC for gas. Submission alone is not credit.
 
 Your wallet balance, Mercenta prepaid account and Gateway balance are separate. Cross-chain funding, fiat onramp and withdrawals are not enabled in this release.
 
@@ -27,17 +31,17 @@ Open **Shop**. Check the region, unit price and quantity. Review the exact total
 **AppRoute is the planned procurement provider. Live procurement is not enabled.** The existing generic supplier transport is not a verified AppRoute adapter. Official request/response schemas, idempotency, inventory/price mapping, status lookup, delivery, refund behavior and sandbox evidence must be validated before real goods are sold. Never invent supplier endpoints or interpret an uncertain timeout as failure and purchase again.
 
 ## 5. Track the order
-**Orders** shows the order/reference/status. **Transactions** shows the account debit. A submitted payment is not a completed order or settlement. For uncertainty, reconcile the original operation rather than creating a replacement purchase.
+**Shop → Purchases** shows the order/reference/status. **Account → Activity** shows the account debit. A submitted payment is not a completed order or settlement. For uncertainty, reconcile the original operation rather than creating a replacement purchase.
 
 ## 6. Keep a financial journal
-**Financial Journal** stores manual expenses, declared income and notes separately from the ledger. Text is encrypted at rest on the server and wallet-scoped, not published onchain. This is server-side encryption, not end-to-end encryption. Entries do not change your balance or verify revenue. Avoid recording the same Shop expense as additional spending in your own analysis.
+**Assistant → Journal** stores manual expenses, declared income and notes separately from the ledger. Text is encrypted at rest on the server and wallet-scoped, not published onchain. This is server-side encryption, not end-to-end encryption. Entries do not change your balance or verify revenue. Avoid recording the same Shop expense as additional spending in your own analysis.
 
 Export your entries to CSV. Do not record credentials or redeemable product codes.
 
 ## 7. Ask for educational guidance
 The financial coach has no tools or transaction authority. An explicit checkbox allows your question and numeric aggregates to be sent to the configured AI provider. Note text and wallet address are not included. User-written questions may contain personal information: do not put secrets in them. Outputs are untrusted educational text, not financial, tax or legal advice.
 
-If the model is unavailable, the interface labels a rules-based fallback; it does not claim personalized AI analysis. Agent Chat is separate: it prepares purchase proposals that require confirmation.
+If the model is unavailable, the interface labels a rules-based fallback; it does not claim personalized AI analysis. Assistant Chat is separate: it prepares purchase proposals that require confirmation.
 
 ## 8. Resellers: separate restock from margin
 Profit First works on margin after COGS, fees and reserves, not account deposits or manually declared diary income. Sale-linked allocations need verified buyer evidence; contract actions require separate owner signatures. Live Earn and promised APY are not enabled.

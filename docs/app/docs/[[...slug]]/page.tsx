@@ -53,11 +53,11 @@ export default async function DocsPage({ params }: PageProps) {
   const sectionName = findSectionName(tree, page.url)
 
   return (
-    <div className="flex gap-8">
+    <div className="md-article-layout">
       {/* Main content */}
-      <article className="flex-1 min-w-0 max-w-3xl">
+      <article className="md-article">
         {/* Header banner */}
-        <header className="mb-8 pb-6 border-b border-border">
+        <header className="md-article-header">
           <p className="text-sm text-[var(--accent)] font-medium mb-2">
             {sectionName}
           </p>

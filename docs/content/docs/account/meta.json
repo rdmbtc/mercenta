@@ -1,10 +1,12 @@
 {
-  "title": "Account",
+  "title": "Your workspace",
   "pages": [
     "getting-started",
-    "dashboard",
-    "funds",
     "orders",
+    "funds",
+    "budget",
+    "journal",
+    "dashboard",
     "transactions",
     "support"
   ]

@@ -1,11 +1,15 @@
 ---
-title: "Funds and deposits"
+title: "Balances and deposits"
 description: "Distinguish wallet funds from your Mercenta spending balance."
 ---
 
-## Two different balances
+## Know which balance you are using
+
+Open **Account → Balance** in [the workspace](https://app.mercenta.xyz/app?section=funds). Choose **Top up USDC** to create a deposit intent.
 
 **Wallet USDC** is read from the authenticated wallet on Arc. It remains in your wallet. **Account available** is confirmed deposits less account spending. **Reserved** cannot be spent twice.
+
+**Circle Gateway** has a separate deposited balance for explicitly confirmed developer payments. Wallet USDC and prepaid account credit do not automatically fund Gateway. See [Gateway payments](/docs/agents/circle-gateway).
 
 These are testnet balances only. No fiat/USD exchange is assumed. UI and exports label funds as USDC.
 
