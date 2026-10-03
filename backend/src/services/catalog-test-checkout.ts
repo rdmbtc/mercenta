@@ -31,7 +31,7 @@ export function createTestQuote(db:DB,actor:string,requestId:string,productId:st
  return getTestQuote(db,actor,id);
 }
 export function testDelivery(db:DB,actor:string,orderId:string,key:string){owner(actor);const d=db.prepare('SELECT * FROM catalog_test_deliveries WHERE order_id=? AND actor=?').get(orderId,actor) as {payload:string;created_at:number}|undefined;if(!d)throw Error('DELIVERY_NOT_FOUND');return {orderId,mode:'TESTNET_SIMULATED',nonRedeemable:true,supplierCalls:0,createdAt:d.created_at,...JSON.parse(decryptCode(d.payload,key))}}
-export function confirmTestQuote(db:DB,actor:string,quoteId:string,requestId:string,acceptedAmountUnits:string,key:string,now=Date.now()){
+export function confirmTestQuote(db:DB,actor:string,quoteId:string,requestId:string,acceptedAmountUnits:string,key:string,now=Date.now(),initiator:'Portal'|'Agent Operator'='Portal'){
  owner(actor);if(!/^[a-f0-9]{64}$/i.test(key))throw Error('DELIVERY_NOT_CONFIGURED');
  return db.transaction(()=>{
  const q=db.prepare('SELECT * FROM catalog_test_quotes WHERE id=? AND actor=?').get(quoteId,actor) as QuoteRow|undefined;if(!q)throw Error('QUOTE_NOT_FOUND');
@@ -44,7 +44,7 @@ export function confirmTestQuote(db:DB,actor:string,quoteId:string,requestId:str
  if(BigInt(funds(db,actor).availableUnits)<amount)throw Error('INSUFFICIENT_ACCOUNT_BALANCE');const id=randomUUID(),liability=(b:string)=>'account:usdc:'+actor+':'+b;
  postJournal(db,'account-reserve:'+id,'testnet-order:'+id,[{account:liability('available'),currency:'USDC',direction:'DEBIT',amount},{account:liability('reserved'),currency:'USDC',direction:'CREDIT',amount}]);
  postJournal(db,'account-capture:'+id,'testnet-simulated:'+id,[{account:liability('reserved'),currency:'USDC',direction:'DEBIT',amount},{account:'testnet:simulated-sales',currency:'USDC',direction:'CREDIT',amount}]);
- db.prepare("INSERT INTO account_orders VALUES(?,?,?,?,?,?,?,?,?,?,'SIMULATED_FULFILLED',?,?,?)").run(id,actor,requestId,fingerprint,'catalog-test:'+s.productId,s.productName+' · test delivery',s.region,'Shop',s.quantity,q.amount_units,'Portal','catalog-test:'+quoteId,now);
+ db.prepare("INSERT INTO account_orders VALUES(?,?,?,?,?,?,?,?,?,?,'SIMULATED_FULFILLED',?,?,?)").run(id,actor,requestId,fingerprint,'catalog-test:'+s.productId,s.productName+' · test delivery',s.region,'Shop',s.quantity,q.amount_units,initiator,'catalog-test:'+quoteId,now);
  const receipt={productName:s.productName,optionName:s.optionName,quantity:s.quantity,amountUnits:q.amount_units,codes:Array.from({length:s.quantity},()=> 'MCT-TEST-'+randomBytes(12).toString('hex').toUpperCase()),notice:'TEST ONLY. These artifacts cannot activate or redeem any product. No provider order, invoice or stock reservation was created.'};
  db.prepare('INSERT INTO catalog_test_deliveries VALUES(?,?,?,?,?)').run(id,quoteId,actor,encryptCode(JSON.stringify(receipt),key),now);
  db.prepare('INSERT INTO account_activity VALUES(?,?,?,?,?,?,?,?,?)').run(randomUUID(),actor,'Shop',(-amount).toString(),funds(db,actor).availableUnits,id,null,'Catalogue test delivery x'+s.quantity,now);

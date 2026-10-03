@@ -1,3 +1,4 @@
+import {registerOperator} from './routes/agent-operator.js';
 import {registerCatalogTestCheckout} from './routes/catalog-test-checkout.js';
 import {registerAssistantPreview} from './routes/assistant-preview.js';
 import {registerWorkspace} from './routes/workspace.js';
@@ -51,6 +52,7 @@ export async function buildServer(c: Config, products?: Product[]) {
   registerCircleAgent(app, db, c);
   registerCircleDemoSeller(app, db, c);
   registerAgentChat(app, db, c);
+  registerOperator(app, db, c);
   registerAssistantPreview(app, db, c);
   const stop = startReconciler(db, orders, node);
   app.setErrorHandler((e, _req, reply) => {

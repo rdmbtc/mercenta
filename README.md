@@ -1,6 +1,10 @@
 # Mercenta — commerce treasury with checked agent actions
 
-Mercenta helps a digital-goods reseller plan bounded purchases, separate procurement cost from resale margin, and inspect USDC payment evidence. The model proposes; deterministic policy checks; the owner confirms.
+Mercenta helps a digital-goods reseller plan bounded purchases, separate procurement cost from resale margin, and inspect USDC payment evidence. The model chooses typed tools; deterministic policy checks; the owner either confirms the exact test quote or explicitly delegates one bounded test purchase.
+
+## Business Operator
+
+Open Assistant for goal → verified balance/budget → catalogue search → available options → server quote → permitted test order → saved non-redeemable delivery. Review is the default; optional delegation requires a one-order, amount/quantity/region/reserve-limited permission expiring in ten minutes. No real supplier invoices, mainnet or live goods. [Operator boundaries and evidence](docs/agent-operator.md).
 
 ## Live entry points
 - App: https://app.mercenta.xyz/agent

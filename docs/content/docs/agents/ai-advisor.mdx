@@ -1,27 +1,45 @@
 ---
-title: Assistant and confirmations
-description: Real model responses, with a clear boundary between help and account actions.
+title: Business Operator and confirmations
+description: Give the agent a bounded goal. Inspect its tools, quote and saved test delivery.
 ---
-## Ask before signing in
+## Give it a task
 
-Open **Assistant → Chat** in [Mercenta](https://app.mercenta.xyz/app?section=agent-chat). Guest help can explain the interface, regions and spending limits without a wallet. It has no private history, balance tools, purchase plans or transaction authority.
+Open **Assistant → Chat** in [Mercenta](https://app.mercenta.xyz/agent). Business Operator can inspect prepaid funds, check saved budgets, search the complete received catalogue, inspect available options and request a server quote. A model chooses typed tools from observations; server policy controls execution.
 
-Guest preview is limited to five questions per signed browser session per UTC day, with an additional shared service safety cap. Clearing a session does not remove the shared cap. Questions are sent to the configured model provider; do not include passwords, wallet keys, API credentials or sensitive personal details.
+Sign in with your wallet for account tools. Enter a product goal, task cap, quantity, region and minimum balance to leave on your prepaid account. Wallet funds are separate. `ANY` permits any region; choose a specific eligible region when product restrictions matter. Saved per-order, daily and monthly purchase limits still apply.
 
-## Connect for account tools
+## Choose your control
 
-Wallet-authenticated chat can prepare bounded purchase proposals, inspect your account balance, explain gas information and help with Profit First scenarios. Purchases require a separate explicit confirmation. Contract actions require wallet signatures. A message alone never purchases, transfers or stakes.
+**Review the plan first** is the default: the agent stops at a quote. Inspect the product, option, quantity, region and exact test debit, then explicitly confirm non-redeemable delivery.
 
-The Catalogue is a read-only browser of connected listings. Test purchase is a separate simulated-goods flow. Real-product checkout, mainnet and live Earn are not enabled.
+**Delegate one test purchase** requires a separate checkbox authorizing the displayed cap, quantity, region, remaining-balance floor, one-order limit and ten-minute expiry. Within those boundaries the agent may choose an observed available option and execute without another purchase click. A goal or model response alone is never permission to spend.
 
-## Know which response you received
+The rehearsal price is **1 test USDC per unit**, up to ten units, regardless of the indicative catalogue USD price. Delivery contains saved **non-redeemable test codes**. No real supplier invoices, stock reservation, real goods, mainnet or live Earn are enabled.
 
-A model-backed response identifies its configured provider. A rules-based fallback is labelled separately. Provider availability is not a promise that every request will succeed: upstream quotas, timeouts and invalid responses may trigger fallback.
+## Watch actions, not claims
 
-AI explanations are untrusted guidance. Verify important details in the interface and relevant guide. The model is given verified product facts, but this is not a guarantee of accuracy or financial, tax or legal advice.
+The activity timeline shows persisted tools: balance, saved limits, catalogue search, option inspection, quote, permitted checkout and receipt verification. A model rationale is untrusted explanation, not proof of a debit or delivery.
 
-Budget saving is a server request, not a wallet payment or contract signature. Shop limits do not apply to Gateway, external wallet transfers or Profit First allocations. See [spending limits](/docs/account/budget).
+Current budgets, available funds and the remaining-balance floor are checked again when executing. Hallucinated IDs, unsupported tools, expired permissions and unavailable models block the task. A rules response is not presented as AI execution.
 
-## Inspect execution evidence
+Inspect the saved delivery and order ID, then **Shop → Purchases** and **Account → Activity**. Test account funding is not revenue. A paid margin report is a scenario, not verified profit.
 
-The assistant's prose is not a receipt. Inspect **Shop → Purchases** and **Account → Activity** for verified test-order records. Reconcile an uncertain original operation rather than creating a replacement purchase. Never paste private keys into chat to enable signing.
+## Stop or recover
+
+**Stop task** revokes future execution, including an in-flight model response. Already executed orders cannot be cancelled to pretend that funds were refunded.
+
+Tasks advance while the Assistant is open; this is not an unattended background daemon. Reopening restores the original task. After a connection error, resume it or refresh its status before starting a replacement. A claimed step may need up to 45 seconds to expire after interruption. Six durable step claims and 40 tasks per account/day bound work.
+
+Original task/confirmation IDs and saved delivery survive database restart. Replayed confirmation returns the same order instead of another debit. History displays current account funds, not a frozen historical balance.
+
+## Ask a question instead
+
+Choose **Ask a question** for ordinary read-only help. Guests can ask interface questions without account access; the preview is limited to five questions per signed browser session per UTC day plus a shared service cap. Signed-in conversational tools have separate daily limits. Never send passwords, wallet keys, provider credentials or sensitive personal details.
+
+Questions and task observations are sent to configured model providers. Important explanations must be verified against the UI and guide, not treated as financial, tax or legal advice.
+
+## Circle paid service is separate
+
+The Operator screen can prepare a **0.001000 test-USDC** quote for a Mercenta-owned fixed margin-scenario report. Preparation never pays. The separate agent wallet/Gateway balance and exact payment confirmation are distinct from your prepaid Shop account. Queued Gateway acceptance is not final settlement; reconcile the original authorization and inspect final matching evidence. Contract allocations require genuine owner wallet signatures.
+
+Shop limits do not cover Gateway, external wallet transfers or Profit First contract allocations. See [spending limits](/docs/account/budget) and [Circle Gateway](/docs/agents/circle-gateway).
