@@ -37,20 +37,22 @@ export type SupplyResult =
   | { status: "COMPLETED"; code: string }
   | { status: "NOT_EXECUTED" | "PENDING" | "UNKNOWN" };
 export class SupplyNode {
-  constructor(private c: Config) {}
-  get ready() {
+  constructor(private c: Config, private fundingCheck?: (ref: string, costUsdUnits: string) => Promise<boolean>, private fundingAvailable?: () => boolean) {}
+  get configured() {
     return (
       this.c.ENABLE_FULFILLMENT === "true" &&
+      this.c.FULFILLMENT_CONTRACT_VERIFIED === "true" &&
       !!this.c.SUPPLIER_API_URL &&
       !!this.c.SUPPLIER_API_KEY
     );
   }
+  get ready() { return this.configured && this.fundingAvailable?.() === true; }
   private async call(
     path: string,
     method: string,
     body?: object,
   ): Promise<SupplyResult> {
-    if (!this.ready) throw new Error("SUPPLY_NODE_NOT_CONFIGURED");
+    if (!(method === "GET" ? this.configured : this.ready)) throw new Error("SUPPLY_NODE_NOT_CONFIGURED");
     try {
       const r = await fetch(new URL(path, this.c.SUPPLIER_API_URL), {
         method,
@@ -59,6 +61,7 @@ export class SupplyNode {
           "Content-Type": "application/json",
         },
         body: body ? JSON.stringify(body) : undefined,
+        redirect: "error",
         signal: AbortSignal.timeout(10000),
       });
       if (!r.ok) return { status: "UNKNOWN" };
@@ -76,7 +79,10 @@ export class SupplyNode {
       return { status: "UNKNOWN" };
     }
   }
-  purchase(ref: string, sku: string, quantity: number) {
+  async purchase(ref: string, sku: string, quantity: number, costUsdUnits?: string) {
+    if (!this.ready) throw Error("SUPPLY_NODE_NOT_CONFIGURED");
+    if (!costUsdUnits || !this.fundingCheck) throw Error("PROCUREMENT_COST_UNVERIFIED");
+    if (!(await this.fundingCheck(ref, costUsdUnits))) return {status:"UNKNOWN"} as const;
     return this.call("/orders", "POST", { request_ref: ref, sku, quantity });
   }
   lookup(ref: string) {

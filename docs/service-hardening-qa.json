@@ -1,0 +1,282 @@
+{
+  "scope": "service-hardening-testnet-only",
+  "tests": {
+    "backend": {
+      "passed": 172,
+      "failed": 0
+    },
+    "web": {
+      "passed": 232,
+      "failed": 0
+    },
+    "contracts": {
+      "passed": 12,
+      "failed": 0,
+      "environment": "isolated Ganache; no production chain"
+    },
+    "docs": {
+      "passed": 34,
+      "failed": 0
+    }
+  },
+  "builds": {
+    "backend": true,
+    "circleOpsTypecheck": true,
+    "web": true,
+    "docs": true
+  },
+  "isolatedUi": {
+    "label": "ISOLATED_MOCKED_UI_NOT_PRODUCTION",
+    "checks": [
+      {
+        "ok": true,
+        "name": "Guide CTA 1440"
+      },
+      {
+        "ok": true,
+        "name": "Native guide opens 1440"
+      },
+      {
+        "ok": true,
+        "name": "Guide fills example only 1440"
+      },
+      {
+        "ok": true,
+        "name": "Consent boundary explained 1440"
+      },
+      {
+        "ok": true,
+        "name": "Guide returns to form 1440"
+      },
+      {
+        "ok": true,
+        "name": "Tap help opens 1440"
+      },
+      {
+        "ok": true,
+        "name": "Tooltip within viewport 1440"
+      },
+      {
+        "ok": true,
+        "name": "Escape closes tooltip 1440"
+      },
+      {
+        "ok": true,
+        "name": "Guest cannot execute 1440"
+      },
+      {
+        "ok": true,
+        "name": "Mobile layout 1440"
+      },
+      {
+        "ok": true,
+        "name": "Missing SDK credential fail closed 1440"
+      },
+      {
+        "ok": true,
+        "name": "No live lending 1440"
+      },
+      {
+        "ok": true,
+        "name": "No fiat charge 1440"
+      },
+      {
+        "ok": true,
+        "name": "Guide CTA 390"
+      },
+      {
+        "ok": true,
+        "name": "Native guide opens 390"
+      },
+      {
+        "ok": true,
+        "name": "Guide fills example only 390"
+      },
+      {
+        "ok": true,
+        "name": "Consent boundary explained 390"
+      },
+      {
+        "ok": true,
+        "name": "Guide returns to form 390"
+      },
+      {
+        "ok": true,
+        "name": "Tap help opens 390"
+      },
+      {
+        "ok": true,
+        "name": "Tooltip within viewport 390"
+      },
+      {
+        "ok": true,
+        "name": "Escape closes tooltip 390"
+      },
+      {
+        "ok": true,
+        "name": "Guest cannot execute 390"
+      },
+      {
+        "ok": true,
+        "name": "Mobile layout 390"
+      },
+      {
+        "ok": true,
+        "name": "Missing SDK credential fail closed 390"
+      },
+      {
+        "ok": true,
+        "name": "No live lending 390"
+      },
+      {
+        "ok": true,
+        "name": "No fiat charge 390"
+      },
+      {
+        "ok": true,
+        "name": "No runtime errors"
+      }
+    ],
+    "errors": [],
+    "productionWalletOrPaymentUsed": false
+  },
+  "productionReadOnly": {
+    "label": "READ_ONLY_PRODUCTION_BACKEND",
+    "productionFundsMoved": false,
+    "checks": [
+      {
+        "path": "/api/health",
+        "http": 200,
+        "chainId": 5042002
+      },
+      {
+        "path": "/api/account/service-availability",
+        "http": 200,
+        "payload": {
+          "realPurchasesEnabled": false,
+          "lotsEnabled": false,
+          "state": "paused",
+          "message": "Purchases are temporarily unavailable. Browse the catalogue or use the separate testnet rehearsal.",
+          "testnetRehearsalEnabled": true,
+          "checkedAt": null,
+          "balanceVerified": false,
+          "mainnetEnabled": false
+        }
+      },
+      {
+        "path": "/api/account/finance-capabilities",
+        "http": 200,
+        "payload": {
+          "network": "arc-testnet",
+          "chainId": 5042002,
+          "mainnetEnabled": false,
+          "earn": {
+            "mode": "discovery-only",
+            "configured": true,
+            "executionEnabled": false,
+            "reason": "No verified vault, current APY or human-signing execution adapter is installed."
+          },
+          "borrow": {
+            "mode": "calculator-only",
+            "configured": false,
+            "executionEnabled": false,
+            "reason": "No verified market, oracle or collateral transaction adapter is installed."
+          },
+          "onramp": {
+            "mode": "setup-required",
+            "configured": false,
+            "executionEnabled": false,
+            "reason": "Hosted sessions require provider verification, a matching signed-in wallet and explicit user action."
+          },
+          "swap": {
+            "executionEnabled": false,
+            "reason": "Human signing and network/token route verification required."
+          },
+          "bridge": {
+            "executionEnabled": false,
+            "reason": "Destination and settlement route verification required."
+          },
+          "unifiedBalance": {
+            "executionEnabled": false,
+            "reason": "Wallet and Gateway balances must be fetched and verified separately."
+          }
+        }
+      },
+      {
+        "path": "/api/account/earn-discovery",
+        "http": 200,
+        "payload": {
+          "mode": "sdk-metadata",
+          "network": "arc-testnet",
+          "chainId": 5042002,
+          "vaults": [
+            {
+              "chain": "Arc_Testnet",
+              "name": "EarnKit USDC Vault (Arc Testnet)",
+              "asset": "USDC",
+              "vaultAddress": "0xaabbef1d3971c710276ed41ec791bbe14cdb8e88",
+              "address": "0xaabbef1d3971c710276ed41ec791bbe14cdb8e88",
+              "executionEnabled": false,
+              "currentYieldVerified": false
+            },
+            {
+              "chain": "Arc_Testnet",
+              "name": "MockMorphoVault (Arc Testnet)",
+              "asset": "USDC",
+              "vaultAddress": "0x8f2d33b5d4b9b5f02df635ae308f7b4c9da8d2dc",
+              "address": "0x8f2d33b5d4b9b5f02df635ae308f7b4c9da8d2dc",
+              "executionEnabled": false,
+              "currentYieldVerified": false
+            }
+          ],
+          "executionEnabled": false,
+          "currentYieldVerified": false,
+          "fetchedAt": 1791043030478,
+          "message": "SDK-provided testnet metadata. APY, security, liquidity and execution are not verified."
+        }
+      },
+      {
+        "path": "/api/account/operator/runs",
+        "http": 401
+      },
+      {
+        "path": "/api/launch-readiness",
+        "http": 200,
+        "mainnetEnabled": false
+      }
+    ]
+  },
+  "backendDeployment": {
+    "release": "backend-service-hardening-20261003",
+    "health": "ok",
+    "privateOperatorHistoryHttp": 401,
+    "sqliteIntegrity": "ok",
+    "rollbackPrepared": true,
+    "protectedConfigChanged": false,
+    "sourceArchiveSha256": "1a0994b9b830f867151b2c7860fe9b23110a041ea55f69539acdc7c1ead6bfed"
+  },
+  "publication": {
+    "backend": "deployed and read-only checked",
+    "web": "prepared; latest Vercel daily deployment quota blocks new UI release",
+    "docs": "prepared; latest Vercel daily deployment quota blocks new guide release",
+    "remoteCI": "workflow prepared; result not asserted"
+  },
+  "financialBoundaries": {
+    "mainnetEnabled": false,
+    "realSupplierInvoiceCreated": false,
+    "productionFundsMoved": false,
+    "supplierBalanceMappingVerified": false,
+    "borrowExecution": false,
+    "onrampKeyConfigured": false,
+    "earnExecution": false,
+    "contractSecurityAudited": false,
+    "authenticatedProductionCheckoutVerifiedInThisPhase": false
+  },
+  "remaining": [
+    "Verified procurement balance endpoint/schema adapter and actual provider fulfillment/refunds/reservation reconciliation",
+    "Authentic signed-in owner checkout and retry delivery recording",
+    "Independent security review and credential rotation",
+    "Production network/custody/withdrawal/liability gates",
+    "Real external business pilot and sub-three-minute video"
+  ]
+}

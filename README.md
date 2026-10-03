@@ -71,8 +71,10 @@ See `submission/DEMO-SCRIPT.md`, `submission/READINESS.md` and the public Circle
 There is no independent contract/security audit. Backend and frontend dependency audits retain low-severity elliptic propagation; broader SDK branches need review before production use. Rotate credentials previously disclosed in chat before a production/mainnet launch.
 
 
-## Buyer onboarding and financial journal
+## Buyer onboarding, agent and financial safety
 
-Open Getting Started in the account workspace for the EN/RU buyer/reseller journey, then Budget, Shop, Orders and Financial Journal. Saved prepaid Shop caps are atomic; manual diary entries never change the ledger. Journal text is server-encrypted at rest. The educational coach shares question + numeric aggregates only after explicit consent and has no tools.
+The workspace groups Home, Shop, Account and Assistant. The bounded Business Operator can inspect funds and saved limits, search catalogue options, request a quote and complete an explicitly permitted non-redeemable test order. Interactive guidance and field help do not grant spending authority. Journal entries do not change the ledger.
 
-Source tests: backend 119, web 147, docs 27. New backend publication is currently blocked by VPS SSH timeout; AppRoute read-only catalog returned HTTP 403. UI previews are simulated and read-only during outages. Do not claim live journal persistence, AppRoute fulfillment or mainnet activation until verified. See submission/ONBOARDING-RELEASE.md and submission/MAINNET-READINESS.md.
+Service hardening adds a fail-closed procurement reserve gate, atomic outstanding holds, invoice-before-payment protection and original-order recovery. The live procurement balance adapter and real fulfillment are not yet verified: real purchasing stays disabled. Finance provides read-only testnet Earn metadata, scenario calculations and an unverified Onramp gate, not enabled lending or investment.
+
+Source checks: **172 backend, 232 web, 12 local-chain contract and 34 docs tests**. UI QA is isolated/mocked; no real funds were moved. These checks are not a financial/security audit. Latest app/docs publication is pending the Vercel deployment quota reset. See [service hardening](docs/service-hardening.md), [release evidence](docs/service-hardening-qa.json) and [mainnet decision](submission/NEXT-STEPS.md).

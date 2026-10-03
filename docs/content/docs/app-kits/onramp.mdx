@@ -1,10 +1,12 @@
 ---
 title: "Fiat Onramp"
-description: "A hosted integration boundary, not a card-payment promise."
+description: "A hosted integration boundary, not an enabled card-payment promise."
 ---
 
-The preview shows card and Apple Pay options without collecting payment-card details or charging a card. Hosted session creation requires server-side Circle credentials, onboarding and validated configuration.
+Open **Account → Finance → Onramp** to see configuration status. No card details are collected in Mercenta. A missing server key or unverified integration disables hosted session creation, not just the UI button. The separate test-USDC funding route is not a fiat onramp.
 
-Card/Apple Pay availability and testnet compatibility depend on the provider's supported routes. Real fiat must not be collected for valueless testnet assets. Never assume a fiat onramp directly mints supported test USDC on Arc.
+Hosted session creation requires server-side Circle credentials and `ONRAMP_VERIFIED=true` after onboarding and route validation. Currently the protected configuration has no Onramp key; no fiat payment or hosted session was created during this release.
+
+Card and wallet availability depend on supported provider routes. Real fiat must not be collected for valueless testnet assets. Never assume a fiat route directly funds supported test USDC on Arc.
 
 Before enabling account funding: verify the hosted schema, allowed origins, destination binding, durable event replay protection and authoritative destination credit. A client `onDepositSettled` event is untrusted. Until these checks pass, Onramp remains disabled as an account top-up method.

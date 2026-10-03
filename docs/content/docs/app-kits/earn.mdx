@@ -1,8 +1,12 @@
 ---
-title: "Earn sandbox"
-description: "Understand yield without moving account funds."
+title: "Earn discovery and planning"
+description: "Inspect testnet SDK metadata. Calculate scenarios without moving funds."
 ---
 
-The treasury lab uses 5.4% APY as a labelled calculation assumption, not current or guaranteed live yield. Sandbox deposit and withdrawal affect only a separate per-session treasury model.
+Open **Account → Finance → Earn**. Set a principal, your own APY assumption and a period for a labelled estimate. The initial APY assumption is zero. No live return, available balance or guaranteed income is invented.
 
-Customer account deposits do not earn interest automatically. Earn discovery may query the installed SDK, but unavailable vault discovery returns unavailable data rather than fabricated APY. Before live execution, verify vault addresses, network support, user signatures, receipts and risk disclosures.
+**Discover testnet vaults** queries the installed Circle SDK through the backend. The public result includes only Arc Testnet names, assets and validated addresses, with a one-minute metadata cache. Discovery was checked without an optional Circle API key. Two returned addresses had bytecode on chain 5042002; one is explicitly named a mock vault. This is not a contract audit, liquidity check or current-yield verification.
+
+APY and raw provider assertions are not passed through as verified data. Discovery failure is shown as unavailable, not as a successful financial operation. SDK metadata does not authorize deposits or withdrawals. Execution remains disabled.
+
+Customer prepaid funds do not earn interest automatically. Before live Earn, verify supported production network, vault security, fresh rates and liquidity, allowance limits, owner signing, deposit/withdrawal receipts and risk disclosures. Do not move real money to a testnet vault.

@@ -1,3 +1,4 @@
+import {startProcurementMonitor,refreshProcurementHealth,reserveProcurement,procurementHealth} from './services/procurement-health.js';
 import {registerOperator} from './routes/agent-operator.js';
 import {registerCatalogTestCheckout} from './routes/catalog-test-checkout.js';
 import {registerAssistantPreview} from './routes/assistant-preview.js';
@@ -40,7 +41,7 @@ export async function buildServer(c: Config, products?: Product[]) {
   await app.register(rateLimit, { max: 60, timeWindow: "1 minute" });
   const db = openDb(c.DATABASE_PATH),
     catalog = products ?? loadProducts(c.CATALOG_QUOTES_PATH),
-    node = new SupplyNode(c),
+    node = new SupplyNode(c, async (ref,cost) => { await refreshProcurementHealth(db,c); return reserveProcurement(db,ref,cost); },()=>procurementHealth(db).open),
     orders = new Orders(db, c, catalog, node);
   registerResilience(app, db, c);
   registerAuthRoutes(app,db,c);
@@ -54,6 +55,7 @@ export async function buildServer(c: Config, products?: Product[]) {
   registerAgentChat(app, db, c);
   registerOperator(app, db, c);
   registerAssistantPreview(app, db, c);
+  const stopProcurement = startProcurementMonitor(db,c);
   const stop = startReconciler(db, orders, node);
   app.setErrorHandler((e, _req, reply) => {
     const message = e instanceof Error ? e.message : "REQUEST_REJECTED";
@@ -84,6 +86,7 @@ export async function buildServer(c: Config, products?: Product[]) {
   });
   app.addHook("onClose", async () => {
     stop();
+    stopProcurement();
     db.close();
   });
   return app;

@@ -1,1 +1,15 @@
-{"name":"mercenta-profit-vault-testnet","private":true,"version":"0.1.0","scripts":{"compile":"node scripts/compile.cjs","test":"node --test test/vault.test.cjs"},"devDependencies":{"@openzeppelin/contracts":"5.4.0","solc":"0.8.28","ganache":"7.9.2","viem":"^2.57.1"}}
+{
+  "name": "mercenta-profit-vault-testnet",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "compile": "node scripts/compile.cjs",
+    "test": "node --test test/*.test.cjs"
+  },
+  "devDependencies": {
+    "@openzeppelin/contracts": "5.4.0",
+    "solc": "0.8.28",
+    "ganache": "7.9.2",
+    "viem": "^2.57.1"
+  }
+}

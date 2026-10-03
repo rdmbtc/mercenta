@@ -20,6 +20,7 @@ export async function mintOnrampSession(
   actor: string,
   address: string,
 ) {
+  if (c.ONRAMP_VERIFIED !== "true") throw new Error("ONRAMP_VERIFICATION_REQUIRED");
   if (!c.ONRAMP_API_KEY) throw new Error("ONRAMP_NOT_CONFIGURED");
   const server = createAppServerKit({
     onramp: {
