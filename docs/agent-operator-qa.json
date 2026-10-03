@@ -1,0 +1,271 @@
+{
+  "scope": "Bounded Business Operator, testnet only",
+  "backendRelease": "backend-agent-operator-20261003-polished",
+  "webDeployment": "mercenta-5p834d95m-drrdms-projects.vercel.app",
+  "tests": {
+    "backendLocal": {
+      "passed": 150,
+      "failed": 0
+    },
+    "backendRelease": {
+      "passed": 149,
+      "failed": 0,
+      "difference": "Prior deposit-self-guard.test.ts exists in repo/local test suite but not previous immutable backend release; runtime guard unchanged."
+    },
+    "web": {
+      "passed": 221,
+      "failed": 0
+    },
+    "docs": {
+      "passed": 34,
+      "failed": 0
+    }
+  },
+  "builds": {
+    "backend": true,
+    "circleOpsTypecheck": true,
+    "web": true,
+    "docs": true
+  },
+  "deployedGuestChecks": {
+    "checks": [
+      {
+        "name": "Operator renders 1440",
+        "ok": true
+      },
+      {
+        "name": "Guest goal draft 1440",
+        "ok": true
+      },
+      {
+        "name": "Guest tools disabled 1440",
+        "ok": true
+      },
+      {
+        "name": "Guest delegation cannot execute 1440",
+        "ok": true
+      },
+      {
+        "name": "Explicit one-order scope 1440",
+        "ok": true
+      },
+      {
+        "name": "No horizontal overflow 1440",
+        "ok": true
+      },
+      {
+        "name": "Readable heading hierarchy 1440",
+        "ok": true
+      },
+      {
+        "name": "Compact consent control 1440",
+        "ok": true
+      },
+      {
+        "name": "Theme tokens 1440",
+        "ok": true,
+        "panelBg": "rgb(255, 255, 255)",
+        "appBg": "#fff"
+      },
+      {
+        "name": "Read-only help retained 1440",
+        "ok": true
+      },
+      {
+        "name": "Operator renders 390",
+        "ok": true
+      },
+      {
+        "name": "Guest goal draft 390",
+        "ok": true
+      },
+      {
+        "name": "Guest tools disabled 390",
+        "ok": true
+      },
+      {
+        "name": "Guest delegation cannot execute 390",
+        "ok": true
+      },
+      {
+        "name": "Explicit one-order scope 390",
+        "ok": true
+      },
+      {
+        "name": "No horizontal overflow 390",
+        "ok": true
+      },
+      {
+        "name": "Readable heading hierarchy 390",
+        "ok": true
+      },
+      {
+        "name": "Compact consent control 390",
+        "ok": true
+      },
+      {
+        "name": "Theme tokens 390",
+        "ok": true,
+        "panelBg": "rgb(255, 255, 255)",
+        "appBg": "#fff"
+      },
+      {
+        "name": "Read-only help retained 390",
+        "ok": true
+      },
+      {
+        "name": "Catalogue retains 24 immediate cards",
+        "ok": true
+      },
+      {
+        "name": "Artwork-first unchanged",
+        "ok": true
+      },
+      {
+        "name": "Guest operator API refuses private history",
+        "ok": true
+      },
+      {
+        "name": "No JS errors",
+        "ok": true
+      },
+      {
+        "name": "No production mutations or payments",
+        "ok": true
+      }
+    ],
+    "errors": [],
+    "mutations": [],
+    "authenticatedProductionExecution": false
+  },
+  "unauthenticatedMutationRefusal": [
+    {
+      "path": "/api/account/operator/runs",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/account/operator/runs/12345678-1234-4234-8234-123456789012/advance",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/account/operator/runs/12345678-1234-4234-8234-123456789012/confirm",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/account/operator/runs/12345678-1234-4234-8234-123456789012/cancel",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/account/operator/runs/12345678-1234-4234-8234-123456789012/resume",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    }
+  ],
+  "modelProbe": {
+    "label": "ISOLATED_IN_MEMORY_LEDGER_REAL_MODEL_AND_READ_ONLY_CATALOGUE",
+    "status": "EXECUTED",
+    "error": null,
+    "provider": "groq",
+    "step": 3,
+    "tools": [
+      {
+        "tool": "task.authorize",
+        "status": "CHECKED",
+        "provider": null
+      },
+      {
+        "tool": "account.balance",
+        "status": "CHECKED",
+        "provider": null
+      },
+      {
+        "tool": "budget.read",
+        "status": "CHECKED",
+        "provider": null
+      },
+      {
+        "tool": "catalog.search",
+        "status": "CHECKED",
+        "provider": null
+      },
+      {
+        "tool": "catalog.options",
+        "status": "CHECKED",
+        "provider": "groq"
+      },
+      {
+        "tool": "checkout.quote",
+        "status": "CHECKED",
+        "provider": "groq"
+      },
+      {
+        "tool": "checkout.confirm",
+        "status": "VERIFIED",
+        "provider": null
+      },
+      {
+        "tool": "receipt.verify",
+        "status": "VERIFIED",
+        "provider": null
+      }
+    ],
+    "receivedProducts": 1298,
+    "orderCount": 1,
+    "amountUnits": "1000000",
+    "nonRedeemable": true,
+    "remainingFixtureBalance": "9000000",
+    "productionLedgerTouched": false,
+    "supplierOrderCalls": 0,
+    "productionExecutionProof": false
+  },
+  "readiness": {
+    "network": "arc-testnet",
+    "chainId": 5042002,
+    "mainnetEnabled": false,
+    "liveGoodsEnabled": false,
+    "procurement": "Mercenta catalogue connected; real procurement and reconciliation remain disabled",
+    "gates": [
+      {
+        "id": "supplier",
+        "status": "blocked",
+        "detail": "Verify current stock/price mapping, authorized procurement, order lookup, delivery and refunds before enabling real goods"
+      },
+      {
+        "id": "payments",
+        "status": "blocked",
+        "detail": "Production chain/token/merchant allowlist, fresh restricted signer and reviewed deposit/withdrawal reconciliation"
+      },
+      {
+        "id": "security",
+        "status": "blocked",
+        "detail": "Rotate exposed credentials, contract review, backups/restore drill and independent financial security review"
+      },
+      {
+        "id": "operations",
+        "status": "blocked",
+        "detail": "Monitoring, support contacts, refund policy, terms/privacy and jurisdiction/compliance review"
+      }
+    ]
+  },
+  "documentationDeployment": {
+    "published": false,
+    "contentAndBuildReady": true,
+    "blocker": "Vercel api-deployments-free-per-day (>100); provider advised retry after 24 hours. No paid plan change, retry loop or quota bypass attempted."
+  },
+  "productionAuthenticatedPurchaseVerified": false,
+  "externalTractionVerified": false,
+  "circleFinalSettlementVerifiedThisPhase": false,
+  "productionCredentialsChanged": false,
+  "productionMerchantWalletChanged": false,
+  "productionPurchaseCreated": false,
+  "realSupplierOrdersCreated": 0
+}

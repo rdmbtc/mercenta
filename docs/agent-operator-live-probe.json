@@ -1,0 +1,57 @@
+{
+  "label": "ISOLATED_IN_MEMORY_LEDGER_REAL_MODEL_AND_READ_ONLY_CATALOGUE",
+  "status": "EXECUTED",
+  "error": null,
+  "provider": "groq",
+  "step": 3,
+  "tools": [
+    {
+      "tool": "task.authorize",
+      "status": "CHECKED",
+      "provider": null
+    },
+    {
+      "tool": "account.balance",
+      "status": "CHECKED",
+      "provider": null
+    },
+    {
+      "tool": "budget.read",
+      "status": "CHECKED",
+      "provider": null
+    },
+    {
+      "tool": "catalog.search",
+      "status": "CHECKED",
+      "provider": null
+    },
+    {
+      "tool": "catalog.options",
+      "status": "CHECKED",
+      "provider": "groq"
+    },
+    {
+      "tool": "checkout.quote",
+      "status": "CHECKED",
+      "provider": "groq"
+    },
+    {
+      "tool": "checkout.confirm",
+      "status": "VERIFIED",
+      "provider": null
+    },
+    {
+      "tool": "receipt.verify",
+      "status": "VERIFIED",
+      "provider": null
+    }
+  ],
+  "receivedProducts": 1298,
+  "orderCount": 1,
+  "amountUnits": "1000000",
+  "nonRedeemable": true,
+  "remainingFixtureBalance": "9000000",
+  "productionLedgerTouched": false,
+  "supplierOrderCalls": 0,
+  "productionExecutionProof": false
+}

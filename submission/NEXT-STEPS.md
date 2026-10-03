@@ -6,6 +6,12 @@
 
 The catalogue is browseable and platform artwork is available for matching brands. The test checkout is a separate flow: 1.000000 test USDC per unit, up to 10 units, with verified prepaid balance, explicit consent and non-redeemable saved test artifacts. Catalogue USD prices are indicative, not conversion or payment quotes.
 
+## Business Operator implemented
+
+Assistant now runs a model-selected catalogue/option/quote tool loop with review or explicitly bounded one-order test delegation. Durable task IDs, cancellation, lease/step limits, saved delivery and current budget/balance checks are enforced server-side. A live Groq + received-catalogue cycle passed against an isolated fixture ledger; it is not production execution or external traction proof. Details: `docs/agent-operator.md` and `docs/agent-operator-live-probe.json`.
+
+Public Assistant guide source and build are updated. Separate docs deployment was blocked by the Vercel daily deployment quota; publish the prepared docs release after quota reset. The app and backend operator releases are already active.
+
 ## Close the hackathon demo first
 
 1. Rehearse a genuine owner-authenticated test purchase end to end: budget, verified balance, exact quote, explicit confirmation, saved test delivery and order history. Record errors/retry recovery honestly. Guest UI checks and local mocked financial tests are not proof of a signed-in production transaction.
