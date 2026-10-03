@@ -15,13 +15,14 @@ import { ZodError } from "zod";
 import { loadConfig, type Config } from "./config.js";
 import { openDb } from "./db.js";
 import { loadProducts, type Product } from "./services/catalog.js";
-import { SupplyNode } from "./services/fulfillment/index.js";
+import { SupplyNode, type FulfillmentPort } from "./services/fulfillment/index.js";
+import type { DB } from "./db.js";
 import { Orders } from "./services/orders.js";
 import { startReconciler } from "./services/fulfillment/reconciler.js";
 import { registerRoutes } from "./routes/index.js";
 import {registerAccountRoutes} from "./routes/account.js";
 import {registerResilience} from "./services/resilience.js";
-export async function buildServer(c: Config, products?: Product[]) {
+export async function buildServer(c: Config, products?: Product[], fulfillmentFactory?: (db:DB)=>FulfillmentPort) {
   const app = Fastify({
     logger: {
       level: "info",
@@ -41,7 +42,7 @@ export async function buildServer(c: Config, products?: Product[]) {
   await app.register(rateLimit, { max: 60, timeWindow: "1 minute" });
   const db = openDb(c.DATABASE_PATH),
     catalog = products ?? loadProducts(c.CATALOG_QUOTES_PATH),
-    node = new SupplyNode(c, async (ref,cost) => { await refreshProcurementHealth(db,c); return reserveProcurement(db,ref,cost); },()=>procurementHealth(db).open),
+    node = fulfillmentFactory?.(db) ?? new SupplyNode(c, async (ref,cost) => { await refreshProcurementHealth(db,c); return reserveProcurement(db,ref,cost); },()=>procurementHealth(db).open),
     orders = new Orders(db, c, catalog, node);
   registerResilience(app, db, c);
   registerAuthRoutes(app,db,c);
@@ -68,7 +69,7 @@ export async function buildServer(c: Config, products?: Product[]) {
             ? 404
             : message.includes("CONFLICT") || message === "REQUEST_IN_PROGRESS"
               ? 409
-              : message.includes("NOT_CONFIGURED")
+              : message.includes("NOT_CONFIGURED") || ["SERVICE_PURCHASES_PAUSED","SERVICE_RESERVE_LIMIT"].includes(message)
                 ? 503
                 : 400;
     reply

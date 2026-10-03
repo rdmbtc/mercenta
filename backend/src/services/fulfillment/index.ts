@@ -8,7 +8,7 @@ import type { Config } from "../../config.js";
 export function requestRef(secret: string, orderId: string) {
   return createHmac("sha256", secret)
     .update("mercenta:v1:" + orderId)
-    .digest("hex");
+    .digest("hex").slice(0,40);
 }
 export function encryptCode(code: string, key: string) {
   const iv = randomBytes(12),
@@ -34,58 +34,30 @@ export function decryptCode(payload: string, key: string) {
   );
 }
 export type SupplyResult =
-  | { status: "COMPLETED"; code: string }
+  | { status: "COMPLETED"; code: string; chargedUsdUnits?: string }
   | { status: "NOT_EXECUTED" | "PENDING" | "UNKNOWN" };
-export class SupplyNode {
-  constructor(private c: Config, private fundingCheck?: (ref: string, costUsdUnits: string) => Promise<boolean>, private fundingAvailable?: () => boolean) {}
-  get configured() {
-    return (
-      this.c.ENABLE_FULFILLMENT === "true" &&
-      this.c.FULFILLMENT_CONTRACT_VERIFIED === "true" &&
-      !!this.c.SUPPLIER_API_URL &&
-      !!this.c.SUPPLIER_API_KEY
-    );
-  }
-  get ready() { return this.configured && this.fundingAvailable?.() === true; }
-  private async call(
-    path: string,
-    method: string,
-    body?: object,
-  ): Promise<SupplyResult> {
-    if (!(method === "GET" ? this.configured : this.ready)) throw new Error("SUPPLY_NODE_NOT_CONFIGURED");
-    try {
-      const r = await fetch(new URL(path, this.c.SUPPLIER_API_URL), {
-        method,
-        headers: {
-          Authorization: `Bearer ${this.c.SUPPLIER_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: body ? JSON.stringify(body) : undefined,
-        redirect: "error",
-        signal: AbortSignal.timeout(10000),
-      });
-      if (!r.ok) return { status: "UNKNOWN" };
-      const v = (await r.json()) as { status?: string; code?: string };
-      if (
-        v.status === "COMPLETED" &&
-        typeof v.code === "string" &&
-        v.code.length <= 10000
-      )
-        return { status: "COMPLETED", code: v.code };
-      if (v.status === "NOT_EXECUTED" || v.status === "PENDING")
-        return { status: v.status };
-      return { status: "UNKNOWN" };
-    } catch {
-      return { status: "UNKNOWN" };
-    }
-  }
-  async purchase(ref: string, sku: string, quantity: number, costUsdUnits?: string) {
-    if (!this.ready) throw Error("SUPPLY_NODE_NOT_CONFIGURED");
-    if (!costUsdUnits || !this.fundingCheck) throw Error("PROCUREMENT_COST_UNVERIFIED");
-    if (!(await this.fundingCheck(ref, costUsdUnits))) return {status:"UNKNOWN"} as const;
-    return this.call("/orders", "POST", { request_ref: ref, sku, quantity });
-  }
-  lookup(ref: string) {
-    return this.call("/orders/by-reference/" + encodeURIComponent(ref), "GET");
-  }
+
+export interface FulfillmentPort {
+ readonly configured:boolean;
+ readonly ready:boolean;
+ validateQuote?(sku:string,quantity:number,costUsdUnits:string):void;
+ verifyQuote?(sku:string,quantity:number,costUsdUnits:string):Promise<void>;
+ purchase(ref:string,sku:string,quantity:number,costUsdUnits?:string):Promise<SupplyResult>;
+ lookup(ref:string):Promise<SupplyResult>;
+}
+/** No guessed generic HTTP protocol. Execution requires an explicitly supplied verified adapter. */
+export class SupplyNode implements FulfillmentPort {
+ constructor(private c:Config,private fundingCheck?:(ref:string,costUsdUnits:string)=>Promise<boolean>,private fundingAvailable?:()=>boolean,private delegate?:FulfillmentPort){}
+ get configured(){return this.c.ENABLE_FULFILLMENT==='true'&&this.c.FULFILLMENT_CONTRACT_VERIFIED==='true'&&!!this.c.SUPPLIER_API_URL&&!!this.c.SUPPLIER_API_KEY}
+ get ready(){return this.configured&&this.delegate?.ready===true&&this.fundingAvailable?.()===true}
+ validateQuote(sku:string,quantity:number,cost:string){this.delegate?.validateQuote?.(sku,quantity,cost)}
+ async verifyQuote(sku:string,quantity:number,cost:string){await this.delegate?.verifyQuote?.(sku,quantity,cost)}
+ async purchase(ref:string,sku:string,quantity:number,costUsdUnits?:string):Promise<SupplyResult>{
+  if(!this.configured)throw Error('SUPPLY_NODE_NOT_CONFIGURED');
+  if(!costUsdUnits||!this.fundingCheck)throw Error('PROCUREMENT_COST_UNVERIFIED');
+  if(!this.ready||!this.delegate)throw Error('SUPPLY_NODE_NOT_CONFIGURED');
+  if(!(await this.fundingCheck(ref,costUsdUnits)))return {status:'UNKNOWN'};
+  return this.delegate.purchase(ref,sku,quantity,costUsdUnits);
+ }
+ async lookup(ref:string):Promise<SupplyResult>{return this.configured&&this.delegate?.configured?this.delegate.lookup(ref):{status:'UNKNOWN'}}
 }

@@ -80,7 +80,7 @@ export function registerRoutes(
       onramp: c.ONRAMP_API_KEY ? "configured-not-verified" : "not-configured",
       agent: modelAvailability(c).configured ? "model-tools-available" : "model-unconfigured",
       fulfillment:
-        publicProcurementHealth(db,c).realPurchasesEnabled ? "guarded-not-mainnet" : "paused",
+        publicProcurementHealth(db,c,orders.ready).realPurchasesEnabled ? "guarded-not-mainnet" : "paused",
     },
     moduleTelemetry: "not-configured",
   }));
@@ -255,7 +255,7 @@ export function registerRoutes(
       b = z.object({ approve: z.boolean() }).parse(req.body);
     return orders.resolveApproval(p.id, a, b.approve);
   });
-  app.post("/api/orders", (req) => {
+  app.post("/api/orders", async (req) => {
     const a = actor(req, c);
     if (!a.startsWith("wallet:")) throw new Error("WALLET_AUTH_REQUIRED");
     const b = z
@@ -266,7 +266,7 @@ export function registerRoutes(
       })
       .parse(req.body);
     return orders.public(
-      orders.createIdempotent(a, b.requestId, b.productId, b.quantity),
+      await orders.createVerified(a, b.requestId, b.productId, b.quantity),
     );
   });
   app.get("/api/orders/:id", (req) => {
