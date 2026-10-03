@@ -1,0 +1,341 @@
+{
+  "checks": [
+    {
+      "name": "one primary heading",
+      "passed": true
+    },
+    {
+      "name": "desktop no overflow",
+      "passed": true
+    },
+    {
+      "name": "Geist matches workspace",
+      "passed": true
+    },
+    {
+      "name": "no marketing object",
+      "passed": true
+    },
+    {
+      "name": "desktop sidebar",
+      "passed": true
+    },
+    {
+      "name": "task links present",
+      "passed": true
+    },
+    {
+      "name": "search returns real results",
+      "passed": true
+    },
+    {
+      "name": "Escape closes search",
+      "passed": true
+    },
+    {
+      "name": "search trigger focus restored",
+      "passed": true
+    },
+    {
+      "name": "keyboard search navigates",
+      "passed": true
+    },
+    {
+      "name": "new budget guide",
+      "passed": true
+    },
+    {
+      "name": "current page marked",
+      "passed": true
+    },
+    {
+      "name": "active section expanded",
+      "passed": true
+    },
+    {
+      "name": "guide no overflow",
+      "passed": true
+    },
+    {
+      "name": "article links use brand accent",
+      "passed": true
+    },
+    {
+      "name": "headings use neutral ink",
+      "passed": true
+    },
+    {
+      "name": "light theme applied",
+      "passed": true
+    },
+    {
+      "name": "theme persists",
+      "passed": true
+    },
+    {
+      "name": "phone no overflow",
+      "passed": true
+    },
+    {
+      "name": "sidebar hidden on phone",
+      "passed": true
+    },
+    {
+      "name": "mobile release notice keeps readable width",
+      "passed": true
+    },
+    {
+      "name": "mobile menu available",
+      "passed": true
+    },
+    {
+      "name": "native modal menu open",
+      "passed": true
+    },
+    {
+      "name": "Escape closes menu",
+      "passed": true
+    },
+    {
+      "name": "menu focus restored",
+      "passed": true
+    },
+    {
+      "name": "menu closes after navigation",
+      "passed": true
+    },
+    {
+      "name": "mobile guide no overflow",
+      "passed": true
+    },
+    {
+      "name": "360px no overflow",
+      "passed": true
+    },
+    {
+      "name": "phone search no overflow",
+      "passed": true
+    },
+    {
+      "name": "phone close search works",
+      "passed": true
+    },
+    {
+      "name": "route /docs",
+      "passed": true
+    },
+    {
+      "name": "route /docs/components",
+      "passed": true
+    },
+    {
+      "name": "route /docs/customization",
+      "passed": true
+    },
+    {
+      "name": "route /docs/deployment",
+      "passed": true
+    },
+    {
+      "name": "route /docs/quickstart",
+      "passed": true
+    },
+    {
+      "name": "route /docs/theming",
+      "passed": true
+    },
+    {
+      "name": "route /docs/account/dashboard",
+      "passed": true
+    },
+    {
+      "name": "route /docs/account/funds",
+      "passed": true
+    },
+    {
+      "name": "route /docs/account/getting-started",
+      "passed": true
+    },
+    {
+      "name": "route /docs/account/orders",
+      "passed": true
+    },
+    {
+      "name": "route /docs/account/support",
+      "passed": true
+    },
+    {
+      "name": "route /docs/account/transactions",
+      "passed": true
+    },
+    {
+      "name": "route /docs/account/budget",
+      "passed": true
+    },
+    {
+      "name": "route /docs/account/journal",
+      "passed": true
+    },
+    {
+      "name": "route /docs/agents/ai-advisor",
+      "passed": true
+    },
+    {
+      "name": "route /docs/agents/circle-gateway",
+      "passed": true
+    },
+    {
+      "name": "route /docs/agents/machine-checkout",
+      "passed": true
+    },
+    {
+      "name": "route /docs/agents/profit-first",
+      "passed": true
+    },
+    {
+      "name": "route /docs/api-reference/authentication",
+      "passed": true
+    },
+    {
+      "name": "route /docs/api-reference/endpoints",
+      "passed": true
+    },
+    {
+      "name": "route /docs/api-reference/sdks",
+      "passed": true
+    },
+    {
+      "name": "route /docs/app-kits/borrow",
+      "passed": true
+    },
+    {
+      "name": "route /docs/app-kits/earn",
+      "passed": true
+    },
+    {
+      "name": "route /docs/app-kits/onramp",
+      "passed": true
+    },
+    {
+      "name": "route /docs/app-kits/overview",
+      "passed": true
+    },
+    {
+      "name": "route /docs/app-kits/swap",
+      "passed": true
+    },
+    {
+      "name": "route /docs/app-kits/unified-balance",
+      "passed": true
+    },
+    {
+      "name": "route /docs/architecture/arc-settlement",
+      "passed": true
+    },
+    {
+      "name": "route /docs/architecture/order-fsm",
+      "passed": true
+    },
+    {
+      "name": "route /docs/architecture/policy-authority",
+      "passed": true
+    },
+    {
+      "name": "route /docs/catalog/institutional-rails",
+      "passed": true
+    },
+    {
+      "name": "route /docs/guides/funded-test",
+      "passed": true
+    },
+    {
+      "name": "route /docs/guides/guided-commerce",
+      "passed": true
+    },
+    {
+      "name": "route /docs/guides/mainnet-readiness",
+      "passed": true
+    },
+    {
+      "name": "route /docs/guides/resilience",
+      "passed": true
+    },
+    {
+      "name": "route /docs/guides/security",
+      "passed": true
+    },
+    {
+      "name": "route /docs/guides/submission",
+      "passed": true
+    },
+    {
+      "name": "route /docs/guides/testnet-launch",
+      "passed": true
+    },
+    {
+      "name": "route /docs/guides/troubleshooting",
+      "passed": true
+    },
+    {
+      "name": "recovered backend app has no outage banner",
+      "passed": true
+    },
+    {
+      "name": "no page errors",
+      "passed": true
+    },
+    {
+      "name": "no money mutations",
+      "passed": true
+    }
+  ],
+  "passed": 72,
+  "failed": 0,
+  "pageErrors": [],
+  "mutationRequests": [],
+  "authenticatedMoneyFlowTested": false,
+  "unitTestsPassed": 34,
+  "typecheckPassed": true,
+  "productionBuildPassed": true,
+  "publicRoutesChecked": 39,
+  "credentialScan": {
+    "textFiles": 110,
+    "highSignalMatches": 0,
+    "independentAudit": false
+  },
+  "backend": {
+    "release": "backend-onboarding-20261002-reviewed",
+    "testsPassed": 119,
+    "databaseBackupIntegrity": "ok",
+    "databaseIntegrity": "ok",
+    "paidRequests": 0,
+    "routes": [
+      {
+        "url": "https://api.mercenta.xyz/api/health",
+        "status": 200
+      },
+      {
+        "url": "https://app.mercenta.xyz/api/account/catalog-preview",
+        "status": 200,
+        "products": 5,
+        "liveProcurement": false
+      },
+      {
+        "url": "https://app.mercenta.xyz/api/account/workspace",
+        "status": 401
+      },
+      {
+        "url": "https://app.mercenta.xyz/api/account/journal",
+        "status": 401
+      },
+      {
+        "url": "https://api.mercenta.xyz/api/launch-readiness",
+        "status": 200,
+        "mainnetEnabled": false,
+        "liveGoodsEnabled": false
+      }
+    ]
+  },
+  "deployment": "https://mercenta-docs-n39ogz14z-drrdms-projects.vercel.app",
+  "publicSite": "https://docs.mercenta.xyz"
+}

@@ -32,6 +32,7 @@ export function SearchTrigger() {
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
+        aria-label="Search documentation"
         className={cn(
           'flex items-center gap-3 px-4 py-2.5 rounded-lg w-full max-w-md',
           'bg-muted/50 border border-border/50',
@@ -40,7 +41,7 @@ export function SearchTrigger() {
         )}
       >
         <SearchIcon className="w-4 h-4 shrink-0" />
-        <span className="flex-1 text-left">Search documentation...</span>
+        <span className="flex-1 text-left">Search documentation</span>
         <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 rounded bg-background/80 text-xs font-mono text-muted-foreground/60 border border-border/40">
           <span>⌘</span>K
         </kbd>
@@ -86,6 +87,7 @@ function SearchDialog({ onClose }: SearchDialogProps) {
   const { search, setSearch, query } = useDocsSearch({ type: 'fetch' })
   const [selectedIndex, setSelectedIndex] = useState(0)
   const resultsRef = useRef<HTMLUListElement>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
 
   const results = query.data && query.data !== 'empty' ? query.data : []
 
@@ -118,7 +120,7 @@ function SearchDialog({ onClose }: SearchDialogProps) {
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
         setSelectedIndex((prev) => (prev - 1 + results.length) % results.length)
-      } else if (e.key === 'Enter') {
+      } else if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
         e.preventDefault()
         if (results[selectedIndex]) {
           handleSelect(results[selectedIndex].url)
@@ -140,34 +142,16 @@ function SearchDialog({ onClose }: SearchDialogProps) {
     }
   }, [selectedIndex])
 
-  // Prevent body scroll when modal is open
   useEffect(() => {
+    const active = document.activeElement as HTMLElement
+    const overflow = document.body.style.overflow
+    dialogRef.current?.showModal()
     document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = ''
-    }
+    return () => { dialogRef.current?.close(); document.body.style.overflow = overflow; active?.focus() }
   }, [])
 
   return (
-    <div
-      className="fixed inset-0 z-[9999] flex items-start justify-center"
-      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, paddingTop: '10%' }}
-    >
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 dark:bg-black/70"
-        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      {/* Dialog */}
-      <div
-        className="relative w-full max-w-2xl mx-4"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="search-dialog-title"
-      >
+    <dialog ref={dialogRef} className="md-search-dialog" aria-labelledby="search-dialog-title" onCancel={onClose} onClick={e => { if(e.target === e.currentTarget) { const b=e.currentTarget.getBoundingClientRect(); if(e.clientX < b.left || e.clientX > b.right || e.clientY < b.top || e.clientY > b.bottom) onClose() } }}>
         <div className="bg-background border border-border rounded-xl shadow-2xl overflow-hidden">
           <h2 id="search-dialog-title" className="sr-only">Search documentation</h2>
           {/* Search input */}
@@ -183,9 +167,7 @@ function SearchDialog({ onClose }: SearchDialogProps) {
               style={{ outline: 'none', boxShadow: 'none' }}
               autoFocus
             />
-            <kbd className="px-2 py-1 rounded bg-muted text-xs text-muted-foreground font-mono border border-border">
-              ESC
-            </kbd>
+            <button type="button" aria-label="Close search" onClick={onClose} className="md-search-close">×</button>
           </div>
 
           {/* Results */}
@@ -198,6 +180,8 @@ function SearchDialog({ onClose }: SearchDialogProps) {
               <div className="p-8 text-center text-muted-foreground">
                 <p>Searching...</p>
               </div>
+            ) : query.error ? (
+              <div className="p-8 text-center text-muted-foreground"><p>Search is unavailable. Try again or use the navigation.</p></div>
             ) : results.length > 0 ? (
               <ul ref={resultsRef} role="listbox" aria-label="Search results" className="py-2">
                 {results.map((result, index) => {
@@ -261,8 +245,7 @@ function SearchDialog({ onClose }: SearchDialogProps) {
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </dialog>
   )
 }
 
