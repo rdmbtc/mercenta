@@ -1,0 +1,45 @@
+{
+  "scope": "OWNER_SINGLE_REAL_PURCHASE_PREPARATION",
+  "maximumAuthorizedUsd": "1.000000",
+  "paidRequestsSent": 0,
+  "actualSpendUsd": "0.000000",
+  "realOrderConfirmed": false,
+  "mainnetEnabled": false,
+  "financialConfigChanged": false,
+  "newHelpersDeployedToCustomerCheckout": false,
+  "officialContractAvailable": true,
+  "sdkSourceCommit": "404e98d37aa6fc0a212e875452ed64209be23bbf",
+  "actualReadOnlyChecks": {
+    "keyDiagnosticHttp": 200,
+    "catalogueHttp": 200,
+    "productGroupCount": 1298,
+    "accountsHttp": 200,
+    "usdCashReserveAboveTen": true,
+    "itemHttp": 200,
+    "itemPriceUsd": "0.019400",
+    "stockPositive": true,
+    "longOrder": false,
+    "keyControlPlaneHttp": 401,
+    "serverKeyCapVerified": false,
+    "purchasePermissionVerified": false
+  },
+  "pricing": {
+    "cataloguePriceIsFinalQuote": false,
+    "documentedPurchaseMaxPrice": false,
+    "documentedCumulativeKeySpendCap": true,
+    "requiredDedicatedKeyMaximumUsd": "1.000000",
+    "spendCounterResetAllowed": false
+  },
+  "tests": {
+    "backendPassed": 219,
+    "backendFailed": 0,
+    "newOwnerFixtureCases": 27,
+    "newDocumentedTransportFixtureCases": 20,
+    "realGoodsUsedByTests": false
+  },
+  "builds": {
+    "backend": true,
+    "circleOpsTypecheck": true
+  },
+  "mainnetDecision": "NO_GO; no actual paid procurement or production financial/security verification claimed."
+}
