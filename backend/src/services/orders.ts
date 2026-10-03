@@ -68,6 +68,7 @@ export class Orders {
     })();
   }
   create(actor: string, productId: string, quantity: number) {
+    if (!this.supplier.ready) throw new Error("SERVICE_PURCHASES_PAUSED");
     const p = this.products.find((p) => p.id === productId && p.enabled);
     if (!p || !p.cost || !p.supplierSku)
       throw new Error("VERIFIED_SUPPLIER_QUOTE_REQUIRED");

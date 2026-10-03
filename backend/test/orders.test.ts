@@ -116,3 +116,5 @@ test("SQL trigger prevents sealing unbalanced direct inserts", () => {
     db.close();
   }
 });
+
+test('disabled fulfillment blocks a new invoice before any customer payment or order record',()=>{const db=openDb(':memory:'),c=loadConfig({NODE_ENV:'test'}),node=new SupplyNode(c),orders=new Orders(db,c,[{id:'p',name:'Resource',category:'cloud',price:'9.00',cost:'7.00',currency:'USDC',enabled:true,quotedAt:Date.now(),supplierSku:'sku'}],node);assert.throws(()=>orders.create('wallet:0x'+'1'.repeat(40),'p',1),/SERVICE_PURCHASES_PAUSED/);assert.equal((db.prepare('SELECT count(*) n FROM orders').get() as {n:number}).n,0);db.close()});

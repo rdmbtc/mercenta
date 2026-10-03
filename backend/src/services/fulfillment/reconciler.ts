@@ -5,7 +5,7 @@ export function startReconciler(db: DB, orders: Orders, node: SupplyNode) {
   orders.recover();
   let running = false;
   const tick = async () => {
-    if (running || !node.ready) return;
+    if (running || !node.configured) return;
     running = true;
     try {
       const rows = db

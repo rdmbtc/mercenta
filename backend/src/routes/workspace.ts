@@ -1,3 +1,6 @@
+import {earnMetadata} from '../services/app-kit/discovery.js';
+import {publicProcurementHealth} from '../services/procurement-health.js';
+import {financeCapabilities} from '../services/app-kit/capabilities.js';
 import type {FastifyInstance} from 'fastify';
 import type {DB} from '../db.js';
 import type {Config} from '../config.js';
@@ -17,5 +20,8 @@ export function registerWorkspace(app:FastifyInstance,db:DB,c:Config){initWorksp
  app.post('/api/account/journal',req=>{const a=accountActor(req,c);writable();return addNote(db,a,req.body,c.DELIVERY_ENCRYPTION_KEY)});
  app.post('/api/account/journal/coach',async req=>{const a=accountActor(req,c);writable();const b=z.object({question:z.string().trim().min(3).max(600),shareAggregates:z.literal(true),language:z.enum(['en','ru'])}).strict().parse(req.body);if(sensitiveText(b.question))throw new Error('DO_NOT_SHARE_SECRETS');const j=journal(db,a,c.DELIVERY_ENCRYPTION_KEY),u=budgetUsage(db,a),budget=getBudget(db,a);return financialCoach(c,{question:b.question,language:b.language,declaredIncomeUnits:j.declaredIncomeUnits,declaredExpenseUnits:j.declaredExpenseUnits,usage:u,budget:budget?{monthly:budget.monthly,spendBps:budget.spendBps,perOrder:budget.perOrder,daily:budget.daily}:null});});
  // No credentials, balances or unverified operational claims in this public status.
+ app.get('/api/account/service-availability',()=>publicProcurementHealth(db,c));
+ app.get('/api/account/earn-discovery',()=>earnMetadata(c));
+ app.get('/api/account/finance-capabilities',()=>financeCapabilities(c));
  app.get('/api/launch-readiness',()=>({network:'arc-testnet',chainId:5042002,mainnetEnabled:false,liveGoodsEnabled:false,procurement:'Mercenta catalogue connected; real procurement and reconciliation remain disabled',gates:[{id:'supplier',status:'blocked',detail:'Verify current stock/price mapping, authorized procurement, order lookup, delivery and refunds before enabling real goods'},{id:'payments',status:'blocked',detail:'Production chain/token/merchant allowlist, fresh restricted signer and reviewed deposit/withdrawal reconciliation'},{id:'security',status:'blocked',detail:'Rotate exposed credentials, contract review, backups/restore drill and independent financial security review'},{id:'operations',status:'blocked',detail:'Monitoring, support contacts, refund policy, terms/privacy and jurisdiction/compliance review'}]}));
 }

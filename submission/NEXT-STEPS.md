@@ -12,6 +12,14 @@ Assistant now runs a model-selected catalogue/option/quote tool loop with review
 
 Public Assistant guide source and build are updated. Separate docs deployment was blocked by the Vercel daily deployment quota; publish the prepared docs release after quota reset. The app and backend operator releases are already active.
 
+## Hardening release
+
+Source tests pass: 172 backend, 232 web and 12 local-chain contract tests. New operator guidance is actionable and contextual; Finance exposes read-only SDK metadata and honest scenario/configuration boundaries. Procurement requires a verified fresh service balance, $10 post-order reserve, atomic outstanding holds and separately verified real fulfillment. None of this enables real invoices or mainnet.
+
+The actual account endpoint did not expose the required procurement balance. Earn metadata discovery works, but code existence does not establish safe yield. Onramp credentials/route verification and a real Borrow market are absent. Complete those integrations only with evidence; do not convert tests into claims of live money management.
+
+Latest backend hardening has a protected deployment and rollback path. New app/docs publication is still pending Vercel quota reset; local mock previews are not production. See `docs/service-hardening.md` and `docs/service-hardening-qa.json`.
+
 ## Close the hackathon demo first
 
 1. Rehearse a genuine owner-authenticated test purchase end to end: budget, verified balance, exact quote, explicit confirmation, saved test delivery and order history. Record errors/retry recovery honestly. Guest UI checks and local mocked financial tests are not proof of a signed-in production transaction.

@@ -1,3 +1,5 @@
+import {modelAvailability} from '../services/llm-providers.js';
+import {publicProcurementHealth} from '../services/procurement-health.js';
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { createHmac, timingSafeEqual } from "node:crypto";
@@ -73,14 +75,12 @@ export function registerRoutes(
     uptimeSeconds: Math.floor(process.uptime()),
     chainId: 5042002,
     capabilities: {
-      earn: "sandbox-and-sdk-discovery",
-      borrow: "sandbox-no-signer",
+      earn: "sdk-discovery-only-no-signing",
+      borrow: "calculator-only-no-market",
       onramp: c.ONRAMP_API_KEY ? "configured-not-verified" : "not-configured",
-      agent: c.LLM_API_KEY ? "configured-not-verified" : "rules-advisor",
+      agent: modelAvailability(c).configured ? "model-tools-available" : "model-unconfigured",
       fulfillment:
-        c.ENABLE_FULFILLMENT === "true"
-          ? "configured-not-verified"
-          : "disabled",
+        publicProcurementHealth(db,c).realPurchasesEnabled ? "guarded-not-mainnet" : "paused",
     },
     moduleTelemetry: "not-configured",
   }));
