@@ -62,6 +62,7 @@ export interface Catalog {
   generatedAt: string;
   sourceStatus?: string;
   coverage?: string;
+  purchasingEnabled?: false;
 }
 
 const CATEGORY_BY_ID = Object.fromEntries(CATEGORIES.map((c) => [c.id, c])) as Record<CategoryId, Category>;
@@ -197,7 +198,7 @@ function diversify(products: CatalogProduct[]): CatalogProduct[] {
 
 export async function getCatalog(): Promise<Catalog> {
  let sourceStatus='backend-unavailable';
- try {const res=await fetch((process.env.BACKEND_URL??'https://api.mercenta.xyz').replace(/\/$/,'')+'/api/account/supplier-catalog',{signal:AbortSignal.timeout(10000),next:{revalidate:60}});if(res.ok){const feed=await res.json() as {status:string;products:RawProduct[];fetchedAt:string;coverage:string};sourceStatus=feed.status;if(feed.status==='ready'){return {products:diversify(normalizeCatalog(feed.products)),live:true,generatedAt:feed.fetchedAt,sourceStatus,coverage:feed.coverage}}}}catch{/* Never label examples as a successful supplier import. */}
+ try {const res=await fetch((process.env.BACKEND_URL??'https://api.mercenta.xyz').replace(/\/$/,'')+'/api/account/supplier-catalog',{signal:AbortSignal.timeout(10000),next:{revalidate:60}});if(res.ok){const feed=await res.json() as {status:string;products:RawProduct[];fetchedAt:string;coverage:string};sourceStatus=feed.status;if(feed.status==='ready'){return {products:diversify(normalizeCatalog(feed.products)),live:true,generatedAt:feed.fetchedAt,sourceStatus,coverage:feed.coverage,purchasingEnabled:false}}}}catch{/* Never label examples as a successful supplier import. */}
  const examples=FALLBACK.map(p=>({...p,items:p.items?.map(i=>({...i,inStock:0,stock:0,available:false}))}));
  return {products:normalizeCatalog(examples),live:false,sourceStatus,coverage:'examples-only',generatedAt:new Date().toISOString()};
 }

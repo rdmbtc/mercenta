@@ -4,7 +4,7 @@ const item=z.object({id:z.union([z.string(),z.number()]).transform(String),name:
 const product=z.object({id:z.union([z.string(),z.number()]).transform(String),name:z.string().min(1).max(250),type:z.string().max(50).optional(),countryCode:z.string().max(20).optional(),categoryName:z.string().max(100).optional(),subcategoryName:z.string().max(100).nullish().transform(v=>v??undefined),imageUrl:z.string().max(2048).optional(),image:z.string().max(2048).optional(),items:z.array(item).max(1000)});
 export type SupplierPreview=Awaited<ReturnType<typeof supplierPreview>>;
 export async function supplierPreview(c:Config,fetcher:typeof fetch=fetch){
- const base={supplier:'AppRoute',purchasingEnabled:false,coverage:'unverified',fetchedAt:new Date().toISOString()};
+ const base={supplier:'Mercenta catalogue',purchasingEnabled:false,coverage:'unverified',fetchedAt:new Date().toISOString()};
  const empty=(status:string)=>({...base,status,products:[] as z.infer<typeof product>[],httpStatus:null as number|null});
  if(!c.SUPPLIER_API_URL||!c.SUPPLIER_API_KEY)return empty('unconfigured');
  const u=new URL(c.SUPPLIER_API_URL);if(u.origin!=='https://approute.io'||u.pathname.replace(/\/$/,'')!=='/api/v1'||u.username||u.password||u.search)return empty('invalid-config');

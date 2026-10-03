@@ -4,9 +4,11 @@ description: A complete first-use guide for buyers and digital-goods resellers.
 ---
 ## Explore before signing in
 
-Open [Mercenta](https://app.mercenta.xyz). Home, Shop, Account and Assistant are the four main destinations. Browse the **test catalogue** without a wallet. Choose a product, check its region and select **View details**.
+Open [Mercenta](https://app.mercenta.xyz/app?section=shop). **Shop → Catalogue** shows connected product listings. Choose **View details** for region, delivery type, options, availability and an indicative total. No JSON knowledge is required.
 
-The current products are simulations, not redeemable codes. Display prices are previews; the purchase review shows the exact six-decimal total. Wallet sign-in does not authorize payment.
+**Real-product checkout and delivery are not enabled yet.** Catalogue prices retain USD and are not USDC payment quotes. Browsing and selecting an option never spends money.
+
+**Shop → Test purchase** is a separate Arc Testnet rehearsal using simulated goods. Those transactions do not deliver redeemable codes. Wallet sign-in is not payment authorization.
 
 For optional setup, choose **Plan my budget** on Home or **Quick setup** in the workspace options. Choose your purpose, edit an example monthly plan, then preview the next step. A guest draft is not saved and does not move funds.
 
@@ -25,10 +27,12 @@ Open **Account → Balance** → **Top up USDC** → create a deposit intent →
 
 Your wallet balance, Mercenta prepaid account and Gateway balance are separate. Cross-chain funding, fiat onramp and withdrawals are not enabled in this release.
 
-## 4. Choose a product
-Open **Shop**. Check the region, unit price and quantity. Review the exact total in the order dialog before confirming. Current catalog delivery is simulated; it does not provide redeemable digital codes.
+## 4. Understand the purchase path
+The **Catalogue** is a read-only product browser. It does not have real checkout yet.
 
-**AppRoute is the planned procurement provider. Live procurement is not enabled.** The existing generic supplier transport is not a verified AppRoute adapter. Official request/response schemas, idempotency, inventory/price mapping, status lookup, delivery, refund behavior and sandbox evidence must be validated before real goods are sold. Never invent supplier endpoints or interpret an uncertain timeout as failure and purchase again.
+To rehearse, open **Shop → Test purchase**. Select a simulated product, check the region and quantity, review the exact test-USDC total and confirm the simulated order after signing in. Real codes are not issued.
+
+A complete real purchase must obtain a fresh retail quote, check your budget and available funds, accept your exact-amount confirmation, submit one durable procurement attempt, track uncertainty without duplicate buying, and securely deliver the result in **Purchases**. Refund and reconciliation paths must be verified before activation. A connected catalogue alone is not a procurement integration.
 
 ## 5. Track the order
 **Shop → Purchases** shows the order/reference/status. **Account → Activity** shows the account debit. A submitted payment is not a completed order or settlement. For uncertainty, reconcile the original operation rather than creating a replacement purchase.

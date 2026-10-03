@@ -1,0 +1,169 @@
+{
+  "release": "merchant-commerce-refinement-2026-10-03",
+  "backendRelease": "backend-commerce-ux-final-20261003",
+  "webDeployment": "mercenta-j1f46a1rp-drrdms-projects.vercel.app",
+  "docsDeployment": "mercenta-docs-6sno3t94l-drrdms-projects.vercel.app",
+  "tests": {
+    "backend": 127,
+    "web": 168,
+    "docs": 34,
+    "allPassed": true,
+    "buildsAndTypechecksPassed": true
+  },
+  "acceptance": {
+    "checks": [
+      {
+        "name": "public source uses merchant branding",
+        "passed": true
+      },
+      {
+        "name": "no internal vendor name in public source metadata",
+        "passed": true
+      },
+      {
+        "name": "real feed retained",
+        "passed": true
+      },
+      {
+        "name": "client DTO explicitly has no checkout authority",
+        "passed": true
+      },
+      {
+        "name": "all services and options retained",
+        "passed": true
+      },
+      {
+        "name": "catalogue is the default shop view",
+        "passed": true
+      },
+      {
+        "name": "no vendor name in shop copy",
+        "passed": true
+      },
+      {
+        "name": "customer detail has no JSON/code block",
+        "passed": true
+      },
+      {
+        "name": "options are interactive",
+        "passed": true
+      },
+      {
+        "name": "exact source total retained",
+        "passed": true
+      },
+      {
+        "name": "real purchase status explicit",
+        "passed": true
+      },
+      {
+        "name": "purchase action cannot execute",
+        "passed": true
+      },
+      {
+        "name": "test purchase deep link selects simulation",
+        "passed": true
+      },
+      {
+        "name": "simulation keeps exact test price",
+        "passed": true
+      },
+      {
+        "name": "390px customer dialog no overflow",
+        "passed": true
+      },
+      {
+        "name": "360px catalogue no overflow",
+        "passed": true
+      },
+      {
+        "name": "drawer theme matches workspace",
+        "passed": true
+      },
+      {
+        "name": "public catalogue merchant-only branding",
+        "passed": true
+      },
+      {
+        "name": "customer view has no draft selection checkboxes",
+        "passed": true
+      },
+      {
+        "name": "public customer detail no JSON",
+        "passed": true
+      },
+      {
+        "name": "public source price is not checkout",
+        "passed": true
+      },
+      {
+        "name": "shared dialog Escape works",
+        "passed": true
+      },
+      {
+        "name": "docs merchant-only branding",
+        "passed": true
+      },
+      {
+        "name": "docs distinguish real catalogue and test purchase",
+        "passed": true
+      },
+      {
+        "name": "360px docs no overflow",
+        "passed": true
+      },
+      {
+        "name": "live assistant still works",
+        "passed": true
+      },
+      {
+        "name": "assistant has no transaction authority",
+        "passed": true
+      },
+      {
+        "name": "assistant response has no internal vendor name",
+        "passed": true
+      },
+      {
+        "name": "no page errors",
+        "passed": true
+      },
+      {
+        "name": "no financial mutations",
+        "passed": true
+      }
+    ],
+    "passed": 30,
+    "failed": 0,
+    "errors": [],
+    "financialMutations": [],
+    "model": {
+      "provider": "groq",
+      "mode": "llm-read-only-preview",
+      "authority": "READ_ONLY",
+      "plans": 0
+    }
+  },
+  "imageSource": {
+    "catalogueHttpStatus": 200,
+    "products": 549,
+    "catalogueImageFields": 0,
+    "sampledDetailHttpStatus": 200,
+    "sampledOptions": 12,
+    "detailImageFields": 0,
+    "embeddedImageOrAssetUrls": 0,
+    "publicHomepage": "redirects to sign-in",
+    "photographsImported": 0,
+    "keyInstalledForProcurement": false
+  },
+  "merchantCatalogue": {
+    "services": 1298,
+    "options": 7554,
+    "purchasingEnabled": false,
+    "sourceCurrency": "USD"
+  },
+  "paidOrdersCreated": 0,
+  "mainnetActivated": false,
+  "liveEarnActivated": false,
+  "credentialAbsentFromPublicPayloadsAndSourceArchive": true
+}
