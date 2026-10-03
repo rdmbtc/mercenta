@@ -1,5 +1,7 @@
 # Catalogue and assistant refinement — 2026-10-03
 
+> Follow-up: authorized AppRoute access is now connected. See [the current catalogue report](./approute-authorized-catalog.md). Procurement and mainnet remain disabled.
+
 ## Shipped
 
 - Shared product imagery in the app, public catalogue and exact order-review dialog: 16 original local WebP illustrations. Covers are explicitly illustrative, **not** official artwork, supplier product photos or delivery codes.

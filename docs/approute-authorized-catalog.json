@@ -1,0 +1,178 @@
+{
+  "release": "approute-authorized-catalog-2026-10-03",
+  "backendRelease": "backend-approute-authorized-20261003",
+  "frontendDeployment": "mercenta-nyis2jn6o-drrdms-projects.vercel.app",
+  "authorization": {
+    "whoamiStatus": 200,
+    "servicesStatus": 200,
+    "ipAllowlistMatches": true,
+    "configuredCredentialReplaced": true
+  },
+  "catalogue": {
+    "services": 1298,
+    "options": 7554,
+    "emptyServicesRetained": 2,
+    "currency": "USD",
+    "coverage": "unverified",
+    "procurementEnabled": false,
+    "supplierPhotoCount": 0,
+    "countryFlagImageUrlsObserved": 29,
+    "imageTreatment": "Country flags are not used as product artwork; original illustrative covers retained."
+  },
+  "tests": {
+    "backendPassed": 126,
+    "webPassed": 165,
+    "buildsAndTypechecksPassed": true
+  },
+  "liveAcceptance": {
+    "checks": [
+      {
+        "name": "catalogue API 200",
+        "passed": true
+      },
+      {
+        "name": "authorized catalogue ready",
+        "passed": true
+      },
+      {
+        "name": "all 1298 services retained",
+        "passed": true
+      },
+      {
+        "name": "all 7554 options retained",
+        "passed": true
+      },
+      {
+        "name": "two services without options retained",
+        "passed": true
+      },
+      {
+        "name": "source USD not converted to USDC",
+        "passed": true
+      },
+      {
+        "name": "country flags not used as product art",
+        "passed": true
+      },
+      {
+        "name": "credential absent from public feed",
+        "passed": true
+      },
+      {
+        "name": "only 24 cards initially rendered",
+        "passed": true
+      },
+      {
+        "name": "1298 total visible",
+        "passed": true
+      },
+      {
+        "name": "procurement boundary visible",
+        "passed": true
+      },
+      {
+        "name": "supplier images loaded",
+        "passed": true
+      },
+      {
+        "name": "desktop supplier no overflow",
+        "passed": true
+      },
+      {
+        "name": "progressive rendering 48 cards",
+        "passed": true
+      },
+      {
+        "name": "format filtering returns only eSIM",
+        "passed": true
+      },
+      {
+        "name": "filter resets progressive count",
+        "passed": true
+      },
+      {
+        "name": "search narrows catalogue",
+        "passed": true
+      },
+      {
+        "name": "390px supplier no overflow",
+        "passed": true
+      },
+      {
+        "name": "360px supplier no overflow",
+        "passed": true
+      },
+      {
+        "name": "public catalogue 24 initial products",
+        "passed": true
+      },
+      {
+        "name": "public total 1298 visible",
+        "passed": true
+      },
+      {
+        "name": "public source prices use USD",
+        "passed": true
+      },
+      {
+        "name": "360px public catalogue no overflow",
+        "passed": true
+      },
+      {
+        "name": "public search finds real Airalo listing",
+        "passed": true
+      },
+      {
+        "name": "detail is not a checkout quote",
+        "passed": true
+      },
+      {
+        "name": "detail retains source currency",
+        "passed": true
+      },
+      {
+        "name": "no purchase confirmation control",
+        "passed": true
+      },
+      {
+        "name": "detail Escape works",
+        "passed": true
+      },
+      {
+        "name": "no page errors",
+        "passed": true
+      },
+      {
+        "name": "no financial mutations",
+        "passed": true
+      }
+    ],
+    "passed": 30,
+    "failed": 0,
+    "errors": [],
+    "mutations": [],
+    "proof": {
+      "products": 1298,
+      "options": 7554,
+      "sourceStatus": "ready",
+      "coverage": "unverified",
+      "imageSources": [
+        "illustration"
+      ],
+      "sourceCurrencies": [
+        "USD"
+      ]
+    },
+    "authenticatedPurchaseTested": false
+  },
+  "security": {
+    "keyInPublicFeed": false,
+    "keyInSourceArchive": false,
+    "keyInInstallerPayload": false,
+    "keyStoredInProtectedServerConfigOnly": true,
+    "sourceArchiveSha256": "35dcf746db1172602837dd36141079804428cab06f0683ba62a3f5c4433446fc"
+  },
+  "mainnetEnabled": false,
+  "liveEarnEnabled": false,
+  "financialActionsPerformed": false
+}

@@ -146,11 +146,12 @@ export function normalizeCatalog(raw: RawProduct[]): CatalogProduct[] {
         isLongOrder: it.isLongOrder,
       };
     });
-    if (denominations.length === 0) continue;
     const prices = denominations.map((d) => d.price);
     const name = p.name ?? "Unnamed product";
     const brand = brandOf(name);
-    const image=safeProductImage(p.imageUrl??p.image);
+    const supplied=safeProductImage(p.imageUrl??p.image);
+    // The authorized feed uses flagcdn for country flags, not product covers.
+    const image=supplied&&new URL(supplied).hostname!=="flagcdn.com"?supplied:undefined;
     const type: ProductType =
       p.type === "direct_topup" || p.type === "esim" ? p.type : "voucher";
     out.push({
@@ -163,9 +164,9 @@ export function normalizeCatalog(raw: RawProduct[]): CatalogProduct[] {
       type,
       countryCode: p.countryCode,
       denominations,
-      minPrice: Math.min(...prices),
-      maxPrice: Math.max(...prices),
-      currency: denominations[0]!.currency,
+      minPrice: prices.length?Math.min(...prices):0,
+      maxPrice: prices.length?Math.max(...prices):0,
+      currency: denominations[0]?.currency??"",
       inStock: denominations.filter((d) => d.available).length,
       totalStock: denominations.reduce((n, d) => n + (d.stock ?? 0), 0),
     });
