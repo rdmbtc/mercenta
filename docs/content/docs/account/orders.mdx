@@ -18,3 +18,12 @@ The separate live-order state machine is disabled for real fulfillment until ver
 ## If the result is uncertain
 
 Open **Shop → Purchases** and inspect the original order before retrying. A timeout is not proof of failure. Do not create a replacement purchase just to check a status.
+
+
+## Test checkout on catalogue listings
+
+Open a listing in Catalogue, select an option and quantity, sign in, and request a test quote. The fixed rehearsal price is **1.000000 test USDC per unit**, not the listing's USD price converted to USDC. Explicitly confirm the debit and non-redeemable test delivery.
+
+In **Purchases**, select **View test delivery** to retrieve the saved `MCT-TEST-` artifacts. Delivery is owner-scoped and encrypted on the server. These artifacts cannot activate any product. No provider invoice, real order, stock reservation or real account top-up is created. Quote creation moves no funds; saved Shop budget caps apply on confirmation.
+
+If the confirmation response is interrupted, retry the same request to retrieve the same order, not a new debit. Check Purchases before initiating a different order.

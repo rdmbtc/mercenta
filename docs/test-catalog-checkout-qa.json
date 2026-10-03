@@ -1,0 +1,114 @@
+{
+  "checkedAt": "2026-10-03T10:24:21.459469+00:00",
+  "mode": "Arc Testnet / non-redeemable simulated delivery",
+  "tests": {
+    "backend": 137,
+    "web": 180,
+    "docs": 34,
+    "allPassed": true
+  },
+  "browser": {
+    "results": [
+      {
+        "name": "catalogue cards loaded",
+        "ok": true
+      },
+      {
+        "name": "desktop no page overflow",
+        "ok": true
+      },
+      {
+        "name": "no supplier branding in visible workspace",
+        "ok": true
+      },
+      {
+        "name": "test price separated from source price",
+        "ok": true
+      },
+      {
+        "name": "real delivery remains disabled",
+        "ok": true
+      },
+      {
+        "name": "keyboard tooltip describes account debit",
+        "ok": true
+      },
+      {
+        "name": "Escape dismisses tooltip without closing checkout",
+        "ok": true
+      },
+      {
+        "name": "Escape closes native checkout drawer",
+        "ok": true
+      },
+      {
+        "name": "mobile no overflow",
+        "ok": true
+      },
+      {
+        "name": "mobile reduced motion native drawer",
+        "ok": true
+      },
+      {
+        "name": "touch tooltip visible",
+        "ok": true
+      },
+      {
+        "name": "mobile drawer fits viewport",
+        "ok": true
+      },
+      {
+        "name": "Russian test checkout is localized",
+        "ok": true
+      },
+      {
+        "name": "Russian drawer no supplier branding",
+        "ok": true
+      },
+      {
+        "name": "docs explain fixed test pricing",
+        "ok": true
+      },
+      {
+        "name": "docs separate real invoice and test receipt",
+        "ok": true
+      },
+      {
+        "name": "docs no horizontal overflow",
+        "ok": true
+      },
+      {
+        "name": "no browser runtime errors",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "wallet handoff closes drawer and exposes no-wallet feedback",
+        "ok": true
+      }
+    ],
+    "errors": [],
+    "scope": "Guest deployed UI only; financial happy path covered by isolated automated tests"
+  },
+  "deployment": {
+    "backendRelease": "backend-catalog-test-delivery-20261003",
+    "web": "https://app.mercenta.xyz",
+    "docs": "https://docs.mercenta.xyz",
+    "webDeployment": "mercenta-omjna4eyo-drrdms-projects.vercel.app",
+    "docsDeployment": "mercenta-docs-fcxf8kk5s-drrdms-projects.vercel.app"
+  },
+  "safety": {
+    "providerInvoicesCreated": 0,
+    "providerOrdersCreated": 0,
+    "productionDepositsDuringQA": 0,
+    "productionPurchaseConfirmationsDuringQA": 0,
+    "mainnetEnabled": false,
+    "financialHappyPathScope": "Isolated automated tests only; no production wallet impersonation or artificial ledger funding"
+  },
+  "images": {
+    "htmlProductReferences": 24,
+    "embeddedImageBytes": 0,
+    "importedOriginalCovers": 0,
+    "requires": "Companion image folder; current covers remain illustrative"
+  }
+}

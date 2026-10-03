@@ -28,7 +28,11 @@ Open **Account → Balance** → **Top up USDC** → create a deposit intent →
 Your wallet balance, Mercenta prepaid account and Gateway balance are separate. Cross-chain funding, fiat onramp and withdrawals are not enabled in this release.
 
 ## 4. Understand the purchase path
-The **Catalogue** is a read-only product browser. It does not have real checkout yet.
+The **Catalogue** now offers a **test checkout** on the selected listing. Choose a region, option and quantity (1–10), then select **Get test checkout quote** after wallet sign-in. The server checks the catalogue snapshot and returns a five-minute quote at **1.000000 test USDC per unit**, independent of the real USD price. Creating a quote does not debit funds or reserve stock.
+
+Review the exact test debit and explicitly acknowledge that delivery is non-redeemable. Confirm the test purchase. The atomic account debit and encrypted delivery are saved together. You receive `MCT-TEST-` artifacts, **not** actual digital-product keys; no real provider invoice, order or top-up is created.
+
+**Shop → Purchases → View test delivery** retrieves the saved artifacts. If the response is interrupted, retry the same request; the same completed order never charges again. Check Purchases before creating another order. A new confirmation request cannot consume the same quote twice.
 
 To rehearse, open **Shop → Test purchase**. Select a simulated product, check the region and quantity, review the exact test-USDC total and confirm the simulated order after signing in. Real codes are not issued.
 
