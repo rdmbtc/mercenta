@@ -1,45 +1,58 @@
 {
-  "scope": "OWNER_SINGLE_REAL_PURCHASE_PREPARATION",
+  "scope": "OWNER_SINGLE_REAL_PURCHASE_VERIFIED",
   "maximumAuthorizedUsd": "1.000000",
-  "paidRequestsSent": 0,
-  "actualSpendUsd": "0.000000",
-  "realOrderConfirmed": false,
-  "mainnetEnabled": false,
-  "financialConfigChanged": false,
-  "newHelpersDeployedToCustomerCheckout": false,
-  "officialContractAvailable": true,
-  "sdkSourceCommit": "404e98d37aa6fc0a212e875452ed64209be23bbf",
-  "actualReadOnlyChecks": {
-    "keyDiagnosticHttp": 200,
-    "catalogueHttp": 200,
-    "productGroupCount": 1298,
-    "accountsHttp": 200,
-    "usdCashReserveAboveTen": true,
-    "itemHttp": 200,
-    "itemPriceUsd": "0.019400",
-    "stockPositive": true,
-    "longOrder": false,
-    "keyControlPlaneHttp": 401,
-    "serverKeyCapVerified": false,
-    "purchasePermissionVerified": false
+  "paidRequestsSent": 1,
+  "actualSpendUsd": "0.019400",
+  "realOrderConfirmed": true,
+  "product": "EGP 1 amazon.eg gift card",
+  "region": "EG",
+  "quantity": 1,
+  "firstResponse": {
+    "http": 202,
+    "status": "IN_PROGRESS",
+    "applicationCode": 1
   },
-  "pricing": {
-    "cataloguePriceIsFinalQuote": false,
-    "documentedPurchaseMaxPrice": false,
-    "documentedCumulativeKeySpendCap": true,
-    "requiredDedicatedKeyMaximumUsd": "1.000000",
+  "terminalOrderStatus": "SUCCESS",
+  "delivery": {
+    "voucherCount": 1,
+    "fullCodeReceived": true,
+    "storedEncrypted": true,
+    "voucherPublished": false,
+    "voucherRedeemed": false,
+    "redemptionValidityIndependentlyTested": false
+  },
+  "accounting": {
+    "orderAmountUsd": "0.019400",
+    "cashDebitUsd": "0.019400",
+    "scopedLedgerMatches": true,
+    "cashDebitMatches": true,
+    "cashAndAvailableReserveAboveTen": true
+  },
+  "authorization": {
+    "capTrustBasis": "owner-attested",
+    "serverKeyCapIndependentlyVerified": false,
+    "preflightExtraCeilingUsd": "0.050000",
+    "productionTransportCapGuardWeakened": false,
     "spendCounterResetAllowed": false
   },
+  "safety": {
+    "durableAttemptClaim": true,
+    "freshProcessRepeatedPreflightRejected": true,
+    "automaticPaidRetries": false,
+    "fundingInvoiceCreated": false,
+    "customerLedgerEdited": false
+  },
+  "mainnetEnabled": false,
+  "observedWorkingBackendChainId": 5042002,
+  "healthHttp": 200,
+  "financialConfigChanged": false,
+  "newHelpersDeployedToCustomerCheckout": false,
   "tests": {
     "backendPassed": 219,
     "backendFailed": 0,
     "newOwnerFixtureCases": 27,
     "newDocumentedTransportFixtureCases": 20,
-    "realGoodsUsedByTests": false
+    "realGoodsUsedByUnitTests": false
   },
-  "builds": {
-    "backend": true,
-    "circleOpsTypecheck": true
-  },
-  "mainnetDecision": "NO_GO; no actual paid procurement or production financial/security verification claimed."
+  "mainnetDecision": "NO_GO; supplier procurement verified, customer checkout and production financial/security gates remain."
 }
