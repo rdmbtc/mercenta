@@ -259,7 +259,15 @@
     "backend": "deployed and read-only checked",
     "web": "prepared; latest Vercel daily deployment quota blocks new UI release",
     "docs": "prepared; latest Vercel daily deployment quota blocks new guide release",
-    "remoteCI": "workflow prepared; result not asserted"
+    "remoteCI": {
+      "status": "blocked before runner/test start",
+      "githubConclusion": "failure",
+      "reason": "GitHub account locked due to a billing issue",
+      "workflowRun": "https://github.com/rdmbtc/mercenta/actions/runs/37135171422",
+      "jobsExecuted": false,
+      "sourceCommit": "6f932bedc6f1eedfb015c9655ad980c55437dd85",
+      "billingChanged": false
+    }
   },
   "financialBoundaries": {
     "mainnetEnabled": false,
