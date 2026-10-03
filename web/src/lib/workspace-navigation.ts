@@ -1,7 +1,7 @@
 export const primaryDestinations=[
  {id:'home',section:'Dashboard',en:'Home',ru:'Главная'},
  {id:'shop',section:'Shop',en:'Shop',ru:'Магазин'},
- {id:'wallet',section:'Funds',en:'Wallet',ru:'Кошелёк'},
+ {id:'wallet',section:'Funds',en:'Account',ru:'Счёт'},
  {id:'assistant',section:'Agent Chat',en:'Assistant',ru:'Ассистент'},
 ] as const;
 export type PrimaryGroup=typeof primaryDestinations[number]['id'];

@@ -1,0 +1,292 @@
+{
+  "scope": "Guest UI checks on the public application, not an authenticated financial end-to-end test or business traction.",
+  "site": "https://app.mercenta.xyz",
+  "frontendTestsPassed": 158,
+  "testFilesPassed": 19,
+  "typescript": "passed",
+  "productionBuild": "passed",
+  "desktop": {
+    "checks": [
+      {
+        "name": "four primary destinations",
+        "ok": true
+      },
+      {
+        "name": "account distinct from external wallet",
+        "ok": true
+      },
+      {
+        "name": "no decorative home hero",
+        "ok": true
+      },
+      {
+        "name": "guest private balances absent",
+        "ok": true
+      },
+      {
+        "name": "products visible immediately",
+        "ok": true
+      },
+      {
+        "name": "one budget entry on home",
+        "ok": true
+      },
+      {
+        "name": "compact meaningful price",
+        "ok": true
+      },
+      {
+        "name": "desktop mobile navigation hidden",
+        "ok": true
+      },
+      {
+        "name": "desktop mobile brand hidden",
+        "ok": true
+      },
+      {
+        "name": "product is review headline",
+        "ok": true
+      },
+      {
+        "name": "region in review",
+        "ok": true
+      },
+      {
+        "name": "exact six decimal preview",
+        "ok": true
+      },
+      {
+        "name": "no guest purchase confirmation",
+        "ok": true
+      },
+      {
+        "name": "contextual sign-in is available",
+        "ok": true
+      },
+      {
+        "name": "exact quantity total",
+        "ok": true
+      },
+      {
+        "name": "invalid quantity explained",
+        "ok": true
+      },
+      {
+        "name": "optional reference can be opened",
+        "ok": true
+      },
+      {
+        "name": "review focus remains inside",
+        "ok": true
+      },
+      {
+        "name": "Escape closes review",
+        "ok": true
+      },
+      {
+        "name": "purpose required",
+        "ok": true
+      },
+      {
+        "name": "personal template differs",
+        "ok": true
+      },
+      {
+        "name": "custom plan calculates",
+        "ok": true
+      },
+      {
+        "name": "invalid allocation cannot continue",
+        "ok": true
+      },
+      {
+        "name": "preview never claimed saved",
+        "ok": true
+      },
+      {
+        "name": "search no results/reset",
+        "ok": true
+      },
+      {
+        "name": "region filters catalogue",
+        "ok": true
+      },
+      {
+        "name": "exact prices sorted",
+        "ok": true
+      },
+      {
+        "name": "custom plan carried to Budget",
+        "ok": true
+      },
+      {
+        "name": "draft-first assistant",
+        "ok": true
+      },
+      {
+        "name": "guest cannot send",
+        "ok": true
+      },
+      {
+        "name": "guest has a sign-in next step",
+        "ok": true
+      },
+      {
+        "name": "developer payments collapsed",
+        "ok": true
+      },
+      {
+        "name": "no browser errors",
+        "ok": true
+      },
+      {
+        "name": "no guest mutation requests",
+        "ok": true
+      }
+    ],
+    "errors": [],
+    "posts": []
+  },
+  "mobile": {
+    "checks": [
+      {
+        "name": "mobile home fits",
+        "ok": true
+      },
+      {
+        "name": "sidebar hidden and four bottom destinations",
+        "ok": true
+      },
+      {
+        "name": "mobile brand visible",
+        "ok": true
+      },
+      {
+        "name": "guest has products instead of empty statistics",
+        "ok": true
+      },
+      {
+        "name": "product action target at least 44px",
+        "ok": true
+      },
+      {
+        "name": "readable home copy",
+        "ok": true
+      },
+      {
+        "name": "single-column mobile catalogue",
+        "ok": true
+      },
+      {
+        "name": "all region and sort controls visible",
+        "ok": true
+      },
+      {
+        "name": "region filter works",
+        "ok": true
+      },
+      {
+        "name": "lowest exact price first",
+        "ok": true
+      },
+      {
+        "name": "catalogue no horizontal overflow",
+        "ok": true
+      },
+      {
+        "name": "light theme applied",
+        "ok": true
+      },
+      {
+        "name": "review mobile fits",
+        "ok": true
+      },
+      {
+        "name": "exact review price retained",
+        "ok": true
+      },
+      {
+        "name": "reference initially collapsed",
+        "ok": true
+      },
+      {
+        "name": "guest no purchase confirmation",
+        "ok": true
+      },
+      {
+        "name": "business template differs",
+        "ok": true
+      },
+      {
+        "name": "setup fits mobile",
+        "ok": true
+      },
+      {
+        "name": "zero budget cannot continue",
+        "ok": true
+      },
+      {
+        "name": "business next actions are contextual",
+        "ok": true
+      },
+      {
+        "name": "business draft carried to Budget",
+        "ok": true
+      },
+      {
+        "name": "guest cannot save account budget",
+        "ok": true
+      },
+      {
+        "name": "assistant readable textarea",
+        "ok": true
+      },
+      {
+        "name": "guest can draft but not send",
+        "ok": true
+      },
+      {
+        "name": "assistant has sign-in action",
+        "ok": true
+      },
+      {
+        "name": "assistant no overflow",
+        "ok": true
+      },
+      {
+        "name": "journal consent remains opt-in",
+        "ok": true
+      },
+      {
+        "name": "Russian account label updated",
+        "ok": true
+      },
+      {
+        "name": "assistant Russian copy",
+        "ok": true
+      },
+      {
+        "name": "360px layout no overflow",
+        "ok": true
+      },
+      {
+        "name": "browser Back restores assistant",
+        "ok": true
+      },
+      {
+        "name": "no browser errors",
+        "ok": true
+      },
+      {
+        "name": "no mutation requests during guest walkthrough",
+        "ok": true
+      }
+    ],
+    "errors": [],
+    "posts": []
+  },
+  "monetaryMutationsPerformed": false,
+  "backendRecovery": "Not established. Public UI reports unavailable/read-only service; authenticated persistence and purchasing are not certified.",
+  "mainnetEnabled": false,
+  "liveAppRouteFulfillment": false
+}
