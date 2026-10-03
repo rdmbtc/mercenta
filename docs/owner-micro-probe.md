@@ -1,37 +1,43 @@
-# Owner-authorized micro-purchase preparation
+# Owner-authorized micro-purchase: verified result
 
-## Authorization and actual spending
+## Outcome and spending
 
-The owner authorized a very small real procurement check. This work interprets the authorization conservatively as **one purchase attempt, no more than 1.000000 USD in aggregate including fees**, not an unlimited sequence of sub-dollar attempts.
+The owner authorized **one real procurement attempt, at most 1.000000 USD in aggregate** and supplied a new dedicated key with a declared $1 limit. One merchandise order was sent; **actual verified spending: 0.019400 USD**. No second purchase, funding invoice, top-up or on-chain payment was created.
 
-**Paid requests sent: 0. Actual spending: 0.000000 USD.** No real order, funding invoice, top-up, fiat payment or on-chain transfer was sent. Mainnet and live customer fulfillment remain disabled. The new private helpers are not mounted on public routes or deployed as enabled customer checkout.
+The purchased item was **EGP 1 amazon.eg gift card**, quantity 1, region EG. Its catalogue price was refreshed immediately before submission. The API first accepted the order with HTTP 202 / IN_PROGRESS / application code 1. Polling the original reference and order then returned SUCCESS. One full voucher was received and saved **encrypted on the owner server**, not published in logs, source or frontend. The voucher was not activated; usability upon redemption is not claimed.
 
-## Official protocol and actual read-only evidence
+The original order reported 0.019400 USD. Both the actual cash-balance decrease and the scoped USD account transaction matched that amount. Cash and available funds remained above the $10 operating reserve; overdraft was not counted as cash. Private identifiers, account balances, key identity and voucher material are excluded from this report.
 
-The owner supplied the official SDK and integration PDF. The SDK source was inspected at commit `404e98d37aa6fc0a212e875452ed64209be23bbf`; no vendor executable or package install was needed. Earlier unavailable documentation-host findings are superseded by the supplied repository/PDF.
+## Authorization evidence: do not overstate the cap
 
-The server-held key was recognized by the diagnostic endpoint (HTTP 200 / SUCCESS). Catalogue access returned HTTP 200 and 1,298 product groups. The documented `GET /accounts` returned a USD cash account with more than the $10 operating reserve; no overdraft is counted as procurement cash. No account identities, credentials or private activity were published.
+The dedicated key's $1 limit was **owner-attested, not independently verified through the authenticated key-control plane**. The earlier key-control request returned HTTP 401; the diagnostic endpoint does not expose transactionLimit/transactionRemaining. No key cap was changed, reset or claimed independently verified.
 
-A documented single-item GET returned a non-long gift-card denomination with positive stock and **0.019400 USD** price. This is a fresh catalogue observation, not an immutable checkout quote or completed purchase. No account-credential products were selected for procurement.
+The narrowly authorized owner probe used a private one-shot runner with a fresh 0.019400 USD price, an additional preflight ceiling of 0.050000 USD, quantity 1 and the owner-declared total ceiling of 1.000000 USD. The documented purchase request has no maxPrice field or immutable quote binding. A preflight price alone is not a guarantee against supplier price changes. Actual accounting now confirms the single completed purchase remained below the owner's ceiling.
 
-Documented merchandise purchase uses `POST /orders`, `X-API-Key`, JSON Content-Type, `ordersType`, original `referenceId` and exactly one `orders[].denominationId`. Funding invoices are separate balance top-ups and are not used in this probe. Order polling is filtered by the original reference/order. Normal GET leaves codes masked; explicit `unhide=true` with both original filters acknowledges receipt and is not applied to unrelated history.
+**The reusable source transport still rejects paid calls without independently verified same-key cap evidence. Its guard was not weakened to run this owner-attested exception.** The private probe is not a customer checkout route or an enabled automatic fulfillment service.
 
-The published SDK defaults to three HTTP retries and expects envelope `code/message`, while the supplied guide and observed API use numeric `statusCode/statusMessage`. The private transport therefore handles the observed envelope directly, with **no automatic paid POST retries**, strict response bounds and no redirected credential requests.
+## One-shot execution and delivery evidence
 
-## Exact remaining blocker for the paid probe
+The original UUID reference and one-attempt claim were persisted in a separate SQLite database with FULL synchronization before the only paid POST. Subsequent runs cannot create another order: a fresh process rejected preflight with PAID_ATTEMPT_ALREADY_CLAIMED and attempts=1 after completion. A transport timeout would leave an unknown outcome requiring GET reconciliation of the original reference, not a replacement POST or reference.
 
-The documented purchase payload does not expose `maxPrice` or a fixed final quote binding. The official SDK README/PDF describe an API-key cumulative `transactionLimit`, `transactionUsed` and remaining headroom; an exhausted cap rejects with HTTP 409, application code 13, not a retryable rate limit.
+Only filtered original-order GETs were used. Explicit unhide=true with original reference/order acknowledged receipt of this voucher; it was not applied to unrelated order history. Raw private evidence and voucher content are encrypted with the existing server delivery-encryption key. The production customer ledger was not edited.
 
-The current key can read catalogue/balances, but the correctly located authenticated control-plane key-record request returned HTTP 401. Its server-enforced remaining budget could not be verified. No key configuration was changed or fabricated.
+The live request used the official camelCase shop payload, X-API-Key and JSON Content-Type. SDK automatic retries were not used. HTTP 202 was not treated as delivery. Financial completion was asserted only after SUCCESS, one unmasked voucher and matching order/cash/ledger amounts.
 
-To preserve the owner's hard $1 ceiling, use a **dedicated probe key** with `transactionLimit=1.00 USD`, no spending reset, only the required transaction/shop/orders permissions and the existing authorized procurement-server IP. Verify the key identity and remaining budget in the authenticated control plane. Do not expose the key in frontend, logs, repository or public documentation. The private transport rejects paid requests without fresh, same-key, normalized verified cap evidence of at most $1.
+## Tests and deployment scope
 
-A listed price below $1 is not the same as a server-enforced spending ceiling. Do not infer price-lock support from optional amount fields or send undocumented cap headers. Do not increase a key's cap to make a failing probe pass.
+The backend suite contains **219 passing tests**, including 27 owner-guard cases and 20 documented transport cases. Fixtures cover amount boundaries, fees, stock/reserve checks, durable single-attempt state, reference conflicts, timeout/restart behavior, encryption, application-vs-HTTP statuses, no paid retries, masked polling and explicit receipt. These tests use synthetic codes, not repeated real purchases. See the accompanying QA JSON for the latest run outcome.
 
-## Tests and scope
+The working backend remained on **Arc Testnet, chain ID 5042002**, with HTTP 200 health after the probe. Its protected environment file was unchanged. No production customer checkout wiring was deployed, no mainnet switch was made, and no customer funds were used.
 
-27 isolated owner-guard tests cover an exact one-dollar boundary, fees/stock/balance evidence, one durable SQLite attempt, changed-reference conflict, timeout/restart without a replacement POST, encrypted delivery and binding to the item/quote/charge. 20 transport tests cover the documented camelCase request, key authentication, application-vs-HTTP statuses, accepted-but-incomplete results, no 409/502 paid retries, masked polling versus explicit receipt, response bounds and rejection of unverified or wrong-key budget evidence.
+## Remaining mainnet gates
 
-Full backend source suite: **219 passed, 0 failed**. Backend build and Circle-operation type check pass. All paid-path tests use fixture adapters and synthetic codes; they are not evidence of actual goods, successful real procurement or an independent security audit.
+A successful supplier procurement check is not a successful customer checkout or autonomous business traction. Before enabling real customer orders:
 
-The generic live fulfillment transport was not enabled or claimed to have become production-ready. The fixed-quote owner state-machine helper and documented capped API transport are preparation components, not a completed live checkout wiring. A real probe needs the verified capped key and original-reference receipt/accounting evidence. Even a successful micro-purchase would not close custody, refunds/withdrawals, production chain/token configuration, credential rotation or independent-review gates for mainnet.
+1. Connect the verified protocol to the server order lifecycle: immutable customer quotation, authenticated payment confirmation, durable supplier reference, asynchronous status reconciliation and encrypted owner-only delivery.
+2. Obtain independently verified production key limits/scopes/IP restrictions and establish quote-change/failure/refund behavior. Rotate keys disclosed in chat and separate production keys from probes.
+3. Enforce reserve-based sale availability on the backend, not only in UI, and test concurrent orders, restart recovery, unavailable stock, partial delivery and accounting failures.
+4. Verify the intended production network/RPC/token/contracts actually exist and are supported. Configure production chain/token checks; do not merely relabel testnet as mainnet.
+5. Resolve customer custody, withdrawals/refunds and liability boundaries; complete an independent financial/security review and an end-to-end customer checkout rehearsal before a separately authorized limited launch.
+
+Earn, borrow and onramp integrations are separate release gates, not capabilities proved by this purchase. This owner-funded micro-purchase must not be represented as independent user traction.
