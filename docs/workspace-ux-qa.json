@@ -1,0 +1,175 @@
+{
+  "scope": "Public guest UI checks; not an authenticated financial end-to-end test or real-business traction.",
+  "site": "https://app.mercenta.xyz",
+  "frontendTestsPassed": 151,
+  "typescript": "passed",
+  "productionBuild": "passed",
+  "desktop": {
+    "checks": [
+      {
+        "name": "four primary desktop destinations",
+        "ok": true
+      },
+      {
+        "name": "desktop bottom navigation hidden",
+        "ok": true
+      },
+      {
+        "name": "native setup closes with Escape",
+        "ok": true
+      },
+      {
+        "name": "continue needs purpose",
+        "ok": true
+      },
+      {
+        "name": "preview explicitly not saved",
+        "ok": true
+      },
+      {
+        "name": "products visible",
+        "ok": true
+      },
+      {
+        "name": "no results/reset",
+        "ok": true
+      },
+      {
+        "name": "guest purchase blocked",
+        "ok": true
+      },
+      {
+        "name": "review starts focused inside dialog",
+        "ok": true
+      },
+      {
+        "name": "review keyboard focus stays inside",
+        "ok": true
+      },
+      {
+        "name": "review closes with Escape",
+        "ok": true
+      },
+      {
+        "name": "no browser errors",
+        "ok": true
+      },
+      {
+        "name": "no guest mutation requests",
+        "ok": true
+      },
+      {
+        "name": "browser Back restores Home",
+        "ok": true
+      }
+    ],
+    "errors": [],
+    "posts": []
+  },
+  "mobile": {
+    "checks": [
+      {
+        "name": "mobile sidebar hidden",
+        "ok": true
+      },
+      {
+        "name": "four bottom destinations",
+        "ok": true
+      },
+      {
+        "name": "mobile home no overflow",
+        "ok": true
+      },
+      {
+        "name": "setup fits mobile",
+        "ok": true
+      },
+      {
+        "name": "mobile region visible",
+        "ok": true
+      },
+      {
+        "name": "region filters catalogue",
+        "ok": true
+      },
+      {
+        "name": "exact price sort",
+        "ok": true
+      },
+      {
+        "name": "mobile shop no overflow",
+        "ok": true
+      },
+      {
+        "name": "view tabs horizontal",
+        "ok": true
+      },
+      {
+        "name": "light theme applied",
+        "ok": true
+      },
+      {
+        "name": "wizard monthly preview carried to budget",
+        "ok": true
+      },
+      {
+        "name": "budget no overflow",
+        "ok": true
+      },
+      {
+        "name": "guest prompt can be prepared",
+        "ok": true
+      },
+      {
+        "name": "guest send blocked",
+        "ok": true
+      },
+      {
+        "name": "developer payments collapsed",
+        "ok": true
+      },
+      {
+        "name": "entry form collapsed",
+        "ok": true
+      },
+      {
+        "name": "journal save requires auth",
+        "ok": true
+      },
+      {
+        "name": "AI consent remains unchecked",
+        "ok": true
+      },
+      {
+        "name": "journal no overflow",
+        "ok": true
+      },
+      {
+        "name": "language applies immediately",
+        "ok": true
+      },
+      {
+        "name": "menu closes after choosing option",
+        "ok": true
+      },
+      {
+        "name": "settings remain reachable on mobile",
+        "ok": true
+      },
+      {
+        "name": "no browser errors",
+        "ok": true
+      },
+      {
+        "name": "no mutation requests during guest walkthrough",
+        "ok": true
+      }
+    ],
+    "errors": [],
+    "posts": []
+  },
+  "moneyMoved": false,
+  "backendRecovery": "Not established; account persistence and purchasing remain blocked during the VPS/API outage.",
+  "mainnetEnabled": false,
+  "liveAppRouteFulfillment": false
+}
