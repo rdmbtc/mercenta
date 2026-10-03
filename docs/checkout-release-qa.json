@@ -1,0 +1,54 @@
+{
+  "scope": "CHECKOUT_RELEASE_VERIFICATION",
+  "backendCodeRevision": "6d466a5918f3890aca5a220bc0dff180aea4140a",
+  "checks": {
+    "windowsBackendPassed": 257,
+    "linuxBackendPassed": 257,
+    "backendFailed": 0,
+    "backendBuildPassed": true,
+    "isolatedContractTestsPassed": 12,
+    "isolatedContractTestsFailed": 0,
+    "contractTestsUsedLiveChain": false
+  },
+  "deployment": {
+    "activated": true,
+    "backendHealthHttp": 200,
+    "publicRehearsalPreviewHttp": 200,
+    "unauthenticatedOrderHttp": 401,
+    "appHomeHttp": 200,
+    "privateDatabaseBackupSaved": true,
+    "protectedEnvironmentUnchanged": true,
+    "previousReleaseRetained": true,
+    "activeAppChainId": 5042002,
+    "realCustomerFulfillment": "paused"
+  },
+  "mainnetReadOnlyCheck": {
+    "caller": "application-server",
+    "rpc": "https://rpc.mainnet.arc.io",
+    "http": 200,
+    "chainId": 5042,
+    "latestBlockAvailable": true,
+    "erc20UsdcAddress": "0x3600000000000000000000000000000000000000",
+    "erc20UsdcDecimals": 6,
+    "nativeUsdcDecimalsFromOfficialDocumentation": 18,
+    "mainnetActivatedInApp": false,
+    "transactionsSent": 0
+  },
+  "sources": [
+    "https://docs.arc.io/arc/references/connect-to-arc.md",
+    "https://docs.arc.io/arc/references/rpc-endpoints.md",
+    "https://docs.arc.io/arc/references/contract-addresses.md"
+  ],
+  "spending": {
+    "additionalRealPurchases": 0,
+    "additionalLiveOnChainTransactions": 0,
+    "priorOwnerProbeSpendUsd": "0.019400"
+  },
+  "remaining": [
+    "production network/token/payment configuration and reviewed contracts",
+    "independent production key-cap/scope evidence and safe key rotation",
+    "retry-safe customer delivery and actual refund/withdrawal execution",
+    "approved production app checkout and independent financial/security review"
+  ],
+  "mainnetDecision": "NO_GO for customer activation; official mainnet and RPC availability verified, application financial gates remain closed"
+}
