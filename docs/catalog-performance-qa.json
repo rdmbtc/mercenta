@@ -1,0 +1,347 @@
+{
+  "checkedAt": "2026-10-03T12:12:02.900057+00:00",
+  "deployment": "mercenta-b1jp6nj6z-drrdms-projects.vercel.app",
+  "publicOrigin": "https://app.mercenta.xyz",
+  "sourceBase": "94b2ce9225d47e1e8aa3971178b06714d85456f8",
+  "snapshotCapturedAt": "2026-10-03T11:35:56.259Z",
+  "products": 1298,
+  "options": 7554,
+  "productsWithPlatformArtwork": 395,
+  "localFrontendTests": 199,
+  "beforeHTTP": [
+    {
+      "path": "/catalog",
+      "curl": "200 0.114987 0.130488 369800",
+      "decodedBytes": 1922929,
+      "gzip": true,
+      "serverCards": 24,
+      "responseHeaders": [
+        "cache-control: public, max-age=0, must-revalidate",
+        "content-encoding: gzip",
+        "x-vercel-cache: STALE"
+      ]
+    },
+    {
+      "path": "/app?section=shop",
+      "curl": "200 0.020218 0.020521 6199",
+      "decodedBytes": 30052,
+      "gzip": true,
+      "serverCards": 0,
+      "responseHeaders": [
+        "cache-control: public, max-age=0, must-revalidate",
+        "content-encoding: gzip",
+        "x-vercel-cache: HIT"
+      ]
+    },
+    {
+      "path": "/api/catalog?view=browse",
+      "curl": "200 0.920270 3.928745 354423",
+      "decodedBytes": 1644224,
+      "gzip": true,
+      "serverCards": 0,
+      "responseHeaders": [
+        "cache-control: no-store",
+        "content-encoding: gzip",
+        "x-vercel-cache: MISS"
+      ]
+    }
+  ],
+  "afterHTTP": [
+    {
+      "path": "/catalog",
+      "curl": "200 0.065628 0.069156 108949",
+      "decodedBytes": 524539,
+      "gzip": true,
+      "serverCards": 24,
+      "responseHeaders": [
+        "cache-control: public, max-age=0, must-revalidate",
+        "content-encoding: gzip",
+        "x-vercel-cache: HIT"
+      ]
+    },
+    {
+      "path": "/app?section=shop",
+      "curl": "200 0.758891 0.822743 108426",
+      "decodedBytes": 499200,
+      "gzip": true,
+      "serverCards": 24,
+      "responseHeaders": [
+        "cache-control: private, no-cache, no-store, max-age=0, must-revalidate",
+        "content-encoding: gzip",
+        "x-vercel-cache: MISS"
+      ]
+    },
+    {
+      "path": "/api/catalog?view=browse",
+      "curl": "200 0.634337 3.504809 94098",
+      "decodedBytes": 426198,
+      "gzip": true,
+      "serverCards": 0,
+      "responseHeaders": [
+        "cache-control: public, max-age=60",
+        "content-encoding: gzip",
+        "x-vercel-cache: MISS"
+      ],
+      "products": 1298,
+      "version": 1,
+      "live": true
+    },
+    {
+      "path": "/api/catalog",
+      "curl": "200 0.928413 0.936778 331170",
+      "decodedBytes": 1644341,
+      "gzip": true,
+      "serverCards": 0,
+      "responseHeaders": [
+        "cache-control: public, max-age=60",
+        "content-encoding: gzip",
+        "x-vercel-cache: MISS"
+      ],
+      "products": 1298,
+      "version": null,
+      "live": true
+    }
+  ],
+  "beforeBrowser": [
+    {
+      "url": "https://app.mercenta.xyz/catalog",
+      "domContentLoadedMs": 2400,
+      "firstCardDomMs": 2962,
+      "firstCardHasCover": "illustration"
+    },
+    {
+      "url": "https://app.mercenta.xyz/app?section=shop",
+      "domContentLoadedMs": 1617,
+      "firstCardDomMs": 2689,
+      "firstCardHasCover": "illustration"
+    }
+  ],
+  "afterBrowser": {
+    "checks": [
+      {
+        "name": "First 24 visible immediately: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "Artwork-first: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "No catalogue loading-text flash: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "First-row artwork priority: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "Artwork decoded: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "No mobile horizontal overflow: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "Roblox search: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "Search result accurate: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "Selected variants loaded separately: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "Test-only drawer: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "Real-product gate remains closed: .mp-product",
+        "ok": true
+      },
+      {
+        "name": "First 24 visible immediately: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "Artwork-first: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "No catalogue loading-text flash: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "First-row artwork priority: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "Artwork decoded: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "No mobile horizontal overflow: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "Roblox search: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "Search result accurate: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "Selected variants loaded separately: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "Test-only drawer: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "Real-product gate remains closed: .supplier-card",
+        "ok": true
+      },
+      {
+        "name": "Server-rendered grid with JavaScript disabled: /catalog",
+        "ok": true
+      },
+      {
+        "name": "SSR artwork-first: /catalog",
+        "ok": true
+      },
+      {
+        "name": "Server-rendered grid with JavaScript disabled: /app?section=shop",
+        "ok": true
+      },
+      {
+        "name": "SSR artwork-first: /app?section=shop",
+        "ok": true
+      },
+      {
+        "name": "Refresh failure keeps dated snapshot visible",
+        "ok": true
+      },
+      {
+        "name": "Snapshot date visible on refresh failure",
+        "ok": true
+      },
+      {
+        "name": "Empty state clear",
+        "ok": true
+      },
+      {
+        "name": "Filter reset preserves grid",
+        "ok": true
+      },
+      {
+        "name": "No JavaScript runtime errors",
+        "ok": true,
+        "detail": []
+      },
+      {
+        "name": "No purchase/account mutations executed",
+        "ok": true,
+        "detail": []
+      }
+    ],
+    "timings": [
+      {
+        "url": "https://app.mercenta.xyz/catalog",
+        "domContentLoadedMs": 1863,
+        "firstCardDomMs": 2394,
+        "firstCardHasCover": "brand"
+      },
+      {
+        "url": "https://app.mercenta.xyz/app?section=shop",
+        "domContentLoadedMs": 1357,
+        "firstCardDomMs": 1858,
+        "firstCardHasCover": "brand"
+      }
+    ],
+    "errors": [],
+    "mutations": []
+  },
+  "publicReleaseChecks": {
+    "checkedAt": "2026-10-03T12:03:43.349Z",
+    "checks": [
+      {
+        "name": "apiHealth",
+        "url": "https://api.mercenta.xyz/api/health",
+        "status": 200,
+        "pass": true
+      },
+      {
+        "name": "privateBalanceGuard",
+        "url": "https://api.mercenta.xyz/api/account/circle/balances",
+        "status": 401,
+        "pass": true
+      },
+      {
+        "name": "unpaidSeller",
+        "url": "https://api.mercenta.xyz/api/x402/margin-report",
+        "status": 402,
+        "pass": true,
+        "priceTestUsdc": "0.001000"
+      },
+      {
+        "name": "fundingProof",
+        "url": "https://app.mercenta.xyz/circle/gateway-funding.arc-testnet.json",
+        "status": 200,
+        "pass": true,
+        "depositUsdc": "0.100000",
+        "fundingProofSnapshotPaidRequests": 0
+      },
+      {
+        "name": "submissionGuide",
+        "url": "https://docs.mercenta.xyz/docs/guides/submission",
+        "status": 200,
+        "pass": true
+      }
+    ],
+    "allPassed": true,
+    "fundsMoved": false,
+    "signaturesCreated": 0,
+    "paidExecutionVerified": false,
+    "scope": "Public release and unpaid x402 requirements only; not an authenticated paid execution or customer-traction check."
+  },
+  "launchReadiness": {
+    "network": "arc-testnet",
+    "chainId": 5042002,
+    "mainnetEnabled": false,
+    "liveGoodsEnabled": false,
+    "gateStatuses": [
+      {
+        "id": "supplier",
+        "status": "blocked"
+      },
+      {
+        "id": "payments",
+        "status": "blocked"
+      },
+      {
+        "id": "security",
+        "status": "blocked"
+      },
+      {
+        "id": "operations",
+        "status": "blocked"
+      }
+    ]
+  },
+  "financialScope": {
+    "fundsMoved": false,
+    "signaturesCreated": 0,
+    "supplierOrdersCreated": 0,
+    "productionPaidCheckoutVerified": false
+  },
+  "limitations": [
+    "Single-point timings, not population/Core Web Vitals statistics. Browser wait includes CDP and locator overhead.",
+    "Public catalogue snapshot is dated, not a current stock guarantee or payment authority.",
+    "Guest deployed QA and isolated/mocked financial tests do not verify a signed-in production purchase or real customer traction."
+  ]
+}

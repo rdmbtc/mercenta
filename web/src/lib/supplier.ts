@@ -50,6 +50,9 @@ export interface CatalogProduct {
   type: ProductType;
   countryCode?: string;
   denominations: CatalogDenomination[];
+  optionCount?: number;
+  searchText?: string;
+  optionsDeferred?: boolean;
   minPrice: number;
   maxPrice: number;
   currency: string;
@@ -60,6 +63,7 @@ export interface CatalogProduct {
 export interface Catalog {
   products: CatalogProduct[];
   live: boolean;
+  snapshot?: boolean;
   generatedAt: string;
   sourceStatus?: string;
   coverage?: string;
@@ -177,7 +181,7 @@ export function normalizeCatalog(raw: RawProduct[]): CatalogProduct[] {
 }
 
 // Interleave brands so regional variants of one brand don't flood the grid.
-function diversify(products: CatalogProduct[]): CatalogProduct[] {
+export function diversify(products: CatalogProduct[]): CatalogProduct[] {
   const byBrand = new Map<string, CatalogProduct[]>();
   for (const p of products) {
     const k = p.brand.toLowerCase();
@@ -197,9 +201,14 @@ function diversify(products: CatalogProduct[]): CatalogProduct[] {
 }
 
 
+/** Genuine photos/platform artwork first, stable within each partition. */
+export function artworkFirst(products:CatalogProduct[]):CatalogProduct[]{
+ const hasArt=(p:CatalogProduct)=>p.imageSource==='supplier'&&!!safeProductImage(p.imageUrl)||!!brandArtwork(p.name);
+ return [...products.filter(hasArt),...products.filter(p=>!hasArt(p))];
+}
 export async function getCatalog(): Promise<Catalog> {
  let sourceStatus='backend-unavailable';
- try {const res=await fetch((process.env.BACKEND_URL??'https://api.mercenta.xyz').replace(/\/$/,'')+'/api/account/supplier-catalog',{signal:AbortSignal.timeout(10000),next:{revalidate:60}});if(res.ok){const feed=await res.json() as {status:string;products:RawProduct[];fetchedAt:string;coverage:string};sourceStatus=feed.status;if(feed.status==='ready'){return {products:diversify(normalizeCatalog(feed.products)),live:true,generatedAt:feed.fetchedAt,sourceStatus,coverage:feed.coverage,purchasingEnabled:false}}}}catch{/* Never label examples as a successful supplier import. */}
+ try {const res=await fetch((process.env.BACKEND_URL??'https://api.mercenta.xyz').replace(/\/$/,'')+'/api/account/supplier-catalog',{signal:AbortSignal.timeout(10000),next:{revalidate:60}});if(res.ok){const feed=await res.json() as {status:string;products:RawProduct[];fetchedAt:string;coverage:string};sourceStatus=feed.status;if(feed.status==='ready'){return {products:artworkFirst(diversify(normalizeCatalog(feed.products))),live:true,generatedAt:feed.fetchedAt,sourceStatus,coverage:feed.coverage,purchasingEnabled:false}}}}catch{/* Never label examples as a successful supplier import. */}
  const examples=FALLBACK.map(p=>({...p,items:p.items?.map(i=>({...i,inStock:0,stock:0,available:false}))}));
  return {products:normalizeCatalog(examples),live:false,sourceStatus,coverage:'examples-only',generatedAt:new Date().toISOString()};
 }
