@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import BrandMark from "./BrandMark";
+import {OfficialContacts} from '@/components/OfficialContacts';
+
 import ScrollStory from "./ScrollStory";
 import { MorphHeadline, SupplySection, BusinessPlaybooks, BuildSection, LandingFAQ } from "./LandingExperience";
 import { CASES, ORDER, POLICY, evaluatePolicy, percent, usdc, type SupplierState } from "@/lib/policy";
@@ -200,7 +202,7 @@ export default function FlagshipLanding() {
 
       <section className="mx-final" aria-labelledby="mx-final-title"><div className="mx-wrap"><div className="mx-final-top"><span className="mx-label">THE NEXT MOVE IS YOURS.</span><span className="mx-label">MERCENTA / PRE-LAUNCH</span></div><h2 id="mx-final-title">Let agents act.<br /><span>On your terms.</span></h2><div className="mx-final-bottom"><p>Intelligent commerce.<br />Non-negotiable control.</p><a href="/app" className="mx-button mx-button-primary">Enter the console <Arrow diagonal /></a></div></div><div className="mx-final-watermark" aria-hidden="true">mercenta.</div></section>
     </main>
-    <footer className="mx-footer"><div className="mx-wrap"><a href="#" className="mx-brand"><BrandMark /><span>mercenta.</span></a><p>© {new Date().getFullYear()} Mercenta · Pre-launch preview</p><div><a href="/catalog">Catalog <Arrow diagonal /></a><a href="/app">Console <Arrow diagonal /></a><a href="/status">Status <Arrow diagonal /></a><a href="#">Back to top ↑</a></div></div></footer>
+    <footer className="mx-footer"><div className="mx-wrap"><a href="#" className="mx-brand"><BrandMark /><span>mercenta.</span></a><p>© {new Date().getFullYear()} Mercenta · Pre-launch preview</p><div><a href="/catalog">Catalog <Arrow diagonal /></a><a href="/app">Console <Arrow diagonal /></a><a href="/status">Status <Arrow diagonal /></a><a href="#">Back to top ↑</a></div><OfficialContacts/></div></footer>
     <dialog ref={dialog} className="mx-record-dialog" aria-labelledby="mx-record-title" onCancel={dismissReceipt} onClick={e => { if (e.target === e.currentTarget) dismissReceipt(); }}><div className="mx-record-inner"><div className="mx-record-heading"><span className="mx-label">ILLUSTRATIVE / NO LIVE SETTLEMENT</span><button ref={closeReceipt} type="button" onClick={dismissReceipt} aria-label="Close order record">×</button></div><h2 id="mx-record-title">{ORDER.id}</h2><p>{ORDER.units} {ORDER.unit} · {ORDER.supplier}</p><dl>{[["Client price", usdc(CASES.order.amount)], ["Supplier cost", usdc(CASES.order.cost)], ["Platform fee", usdc(CASES.order.amount * POLICY.platformFee)], ["Gross margin", percent(example.margin)], ["Decision", example.decision], ["Policy", POLICY.version]].map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl><p className="mx-record-note">This is an example record, not a signed receipt or proof of settlement.</p><button type="button" className="mx-button mx-button-primary" onClick={copyReceipt} aria-live="polite">{copied ? "Copied JSON ✓" : "Copy record as JSON"}<Arrow /></button></div></dialog>
 
   </div>;
