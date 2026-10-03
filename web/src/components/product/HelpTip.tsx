@@ -1,0 +1,3 @@
+ 'use client';
+import {useId,useState} from 'react';
+export function HelpTip({label,children}:{label:string;children:React.ReactNode}){const id=useId(),[open,setOpen]=useState(false);return <span className="mc-help" onMouseEnter={()=>setOpen(true)} onMouseLeave={()=>setOpen(false)} onKeyDown={e=>{if(e.key==='Escape'&&open){e.preventDefault();setOpen(false);e.stopPropagation()}}}><button type="button" className="mc-help-trigger" aria-label={label} aria-expanded={open} aria-describedby={open?id:undefined} onFocus={()=>setOpen(true)} onBlur={()=>setOpen(false)} onClick={()=>setOpen(true)}>?</button>{open&&<span className="mc-tooltip" id={id} role="tooltip">{children}</span>}</span>}

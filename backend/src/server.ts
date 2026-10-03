@@ -1,3 +1,4 @@
+import {registerCatalogTestCheckout} from './routes/catalog-test-checkout.js';
 import {registerAssistantPreview} from './routes/assistant-preview.js';
 import {registerWorkspace} from './routes/workspace.js';
 import {registerCircleDemoSeller} from './routes/circle-demo-seller.js';
@@ -44,6 +45,7 @@ export async function buildServer(c: Config, products?: Product[]) {
   registerAuthRoutes(app,db,c);
   registerRoutes(app, db, c, catalog, orders);
   registerAccountRoutes(app, db, c);
+  registerCatalogTestCheckout(app, db, c);
   registerWorkspace(app, db, c);
   registerCommerce(app, db, c);
   registerCircleAgent(app, db, c);
@@ -58,7 +60,7 @@ export async function buildServer(c: Config, products?: Product[]) {
         ? 401
         : e instanceof ZodError
           ? 400
-          : message === "ORDER_NOT_FOUND"
+          : ["ORDER_NOT_FOUND","QUOTE_NOT_FOUND","DELIVERY_NOT_FOUND"].includes(message)
             ? 404
             : message.includes("CONFLICT") || message === "REQUEST_IN_PROGRESS"
               ? 409
