@@ -1,0 +1,32 @@
+{
+  "scope": "CUSTOMER_CHECKOUT_CONTRACT_TESTS_PRODUCTION_CLOSED",
+  "tests": {
+    "backendPassed": 257,
+    "backendFailed": 0,
+    "newCheckoutCases": 38,
+    "backendBuildPassed": true,
+    "realPurchasesUsedByTests": false
+  },
+  "quotePreflightBeforeInvoice": true,
+  "documentedVoucherProtocol": true,
+  "durableSingleOutboundClaim": true,
+  "originalReferenceRecovery": true,
+  "settlementDebitMustMatch": true,
+  "deliveryEncrypted": true,
+  "ownerIsolationTested": true,
+  "fileDatabaseRestartTested": true,
+  "genericGuessedProtocolRemoved": true,
+  "documentedCashAccountReader": true,
+  "procurementReserveUsd": "10.000000",
+  "perKeyContractTestAggregateUsd": "1.000000",
+  "productionAdapterGate": "NODE_ENV=test only; no ordinary production activation",
+  "productionNetworkVerified": false,
+  "customerRealCheckoutEnabled": false,
+  "mainnetEnabled": false,
+  "refundWorkflowImplemented": true,
+  "customerRefundPaymentExecutionImplemented": false,
+  "additionalRealPurchases": 0,
+  "priorOwnerProbeSpendUsd": "0.019400",
+  "custodyWithdrawalPolicyClosed": false,
+  "mainnetDecision": "NO_GO; contract-tested lifecycle, production payment/custody/key-control gates remain"
+}

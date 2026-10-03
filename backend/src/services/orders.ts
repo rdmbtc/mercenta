@@ -9,7 +9,7 @@ import {
   requestRef,
   encryptCode,
   decryptCode,
-  SupplyNode,
+  type FulfillmentPort,
   type SupplyResult,
 } from "./fulfillment/index.js";
 import type { PaymentProof } from "./arc/index.js";
@@ -34,12 +34,23 @@ export class Orders {
     private db: DB,
     private c: Config,
     private products: Product[],
-    private supplier: SupplyNode,
+    private supplier: FulfillmentPort,
   ) {}
   get(id: string) {
     return this.db.prepare("SELECT * FROM orders WHERE id=?").get(id) as
       | Order
       | undefined;
+  }
+  get ready(){return this.supplier.ready}
+  async createVerified(actor:string,requestId:string,productId:string,quantity:number){
+    const prior=this.db.prepare('SELECT order_id FROM order_requests WHERE actor=? AND id=?').get(actor,requestId) as {order_id:string}|undefined;
+    if(prior)return this.createIdempotent(actor,requestId,productId,quantity);
+    const product=this.products.find(p=>p.id===productId&&p.enabled);
+    if(!this.supplier.ready)throw Error('SERVICE_PURCHASES_PAUSED');
+    if(!Number.isInteger(quantity)||quantity<1||quantity>10)throw Error('ORDER_QUANTITY_INVALID');
+    if(!product?.cost||!product.supplierSku)throw Error('VERIFIED_SUPPLIER_QUOTE_REQUIRED');
+    await this.supplier.verifyQuote?.(product.supplierSku,quantity,(parseMoney(product.cost)*BigInt(quantity)).toString());
+    return this.createIdempotent(actor,requestId,productId,quantity);
   }
   createIdempotent(
     actor: string,
@@ -69,11 +80,15 @@ export class Orders {
   }
   create(actor: string, productId: string, quantity: number) {
     if (!this.supplier.ready) throw new Error("SERVICE_PURCHASES_PAUSED");
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) throw Error("ORDER_QUANTITY_INVALID");
     const p = this.products.find((p) => p.id === productId && p.enabled);
     if (!p || !p.cost || !p.supplierSku)
       throw new Error("VERIFIED_SUPPLIER_QUOTE_REQUIRED");
     if (Date.now() - p.quotedAt > 300000 || p.quotedAt > Date.now())
       throw new Error("STALE_SUPPLIER_QUOTE");
+    const totalCost = (parseMoney(p.cost) * BigInt(quantity)).toString();
+    if (BigInt(totalCost) <= 0n || parseMoney(p.price) <= 0n) throw Error("VERIFIED_SUPPLIER_QUOTE_REQUIRED");
+    this.supplier.validateQuote?.(p.supplierSku, quantity, totalCost);
     const id = randomUUID(),
       now = Date.now();
     this.db
@@ -247,7 +262,7 @@ export class Orders {
           ? "APPROVED"
           : result.decision === "ESCALATED"
             ? "ESCALATED"
-            : "BLOCKED";
+            : "REFUND_REQUIRED";
       this.db
         .prepare("UPDATE orders SET status=?,tx_hash=?,updated_at=? WHERE id=?")
         .run(status, proof.txHash, Date.now(), id);
@@ -288,20 +303,24 @@ export class Orders {
       return;
     }
     // A persisted PURCHASING claim precedes the sole purchase call. A restart reconciles; it never purchases again.
-    const result = await this.supplier.purchase(
-      claimed.request_ref,
-      p.supplierSku,
-      claimed.quantity,
-    );
-    this.applySupply(id, result);
+    try {
+      const result = await this.supplier.purchase(
+        claimed.request_ref, p.supplierSku, claimed.quantity, claimed.cost_units,
+      );
+      this.applySupply(id, result);
+    } catch {
+      // A thrown transport error is an unknown financial outcome, never a second POST or automatic refund.
+      this.unknown(id);
+    }
   }
   unknown(id: string) {
     this.db.transaction(() => {
-      this.db
+      const updated = this.db
         .prepare(
           "UPDATE orders SET status='SUPPLIER_UNKNOWN',updated_at=? WHERE id=? AND status IN('PURCHASING','SUPPLIER_UNKNOWN')",
         )
         .run(Date.now(), id);
+      if (updated.changes !== 1) return;
       this.db
         .prepare(
           "INSERT OR IGNORE INTO reconciliations(order_id,next_at) VALUES(?,?)",
@@ -317,6 +336,10 @@ export class Orders {
     this.db.transaction(() => {
       const o = this.get(id);
       if (!o || !["PURCHASING", "SUPPLIER_UNKNOWN"].includes(o.status)) return;
+      if (r.status === "COMPLETED" && r.chargedUsdUnits !== undefined && r.chargedUsdUnits !== o.cost_units) {
+        this.unknown(id);
+        return;
+      }
       if (r.status === "COMPLETED") {
         const cost = BigInt(o.cost_units),
           sale = BigInt(o.sale_units);
