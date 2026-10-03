@@ -1,32 +1,28 @@
-# Mercenta — recording script (target 2m45s)
+# Mercenta — Business Operator recording script (target 2m45s)
 
-Use the real deployed UI. Do not edit a wallet-connected identity or inject an authenticated browser session for a recording. Never show private keys, provider credentials or raw signed authorizations.
+Use the deployed UI with a genuine owner wallet sign-in. Never inject an authenticated identity or show keys, provider credentials or signed authorization material. Fixture tests are labelled as tests, not customer/payment proof.
 
-## 00:00–00:20 — the business problem
-“Digital-goods resellers see turnover but can accidentally spend procurement cash as if it were profit. Mercenta connects a checked commerce workflow with separate treasury balances and traceable payments.”
-Show Dashboard / Guided Demo. State that digital-goods fulfillment is simulated in this testnet demo.
+## 00:00–00:15 — one real business problem
+“Digital-goods resellers need procurement within a budget, not another dashboard. Mercenta turns a goal into bounded, inspectable actions.”
+Show Assistant. State Arc Testnet, fixed rehearsal pricing and non-redeemable delivery.
 
-## 00:20–00:45 — intent becomes a bounded proposal
-With the owner wallet authenticated, ask: “Plan a creator purchase under 2 USDC.”
-Show pinned price, account balance and policy checks. Explain that a message never debits money. Execute a simulated purchase only through its explicit UI confirmation, then show its order and ledger IDs.
+## 00:15–00:40 — one explicit permission
+Set “Find a Roblox voucher for my region”, task cap 3 test USDC, quantity 1 and a remaining-balance floor that fits the verified prepaid balance. Choose the actual eligible region. Show one-order/ten-minute boundaries. Select delegated mode and explicitly authorize the bounded test purchase. Review mode is available when the owner wants the exact quote first.
 
-## 00:45–01:20 — Circle Agent Stack
-Ask: “Prepare a paid margin report.” Show the exact 0.001000 test-USDC quote and recipient. Clearly label the service as Mercenta-owned, not a third-party customer.
-Only the human owner clicks the exact-amount confirmation. Show the resource response. If Gateway is queued, say queued; show final Arc evidence only when reconciliation actually verifies it. A quote or Gateway deposit is not proof of paid execution.
+## 00:40–01:15 — tools, not invented text
+Show actual persisted balance, saved budget, full-catalogue search, option inspection and server quote events. Show the configured model's rationale separately from execution evidence. Catalogue USD prices are not test checkout prices. The server enforces the exact quantity and limits. Show the saved non-redeemable delivery, order ID and ledger/purchase history after the real signed-in test run. A fixture/model probe is not a substitute for this production owner-authenticated recording.
 
-## 01:20–01:45 — useful result and trust boundaries
-Show the margin scenario: declared gross 2.000000, COGS 1.532000, other assumed fees 0.005000, paid report cost 0.001000, allocatable margin 0.462000 USDC. The 10% profit scenario is 0.046200 USDC.
-These are scenario inputs, not verified customer revenue. Explain that actual sale-linked allocation requires a separate verified buyer transfer.
+## 01:15–01:50 — Circle payment evidence
+Prepare the Mercenta-owned paid margin report on the same screen. Show separate Gateway balance and exact 0.001000 test-USDC quote/recipient. Human owner confirms this separate payment. Show the returned report and matching final settlement only when reconciliation verifies it. Queued is not settled; reconcile the original authorization instead of creating a replacement payment.
 
-## 01:45–02:15 — Profit First
-Show the sale-linked flow and exact contract allowance/owner wallet confirmation. Record a real allocation only if the owner signs it. Otherwise clearly show an unsigned proposal and do not imply funds were locked.
-Explain: profit locking is not staking; live Earn/APY is not connected.
+## 01:50–02:10 — business meaning and authority
+Explain: the paid report uses fixed scenario assumptions, not earned revenue. A sale-linked Profit First allocation needs a separately verified buyer transfer and genuine owner wallet signatures. Do not show unsigned proposals as locked funds; live Earn is not connected.
 
-## 02:15–02:35 — retry safety
-Show the automated disk-restart test and label it as a mock: one signature, one paid transmission, one ledger batch, cached original response recovered. Do not interrupt the production service just to manufacture a failure during recording.
+## 02:10–02:30 — failure safety
+Show labelled automated tests: cancellation in flight cannot execute; restart/replay retains one original order/debit; bad model IDs are blocked; current saved budgets are rechecked. Do not interrupt production or fake an incident to manufacture proof.
 
-## 02:35–02:45 — close with evidence
-Show public funding proof, documentation and repository. State external pilot/customer counts from real evidence only. Internal project funding is not external traction.
+## 02:30–02:45 — evidence and next step
+Show public repo, app, funding/contract addresses and documented boundaries. State real external pilot counts from evidence only. Mainnet and real supplier invoices remain off.
 
 ## Recording gate
-If the paid request, owner signatures or final settlement have not actually happened, use this script as a rehearsal; do not submit a video claiming those steps completed. A public read-only UI walkthrough is supplementary, not a replacement for the signed end-to-end demonstration.
+This is a rehearsal until the genuine owner-authenticated run, paid request and final settlement actually exist. Under-three-minute video required; a read-only walkthrough or live-model fixture probe alone is supplementary. No invented traction, buyer revenue, production debits or settlement claims.
