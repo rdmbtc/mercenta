@@ -10,7 +10,7 @@ The catalogue is browseable and platform artwork is available for matching brand
 
 Assistant now runs a model-selected catalogue/option/quote tool loop with review or explicitly bounded one-order test delegation. Durable task IDs, cancellation, lease/step limits, saved delivery and current budget/balance checks are enforced server-side. A live Groq + received-catalogue cycle passed against an isolated fixture ledger; it is not production execution or external traction proof. Details: `docs/agent-operator.md` and `docs/agent-operator-live-probe.json`.
 
-Public Assistant guide source and build are updated. Separate docs deployment was blocked by the Vercel daily deployment quota; publish the prepared docs release after quota reset. The app and backend operator releases are already active.
+Public Assistant guide source and build are updated. The earlier quota block was cleared by subsequent Vercel automatic publication from main; app and docs updates are now live. The app and backend operator releases are already active.
 
 ## Hardening release
 
@@ -18,7 +18,7 @@ Source tests pass: 172 backend, 232 web and 12 local-chain contract tests. New o
 
 The actual account endpoint did not expose the required procurement balance. Earn metadata discovery works, but code existence does not establish safe yield. Onramp credentials/route verification and a real Borrow market are absent. Complete those integrations only with evidence; do not convert tests into claims of live money management.
 
-Latest backend hardening has a protected deployment and rollback path. New app/docs publication is still pending Vercel quota reset; local mock previews are not production. See `docs/service-hardening.md` and `docs/service-hardening-qa.json`.
+Latest backend hardening has a protected deployment and rollback path. New app/docs publication was subsequently verified live after Vercel picked up main. The guest guide was exercised on the deployed site; isolated mock QA remains separately labelled. See `docs/service-hardening.md` and `docs/service-hardening-qa.json`.
 
 ## Close the hackathon demo first
 

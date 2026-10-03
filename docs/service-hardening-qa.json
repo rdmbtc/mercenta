@@ -257,8 +257,8 @@
   },
   "publication": {
     "backend": "deployed and read-only checked",
-    "web": "prepared; latest Vercel daily deployment quota blocks new UI release",
-    "docs": "prepared; latest Vercel daily deployment quota blocks new guide release",
+    "web": "Published automatically by Vercel from main; live /agent guide, example, all three steps, return to task and tooltip checked",
+    "docs": "Published automatically by Vercel from main; live guide page returned HTTP 200 and includes Learn by doing",
     "remoteCI": {
       "status": "blocked before runner/test start",
       "githubConclusion": "failure",
@@ -267,6 +267,23 @@
       "jobsExecuted": false,
       "sourceCommit": "6f932bedc6f1eedfb015c9655ad980c55437dd85",
       "billingChanged": false
+    },
+    "verification": {
+      "sourceCommit": "15ee5fa68bfeef3431334e387e55c8187d3c90d3",
+      "appUrl": "https://app.mercenta.xyz/agent",
+      "docsUrl": "https://docs.mercenta.xyz/docs/agents/ai-advisor",
+      "productionDeployment": "https://mercenta-mb7472ixx-drrdms-projects.vercel.app",
+      "githubDeploymentId": 6830137680,
+      "vercelState": "success",
+      "newAppCodeMarkers": [
+        "Show me how to start",
+        "Explain Earn readiness",
+        "/api/account/service-availability",
+        "/api/account/earn-discovery"
+      ],
+      "guestGuideBrowserChecked": true,
+      "authenticatedCheckoutChecked": false,
+      "fundsMoved": false
     }
   },
   "financialBoundaries": {

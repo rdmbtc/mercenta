@@ -28,6 +28,6 @@ GitHub CI is prepared with pinned actions, read-only permissions and separate ba
 
 ## Publication and mainnet
 
-The backend release is separately verified on the VPS. New app/docs sources and safe publication stages are prepared, but the latest Vercel daily deployment quota blocked publication; do not present local mocked previews as deployed UI.
+The backend release is separately verified on the VPS. Vercel subsequently published app and docs automatically from main commit `15ee5fa68bfeef3431334e387e55c8187d3c90d3`. Live `/agent` guide opening, example-only filling, all three steps, return to task and tooltip/Escape were checked without authentication or payments. The live docs guide returns HTTP 200 and includes the updated interactive-guide instructions. Prior quota blockage is historical, not the current app/docs publication state.
 
 **Mainnet: NO-GO.** Required evidence includes genuine authenticated owner checkout/retry delivery, actual provider stock/price/idempotent fulfillment and refunds, production network/custody allowlists, withdrawal/liability reconciliation, credential rotation, independent review, incident/restore drills and an owner-approved tightly bounded pilot. Real external business usage is needed for traction; self-funding and mock tests do not count.
