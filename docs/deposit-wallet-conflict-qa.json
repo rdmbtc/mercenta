@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-03T12:55:50.931832+00:00",
+  "deployment": "mercenta-gwbpl33tz-drrdms-projects.vercel.app",
+  "diagnosis": {
+    "depositIntentReachedBackend": true,
+    "depositIntentHTTPStatus": 400,
+    "latestVerifiedWalletEqualsConfiguredReceiver": true,
+    "databaseQuickCheck": "ok",
+    "databaseWritableByService": true,
+    "guard": "DEPOSIT_RECEIVER_INVALID before intent creation; preflight uses DEPOSIT_SELF_TRANSFER"
+  },
+  "tests": {
+    "frontendPassed": 208,
+    "backendPassed": 138,
+    "guestBrowser": {
+      "checks": [
+        "guest Funds renders without errors",
+        "guest account balance remains private",
+        "funding is not revenue",
+        "shop first page 24 cards retained",
+        "artwork-first retained",
+        "no JavaScript errors",
+        "no mutating requests"
+      ],
+      "passed": 7,
+      "errors": [],
+      "mutations": [],
+      "authenticatedDepositVerified": false
+    }
+  },
+  "scope": {
+    "backendRuntimeChanged": false,
+    "merchantAddressChanged": false,
+    "fundsMoved": false,
+    "productionAccountBalanceChanged": false,
+    "signaturesCreated": 0,
+    "authenticatedSuccessfulDepositVerified": false
+  },
+  "retryScope": "Same unchanged mounted form; no claim of restart-persistent intent recovery."
+}

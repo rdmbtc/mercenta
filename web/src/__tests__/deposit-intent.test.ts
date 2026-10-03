@@ -1,0 +1,9 @@
+import {describe,it,expect} from 'vitest';import {depositEligibility} from '@/lib/deposit-intent';import {friendlyWorkspaceError} from '@/lib/workspace-plan';
+const wallet='0x'+'a'.repeat(40),receiver='0x'+'b'.repeat(40);
+describe('deposit intent guards preserve financial authority',()=>{
+ it('blocks same wallet case-insensitively',()=>{expect(depositEligibility(wallet,'0x'+'A'.repeat(40),'10').code).toBe('DEPOSIT_SELF_TRANSFER')});
+ it('requires wallet and configured nonzero receiver',()=>{expect(depositEligibility(null,receiver,'10').code).toBe('WALLET_AUTH_REQUIRED');expect(depositEligibility(wallet,null,'10').code).toBe('DEPOSIT_RECEIVER_NOT_CONFIGURED');expect(depositEligibility(wallet,'0x'+'0'.repeat(40),'10').code).toBe('DEPOSIT_RECEIVER_INVALID')});
+ it('blocks read-only state',()=>{expect(depositEligibility(wallet,receiver,'10',true).code).toBe('MEMORY_PRESSURE_READ_ONLY')});
+ it('validates exact amount without rounding or interpreting comma as thousands/decimal',()=>{for(const v of ['0','-1','1e2','1,000','1,5','0.0000001','1000000.000001','01','NaN',''])expect(depositEligibility(wallet,receiver,v).code).toBe('DEPOSIT_AMOUNT_INVALID');for(const v of ['0.000001','10.000000','1000000'])expect(depositEligibility(wallet,receiver,v)).toEqual({code:null,amount:v});expect(depositEligibility(wallet,receiver,' 10.50 ').amount).toBe('10.50')});
+ it('explains known deposit failures bilingually without leaking unknown errors',()=>{expect(friendlyWorkspaceError('DEPOSIT_RECEIVER_INVALID','en')).toContain('matches your wallet');expect(friendlyWorkspaceError('DEPOSIT_SELF_TRANSFER','ru')).toContain('самому себе');expect(friendlyWorkspaceError('DEPOSIT_AMOUNT_INVALID','en')).toContain('decimal point');expect(friendlyWorkspaceError('secret stack trace','en')).not.toContain('secret')});
+});
