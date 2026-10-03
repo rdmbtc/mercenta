@@ -1,0 +1,7 @@
+import {describe,it,expect} from 'vitest';import {illustrationFor,safeProductImage} from '@/lib/product-images';import {normalizeCatalog} from '@/lib/supplier';
+describe('product imagery and source normalization',()=>{
+ it('uses original local covers without guessed brand domains',()=>{expect(illustrationFor('Steam Wallet Code')).toBe('/products/steam.webp');expect(illustrationFor('Unknown product','cloud')).toBe('/products/cloud.webp')});
+ it('rejects credentials, internal networks and non-HTTPS images',()=>{for(const u of ['javascript:alert(1)','http://cdn.example.com/a','https://127.0.0.1/a','https://10.0.0.1/a','https://example.com/a?api_key=secret','https://user:pass@example.com/a'])expect(safeProductImage(u)).toBeUndefined();expect(safeProductImage('https://cdn.example.com/product.webp')).toBe('https://cdn.example.com/product.webp')});
+ it('does not invent availability when a feed has no stock evidence',()=>{const p=normalizeCatalog([{id:'p',name:'Steam',items:[{id:'d',price:2,currency:'USD'}]}]);expect(p[0].inStock).toBe(0);expect(p[0].imageSource).toBe('illustration');expect(p[0].imageUrl).toBe('/products/steam.webp')});
+ it('retains supplier image and source currency without claiming USDC parity',()=>{const p=normalizeCatalog([{id:'p',name:'Product',imageUrl:'https://cdn.example.com/product.webp',items:[{id:'d',price:3,currency:'EUR',inStock:4}]}]);expect(p[0].imageSource).toBe('supplier');expect(p[0].currency).toBe('EUR');expect(p[0].inStock).toBe(1)});
+})

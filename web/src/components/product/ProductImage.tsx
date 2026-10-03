@@ -1,0 +1,3 @@
+ 'use client';
+import {useState} from 'react';import {illustrationFor,safeProductImage} from '@/lib/product-images';
+export function ProductImage({name,category,imageUrl,className=''}:{name:string;category:string;imageUrl?:string;className?:string}){const [failed,setFailed]=useState(false);const remote=safeProductImage(imageUrl);const original=!!remote&&!failed;return <div className={'product-image '+className}><img src={original?remote:illustrationFor(name,category)} alt={original?name:'Illustration: '+name} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={()=>setFailed(true)}/>{!original&&<span className="product-image-label">Illustrative cover</span>}</div>}

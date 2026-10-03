@@ -1,3 +1,4 @@
+import {registerAssistantPreview} from './routes/assistant-preview.js';
 import {registerWorkspace} from './routes/workspace.js';
 import {registerCircleDemoSeller} from './routes/circle-demo-seller.js';
 import {registerCircleAgent} from './routes/circle-agent.js';
@@ -48,6 +49,7 @@ export async function buildServer(c: Config, products?: Product[]) {
   registerCircleAgent(app, db, c);
   registerCircleDemoSeller(app, db, c);
   registerAgentChat(app, db, c);
+  registerAssistantPreview(app, db, c);
   const stop = startReconciler(db, orders, node);
   app.setErrorHandler((e, _req, reply) => {
     const message = e instanceof Error ? e.message : "REQUEST_REJECTED";

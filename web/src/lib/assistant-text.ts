@@ -1,0 +1,1 @@
+export function assistantSegments(text:string){return text.split(/(\*\*[^*]+\*\*)/g).filter(Boolean).map(part=>part.startsWith('**')&&part.endsWith('**')?{text:part.slice(2,-2),strong:true}:{text:part,strong:false})}

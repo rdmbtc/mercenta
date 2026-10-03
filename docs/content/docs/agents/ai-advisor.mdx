@@ -1,33 +1,27 @@
 ---
-title: Agent Chat
-description: A dedicated agent workspace with verifiable tools, explicit confirmations and wallet-owned signing.
+title: Assistant and confirmations
+description: Real model responses, with a clear boundary between help and account actions.
 ---
+## Ask before signing in
 
-# Your intent. A checked next step.
+Open **Assistant → Chat** in [Mercenta](https://app.mercenta.xyz/app?section=agent-chat). Guest help can explain the interface, regions and spending limits without a wallet. It has no private history, balance tools, purchase plans or transaction authority.
 
-[Open Agent Chat](https://app.mercenta.xyz/agent). The former floating assistant and its “10 free requests” offer have been removed.
+Guest preview is limited to five questions per signed browser session per UTC day, with an additional shared service safety cap. Clearing a session does not remove the shared cap. Questions are sent to the configured model provider; do not include passwords, wallet keys, API credentials or sensitive personal details.
 
-## What works
+## Connect for account tools
 
-- Read the authenticated wallet's account balance and trusted test catalogue.
-- Prepare a simulated purchase, with the backend price and quantity pinned in an immutable proposal.
-- Confirm that purchase explicitly. The deterministic ledger checks funds and the 10-test-USDC order cap; retries return the same receipt without a second debit.
-- Read current Arc gas price, clearly separated from total transaction cost.
-- Calculate a six-decimal Profit First split and prepare a seller-owned Arc Testnet wallet allocation.
-- Verify the allocation receipt and contract event before reporting execution.
+Wallet-authenticated chat can prepare bounded purchase proposals, inspect your account balance, explain gas information and help with Profit First scenarios. Purchases require a separate explicit confirmation. Contract actions require wallet signatures. A message alone never purchases, transfers or stakes.
 
-## What does not work yet
+The current shop delivers simulated goods only. Live AppRoute procurement, mainnet and live Earn are not enabled.
 
-Real digital goods, live staking/Earn, fiat onramp and automatic cross-chain credit remain disabled. A locked-profit bucket is not staking and has no APY. A message asking to stake never silently deposits into an unreviewed vault.
+## Know which response you received
 
-The model only selects a permitted intent. It cannot supply prices, wallets, arbitrary contract calls or private signing keys. A deterministic rules fallback is labelled `rules-fallback` when no model is configured or the provider fails; this is not advertised as live LLM reasoning.
+A model-backed response identifies its configured provider. A rules-based fallback is labelled separately. Provider availability is not a promise that every request will succeed: upstream quotas, timeouts and invalid responses may trigger fallback.
 
-## Confirmation boundaries
+AI explanations are untrusted guidance. Verify important details in the interface and relevant guide. The model is given verified product facts, but this is not a guarantee of accuracy or financial, tax or legal advice.
 
-Account purchases require a separate **Confirm simulated purchase** click. Profit allocations require wallet signatures, exact token approval and a verified Arc receipt. A chat reply, signed approval or broadcast transaction is not proof of settlement.
+Budget saving is a server request, not a wallet payment or contract signature. Shop limits do not apply to Gateway, external wallet transfers or Profit First allocations. See [spending limits](/docs/account/budget).
 
-Plans belong to the authenticated wallet and expire after ten minutes. Messages have an independent daily fair-use guard of 40; no autonomous spending permission is created. Monetary writes fail closed during backend outage.
+## Inspect execution evidence
 
-Never paste keys, seed phrases, passwords, supplier credentials or delivery codes. Messages are persisted for the signed-in wallet; recent messages may be sent to the configured model provider for intent classification. Obvious secret patterns are rejected, but detection is not a guarantee.
-
-See [Profit First contract](./profit-first).
+The assistant's prose is not a receipt. Inspect **Shop → Purchases** and **Account → Activity** for verified test-order records. Reconcile an uncertain original operation rather than creating a replacement purchase. Never paste private keys into chat to enable signing.
