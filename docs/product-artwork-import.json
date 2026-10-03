@@ -1,0 +1,118 @@
+{
+  "references": 24,
+  "uniqueImagesRetrieved": 23,
+  "publishedPlatformAssets": 20,
+  "catalogueProducts": 1298,
+  "matchedListings": 395,
+  "byBrand": {
+    "valorant": 19,
+    "steam": 38,
+    "playstation": 43,
+    "xbox": 35,
+    "roblox": 27,
+    "spotify": 13,
+    "discord": 1,
+    "google-play": 16,
+    "apple": 31,
+    "nintendo": 12,
+    "razer-gold": 25,
+    "battle-net": 11,
+    "fortnite": 12,
+    "world-of-warcraft": 3,
+    "riot": 22,
+    "undawn": 1,
+    "tinder": 63,
+    "gearup": 1,
+    "exitlag": 5,
+    "ea": 17
+  },
+  "fullSiteImageLibraryVerified": false,
+  "authenticationUsed": false,
+  "realOrdersCreated": 0,
+  "excludedFromCustomerArtwork": [
+    "Football cover labeled FC26 but visually FC25",
+    "Unverified football edition FC27 cover",
+    "Supplier test/API artwork"
+  ],
+  "source": "User-provided public image URLs and saved HTML; all 23 retrieved files were decoded before conversion",
+  "claim": "Platform artwork only, not exact SKU imagery, stock or redemption evidence",
+  "matchPolicy": "First explicit brand in product title; Roblox | Xbox uses Roblox artwork, not an arbitrary registry ordering.",
+  "checkedAt": "2026-10-03T11:21:16.172449+00:00",
+  "webTestsPassed": 185,
+  "browser": {
+    "results": [
+      {
+        "name": "app artwork loaded: Valorant",
+        "ok": true
+      },
+      {
+        "name": "app artwork loaded: Steam",
+        "ok": true
+      },
+      {
+        "name": "app artwork loaded: PlayStation",
+        "ok": true
+      },
+      {
+        "name": "app artwork loaded: Xbox",
+        "ok": true
+      },
+      {
+        "name": "app artwork loaded: Roblox",
+        "ok": true
+      },
+      {
+        "name": "app artwork loaded: Spotify",
+        "ok": true
+      },
+      {
+        "name": "app artwork loaded: Apple",
+        "ok": true
+      },
+      {
+        "name": "app no horizontal overflow",
+        "ok": true
+      },
+      {
+        "name": "no supplier branding in customer UI",
+        "ok": true
+      },
+      {
+        "name": "detail uses same platform artwork",
+        "ok": true
+      },
+      {
+        "name": "brand art does not crop logos",
+        "ok": true
+      },
+      {
+        "name": "unmapped product remains explicitly illustrative",
+        "ok": true
+      },
+      {
+        "name": "public catalog uses same verified Steam artwork",
+        "ok": true
+      },
+      {
+        "name": "mobile Roblox artwork loaded",
+        "ok": true
+      },
+      {
+        "name": "mobile no horizontal overflow",
+        "ok": true
+      },
+      {
+        "name": "mobile platform label visible",
+        "ok": true
+      },
+      {
+        "name": "no browser runtime errors",
+        "ok": true
+      }
+    ],
+    "errors": [],
+    "scope": "Guest UI only, no sign-in or financial actions"
+  },
+  "webDeployment": "mercenta-ojk89tw6w-drrdms-projects.vercel.app",
+  "financialWrites": 0
+}

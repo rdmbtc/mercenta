@@ -16,7 +16,7 @@ After a network interruption, retry the same request. The browser retains only q
 
 ## Images
 
-The supplied saved HTML references 24 local product covers but embeds no image bytes. Until the companion image folder is supplied, covers remain explicitly illustrative; no image URLs have been fabricated. Provider credentials and saved HTML are excluded from repository and deployment.
+The original saved HTML contained 24 local product references but no embedded image bytes. A subsequent user-provided public image URL allowed retrieval of all 23 unique referenced images. Twenty locally hosted platform artworks now cover recognized brands; unknown brands remain visibly illustrative. These are not exact SKU/denomination or stock evidence. See `product-artwork-import.md` for scope and exclusions.
 
 ## Motion
 
@@ -33,6 +33,6 @@ Real supplier checkout/invoices, redeemable delivery, mainnet, live Earn and rea
 - Deployed guest browser QA: 19 checks passed, covering desktop/mobile, light/dark, Russian/English, reduced motion, keyboard/touch tooltips, native drawer dismissal, no-wallet handoff feedback, documentation and absence of supplier names in visible customer UI.
 - Public health returned 200; unauthorized delivery and confirmation requests returned 401.
 - Financial success/retry/restart/rollback paths were tested in isolated databases. No production wallet session was impersonated and no production deposit or purchase confirmation was made during QA.
-- Original product covers are still pending the companion image files. The saved HTML itself contains no image bytes.
+- The initial checkout QA predated the artwork import; see `product-artwork-import.md` for the subsequent platform-artwork release.
 
 See `test-catalog-checkout-qa.json` for the scoped checklist.
