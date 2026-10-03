@@ -24,7 +24,7 @@ Source release: 172 backend tests; 232 web tests; 12 isolated local-chain contra
 
 The SDK returned two Arc Testnet vault metadata records. Read-only chain-ID and bytecode probes succeeded. Existence of code is not security, liquidity, yield or production suitability evidence. Public discovery excludes unverified APY and execution claims.
 
-GitHub CI is prepared with pinned actions, read-only permissions and separate backend, contracts, web and docs jobs. It contains no deployment, mainnet activation or financial secrets. Local tests are not an independent security audit or proof that remote CI has passed.
+GitHub CI is prepared with pinned actions, read-only permissions and separate backend, contracts, web and docs jobs. It contains no deployment, mainnet activation or financial secrets. Local tests are not an independent security audit. Remote CI for source commit `6f932bedc6f1eedfb015c9655ad980c55437dd85` was blocked before any runner or test started: GitHub reports the account locked due to a billing issue. This is not a remote test pass or a code-test failure; no billing changes or payments were made. Run: https://github.com/rdmbtc/mercenta/actions/runs/37135171422.
 
 ## Publication and mainnet
 
