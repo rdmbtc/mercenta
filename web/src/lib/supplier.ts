@@ -1,3 +1,4 @@
+import {brandArtwork} from './brand-artwork';
 import {illustrationFor,safeProductImage} from './product-images';
 // Server-side supplier catalog adapter.
 //
@@ -44,7 +45,7 @@ export interface CatalogProduct {
   /** Brand mark from a resolver; 404 falls back to a monogram. */
   logoUrl?: string;
   imageUrl?: string;
-  imageSource?: "supplier" | "illustration";
+  imageSource?: "supplier" | "brand" | "illustration";
   category: CategoryId;
   type: ProductType;
   countryCode?: string;
@@ -159,8 +160,8 @@ export function normalizeCatalog(raw: RawProduct[]): CatalogProduct[] {
       id: p.id,
       name,
       brand,
-      imageUrl:image??illustrationFor(name,categorize(p.categoryName,name)),
-      imageSource:image?"supplier":"illustration",
+      imageUrl:image??brandArtwork(name)??illustrationFor(name,categorize(p.categoryName,name)),
+      imageSource:image?"supplier":brandArtwork(name)?"brand":"illustration",
       category: categorize(p.categoryName, `${name} ${p.subcategoryName ?? ""} ${p.type ?? ""}`),
       type,
       countryCode: p.countryCode,

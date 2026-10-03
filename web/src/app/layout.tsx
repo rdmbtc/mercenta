@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Serif_Display, Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import "./product.css";
+import "@/components/product/brand-artwork.css";
 import "@/components/product/test-checkout.css";
 import "./liquidity.css";
 import Atmosphere from "@/components/Atmosphere";
