@@ -1,0 +1,6 @@
+import type {Catalog,CatalogProduct,CategoryId,ProductType} from './supplier';
+// Tuple transport avoids repeating keys and variants in the first render.
+export type BrowseRow=[string,string,string,CategoryId,ProductType,string,string,string,number,number,string,number,number,number,string];
+export type BrowseCatalog={version:1;rows:BrowseRow[];live:boolean;snapshot:boolean;generatedAt:string;sourceStatus?:string;coverage?:string;purchasingEnabled:false};
+export function packBrowse(c:Catalog):BrowseCatalog{return {version:1,rows:c.products.map(p=>[p.id,p.name,p.brand,p.category,p.type,p.countryCode??'',p.imageUrl??'',p.imageSource??'illustration',p.minPrice,p.maxPrice,p.currency,p.inStock,p.totalStock,p.optionCount??p.denominations.length,p.searchText??p.denominations.map(d=>d.name).join(' ')]),live:c.live,snapshot:!!c.snapshot,generatedAt:c.generatedAt,sourceStatus:c.sourceStatus,coverage:c.coverage,purchasingEnabled:false}}
+export function unpackBrowse(c:BrowseCatalog):Catalog{return {...c,products:c.rows.map(r=>({id:r[0],name:r[1],brand:r[2],category:r[3],type:r[4],countryCode:r[5]||undefined,imageUrl:r[6]||undefined,imageSource:r[7] as CatalogProduct['imageSource'],minPrice:r[8],maxPrice:r[9],currency:r[10],inStock:r[11],totalStock:r[12],optionCount:r[13],searchText:r[14],denominations:[],optionsDeferred:true})),purchasingEnabled:false}}
