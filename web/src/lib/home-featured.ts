@@ -3,7 +3,7 @@ import {brandArtwork} from './brand-artwork';
 /** Editorial entry points from the received catalogue, never invented stock or prices. */
 export function homeFeatured(catalog?:BrowseCatalog):BrowseRow[]{
  if(!catalog)return [];
- const valid=catalog.rows.filter(r=>r[4]==='voucher'&&r[10]==='USD'&&Number.isFinite(r[8])&&r[8]>0&&!!brandArtwork(r[1]));
+ const valid=catalog.rows.filter(r=>r[4]==='voucher'&&!/accounts?|auto[ -]?regs|access[ -]?token/i.test(r[1])&&r[10]==='USD'&&Number.isFinite(r[8])&&r[8]>0&&!!brandArtwork(r[1]));
  const rank=(r:BrowseRow)=>/^(GLOB|GLOBAL|ANY)$/i.test(r[5])?0:r[5]==='US'?1:2;
  const result:BrowseRow[]=[];
  for(const brand of ['Steam','Roblox','Spotify']){const row=valid.filter(r=>(r[2]+' '+r[1]).toLowerCase().includes(brand.toLowerCase())).sort((a,b)=>rank(a)-rank(b)||a[1].localeCompare(b[1]))[0];if(row)result.push(row)}
