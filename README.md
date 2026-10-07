@@ -1,4 +1,4 @@
-> **Integration candidate:** worker PASS reports are not a production certificate. See [release review](submission/INTEGRATION-REVIEW.md). Mainnet and commercial fulfillment remain closed.
+> **Testnet release:** one internal x402 payment is settled and independently rechecked against two canonical batch witnesses. This is not a production certificate or external business pilot. See [verified receipt](docs/verified-testnet-x402.md). Mainnet and commercial fulfillment remain closed.
 
 # Mercenta — commerce treasury with checked agent actions
 
@@ -13,6 +13,7 @@ Open Assistant for goal → verified balance/budget → catalogue search → ava
 - Guided commerce: https://app.mercenta.xyz/demo
 - Documentation: https://docs.mercenta.xyz
 - Public funding proof: https://app.mercenta.xyz/circle/gateway-funding.arc-testnet.json
+- Verified internal x402 receipt: https://app.mercenta.xyz/circle/testnet-x402-acceptance.json
 - Repository: https://github.com/rdmbtc/mercenta
 
 ## What is real, and what is simulated
@@ -22,7 +23,7 @@ Open Assistant for goal → verified balance/budget → catalogue search → ava
 | Gateway funding gas | 0.003574125 test USDC, below the approved 0.020000 cap |
 | Account balance and orders | Persistent SQLite ledger; digital-goods fulfillment is simulated |
 | Circle x402 seller | Mercenta-owned margin scenario report, 0.001000 test USDC; explicit confirmation required |
-| x402 paid execution | Do not infer a paid request from a quote, funded wallet or successful mock test. Inspect actual private payment evidence |
+| x402 paid execution | Verified internal request: 0.001000 test USDC, Circle transfer completed, canonical Gateway batch receipt checked via two RPCs. [Evidence and limitations](docs/verified-testnet-x402.md) |
 | Profit First | Declared inputs or separately verified test buyer payment; customer deposits are not sales |
 | Profit vault | Arc Testnet contract deployed; owner wallet signatures required |
 | Earn/APY, mainnet, live suppliers | Not enabled |
@@ -51,7 +52,7 @@ The candidate ledger tests six classical accounting-error scenarios when complet
 
 ### Hackathon Rubric Alignment
 *(Note: Judging weights provided by project owner; awaiting official event verification)*
-- **30% Traction**: Shadow-mode replay helper and receipt verifier are locally tested. A consented external business pilot and independent live receipt evidence are still required.
+- **30% Traction**: Shadow-mode replay helper is tested; internal x402 receipt is live and reproducible. A consented external business pilot and its actual operation log are still required. Internal testing is not traction.
 - **30% Agentic Sophistication**: Deterministic FSM, hardware-like boundary invariants, 6-error intent gate.
 - **20% Circle Agent Stack**: Gateway x402 micropayments, EIP-712 auth, USYC treasury planning.
 - **20% Innovation**: Autonomous digital commerce operator for keys, compute, and developer APIs.
@@ -94,3 +95,7 @@ The workspace groups Home, Shop, Account and Assistant. The bounded Business Ope
 Service hardening adds a fail-closed procurement reserve gate, atomic outstanding holds, invoice-before-payment protection and original-order recovery. The live procurement balance adapter and real fulfillment are not yet verified: real purchasing stays disabled. Finance provides read-only testnet Earn metadata, scenario calculations and an unverified Onramp gate, not enabled lending or investment.
 
 Source checks: **172 backend, 232 web, 12 local-chain contract and 34 docs tests**. UI QA is isolated/mocked; no real funds were moved. These checks are not a financial/security audit. Latest app/docs were automatically published by Vercel from main; the live guest guide and updated docs page were checked. See [service hardening](docs/service-hardening.md), [release evidence](docs/service-hardening-qa.json) and [mainnet decision](submission/NEXT-STEPS.md).
+
+## Recheck the settled Testnet receipt
+
+After building backend dependencies, run `node scripts/verify-circle-testnet-receipt.mjs` from the repository root. This is read-only: it checks the nonce-matched completed Circle transfer and two canonical Gateway batch witnesses without signing or spending. The SHA-256 binding is not a separate digital signature; individual batch deltas were not independently decoded. [Exact results](submission/CIRCLE-TESTNET-ACCEPTANCE.json) · [Pilot consent template](docs/testnet-pilot-consent-template.md).
