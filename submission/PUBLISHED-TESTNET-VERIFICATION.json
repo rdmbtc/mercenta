@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-07T19:33:08.475Z",
+  "sourceCommit": "a579a182d38c099cd5b418c10524d67442d5241d",
+  "normalPush": true,
+  "forcePush": false,
+  "historicalPrivacyFindingDeferredByOwner": true,
+  "historicalCommitMessageFindings": 1,
+  "sourceAndBundlesAudit": "PASS",
+  "serverTests": {
+    "passed": 354,
+    "failed": 0
+  },
+  "serverDeployment": "ACTIVE",
+  "serverLedgerIntegrity": "ok",
+  "privateCircleRouteUnauthenticatedHttpStatus": 401,
+  "publicCatalogueHttpStatus": 200,
+  "originPinMigrated": true,
+  "secondaryTestnetRpcMigrated": true,
+  "signerAndSecretsChanged": false,
+  "vercelDeployments": [
+    {
+      "context": "Vercel \u2013 status-mercenta",
+      "state": "success",
+      "description": "Deployment has completed"
+    },
+    {
+      "context": "Vercel \u2013 mercenta",
+      "state": "success",
+      "description": "Deployment has completed"
+    },
+    {
+      "context": "Vercel \u2013 mercenta-docs",
+      "state": "success",
+      "description": "Deployment has completed"
+    }
+  ],
+  "internalX402": {
+    "status": "VERIFIED_TECHNICAL_ACCEPTANCE",
+    "amountMicro": "1000",
+    "numberOfNewAuthorizations": 1,
+    "gatewayBeforeMicro": "100000",
+    "gatewayAfterMicro": "99000",
+    "transferId": "0ef4c8be-0335-42d4-9fbe-ea286b3be458",
+    "txHash": "0xef8037362a4b0e7f07b3c6d81b3327389b9271ab57fd7c5e537e4c7a578835b6",
+    "dualCanonicalBatchWitnesses": "PASS",
+    "provider": "local-eoa",
+    "receiptIntegrityDigest": "fa08b693a84eaa7efe55dc6a3533f16b561e5b40ef94ce7cc6cd787bd9142ac4"
+  },
+  "externalBusinessPilot": {
+    "status": "AWAITING_REAL_PARTICIPANT_CONSENT_AND_OPERATION_LOG",
+    "countedPilots": 0,
+    "realRevenueUsd": "0.000000"
+  },
+  "mainnetEnabled": false,
+  "realProcurementPerformed": false
+}
