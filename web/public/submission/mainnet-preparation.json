@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "kind": "PREPARATION_NOT_GO_LIVE_APPROVAL",
+  "phase": "prelaunch",
+  "chainId": 5042,
+  "purchasesEnabled": false,
+  "walletSigningEnabled": false,
+  "verifiedAt": "2026-10-07T20:08:33.135698Z",
+  "gates": [
+    {
+      "id": "network",
+      "en": "Arc Mainnet / USDC",
+      "ru": "Arc Mainnet / USDC",
+      "status": "verified",
+      "detailEn": "Two RPCs returned chain ID 5042. Official token and Gateway addresses are pinned. This is recorded evidence, not live uptime.",
+      "detailRu": "Два RPC подтвердили chain ID 5042. Адреса USDC и Gateway закреплены по документации. Это снимок проверки, не live-доступность."
+    },
+    {
+      "id": "safety",
+      "en": "Payment safety controls",
+      "ru": "Проверки безопасности платежей",
+      "status": "prepared",
+      "detailEn": "Separate Mainnet receipt and launch-policy modules are prepared. Three confirmations, exact USDC precision and the $10 procurement reserve must be validated in deployment.",
+      "detailRu": "Подготовлены отдельные Mainnet receipt и launch-policy модули. В production нужны три подтверждения, точная сумма USDC и резерв закупки $10."
+    },
+    {
+      "id": "runtime",
+      "en": "Isolated production runtime",
+      "ru": "Отдельный production runtime",
+      "status": "pending",
+      "detailEn": "The current operational backend remains Testnet-only. A separate database, secrets, owner session and production order lifecycle must be integrated before release.",
+      "detailRu": "Действующий backend остаётся Testnet-only. До запуска нужны отдельная база, ключи, сессия владельца и интеграция production-заказов."
+    },
+    {
+      "id": "canary",
+      "en": "One bounded real canary",
+      "ru": "Одна ограниченная реальная проверка",
+      "status": "pending",
+      "detailEn": "Requires fresh owner approval, a verified provider-side spend cap and one exact payment, delivered item and refund check. No Mainnet payment has been executed.",
+      "detailRu": "Нужны свежее разрешение владельца, проверенный лимит на стороне поставщика, одна точная оплата, выдача товара и проверка возврата. Mainnet-оплата не выполнялась."
+    },
+    {
+      "id": "operations",
+      "en": "Recovery and support",
+      "ru": "Восстановление и поддержка",
+      "status": "pending",
+      "detailEn": "Production restore drills, monitoring alerts, pause/reconcile handling and customer refund obligations must be confirmed. A green build is not these proofs.",
+      "detailRu": "Нужны production-проверки восстановления, алертов, паузы и сверки заказов, а также процедуры возврата. Успешная сборка их не заменяет."
+    }
+  ],
+  "sources": [
+    "https://docs.arc.io/arc/references/rpc-endpoints.md",
+    "https://docs.arc.io/arc/references/contract-addresses.md",
+    "https://developers.circle.com/gateway/references/supported-blockchains.md"
+  ]
+}

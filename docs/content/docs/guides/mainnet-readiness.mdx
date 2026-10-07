@@ -1,8 +1,39 @@
 ---
 title: "Mainnet readiness"
-description: "Testnet success does not equal production certification."
+description: "What is verified, what remains closed, and the evidence required for real payments."
 ---
 
-Mainnet is disabled. Before handling real funds or goods, complete merchant authorization, verified pricing/FX, supply contract integration, deterministic approvals, evidence-backed treasury reconciliation, signed webhook verification, refund/withdrawal execution, delivery-code encryption and one-time reveal, backups, recovery, security review, load tests and compliance obligations.
+## Network available. Mercenta payments closed.
 
-Testnet balances must never migrate as monetary credit to Mainnet. Real fiat cannot be exchanged for testnet credits. A public beta requires accurate availability labels, terms, support routes and an independently verified settlement path.
+Arc Mainnet is available on chain **5042**. Two independent RPC hosts have been checked read-only. Mercenta's public Mainnet workspace remains **pre-launch**: real purchases, deposits, agent execution and wallet signing are disabled. Do not send funds. Testnet success does not equal production certification.
+
+The Mainnet workspace lets you explore platform artwork, choose a product and its region, prepare a local search brief, and inspect launch requirements. The brief does not call an AI model or authorize spending. Testnet balances are never monetary credit on Mainnet.
+
+## Verified and prepared
+
+- Official Mainnet RPC, USDC and Gateway contract pins are distinct from Testnet.
+- Read-only network preflight checks chain 5042, two-witness canonical block agreement, ERC-20 USDC decimals and Gateway bytecode agreement. It never loads keys, signs or transfers funds. Contract agreement is not a security audit.
+- Separate launch-policy and receipt-verification modules reject stale evidence, wrong chain, recipient or amount, missing transfer logs, insufficient confirmations and reserve violations. They are preparation modules, not a deployed production payment lifecycle.
+- Mainnet metadata is read-only. Account, payment, deposit and operator mutations are rejected before any Testnet proxy forwarding.
+
+## Required before real buying
+
+1. **Isolated production runtime:** separate service, database, secrets, verified signer and host-only session. The operational backend currently remains Testnet-only; changing one RPC URL is not a migration.
+2. **Real order lifecycle:** fresh exact quote, bounded approval, verified USDC settlement, once-only procurement, encrypted owned delivery and evidence-backed refund. Timeouts after procurement submission require lookup, not a new purchase.
+3. **Procurement reserve:** new buying pauses when fresh available funds after reserves and proposed cost fall below **$10**, or the balance cannot be verified. Existing order access and refund obligations must remain available.
+4. **Owner-approved canary:** one exact item and payment, each capped at **$1 / 1 USDC**, with verified provider-side limits and fresh authorization. Gas needs its own disclosed approval. No Mainnet canary has been executed as part of preparation.
+5. **Operations:** backup restoration, alerts, pause/reconciliation drills, incident owner, customer terms, delivery/refund procedures and independent security review.
+
+## Circle capabilities are separate release gates
+
+Gateway, Onramp, USYC Earn and collateralized Borrow must each pass production integration, eligibility and risk checks. Official chain support is not proof that these operations are enabled in Mercenta. Permissioned yield assets require actual access and tested redemption; borrowing requires collateral and liquidation safeguards.
+
+## Inspect recorded status
+
+[Mainnet launch status](https://mainnet.mercenta.xyz/status) shows preparation gates. [Recorded metadata](https://mainnet.mercenta.xyz/api/mainnet-readiness) is a snapshot, **not a live uptime attestation or launch approval**. [Mainnet OpenAPI](https://mainnet.mercenta.xyz/api-docs) labels financial endpoints as closed.
+
+For developers, `docs/mainnet-release-runbook.md` in the repository contains the release checklist, failure handling and rollback obligations. Keep real funds disabled until every gate has dated evidence and the owner approves activation.
+
+Official references: [Arc RPC endpoints](https://docs.arc.io/arc/references/rpc-endpoints.md), [Arc contracts](https://docs.arc.io/arc/references/contract-addresses.md), [Circle Gateway networks](https://developers.circle.com/gateway/references/supported-blockchains.md).
+
+Support: [support@mercenta.xyz](mailto:support@mercenta.xyz).
