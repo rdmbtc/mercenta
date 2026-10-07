@@ -2,6 +2,8 @@ import "dotenv/config";
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
 const schema = z.object({
+  FINANCIAL_NETWORK: z.literal('testnet').optional(),
+  ARC_CHAIN_ID: z.literal('5042002').optional(),
   CIRCLE_AGENT_CONFIG_FILE: z.string().optional(),
   MEMORY_SOFT_LIMIT_MB: z.coerce.number().int().min(128).max(4096).default(768),
   MAX_INFLIGHT_REQUESTS: z.coerce.number().int().min(4).max(128).default(32),
@@ -62,6 +64,8 @@ export function loadConfig(env = process.env) {
       !c.REQUEST_REF_SECRET)
   )
     throw new Error("PRODUCTION_SECRETS_REQUIRED");
+  // This operational entrypoint is still Testnet-only. Never relabel it with production origins or RPCs.
+  if(new URL(c.WEB_ORIGIN).hostname==='mainnet.mercenta.xyz'||[c.ARC_RPC_URL,c.ARC_SECONDARY_RPC_URL].some(u=>u!==undefined&&new URL(u).hostname.split('.').includes('mainnet')))throw new Error('TESTNET_RUNTIME_CANNOT_SERVE_MAINNET');
   return {
     ...c,
     BACKEND_PROXY_SECRET:
