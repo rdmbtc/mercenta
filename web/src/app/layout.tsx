@@ -6,6 +6,8 @@ import "@/components/official-contacts.css";
 import "@/components/product/brand-artwork.css";
 import "@/components/product/test-checkout.css";
 import "./liquidity.css";
+import "@/components/product/catalog-families.css";
+import "@/components/product/workspace-guide.css";
 import Atmosphere from "@/components/Atmosphere";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
