@@ -2,6 +2,7 @@
 import {useMemo,useState} from 'react';import {ArrowRight,ArrowUpRight,Bot,ShieldCheck,Sun,Moon,BookOpen} from 'lucide-react';
 import {Brand} from './ProductShell';import {NetworkSelector} from './NetworkSelector';import {ProductImage} from './ProductImage';import {OfficialContacts} from '@/components/OfficialContacts';
 import type {BrowseCatalog} from '@/lib/catalog-browse';import {brandArtwork} from '@/lib/brand-artwork';import {useGuideLanguage,GuideLanguage} from './WorkspaceGuide';import './account.css';import './workspace-ux.css';import './network-workspace.css';
+import './workspace-polish.css';
 export function MainnetWorkspace({catalog,initialSection='dashboard'}:{catalog:BrowseCatalog;initialSection?:string}){
  const [lang,setLang]=useGuideLanguage(),ru=lang==='ru',[theme,setTheme]=useState<'dark'|'light'>('dark'),[tab,setTab]=useState(initialSection==='agent-chat'?'agent':initialSection==='shop'?'catalogue':'home'),[query,setQuery]=useState(''),[limit,setLimit]=useState(12);
  const products=useMemo(()=>catalog.rows.filter(r=>!query||`${r[1]} ${r[2]} ${r[5]}`.toLowerCase().includes(query.toLowerCase())).sort((a,b)=>Number(!!(b[6]||brandArtwork(b[1])))-Number(!!(a[6]||brandArtwork(a[1])))),[catalog,query]);

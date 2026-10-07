@@ -18,6 +18,8 @@ const DESCRIPTION =
   "Pre-launch preview of policy-controlled commerce for software agents. Explore illustrative spend and margin checks, an order record, and planned USDC settlement and delivery. No live orders or funds.";
 
 export const metadata: Metadata = {
+  icons: { icon: [{url:'/favicon.ico?v=mercenta-2',sizes:'any'}, {url:'/favicon-32.png',type:'image/png',sizes:'32x32'}], apple: [{url:'/apple-touch-icon.png',sizes:'180x180'}] },
+  manifest: '/site.webmanifest',
   metadataBase: new URL("https://mercenta.xyz"),
   title: { default: TITLE, template: "%s · Mercenta" },
   description: DESCRIPTION,
