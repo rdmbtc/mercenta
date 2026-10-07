@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "kind": "PRELAUNCH_VERIFICATION_NOT_MAINNET_ACCEPTANCE",
+  "verifiedAt": "2026-10-07T20:50:15.280Z",
+  "baseCommit": "9763e89e11d5a43a82064475d379e3ca6d7cd8c5",
+  "checks": {
+    "backendTests": 399,
+    "frontendTests": 303,
+    "documentationTests": 36,
+    "contractTests": 13,
+    "sharedBrowserChecks": 10,
+    "frontendLintWarnings": 0
+  },
+  "moneyMoved": false,
+  "realPurchasesEnabled": false,
+  "productionRuntimeIntegrated": false,
+  "externalBusinessPilotVerified": false,
+  "notes": [
+    "Mainnet network and preparation modules were verified; production financial acceptance remains pending.",
+    "Contract tests run locally, not a proof of deployment or a production audit.",
+    "Browser checks cover English/Russian, dark/light, region filtering, Escape, tab keyboard navigation and closed error states.",
+    "Current-source leak audit is clean; deferred historical commit message is not rewritten."
+  ],
+  "readinessUrl": "https://mainnet.mercenta.xyz/status",
+  "runbook": "docs/mainnet-release-runbook.md"
+}
