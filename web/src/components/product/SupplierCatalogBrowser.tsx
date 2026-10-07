@@ -15,6 +15,7 @@ export function SupplierCatalogBrowser({lang,wallet=null,readOnly=false,onConnec
  const resume=useRef<string|null>(null);
  const [active,setActive]=useState<CatalogProduct|null>(null);
  const [feed,setFeed]=useState<Catalog|null>(()=>initialCatalog?unpackBrowse(initialCatalog):null),[error,setError]=useState(false),[query,setQuery]=useState(''),[region,setRegion]=useState('all'),[kind,setKind]=useState('all'),[shown,setShown]=useState(PAGE_SIZE);
+ useEffect(()=>{try{const raw=sessionStorage.getItem('mercenta-catalog-intent');sessionStorage.removeItem('mercenta-catalog-intent');if(raw){const value=JSON.parse(raw);if(typeof value.query==='string')setQuery(value.query.slice(0,200));if(typeof value.region==='string'&&/^[A-Z0-9_-]{2,12}$/.test(value.region))setRegion(value.region)}}catch{}},[]);
  useEffect(()=>{let live=true;refreshPublicCatalog().then(v=>{if(live)setFeed(unpackBrowse(v))}).catch(()=>{if(live&&!initialCatalog)setError(true)});return()=>{live=false}},[initialCatalog]);
  useEffect(()=>{const id=new URLSearchParams(location.search).get('product');if(id&&feed){const p=feed.products.find(p=>p.id===id);if(p)setActive(p)}},[feed]);
  useEffect(()=>{if(wallet&&resume.current&&feed){const p=feed.products.find(p=>p.id===resume.current);resume.current=null;if(p)setActive(p)}},[wallet,feed]);
