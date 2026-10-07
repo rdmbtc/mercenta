@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  ArrowRight,
-  CheckCircle2,
-  Coins,
-  Cpu,
-  ListChecks,
-  ShieldCheck,
-  Timer,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, Coins, ListChecks, ShieldCheck, Timer, Zap } from "lucide-react";
 
 const TARGETS = [
   {

@@ -288,5 +288,5 @@
   "monetaryMutationsPerformed": false,
   "backendRecovery": "Not established. Public UI reports unavailable/read-only service; authenticated persistence and purchasing are not certified.",
   "mainnetEnabled": false,
-  "liveAppRouteFulfillment": false
+  "livesupplierFulfillment": false
 }

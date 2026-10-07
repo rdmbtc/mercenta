@@ -1,3 +1,5 @@
+> **Integration candidate:** worker PASS reports are not a production certificate. See [release review](submission/INTEGRATION-REVIEW.md). Mainnet and commercial fulfillment remain closed.
+
 # Mercenta — commerce treasury with checked agent actions
 
 Mercenta helps a digital-goods reseller plan bounded purchases, separate procurement cost from resale margin, and inspect USDC payment evidence. The model chooses typed tools; deterministic policy checks; the owner either confirms the exact test quote or explicitly delegates one bounded test purchase.
@@ -28,18 +30,32 @@ Open Assistant for goal → verified balance/budget → catalogue search → ava
 
 The Circle signer is a separate **server-managed local EOA**, not Circle MPC or a noncustodial browser wallet. Server key holders have spending authority; backend limits are not onchain delegated authority.
 
-## Architecture
-```text
-Wallet-authenticated app / Agent Chat
-  -> bounded proposal and immutable quote
-  -> exact owner confirmation
-  -> policy + balance + recipient + network checks
-  -> persistent authorization BEFORE transmission
-  -> Circle Gateway x402 / Arc Testnet
-  -> original-payment reconciliation + canonical receipt
-  -> actor-isolated evidence and exact ledger entries
+## Architecture & State Machine
+
+See [Detailed Architecture & FSM Guide](docs/ARCHITECTURE.md) for the design model and integration limitations. The following end-to-end dual-witness flow is a target, not a claim that every deployed settlement uses it.
+
+```mermaid
+flowchart LR
+    A[Agent Chat / Operator] -->|Bounded Goal| B[Policy Engine P1-P11]
+    B -->|Intent Validated| C[Intent-Aware Ledger]
+    C -->|Reserve Locked| D[Circle Gateway x402]
+    D -->|Broadcast| E[Arc Testnet 5042002]
+    E -->|Dual-Witness| F[Verified Canonical Receipt]
 ```
-The self-hosted seller independently checks EIP-712 signature, network, recipient, exact amount and authorization validity. It reserves the nonce durably before settlement. Cached-result replay cannot initiate settlement; uncertain receipts are reconciled, never silently paid again.
+
+The self-hosted seller independently checks EIP-712 signatures, network, recipient, exact amount and authorization validity. It reserves the nonce durably before settlement. Cached-result replay cannot initiate settlement; uncertain receipts are quarantined as `SUPPLIER_UNKNOWN` and reconciled, never silently paid again.
+
+### Accounting Protection & Canteen Framework
+The candidate ledger tests six classical accounting-error scenarios when complete intent witnesses are supplied. Not every production posting supplies those optional witnesses; omission of an external transaction still requires independent reconciliation:
+- **Omission, Commission, Principle, Original-Entry/Replay, Compensating, and Complete Reversal**.
+
+### Hackathon Rubric Alignment
+*(Note: Judging weights provided by project owner; awaiting official event verification)*
+- **30% Traction**: Shadow-mode replay helper and receipt verifier are locally tested. A consented external business pilot and independent live receipt evidence are still required.
+- **30% Agentic Sophistication**: Deterministic FSM, hardware-like boundary invariants, 6-error intent gate.
+- **20% Circle Agent Stack**: Gateway x402 micropayments, EIP-712 auth, USYC treasury planning.
+- **20% Innovation**: Autonomous digital commerce operator for keys, compute, and developer APIs.
+
 
 ## Run locally
 Use Node 24 (minimum Node 22). Never put keys into chat, source, frontend environment variables or git.

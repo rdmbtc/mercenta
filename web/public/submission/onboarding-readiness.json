@@ -7,7 +7,7 @@
   },
   "backendDeployment": "blocked-ssh-timeout",
   "supplierReadOnlyCheck": {
-    "provider": "AppRoute",
+    "provider": "supplier",
     "httpStatus": 403,
     "ordersCreated": 0
   },

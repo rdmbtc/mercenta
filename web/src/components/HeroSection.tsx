@@ -1,20 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Cpu,
-  FileCode2,
-  Fingerprint,
-  Lock,
-  Play,
-  RotateCcw,
-  ShieldAlert,
-  ShieldCheck,
-  Terminal,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, FileCode2, Fingerprint, Lock, Play, RotateCcw, ShieldAlert, ShieldCheck, Terminal } from "lucide-react";
 
 interface AgentScenario {
   id: string;

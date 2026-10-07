@@ -20,7 +20,7 @@ Help a person choose a digital product, understand the account balance, and take
 - Guest setup is a preview, not saved money. The in-memory budget preview can be continued in Budget. Only nonfinancial reviewed/role preferences are stored locally.
 - Signed-in budget saves require the existing backend and use revision checking and stable request identifiers on retries.
 - A guest can review a product but cannot confirm a purchase. Existing account debit, monetary limits, idempotency and wallet-signature boundaries are retained.
-- Mainnet, redeemable AppRoute fulfillment, Earn/staking, fiat and cross-chain funding are not activated by this release.
+- Mainnet, redeemable supplier fulfillment, Earn/staking, fiat and cross-chain funding are not activated by this release.
 - The VPS/API outage still blocks account loading, budget persistence and purchasing. A frontend deployment is not evidence of backend recovery.
 
 ## Verification

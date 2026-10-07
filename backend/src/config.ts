@@ -23,12 +23,14 @@ const schema = z.object({
     .regex(/^[a-fA-F0-9]{64}$/)
     .optional(),
   REQUEST_REF_SECRET: z.string().min(32).optional(),
+  ARC_SECONDARY_RPC_URL: z.string().url().optional(),
   ARC_RPC_URL: z.string().url().default("https://rpc.testnet.arc.network"),
   MERCHANT_WALLET: z
     .string()
     .regex(/^0x[a-fA-F0-9]{40}$/)
     .optional(),
   SUPPLIER_API_URL: z.string().url().optional(),
+  SUPPLIER_ALLOWED_ORIGIN: z.string().url().optional(),
   SUPPLIER_API_KEY: z.string().optional(),
   SUPPLIER_BALANCE_PATH: z.string().regex(/^\/api\/v1\/(?:accounts|[a-z0-9/_-]*balance[a-z0-9/_-]*)$/).optional(),
   FULFILLMENT_CONTRACT_VERIFIED: z.enum(["true","false"]).default("false"),

@@ -4,7 +4,7 @@ import {OfficialContacts} from '@/components/OfficialContacts';
 
 import {DepositIntentForm} from './DepositIntentForm';
 import {useCallback,useEffect,useState,useRef} from 'react';
-import {BookOpen,LayoutDashboard,ShoppingBag,Wallet,FileText,ArrowLeftRight,KeyRound,Coins,LifeBuoy,Settings2,MessageSquare,Calculator,Route,Sun,Moon,ArrowRight,ArrowUpRight,RefreshCw,Download,Plus,X,Menu,ShieldCheck} from 'lucide-react';
+import { BookOpen, LayoutDashboard, ShoppingBag, Wallet, FileText, LifeBuoy, Settings2, MessageSquare, Route, Sun, Moon, ArrowRight, ArrowUpRight, RefreshCw, Download, Plus, X, ShieldCheck } from 'lucide-react';
 import WalletButton from '@/components/wallet-button';
 import {LiquidityCockpit} from './LiquidityCockpit';
 import {testCatalogPreview} from '@/lib/test-catalog-preview';
@@ -42,8 +42,8 @@ export function AccountConsole({initialSection='Dashboard',initialCatalog}:{init
  const chooseTheme=useCallback((next:AccountTheme)=>{setTheme(next);localStorage.setItem('mercenta-account-theme',next)},[]);
  useEffect(()=>{const stale=(e:Event)=>{setReadOnly(true);setNote('Read-only snapshot · as of '+(e as CustomEvent<string>).detail+'. No new settlement is reported.');};window.addEventListener('mercenta-backend-stale',stale);return()=>window.removeEventListener('mercenta-backend-stale',stale)},[]);
 
- const [shopSearch,setShopSearch]=useState('');
- const [section,setSection]=useState<Section>(initialSection),[mobile,setMobile]=useState(false),[summary,setSummary]=useState<Summary|null>(null),[stats,setStats]=useState<Stats|null>(null),[rows,setRows]=useState<Row[]>([]),[products,setProducts]=useState<Row[]>(testCatalogPreview),[keys,setKeys]=useState<Row[]>([]),[error,setError]=useState(''),[operationError,setOperationError]=useState(''),[resumeProduct,setResumeProduct]=useState<Row|null>(null),[note,setNote]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[revision,setRevision]=useState(0);
+
+ const [section,setSection]=useState<Section>(initialSection),[,setMobile]=useState(false),[summary,setSummary]=useState<Summary|null>(null),[stats,setStats]=useState<Stats|null>(null),[rows,setRows]=useState<Row[]>([]),[products,setProducts]=useState<Row[]>(testCatalogPreview),[keys,setKeys]=useState<Row[]>([]),[error,setError]=useState(''),[operationError,setOperationError]=useState(''),[resumeProduct,setResumeProduct]=useState<Row|null>(null),[note,setNote]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[revision,setRevision]=useState(0);
  const [period,setPeriod]=useState('30d'),[from,setFrom]=useState(''),[to,setTo]=useState(''),[initiator,setInitiator]=useState(''),[status,setStatus]=useState(''),[country,setCountry]=useState(''),[product,setProduct]=useState(''),[method,setMethod]=useState(''),[page,setPage]=useState(1),[total,setTotal]=useState(0);
  const [modal,setModal]=useState<'deposit'|'key'|null>(null),[deposit,setDeposit]=useState<Row|null>(null),[txHash,setTxHash]=useState(''),[keyName,setKeyName]=useState(''),[keyDays,setKeyDays]=useState('30'),[keyScopes,setKeyScopes]=useState(['account:read','orders:read']),[newSecret,setNewSecret]=useState(''),[orderProduct,setOrderProduct]=useState<Row|null>(null),[quantity,setQuantity]=useState(1),[reference,setReference]=useState('');
  const orderRequest=useRef<{fingerprint:string;id:string}|null>(null);const generation=useRef(0);
