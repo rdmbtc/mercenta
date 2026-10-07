@@ -4,7 +4,7 @@ import {ArrowRight,Check,BookOpen,ShieldCheck,Wallet,ShoppingBag,Calculator,Refr
 import {journey,allocation,validBudget,friendlyWorkspaceError,type Language} from '@/lib/workspace-plan';
 import type {SetupPlan} from '@/lib/workspace-discovery';
 import {accountMoney} from '@/lib/account-format';
-import './workspace-guide.css';
+
 export type Destination='Getting Started'|'Dashboard'|'Shop'|'Funds'|'Orders'|'Transactions'|'Budget'|'Financial Journal'|'Agent Chat'|'Profit First';
 type Profile={language:Language;role:'buyer'|'reseller';reviewed:string[];dismissed:boolean};
 type Budget={monthly:string;perOrder:string;daily:string;spendBps:number;reserveBps:number;profitBps:number;taxBps:number;revision:number};
