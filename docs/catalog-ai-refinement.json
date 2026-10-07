@@ -210,7 +210,7 @@
     "failed": 0
   },
   "supplier": {
-    "endpoint": "https://approute.io/api/v1/services",
+    "endpoint": "https://supplier.io/api/v1/services",
     "configuredHeaderStatus": 403,
     "legacyBearerStatus": 401,
     "coverage": "unverified",

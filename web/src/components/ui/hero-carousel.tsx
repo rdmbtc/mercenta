@@ -10,6 +10,7 @@
 // Geometry is measured, never hard-coded: one ResizeObserver reads the stage and
 // every size below is a ratio of it, so the same component is pixel-identical in
 // a 600px preview box and on a 4K display.
+import Image from 'next/image';
 import * as React from "react"
 import {
   AnimatePresence,
@@ -190,7 +191,7 @@ export function HeroCarousel({
 
     stage.addEventListener("wheel", onWheel, { passive: false })
     return () => stage.removeEventListener("wheel", onWheel)
-  }, [go, index])
+  }, [go, index, last])
 
   React.useEffect(() => {
     if (!autoplay || paused || dragging || items.length < 2) return
@@ -424,7 +425,7 @@ export function HeroCarousel({
                   nothing to it - it only picks which band of the portrait the
                   half-height neighbours keep. Anchored just above centre so a
                   clipped card still shows a face, not a forehead. */}
-              <img
+              <Image unoptimized width={640} height={854}
                 src={item.image}
                 alt=""
                 draggable={false}

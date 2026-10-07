@@ -1,21 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import {
-  AlertTriangle,
-  ArrowRight,
-  Check,
-  CheckCircle2,
-  FileSpreadsheet,
-  Receipt,
-  Repeat,
-  Shield,
-  TrendingDown,
-  XCircle,
-} from "lucide-react";
+import { Check, CheckCircle2, Receipt, Repeat, TrendingDown, XCircle } from "lucide-react";
 
 export default function VulnerabilitiesBento() {
-  const [retryCount, setRetryCount] = useState(11);
+  const [retryCount] = useState(11);
   const [sellingPrice, setSellingPrice] = useState(380);
   const wholesaleCost = 400; // Wholesale cost is $400
 

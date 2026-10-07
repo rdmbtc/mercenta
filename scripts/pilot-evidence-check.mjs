@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+import fs from 'node:fs';import {createRequire} from 'node:module';import {verifyPilotEvidence} from '../backend/dist/services/pilot-evidence.js';import {createReceiptRpcWitness} from '../backend/dist/services/receipt-rpc.js';
+const require=createRequire(import.meta.url),env=require('../backend/node_modules/dotenv').parse(fs.readFileSync('backend/.env','utf8'));
+const idx=process.argv.indexOf('--manifest');let report;
+if(idx<0||!process.argv[idx+1])report={status:'BLOCKED',reason:'CONSENTED_EXTERNAL_BUSINESS_MANIFEST_AND_OPERATION_LOGS_REQUIRED',externalPilotConfirmed:false,moneyMoved:false};
+else try{if(!env.ARC_SECONDARY_RPC_URL)throw Error('SECONDARY_RPC_REQUIRED');const input=JSON.parse(fs.readFileSync(process.argv[idx+1],'utf8'));const platform=JSON.parse(fs.readFileSync('web/public/circle/gateway-funding.arc-testnet.json','utf8'));const excluded=new Set(platform.transactions.map(t=>t.hash.toLowerCase()));report=await verifyPilotEvidence(input,{primaryWitness:createReceiptRpcWitness('primary',env.ARC_RPC_URL??'https://rpc.testnet.arc.network'),secondaryWitness:createReceiptRpcWitness('secondary',env.ARC_SECONDARY_RPC_URL)},excluded);report.moneyMoved=false;}catch{report={status:'BLOCKED',reason:'PILOT_INPUT_OR_CHAIN_EVIDENCE_NOT_VERIFIED',externalPilotConfirmed:false,moneyMoved:false};}
+fs.mkdirSync('work/release-verification',{recursive:true});fs.writeFileSync('work/release-verification/pilot-readiness.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));process.exitCode=report.status==='BLOCKED'?1:0;

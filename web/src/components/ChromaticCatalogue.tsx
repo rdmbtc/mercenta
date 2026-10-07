@@ -1,23 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  CheckCircle2,
-  Clock,
-  Cpu,
-  ExternalLink,
-  Gamepad2,
-  Globe2,
-  HeartHandshake,
-  Layers,
-  ShieldCheck,
-  Tv,
-  X,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, Cpu, Gamepad2, Globe2, HeartHandshake, Tv, X } from "lucide-react";
 
 interface CategoryTile {
   id: string;

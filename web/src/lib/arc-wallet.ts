@@ -2,13 +2,10 @@
 // Signing client for outbound treasury disbursements. BigInt only, no floats.
 // Key sourced exclusively from ARC_DISBURSER_KEY env var. Never hardcoded.
 
-import {
-  createWalletClient,
-  http,
-  parseAbi,
-  type WalletClient,
-  type TransactionReceipt,
-} from "viem";
+// Live Arc Testnet USDC Disburser — deterministic architecture Standard
+// Signing client for outbound treasury disbursements. BigInt only, no floats.
+// Key sourced exclusively from ARC_DISBURSER_KEY env var. Never hardcoded.
+import { createWalletClient, http, parseAbi } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { ARC_TESTNET, ARC_USDC_ADDRESS, createArcPublicClient, type ArcPublicClient } from "./arc";
 

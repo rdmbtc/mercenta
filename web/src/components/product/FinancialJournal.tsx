@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useRef,useState} from 'react';
+import {useCallback,useEffect,useRef,useState} from 'react';
 import {BookOpen,Bot,Download,Plus,RefreshCw,ShieldCheck} from 'lucide-react';
 import {workspaceApi,useGuideLanguage,GuideLanguage} from './WorkspaceGuide';
 import {friendlyWorkspaceError} from '@/lib/workspace-plan';
@@ -10,8 +10,9 @@ type Journal={items:Entry[];total:number;page:number;pageSize:number;month:strin
 type Coach={answer:string;suggestions:string[];mode:string;disclaimer:string;authority:string};
 export function FinancialJournal({wallet,readOnly}:{wallet:string|null;readOnly:boolean}){
  const [lang,choose]=useGuideLanguage(),[data,setData]=useState<Journal|null>(null),[page,setPage]=useState(1),[form,setForm]=useState({kind:'expense' as Entry['kind'],amount:'0.000000',date:new Date().toISOString().slice(0,10),category:'digital-goods',title:'',note:''}),[error,setError]=useState(''),[busy,setBusy]=useState(false),[question,setQuestion]=useState(''),[consent,setConsent]=useState(false),[coach,setCoach]=useState<Coach|null>(null),[coachBusy,setCoachBusy]=useState(false),[notice,setNotice]=useState('');const pending=useRef<{fp:string;body:unknown}|null>(null),epoch=useRef(0);const ru=lang==='ru';
- const load=async(p=page)=>{const e=++epoch.current;if(!wallet){setData(null);return}try{const d=await workspaceApi<Journal>('journal?page='+p);if(e===epoch.current)setData(d)}catch(e){setError((e as Error).message)}};
- useEffect(()=>{void load();return()=>{epoch.current++}},[wallet,page]);
+ const load=useCallback(async(p=page)=>{const e=++epoch.current;if(!wallet){setData(null);return}try{const d=await workspaceApi<Journal>('journal?page='+p);if(e===epoch.current)setData(d)}catch(error){if(e===epoch.current)setError((error as Error).message)}},[wallet,page]);
+ const invalidate=useCallback(()=>{epoch.current++},[]);
+ useEffect(()=>{void load();return invalidate},[load,invalidate]);
  const save=async()=>{if(!wallet||readOnly||busy)return;setBusy(true);setError('');setNotice('');try{const b={...form,amount:form.kind==='note'?'0':form.amount};const fp=JSON.stringify(b);if(pending.current?.fp!==fp)pending.current={fp,body:{...b,requestId:crypto.randomUUID()}};await workspaceApi<Entry>('journal',pending.current.body);pending.current=null;setForm(f=>({...f,title:'',note:'',amount:'0.000000'}));setPage(1);await load(1);setNotice(ru?'Запись сохранена. Баланс и подтверждённая выручка не изменены.':'Entry saved. Account balance and verified revenue are unchanged.')}catch(e){setError((e as Error).message)}finally{setBusy(false)}};
  const ask=async()=>{if(!wallet||readOnly||!consent||coachBusy||question.trim().length<3)return;setCoachBusy(true);setError('');setCoach(null);try{const c=await workspaceApi<Coach>('journal/coach',{question:question.trim(),language:lang,shareAggregates:true});setCoach(c)}catch(e){setError((e as Error).message)}finally{setCoachBusy(false)}};
  const exportAll=async()=>{if(!wallet||busy)return;setBusy(true);setError('');try{const rows:Record<string,string|number>[]=[];for(let p=1;p<=200;p++){const d=await workspaceApi<Journal>('journal?page='+p);for(const r of d.items)rows.push({date:r.date,kind:r.kind,amount_usdc:accountMoney(r.amountUnits),category:r.category,title:r.title,note:r.note,source:'manual-declaration'});if(p*d.pageSize>=d.total)break;}const blob=new Blob([accountCsv(['date','kind','amount_usdc','category','title','note','source'],rows)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='mercenta-private-financial-journal.csv';a.click();URL.revokeObjectURL(url)}catch(e){setError((e as Error).message)}finally{setBusy(false)}};

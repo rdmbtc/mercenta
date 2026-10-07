@@ -1,0 +1,648 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "585d4b4130292d2ae6424ecbd61db9de8524f12d",
+  "executionState": "BRIEFS_PREPARED_NOT_DISPATCHED",
+  "subagentExecutionAvailable": false,
+  "categories": [
+    {
+      "id": "gaming",
+      "label": "Gaming Keys & Platform Vouchers"
+    },
+    {
+      "id": "streaming",
+      "label": "Streaming & Media Subscriptions"
+    },
+    {
+      "id": "creator",
+      "label": "Creator & Game Micro-Donations"
+    },
+    {
+      "id": "developer",
+      "label": "Developer API & Token Bundles"
+    },
+    {
+      "id": "cloud",
+      "label": "Cloud Compute & GPU Vouchers"
+    }
+  ],
+  "leadOwnership": [
+    "web UI/components/styles/motion",
+    "backend/src/services/agent-operator.ts",
+    "backend/src/routes/agent-operator.ts",
+    "backend/src/services/operator-telemetry.ts",
+    "backend/src/services/ledger/index.ts",
+    "backend/src/services/compliance-risk.ts",
+    "scripts/dispatch-validate.mjs",
+    "submission/dispatch-manifest.json",
+    "submission/SWARM-DISPATCH.md",
+    "submission/DISPATCH-STATUS.json"
+  ],
+  "globalRules": [
+    "No worker edits UI/CSS/styles, core orchestration, shared config, lockfiles, deployment or another worker target. Agent 14 may edit only its test.",
+    "Separate checkout/worktree per agent, pinned base commit. No git commit/push by workers; lead integrates allowlisted diff only.",
+    "No secret values in reports, mocks, commits or artifacts. No vendor plaintext; findings are redacted.",
+    "No real funds, invoices, Mainnet or token-yield transactions. Testnet broadcasts require a separately approved scoped mirror run.",
+    "Use actual runtimes: backend node:test via tsx; web/docs Vitest; contracts node:test/Ganache. No new dependencies.",
+    "Runtime inputs fail closed and money uses bigint/string precision. Synthetic fixtures never count as traction.",
+    "A missing production capability yields BLOCKED plus a reproducible failing test, not a green mock-only safety claim. No skip/todo acceptance.",
+    "Tests must exit 0 to merge; security auditor must exit 1 on violations. Repository violations are not waived.",
+    "User-provided rubric/prize/source attribution are unverified until official sources are supplied.",
+    "Twenty briefs are not twenty running agents. No unavailable subagent/free-worker facility is simulated."
+  ],
+  "tasks": [
+    {
+      "id": "AGENT-01",
+      "role": "Financial Ledger Integrity Engineer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/test/ledger-errors.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/services/ledger/index.ts",
+        "backend/src/services/orders.ts",
+        "backend/src/db.ts"
+      ],
+      "inputContract": "Use openDb(temp SQLite file), postJournal(db,id,witness,Line[]), balance and real order transaction gates. Line.amount is bigint micro-USDC; separate currencies. Seeded reproducible mutations. Read actual intent/witness contract before generating errors.",
+      "deliverables": [
+        "Six labelled scenario groups: omission; commission; principle; original-entry/replay; compensating error; complete reversal. At least one valid control per group. Persistent WAL fixture with cleanup."
+      ],
+      "acceptance": [
+        "Each malformed posting is rejected by the real semantic gate, not a test-local substitute. Balance, journal count and order reservation unchanged on rejection. Replay never creates a second debit. Test a balanced wrong-recipient posting and balanced reversal. No skipped/todo cases. Exit 0 required for acceptance."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/ledger-errors.test.ts",
+      "dependsOn": [
+        "LEAD-SEMANTIC-LEDGER-GATE"
+      ],
+      "blockers": [
+        "Current postJournal verifies witness presence and balanced sums, not recipient/classification intent. Six semantic protections must not be claimed before the lead adds a validated intent gate. The six-error taxonomy is user-supplied; attribution requires a verified source."
+      ]
+    },
+    {
+      "id": "AGENT-02",
+      "role": "Cryptographic Protocol Security Tester",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/test/x402-security.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/services/circle-demo-seller.ts",
+        "backend/src/services/circle-signers.ts",
+        "backend/test/circle-demo-seller.test.ts"
+      ],
+      "inputContract": "Use CircleDemoSeller, sellerRequirements, AUTH_TYPES and injected SellerPorts. Locally generated test-only signing accounts. Match configured chain/domain/recipient and exact amount. Freeze clock and TTL from actual policy; do not assume every protocol authorization has a 10-minute maximum.",
+      "deliverables": [
+        "Valid authorization control and mutations for expired/not-yet-valid authorization, policy TTL overflow, nonce replay/race, domain/chain mismatch, wrong recipient/amount and tampered signature."
+      ],
+      "acceptance": [
+        "All invalid controls fail closed, zero settlement calls, unchanged durable nonce/account state. Valid control accepted exactly once. Network disabled. Exit 0."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/x402-security.test.ts",
+      "dependsOn": [],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-03",
+      "role": "Catalog Data Architect",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/src/fixtures/catalog-expanded.json",
+        "backend/test/catalog-expanded.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/services/catalog.ts",
+        "backend/src/services/supplier-preview.ts"
+      ],
+      "inputContract": "Fixture v1: {schemaVersion:1,synthetic:true,network:\"fixture\",items:[{sku,name,categoryId,categoryLabel,regions,deliveryKind,baseCostUsd,markupBps,salePriceUsd,available,metadata}]}. Money uses canonical decimal strings (6 decimals), markup integer bps. Stable Mercenta-only IDs. Category IDs map existing gaming/streaming/creator/developer/cloud to the five exact labels in the dispatch contract.",
+      "deliverables": [
+        "At least 125 synthetic items, at least 25 in each category. Region/recipient requirements and denomination metadata; Zod validation inside the isolated test file."
+      ],
+      "acceptance": [
+        "Unique SKUs, allowed region enum, exact floor/ceil rounding policy, consistent cost+markup, no real credentials or fabricated live inventory. No catalogue bootstrap/source replacement. Zod rejects unknown categories, NaN, negative amounts and malformed region. Exit 0."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/catalog-expanded.test.ts",
+      "dependsOn": [],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-04",
+      "role": "Traction Replay Engineer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/src/services/shadow-mode-simulator.ts",
+        "backend/test/shadow-mode.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/services/agent-operator.ts",
+        "backend/src/services/arc/index.ts",
+        "backend/src/services/operator-telemetry.ts"
+      ],
+      "inputContract": "simulateShadow(records,ports,policy): records include consented pilotId, sourceDigest, externalEventId, occurredAt, category, amountMicro as decimal integer string and currency. Default dryRun=true. Inject clock, durable idempotency store, plan/read functions and optional explicitly authorized TESTNET-only mirror adapter. No environment signer loading.",
+      "deliverables": [
+        "Deterministic normalization, duplicate handling, bounded mirror intents and audit records with SIMULATED / TESTNET_MIRROR / VERIFIED evidence classes."
+      ],
+      "acceptance": [
+        "Real operational logs require consent and minimization. Synthetic logs are marked synthetic and excluded from traction. No RPC sends by default; mainnet rejected; per-run cap+one-order ceiling+reserve floor enforced. Restart/replay cannot duplicate. Mirror hashes count only after canonical validation by 09. Exit 0."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/shadow-mode.test.ts",
+      "dependsOn": [
+        "LEAD-TELEMETRY",
+        "AGENT-09"
+      ],
+      "blockers": [
+        "No supplied consenting business logs or verified pilot IDs. No permission to broadcast additional transactions in this dispatch."
+      ]
+    },
+    {
+      "id": "AGENT-05",
+      "role": "Quantitative Treasury Engineer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/src/services/treasury-yield.ts",
+        "backend/test/treasury-usyc.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/services/app-kit/math.ts",
+        "backend/src/services/app-kit/capabilities.ts"
+      ],
+      "inputContract": "forecastTreasury({cashMicro,burn30dMicro,obligations:[{dueAt,amountMicro}],now,redemptionDelayMs,safetyBufferMicro,eligibilityVerified,quotesFresh}): pure function, all money bigint internally, JSON outputs integer strings. Fourteen-day buffer ceil(burn30dMicro*14/30). Obligations due inside the redemption window are additional conservative reserves.",
+      "deliverables": [
+        "Runway (zero-burn represented explicitly, never Infinity in JSON), idle-surplus ceiling, ALLOCATE/HOLD/REDEEM planning decisions and UTC redemption deadlines."
+      ],
+      "acceptance": [
+        "Conservation, nonnegative balances, zero-burn/debt/late-obligation cases, boundary/large integers and conservative rounding. Unknown eligibility, stale quotes or uncertain redemption availability => HOLD. No approvals, mint/redemption transactions or guaranteed APY claims. Exit 0."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/treasury-usyc.test.ts",
+      "dependsOn": [],
+      "blockers": [
+        "USYC access, jurisdiction, eligibility and redemption terms are not established; this task is planning math only."
+      ]
+    },
+    {
+      "id": "AGENT-06",
+      "role": "Smart Contract Security Auditor",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "contracts/test/vault-invariants.test.cjs"
+      ],
+      "readInputs": [
+        "contracts/src/MercentaProfitVault.sol",
+        "contracts/artifacts/MercentaProfitVault.json",
+        "contracts/test/vault-hardening.test.cjs",
+        "contracts/test/MockUSDC.sol"
+      ],
+      "inputContract": "Use current compiled ABI and isolated Ganache chainId=5042002. Independent fixture in the owned test file. Use actual settleSale/withdrawBucket/claimProfit signatures. No public deployment.",
+      "deliverables": [
+        "Reentrancy callback, cross-owner withdrawal, zero address, arithmetic boundaries, rollback and bucket/profit liability conservation. Pause/unpause tests only if actual ABI supports it."
+      ],
+      "acceptance": [
+        "Adversarial token is a test-only source compiled in memory. Reject mutations without changing settlement markers, liabilities or balances. An absent pause API is a design blocker, not a passing fake test. No claim that local EVM proves public-network safety. Exit 0 for implemented acceptance suite."
+      ],
+      "verifyCommand": "cd contracts && npm run compile && node --test test/vault-invariants.test.cjs",
+      "dependsOn": [],
+      "blockers": [
+        "Confirm pause/unpause ABI; do not invent contract methods."
+      ]
+    },
+    {
+      "id": "AGENT-07",
+      "role": "Compliance & Risk QA Engineer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/test/compliance-risk-tier.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/services/policy/index.ts",
+        "backend/src/services/compliance-risk.ts"
+      ],
+      "inputContract": "Lead-owned decideRisk input: risk LOW/MEDIUM/HIGH/UNKNOWN, screeningId, observedAt, policy maxMicro/cappedMicro/delayMs, now. Output ALLOW/CAPPED_DELAY/BLOCK/ESCALATE with reason and immutable audit reference. Unknown/stale screening is blocked. Screening simulation is explicitly not sanctions clearance.",
+      "deliverables": [
+        "Risk-tier boundary tests, clock/delay/revision cases, transaction cap and append-only audit assertions."
+      ],
+      "acceptance": [
+        "HIGH/UNKNOWN cannot execute; MEDIUM needs cap+elapsed delay; LOW still obeys budget/reserve/signature policy. No automatic real sanctions clearance. Report missing production interface rather than validating a mock-only engine. Exit 0 after lead interface integration."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/compliance-risk-tier.test.ts",
+      "dependsOn": [
+        "LEAD-COMPLIANCE-INTERFACE"
+      ],
+      "blockers": [
+        "A production sanctions/risk-tier interface has not been found in the current service inventory."
+      ]
+    },
+    {
+      "id": "AGENT-08",
+      "role": "Information Security & Data Protection Guard",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "scripts/security-audit-vendor-leak.mjs"
+      ],
+      "readInputs": [
+        "Tracked first-party source/docs/fixtures/lockfiles",
+        "Git commit messages (read-only)",
+        "First-party generated bundles under web/.next and docs/.next"
+      ],
+      "inputContract": "Zero-dependency Node CLI. Supported --self-test, --json, --history, --bundles, --root. Scan configurable deny terms without embedding forbidden plaintext in source; report only redacted path, rule ID and line. Heuristic hardcoded credential detection must distinguish public tx hashes/addresses and test-only generated fixtures.",
+      "deliverables": [
+        "Read-only source/path/message/bundle audit and adversarial self-test. No hooks, history rewrite, deleted files or automatic secret rotation."
+      ],
+      "acceptance": [
+        "Clean controlled fixture => exit 0; dirty controlled fixture => exit 1; unreadable scope/config => nonzero, never green. Self-test exits 0. The actual repository remains failed if legacy leaks exist; no allowlisting a forbidden adapter URL to get green. Never print secret values."
+      ],
+      "verifyCommand": "node scripts/security-audit-vendor-leak.mjs --self-test; node scripts/security-audit-vendor-leak.mjs --json --history --bundles",
+      "dependsOn": [],
+      "blockers": [
+        "Legacy source, metadata and history may already contain forbidden references. History rewrite needs a separate explicit migration/coordination decision."
+      ]
+    },
+    {
+      "id": "AGENT-09",
+      "role": "On-Chain Evidence Specialist",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/src/services/receipt-proof-generator.ts",
+        "backend/test/receipt-proof.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/services/arc/index.ts",
+        "backend/src/services/orders.ts"
+      ],
+      "inputContract": "generateReceiptProof({hash,expectedSender,expectedRecipient,expectedAmountMicro,chainId:5042002,minConfirmations},ports): read-only ports getChainId/getTransaction/getReceipt/getBlock/getHead plus independent witness B. Verify native 18-decimal conversion vs ERC20 6 decimals separately.",
+      "deliverables": [
+        "Typed VERIFIED/REJECTED/UNAVAILABLE proof, stable evidence digest, markdown table with https://testnet.arcscan.app/tx/{hash}. No raw voucher data."
+      ],
+      "acceptance": [
+        "Reject revert, wrong chain/address/token/amount, missing receipt, mismatched block hash, reorg, insufficient confirmations, stale/disagreeing witnesses, duplicate hash. Two matching calls to one RPC are not independent witnesses. Explorer link alone is not evidence; no synthetic hashes in verified output. RPC failures never VERIFIED. Exit 0."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/receipt-proof.test.ts",
+      "dependsOn": [],
+      "blockers": [
+        "Independent witness endpoints and trusted confirmation policy need lead configuration; absence fails closed."
+      ]
+    },
+    {
+      "id": "AGENT-10",
+      "role": "High-Load SQLite Engineer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/test/concurrency-stress.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/db.ts",
+        "backend/src/services/orders.ts",
+        "backend/src/services/catalog-test-checkout.ts",
+        "backend/test/orders.test.ts"
+      ],
+      "inputContract": "25 concurrent real service requests, temporary on-disk SQLite database, separate connections/workers where supported, journal_mode=WAL and durable idempotency keys. Isolated no-network fulfillment ports.",
+      "deliverables": [
+        "Unique-order burst, same-key replay burst, conflicting payload and insufficient-balance race."
+      ],
+      "acceptance": [
+        "No extra debit, no negative balance, exactly one settlement per key, sum of reserves consistent, quick_check/integrity_check = ok; controlled busy retries bounded. Promise.all against one synchronous in-memory connection is not WAL stress evidence. Clean database after every run. Exit 0."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/concurrency-stress.test.ts",
+      "dependsOn": [],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-11",
+      "role": "Hackathon Metrics CLI Engineer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "scripts/traction-reporter.mjs"
+      ],
+      "readInputs": [
+        "Consent-reviewed evidence input (owner supplies)",
+        "Output contract from 04/09; no modification of their files"
+      ],
+      "inputContract": "Read a JSON evidence file; validate network/evidence class, consented unique business IDs, receipt verification and duplicate external events. Output payload and an argv array for update-traction/update-product; require verified installed CLI --help before asserting exact flag syntax.",
+      "deliverables": [
+        "Read-only JSON metrics report, testnet volume separated from revenue/live buying, command drafts only."
+      ],
+      "acceptance": [
+        "Synthetic/empty/unverified inputs never create pilot counts or volume. No credentials/private operational bills in report. No submission/API writes; no shell interpolation. Unknown CLI syntax labelled UNVERIFIED. --self-test exit 0."
+      ],
+      "verifyCommand": "node scripts/traction-reporter.mjs --self-test",
+      "dependsOn": [
+        "AGENT-04",
+        "AGENT-09"
+      ],
+      "blockers": [
+        "Verified businesses/evidence and official CLI syntax have not been supplied."
+      ]
+    },
+    {
+      "id": "AGENT-12",
+      "role": "Fault Tolerance Engineer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/test/resilience-chaos.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/services/resilience.ts",
+        "backend/src/services/agent-operator.ts",
+        "backend/src/services/circle-agent.ts",
+        "backend/src/services/orders.ts",
+        "backend/src/services/procurement-health.ts"
+      ],
+      "inputContract": "Injected RPC/model/Gateway/fulfillment ports; persistent temp DB; explicit failure checkpoints before/after durable reserve, send and receipt. Read existing persisted statuses/leases instead of inventing transitions.",
+      "deliverables": [
+        "Timeout/HTTP402/RPC outage/crash recovery tests, low-credit/stale-credit breaker and cancellation races."
+      ],
+      "acceptance": [
+        "Unknown settlement is quarantined/reconciled, never automatically resent or refunded; lease expiry is not proof of failure. Durable reservations retained for ambiguous sends, proven pre-send locks released safely. Same operation/reference ID on restart, no duplicated money movement. Exit 0."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/resilience-chaos.test.ts",
+      "dependsOn": [],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-13",
+      "role": "API Contract Guardian",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "backend/test/openapi-contract.test.ts"
+      ],
+      "readInputs": [
+        "backend/src/routes/commerce.ts",
+        "backend/src/routes/agent-operator.ts",
+        "backend/src/routes/catalog-test-checkout.ts",
+        "web/src/lib/openapi-testnet.json",
+        "web/src/lib/openapi-mainnet.json",
+        "web/src/app/api/openapi/route.ts"
+      ],
+      "inputContract": "Map actual backend and Next proxy methods, path params, Zod input constraints, auth and response status contracts. Distinguish account/operator routes from /api/v1 integration routes and mainnet-disabled profiles. Use generated artifacts, not assumed /api/quote aliases.",
+      "deliverables": [
+        "Operation parity matrix, strict input and response fixture validation, explicit exclusions with rationale for internal endpoints."
+      ],
+      "acceptance": [
+        "Mutation of a schema, method, required field or auth constraint makes suite fail. No assertion of 100% response typing while generic response objects remain untyped. Mainnet restrictions documented/tested; missing requested routes are blockers rather than fictional APIs. Exit 0."
+      ],
+      "verifyCommand": "cd backend && npx --no-install tsx --test test/openapi-contract.test.ts",
+      "dependsOn": [],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-14",
+      "role": "Accessibility & Keyboard QA Engineer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "web/src/__tests__/a11y-keyboard.test.ts"
+      ],
+      "readInputs": [
+        "web/src/components/product/StartJourney.tsx",
+        "web/src/components/product/NetworkSelector.tsx",
+        "web/src/components/product/AgentOperator.tsx",
+        "web/src/components/product/AccountConsole.tsx"
+      ],
+      "inputContract": "Use project Vitest + jsdom + existing React createRoot/act test pattern (not Jest migration). Accessible name can come from label/text/ARIA; explicit aria-label is not mandatory where visible text correctly names the control. Native dialog showModal must be realistically modelled.",
+      "deliverables": [
+        "Tab/Shift-Tab traps, Escape/focus restore, keyboard form controls, tooltip focus activation and disabled financial controls."
+      ],
+      "acceptance": [
+        "No CSS/JSX/source edits, zero spending/auth/RPC calls, guest cannot invoke account tools, menu reachable at narrow layout. jsdom cannot prove pixels/real-browser focus; record required lead browser checks. Exit 0."
+      ],
+      "verifyCommand": "cd web && npx --no-install vitest run src/__tests__/a11y-keyboard.test.ts",
+      "dependsOn": [],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-15",
+      "role": "Code Health Audit Specialist",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "scripts/audit-dead-code.mjs"
+      ],
+      "readInputs": [
+        "backend/package.json",
+        "web/package.json",
+        "TypeScript source and tsconfigs (read-only)"
+      ],
+      "inputContract": "Read-only dependency/export/unused-import findings; use existing tooling without installing packages or modifying locks. Classify definite vs potential findings, and return a patch proposal to the lead, not a broad cleanup PR.",
+      "deliverables": [
+        "Deterministic JSON/text report, reachable entrypoint handling and generated-file exclusions."
+      ],
+      "acceptance": [
+        "--self-test exits 0; unresolved definite problems give nonzero under --strict. No automatic deletions or unused-import edits outside ownership. No suppression of real warnings to meet a badge. Existing scripts do not contain a web check command; use actual build/lint scripts."
+      ],
+      "verifyCommand": "node scripts/audit-dead-code.mjs --self-test",
+      "dependsOn": [],
+      "blockers": [
+        "The requested cross-repository cleanup would conflict with lead ownership and other agents; lead applies reviewed changes only."
+      ]
+    },
+    {
+      "id": "AGENT-16",
+      "role": "Pilot Handbook Writer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "docs/pilot-onboarding.md",
+        "docs/shadow-mode-operator.md"
+      ],
+      "readInputs": [
+        "Published app/docs behavior",
+        "Evidence and capabilities manifest; outputs of 04/09 are read-only"
+      ],
+      "inputContract": "Audience: consented freelancers/agencies/digital shops. Explicitly separate their existing real banking workflow, read-only operational replay and optional testnet mirror. No private invoices or unconsented customer data.",
+      "deliverables": [
+        "Short start/stop guide, consent checklist, approval ceilings, data minimization, incident/revocation route and evidence interpretation."
+      ],
+      "acceptance": [
+        "No zero-risk guarantees, fake businesses, mainnet availability or production sanctions claims. Testnet tokens/codes are not money/products. Support uses support@mercenta.xyz. All steps map actual UI; unavailable features labelled planned. Readiness depends on verified pilot input."
+      ],
+      "verifyCommand": "node scripts/dispatch-validate.mjs --task AGENT-16",
+      "dependsOn": [
+        "AGENT-04",
+        "AGENT-09"
+      ],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-17",
+      "role": "Demo Narrative Director",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "submission/DEMO-VIDEO-TELEPROMPTER.md"
+      ],
+      "readInputs": [
+        "App and capabilities manifest",
+        "Verified evidence manifest and pilot consent"
+      ],
+      "inputContract": "165 seconds exactly; five requested timed segments. Record successful bounded goal -> plan -> approval -> observed action -> receipt; x402 EIP-712 authorization is not called a product quote signature without actual implementation.",
+      "deliverables": [
+        "Time-coded spoken script and screen-action plan, fallback marked TESTNET REHEARSAL when live evidence absent."
+      ],
+      "acceptance": [
+        "No edited fake balances/hash/counter, no unsupported live USYC or pilot claims; show blocked attempt and real tool events. Full 2m45s total, placeholders for unverified facts cannot become narrator claims."
+      ],
+      "verifyCommand": "node scripts/dispatch-validate.mjs --task AGENT-17",
+      "dependsOn": [
+        "AGENT-09",
+        "AGENT-11"
+      ],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-18",
+      "role": "Repository Architecture Writer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "README.md",
+        "docs/ARCHITECTURE.md"
+      ],
+      "readInputs": [
+        "Current code and generated API profiles",
+        "Verified build/evidence manifest"
+      ],
+      "inputContract": "Diagram only actual FSM transitions and trust boundaries: wallet identity -> validated task scope -> real tools -> quote/approval -> ledger/fulfillment -> canonical witness verification. Planned treasury features drawn as planned, not operational.",
+      "deliverables": [
+        "Mermaid end-to-end/FSM/Gateway diagrams, user-provided rubric alignment and precise run instructions."
+      ],
+      "acceptance": [
+        "Badges only for verified status; no 100% coverage/zero-warning/security certification claim without evidence. User judging weights and prize must be marked awaiting official verification. No vendor references; no overclaiming autonomous real buys. Existing README preserved by reviewable focused patch."
+      ],
+      "verifyCommand": "node scripts/dispatch-validate.mjs --task AGENT-18",
+      "dependsOn": [
+        "AGENT-19"
+      ],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-19",
+      "role": "Release Verification Engineer",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "scripts/smoke-test-all.mjs"
+      ],
+      "readInputs": [
+        "All four package.json scripts",
+        "Read-only RPC and disposable SQLite fixture"
+      ],
+      "inputContract": "Sequential bounded child_process spawn with explicit cwd/argv; no shell command interpolation. Read-only RPC health is opt-in --online. Offline full test/compile/build run default, network evidence status separate. No live DB reads without owner-approved exported snapshot.",
+      "deliverables": [
+        "Machine-readable suite results, WAL integrity result, optional RPC chain check and final summary."
+      ],
+      "acceptance": [
+        "Any required failure/missing tool/timeout => nonzero; skips and unavailable online proofs never green verified. Runner never edits configs, deploys/contracts or submits transactions. Preserve individual exit codes; print no credentials. --self-test exit 0, integrated run accepted only after all dependencies pass."
+      ],
+      "verifyCommand": "node scripts/smoke-test-all.mjs --self-test; node scripts/smoke-test-all.mjs",
+      "dependsOn": [
+        "AGENT-01",
+        "AGENT-02",
+        "AGENT-03",
+        "AGENT-06",
+        "AGENT-07",
+        "AGENT-10",
+        "AGENT-12",
+        "AGENT-13",
+        "AGENT-14"
+      ],
+      "blockers": []
+    },
+    {
+      "id": "AGENT-20",
+      "role": "Submission Operations Manager",
+      "status": "NOT_STARTED",
+      "writeAllowlist": [
+        "submission/FINAL-SUBMISSION-DOSSIER.md"
+      ],
+      "readInputs": [
+        "Owner-supplied official form and event rules",
+        "Verified deployment/evidence/build records"
+      ],
+      "inputContract": "Structured field -> draft answer -> evidence URL -> verification state. Repository https://github.com/rdmbtc/mercenta, main branch; app/docs URLs verified separately. Contract address/chain/deployment hash must come from canonical receipt and matching runtime bytecode, never a template.",
+      "deliverables": [
+        "Turnkey factual draft, evidence checklist, missing-input table and exact answer mapping only after form fields are received."
+      ],
+      "acceptance": [
+        "No automatic submission or invented form fields/contract addresses/businesses. Simulation separated from validated traction; all missing facts marked BLOCKED. No first-place guarantees; eligibility/prize/rubric verified against official rules before claim."
+      ],
+      "verifyCommand": "node scripts/dispatch-validate.mjs --task AGENT-20",
+      "dependsOn": [
+        "AGENT-09",
+        "AGENT-11",
+        "AGENT-17",
+        "AGENT-18",
+        "AGENT-19"
+      ],
+      "blockers": [
+        "Official form/rules, independently verified pilot evidence and release-specific contract deployment proofs required."
+      ]
+    }
+  ],
+  "waves": [
+    [
+      "08",
+      "15",
+      "14",
+      "03",
+      "02",
+      "06",
+      "13",
+      "10"
+    ],
+    [
+      "01",
+      "04",
+      "05",
+      "07",
+      "09",
+      "12"
+    ],
+    [
+      "11",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20"
+    ]
+  ],
+  "releaseGates": [
+    "Current-tree vendor and secret audit clean",
+    "Historical references reviewed; no history rewrite without separate authorization",
+    "Semantic ledger gate and independent evidence witnesses accepted",
+    "All task-specific tests + baseline suites/builds exit 0",
+    "No false pilot/revenue/live-feature claims",
+    "Mainnet remains disabled until separate verified production launch decision"
+  ],
+  "leadProgress": {
+    "dispatch": {
+      "briefs": 20,
+      "isolatedTargets": 26,
+      "dependencyCycles": 0
+    },
+    "telemetry": {
+      "state": "LOCAL_TESTED_NOT_DEPLOYED",
+      "unsigned": true,
+      "settlementProofVerified": false
+    },
+    "backend": {
+      "tests": 263,
+      "passed": 263,
+      "failed": 0,
+      "build": "PASS"
+    },
+    "contracts": {
+      "tests": 12,
+      "passed": 12,
+      "failed": 0,
+      "build": "PASS",
+      "nativeOptionalModuleFallback": true
+    },
+    "audit": {
+      "status": "FAIL",
+      "scannedFiles": 1434,
+      "findings": 175,
+      "byRule": {
+        "VENDOR_IDENTITY": 175
+      },
+      "byScope": {
+        "source": 172,
+        "path": 2,
+        "commit-message": 1
+      },
+      "scopeErrors": 0
+    }
+  },
+  "release": "BLOCKED_SECURITY_GATE"
+}

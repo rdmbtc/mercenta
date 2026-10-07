@@ -1,18 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Check,
-  CheckCircle2,
-  Copy,
-  ExternalLink,
-  FileCheck2,
-  Fingerprint,
-  HardDrive,
-  Lock,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
+import { Check, CheckCircle2, Copy, ExternalLink, FileCheck2, Fingerprint, Sparkles } from "lucide-react";
 
 export default function ReceiptSpotlight() {
   const [copied, setCopied] = useState(false);

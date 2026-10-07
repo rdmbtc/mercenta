@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 2,
+  "timestamp": "2026-10-07T18:45:51.497Z",
+  "kind": "LOCAL_CANDIDATE_AND_READ_ONLY_LIVE_EVIDENCE",
+  "published": false,
+  "productionReady": false,
+  "mainnetEnabled": false,
+  "moneyMoved": false,
+  "sourceAndBuiltBundles": {
+    "status": "PASS",
+    "exitCode": 0,
+    "findings": 0,
+    "scopeErrors": 0
+  },
+  "historicalGate": {
+    "status": "FAIL",
+    "exitCode": 1,
+    "findings": 1,
+    "scopeErrors": 0,
+    "byScope": {
+      "commit-message": 1
+    },
+    "note": "Original published history preserved; no force push. Historical source blobs are outside this scanner scope."
+  },
+  "tests": {
+    "backend": 354,
+    "web": 288,
+    "docs": 36,
+    "contracts": 13,
+    "traction": 5
+  },
+  "webLint": {
+    "name": "Web zero-warning lint",
+    "status": "PASS",
+    "exitCode": 0,
+    "signal": null,
+    "errorCode": null,
+    "durationMs": 5256,
+    "log": "work\\release-verification\\web-zero-warning-lint.log"
+  },
+  "builds": [
+    {
+      "name": "Backend TypeScript build",
+      "status": "PASS"
+    },
+    {
+      "name": "Web typecheck",
+      "status": "PASS"
+    },
+    {
+      "name": "Web production build",
+      "status": "PASS"
+    },
+    {
+      "name": "docs production build",
+      "status": "PASS"
+    },
+    {
+      "name": "status production build",
+      "status": "PASS"
+    }
+  ],
+  "master": {
+    "status": "FAIL",
+    "passed": 15,
+    "total": 17,
+    "note": "Original full smoke run preceded the routing-identifier classifier correction. Its failure record is preserved; supplemental source/bundle and history audits were rerun afterward. A full all-green release is not asserted."
+  },
+  "circleGateway": {
+    "schemaVersion": 1,
+    "kind": "READ_ONLY_CIRCLE_GATEWAY_TESTNET_CHECK",
+    "timestamp": "2026-10-07T18:13:09.996Z",
+    "network": "Arc Testnet",
+    "canSign": false,
+    "canBroadcast": false,
+    "moneyMoved": false,
+    "newPaidRequests": 0,
+    "externalPilotConfirmed": false,
+    "checks": [
+      {
+        "name": "Private agent configuration",
+        "status": "BLOCKED",
+        "reason": "NO_LOCAL_AGENT_CONFIG"
+      },
+      {
+        "name": "Live Circle Gateway unified balance",
+        "status": "PASS",
+        "balanceUnits": "100000",
+        "balanceUsdc": "0.100000",
+        "positive": true
+      },
+      {
+        "name": "Two read-only RPC chain checks",
+        "status": "PASS",
+        "chainIds": [
+          5042002,
+          5042002
+        ],
+        "source": "https://chainid.network/chains.json",
+        "independence": "Distinct configured endpoints; administrative provider independence still requires operational assurance"
+      },
+      {
+        "name": "Existing public Gateway funding receipt",
+        "status": "PASS",
+        "proofStatus": "VERIFIED",
+        "hash": "0xde98cb9bcb47a2faf27a928f972156f535974a410dca906cc1cc677b51cd9f7e",
+        "confirmations": 878864,
+        "digest": "66c6baaf1c31182f2a5987e6cfc3435f5fe81bd52ed3554a20202fe6e6a1d6d6",
+        "kind": "INTERNAL_PLATFORM_FUNDING_NOT_BUSINESS_TRACTION",
+        "proof": "| Network | Transaction | Amount (test USDC) | Confirmations | Evidence |\n|---|---|---|---|---|\n| Arc Testnet | [0xde98cb9bcb47a2faf27a928f972156f535974a410dca906cc1cc677b51cd9f7e](https://testnet.arcscan.app/tx/0xde98cb9bcb47a2faf27a928f972156f535974a410dca906cc1cc677b51cd9f7e) | 0.100000 | 878864 | CANONICAL_CONSENSUS_VERIFIED |"
+      },
+      {
+        "name": "Unpaid x402 challenge: mercenta-margin-report",
+        "status": "PASS",
+        "amountUnits": "1000",
+        "network": "eip155:5042002",
+        "signatureSent": false,
+        "recipientPinning": "PROTOCOL_ONLY_NOT_OWNER_PINNED"
+      }
+    ],
+    "blockers": [
+      "Private agent configuration",
+      "CONSENTED_EXTERNAL_BUSINESS_MANIFEST_AND_OPERATION_LOGS_REQUIRED",
+      "NO_NEW_PAID_X402_SETTLEMENT_PERFORMED"
+    ],
+    "status": "PARTIAL"
+  },
+  "pilot": {
+    "status": "BLOCKED",
+    "reason": "CONSENTED_EXTERNAL_BUSINESS_MANIFEST_AND_OPERATION_LOGS_REQUIRED",
+    "externalPilotConfirmed": false,
+    "moneyMoved": false
+  },
+  "remaining": [
+    "Historical Git privacy remediation requires coordinated approval",
+    "Private Circle signer configuration must be checked on the actual deployment",
+    "Paid x402 acceptance and settlement not executed by this read-only check",
+    "Real business consent and operation logs required",
+    "Server-only origin pin and secondary RPC must be migrated on production before backend deployment"
+  ],
+  "scannerRegression": {
+    "cases": 14,
+    "status": "PASS"
+  },
+  "releaseStatus": "BLOCKED_PENDING_HISTORY_DEPLOYMENT_AND_LIVE_PILOT"
+}

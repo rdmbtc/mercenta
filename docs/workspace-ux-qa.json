@@ -171,5 +171,5 @@
   "moneyMoved": false,
   "backendRecovery": "Not established; account persistence and purchasing remain blocked during the VPS/API outage.",
   "mainnetEnabled": false,
-  "liveAppRouteFulfillment": false
+  "livesupplierFulfillment": false
 }

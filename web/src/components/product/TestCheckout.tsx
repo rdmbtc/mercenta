@@ -12,7 +12,8 @@ export function TestCheckout({productId,itemId,quantity,wallet,readOnly,ru,onCon
  const recoveryKey='mercenta-test-checkout:'+wallet+':'+productId+':'+itemId+':'+quantity;
  useEffect(()=>{alive.current=true;return()=>{alive.current=false}},[]);
  useEffect(()=>{if(!wallet)return;checkoutApi<{availableUnits:string}>('summary').then(v=>{if(alive.current)setAvailable(v.availableUnits)}).catch(()=>{});try{const old=JSON.parse(sessionStorage.getItem(recoveryKey)??'null');if(old?.quoteId&&old?.requestId){setRecovering(true);confirmRequest.current=old.requestId;uncertain.current=true;checkoutApi<TestQuote>('catalog-checkout/quotes/'+old.quoteId).then(q=>{if(alive.current)setQuote(q)}).catch(()=>{if(alive.current)setError('RECOVERY_UNAVAILABLE')}).finally(()=>{if(alive.current)setRecovering(false)})}}catch{}},[wallet,recoveryKey]);
- useEffect(()=>{if(quote)stageHeading.current?.focus()},[quote?.id]);
+ const quoteId=quote?.id;
+ useEffect(()=>{if(quoteId)stageHeading.current?.focus()},[quoteId]);
  useEffect(()=>{if(!quote)return;const tick=()=>setExpired(Date.now()>=quote.expiresAt);tick();const timer=setInterval(tick,1000);return()=>clearInterval(timer)},[quote]);
  async function run(fn:()=>Promise<void>){if(lock.current||recovering)return;lock.current=true;setBusy(true);setError('');onLock?.(true);try{await fn()}catch(e){const code=e instanceof Error?e.message:'BACKEND_UNAVAILABLE';if(['QUOTE_EXPIRED','INSUFFICIENT_ACCOUNT_BALANCE','BUDGET_PER_ORDER_LIMIT','BUDGET_DAILY_LIMIT','BUDGET_MONTHLY_LIMIT'].includes(code)){uncertain.current=false;try{sessionStorage.removeItem(recoveryKey)}catch{}}if(alive.current)setError(code)}finally{lock.current=false;if(alive.current){setBusy(false);onLock?.(false)}}}
  async function requestQuote(){await run(async()=>{const q=await checkoutApi<TestQuote>('catalog-checkout/quote',{requestId:quoteRequest.current,productId,itemId,quantity});if(!alive.current)return;setQuote(q);setAccepted(false);setExpired(false)})}

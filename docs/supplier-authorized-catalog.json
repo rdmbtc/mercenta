@@ -1,6 +1,6 @@
 {
-  "release": "approute-authorized-catalog-2026-10-03",
-  "backendRelease": "backend-approute-authorized-20261003",
+  "release": "supplier-authorized-catalog-2026-10-03",
+  "backendRelease": "backend-supplier-authorized-20261003",
   "frontendDeployment": "mercenta-nyis2jn6o-drrdms-projects.vercel.app",
   "authorization": {
     "whoamiStatus": 200,

@@ -1,21 +1,6 @@
 "use client";
 
-import {
-  Activity,
-  ArrowUpRight,
-  BookOpen,
-  Boxes,
-  CheckCircle2,
-  Cpu,
-  Globe2,
-  HardDrive,
-  LayoutDashboard,
-  Lock,
-  Radio,
-  Server,
-  ShieldCheck,
-  Terminal,
-} from "lucide-react";
+import { Activity, ArrowUpRight, BookOpen, Boxes, Cpu, Globe2, LayoutDashboard, ShieldCheck, Terminal } from "lucide-react";
 
 interface NodeItem {
   host: string;
@@ -131,7 +116,6 @@ export default function EcosystemArchitecture() {
         {/* 7-Node Grid */}
         <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {NODES.map((node, i) => {
-            const Icon = node.icon;
             const isFeatured = i === 1 || i === 3;
 
             return (

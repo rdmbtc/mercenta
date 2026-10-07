@@ -93,3 +93,8 @@ DESIGN.md
 IMPLEMENTATION_PLAN.md
 TESTNET_LAUNCH.md
 
+# Local diagnostics and deployment credentials must never be published.
+/.opdiff.tmp
+/.openapi-dump.tmp
+/ca.pem
+/x.id

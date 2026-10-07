@@ -33,4 +33,4 @@ What can I buy, how much can I spend, and what should I do next?
 - 158 frontend tests across 19 files; TypeScript, targeted new-module ESLint and production builds passed.
 - Public guest walkthroughs: 34 desktop checks and 33 mobile checks, no page errors or Mercenta POST mutations during those walkthroughs. See task-first-ux-qa.json. Local layout fixtures are not payment or traction evidence.
 - Authenticated saving, live purchasing and infrastructure recovery are not claimed: the VPS/API outage remains a separate blocker.
-- Mainnet, redeemable AppRoute goods, live Earn, fiat and cross-chain settlement were not enabled. A real catalogue will require reviewed supplier access, product/region/redemption metadata, price/availability verification and stable expiring checkout quotes before production fulfillment.
+- Mainnet, redeemable supplier goods, live Earn, fiat and cross-chain settlement were not enabled. A real catalogue will require reviewed supplier access, product/region/redemption metadata, price/availability verification and stable expiring checkout quotes before production fulfillment.

@@ -1,0 +1,2433 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "network": "fixture",
+  "itemCount": 125,
+  "items": [
+    {
+      "sku": "MRC-GAME-001",
+      "name": "Steam Gift Card 7 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "7.000000",
+      "markupBps": 450,
+      "salePriceUsd": "7.320000",
+      "available": true,
+      "metadata": {
+        "tier": 1,
+        "denominationUsd": "7.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-002",
+      "name": "PlayStation Store Voucher 9 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "9.000000",
+      "markupBps": 500,
+      "salePriceUsd": "9.450000",
+      "available": true,
+      "metadata": {
+        "tier": 2,
+        "denominationUsd": "9.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-003",
+      "name": "Xbox Game Pass Token 11 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "11.000000",
+      "markupBps": 550,
+      "salePriceUsd": "11.610000",
+      "available": true,
+      "metadata": {
+        "tier": 3,
+        "denominationUsd": "11.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-004",
+      "name": "Epic Games Credit 13 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "13.000000",
+      "markupBps": 600,
+      "salePriceUsd": "13.780000",
+      "available": true,
+      "metadata": {
+        "tier": 4,
+        "denominationUsd": "13.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-005",
+      "name": "Nintendo eShop Card 15 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "15.000000",
+      "markupBps": 400,
+      "salePriceUsd": "15.600000",
+      "available": true,
+      "metadata": {
+        "tier": 5,
+        "denominationUsd": "15.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-006",
+      "name": "Steam Gift Card 17 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "17.000000",
+      "markupBps": 450,
+      "salePriceUsd": "17.770000",
+      "available": true,
+      "metadata": {
+        "tier": 6,
+        "denominationUsd": "17.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-007",
+      "name": "PlayStation Store Voucher 19 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "19.000000",
+      "markupBps": 500,
+      "salePriceUsd": "19.950000",
+      "available": true,
+      "metadata": {
+        "tier": 7,
+        "denominationUsd": "19.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-008",
+      "name": "Xbox Game Pass Token 21 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "21.000000",
+      "markupBps": 550,
+      "salePriceUsd": "22.160000",
+      "available": true,
+      "metadata": {
+        "tier": 8,
+        "denominationUsd": "21.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-009",
+      "name": "Epic Games Credit 23 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "23.000000",
+      "markupBps": 600,
+      "salePriceUsd": "24.380000",
+      "available": true,
+      "metadata": {
+        "tier": 9,
+        "denominationUsd": "23.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-010",
+      "name": "Nintendo eShop Card 25 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "25.000000",
+      "markupBps": 400,
+      "salePriceUsd": "26.000000",
+      "available": true,
+      "metadata": {
+        "tier": 10,
+        "denominationUsd": "25.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-011",
+      "name": "Steam Gift Card 27 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "27.000000",
+      "markupBps": 450,
+      "salePriceUsd": "28.220000",
+      "available": true,
+      "metadata": {
+        "tier": 11,
+        "denominationUsd": "27.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-012",
+      "name": "PlayStation Store Voucher 29 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "29.000000",
+      "markupBps": 500,
+      "salePriceUsd": "30.450000",
+      "available": true,
+      "metadata": {
+        "tier": 12,
+        "denominationUsd": "29.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-013",
+      "name": "Xbox Game Pass Token 31 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "31.000000",
+      "markupBps": 550,
+      "salePriceUsd": "32.710000",
+      "available": true,
+      "metadata": {
+        "tier": 13,
+        "denominationUsd": "31.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-014",
+      "name": "Epic Games Credit 33 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "33.000000",
+      "markupBps": 600,
+      "salePriceUsd": "34.980000",
+      "available": true,
+      "metadata": {
+        "tier": 14,
+        "denominationUsd": "33.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-015",
+      "name": "Nintendo eShop Card 35 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "35.000000",
+      "markupBps": 400,
+      "salePriceUsd": "36.400000",
+      "available": true,
+      "metadata": {
+        "tier": 15,
+        "denominationUsd": "35.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-016",
+      "name": "Steam Gift Card 37 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "37.000000",
+      "markupBps": 450,
+      "salePriceUsd": "38.670000",
+      "available": true,
+      "metadata": {
+        "tier": 16,
+        "denominationUsd": "37.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-017",
+      "name": "PlayStation Store Voucher 39 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "39.000000",
+      "markupBps": 500,
+      "salePriceUsd": "40.950000",
+      "available": true,
+      "metadata": {
+        "tier": 17,
+        "denominationUsd": "39.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-018",
+      "name": "Xbox Game Pass Token 41 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "41.000000",
+      "markupBps": 550,
+      "salePriceUsd": "43.260000",
+      "available": true,
+      "metadata": {
+        "tier": 18,
+        "denominationUsd": "41.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-019",
+      "name": "Epic Games Credit 43 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "43.000000",
+      "markupBps": 600,
+      "salePriceUsd": "45.580000",
+      "available": true,
+      "metadata": {
+        "tier": 19,
+        "denominationUsd": "43.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-020",
+      "name": "Nintendo eShop Card 45 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "45.000000",
+      "markupBps": 400,
+      "salePriceUsd": "46.800000",
+      "available": true,
+      "metadata": {
+        "tier": 20,
+        "denominationUsd": "45.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-021",
+      "name": "Steam Gift Card 47 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "47.000000",
+      "markupBps": 450,
+      "salePriceUsd": "49.120000",
+      "available": true,
+      "metadata": {
+        "tier": 21,
+        "denominationUsd": "47.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-022",
+      "name": "PlayStation Store Voucher 49 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "49.000000",
+      "markupBps": 500,
+      "salePriceUsd": "51.450000",
+      "available": true,
+      "metadata": {
+        "tier": 22,
+        "denominationUsd": "49.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-023",
+      "name": "Xbox Game Pass Token 51 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "51.000000",
+      "markupBps": 550,
+      "salePriceUsd": "53.810000",
+      "available": true,
+      "metadata": {
+        "tier": 23,
+        "denominationUsd": "51.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-024",
+      "name": "Epic Games Credit 53 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "53.000000",
+      "markupBps": 600,
+      "salePriceUsd": "56.180000",
+      "available": true,
+      "metadata": {
+        "tier": 24,
+        "denominationUsd": "53.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-GAME-025",
+      "name": "Nintendo eShop Card 55 USD",
+      "categoryId": "gaming",
+      "categoryLabel": "Gaming Keys & Platform Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "55.000000",
+      "markupBps": 400,
+      "salePriceUsd": "57.200000",
+      "available": true,
+      "metadata": {
+        "tier": 25,
+        "denominationUsd": "55.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-001",
+      "name": "Spotify Premium Pass Tier 1",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "7.000000",
+      "markupBps": 450,
+      "salePriceUsd": "7.320000",
+      "available": true,
+      "metadata": {
+        "tier": 1,
+        "denominationUsd": "7.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-002",
+      "name": "Netflix Standard Voucher Tier 2",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "9.000000",
+      "markupBps": 500,
+      "salePriceUsd": "9.450000",
+      "available": true,
+      "metadata": {
+        "tier": 2,
+        "denominationUsd": "9.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-003",
+      "name": "YouTube Premium Access Tier 3",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "11.000000",
+      "markupBps": 550,
+      "salePriceUsd": "11.610000",
+      "available": true,
+      "metadata": {
+        "tier": 3,
+        "denominationUsd": "11.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-004",
+      "name": "Tidal HiFi Token Tier 4",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "13.000000",
+      "markupBps": 600,
+      "salePriceUsd": "13.780000",
+      "available": true,
+      "metadata": {
+        "tier": 4,
+        "denominationUsd": "13.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-005",
+      "name": "SoundCloud Go Plan Tier 5",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "15.000000",
+      "markupBps": 400,
+      "salePriceUsd": "15.600000",
+      "available": true,
+      "metadata": {
+        "tier": 5,
+        "denominationUsd": "15.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-006",
+      "name": "Spotify Premium Pass Tier 6",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "17.000000",
+      "markupBps": 450,
+      "salePriceUsd": "17.770000",
+      "available": true,
+      "metadata": {
+        "tier": 6,
+        "denominationUsd": "17.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-007",
+      "name": "Netflix Standard Voucher Tier 7",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "19.000000",
+      "markupBps": 500,
+      "salePriceUsd": "19.950000",
+      "available": true,
+      "metadata": {
+        "tier": 7,
+        "denominationUsd": "19.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-008",
+      "name": "YouTube Premium Access Tier 8",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "21.000000",
+      "markupBps": 550,
+      "salePriceUsd": "22.160000",
+      "available": true,
+      "metadata": {
+        "tier": 8,
+        "denominationUsd": "21.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-009",
+      "name": "Tidal HiFi Token Tier 9",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "23.000000",
+      "markupBps": 600,
+      "salePriceUsd": "24.380000",
+      "available": true,
+      "metadata": {
+        "tier": 9,
+        "denominationUsd": "23.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-010",
+      "name": "SoundCloud Go Plan Tier 10",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "25.000000",
+      "markupBps": 400,
+      "salePriceUsd": "26.000000",
+      "available": true,
+      "metadata": {
+        "tier": 10,
+        "denominationUsd": "25.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-011",
+      "name": "Spotify Premium Pass Tier 11",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "27.000000",
+      "markupBps": 450,
+      "salePriceUsd": "28.220000",
+      "available": true,
+      "metadata": {
+        "tier": 11,
+        "denominationUsd": "27.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-012",
+      "name": "Netflix Standard Voucher Tier 12",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "29.000000",
+      "markupBps": 500,
+      "salePriceUsd": "30.450000",
+      "available": true,
+      "metadata": {
+        "tier": 12,
+        "denominationUsd": "29.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-013",
+      "name": "YouTube Premium Access Tier 13",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "31.000000",
+      "markupBps": 550,
+      "salePriceUsd": "32.710000",
+      "available": true,
+      "metadata": {
+        "tier": 13,
+        "denominationUsd": "31.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-014",
+      "name": "Tidal HiFi Token Tier 14",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "33.000000",
+      "markupBps": 600,
+      "salePriceUsd": "34.980000",
+      "available": true,
+      "metadata": {
+        "tier": 14,
+        "denominationUsd": "33.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-015",
+      "name": "SoundCloud Go Plan Tier 15",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "35.000000",
+      "markupBps": 400,
+      "salePriceUsd": "36.400000",
+      "available": true,
+      "metadata": {
+        "tier": 15,
+        "denominationUsd": "35.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-016",
+      "name": "Spotify Premium Pass Tier 16",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "37.000000",
+      "markupBps": 450,
+      "salePriceUsd": "38.670000",
+      "available": true,
+      "metadata": {
+        "tier": 16,
+        "denominationUsd": "37.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-017",
+      "name": "Netflix Standard Voucher Tier 17",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "39.000000",
+      "markupBps": 500,
+      "salePriceUsd": "40.950000",
+      "available": true,
+      "metadata": {
+        "tier": 17,
+        "denominationUsd": "39.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-018",
+      "name": "YouTube Premium Access Tier 18",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "41.000000",
+      "markupBps": 550,
+      "salePriceUsd": "43.260000",
+      "available": true,
+      "metadata": {
+        "tier": 18,
+        "denominationUsd": "41.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-019",
+      "name": "Tidal HiFi Token Tier 19",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "43.000000",
+      "markupBps": 600,
+      "salePriceUsd": "45.580000",
+      "available": true,
+      "metadata": {
+        "tier": 19,
+        "denominationUsd": "43.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-020",
+      "name": "SoundCloud Go Plan Tier 20",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "45.000000",
+      "markupBps": 400,
+      "salePriceUsd": "46.800000",
+      "available": true,
+      "metadata": {
+        "tier": 20,
+        "denominationUsd": "45.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-021",
+      "name": "Spotify Premium Pass Tier 21",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "47.000000",
+      "markupBps": 450,
+      "salePriceUsd": "49.120000",
+      "available": true,
+      "metadata": {
+        "tier": 21,
+        "denominationUsd": "47.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-022",
+      "name": "Netflix Standard Voucher Tier 22",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "49.000000",
+      "markupBps": 500,
+      "salePriceUsd": "51.450000",
+      "available": true,
+      "metadata": {
+        "tier": 22,
+        "denominationUsd": "49.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-023",
+      "name": "YouTube Premium Access Tier 23",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "51.000000",
+      "markupBps": 550,
+      "salePriceUsd": "53.810000",
+      "available": true,
+      "metadata": {
+        "tier": 23,
+        "denominationUsd": "51.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-024",
+      "name": "Tidal HiFi Token Tier 24",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "53.000000",
+      "markupBps": 600,
+      "salePriceUsd": "56.180000",
+      "available": true,
+      "metadata": {
+        "tier": 24,
+        "denominationUsd": "53.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-STRM-025",
+      "name": "SoundCloud Go Plan Tier 25",
+      "categoryId": "streaming",
+      "categoryLabel": "Streaming & Media Subscriptions",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "55.000000",
+      "markupBps": 400,
+      "salePriceUsd": "57.200000",
+      "available": true,
+      "metadata": {
+        "tier": 25,
+        "denominationUsd": "55.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-001",
+      "name": "Twitch Bits Voucher 7 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "7.000000",
+      "markupBps": 450,
+      "salePriceUsd": "7.320000",
+      "available": true,
+      "metadata": {
+        "tier": 1,
+        "denominationUsd": "7.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-002",
+      "name": "Discord Nitro Token 9 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "9.000000",
+      "markupBps": 500,
+      "salePriceUsd": "9.450000",
+      "available": true,
+      "metadata": {
+        "tier": 2,
+        "denominationUsd": "9.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-003",
+      "name": "Kick Creator Tip Pass 11 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "11.000000",
+      "markupBps": 550,
+      "salePriceUsd": "11.610000",
+      "available": true,
+      "metadata": {
+        "tier": 3,
+        "denominationUsd": "11.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-004",
+      "name": "Patreon Patron Credit 13 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "13.000000",
+      "markupBps": 600,
+      "salePriceUsd": "13.780000",
+      "available": true,
+      "metadata": {
+        "tier": 4,
+        "denominationUsd": "13.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-005",
+      "name": "LiveStream SuperChat Voucher 15 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "15.000000",
+      "markupBps": 400,
+      "salePriceUsd": "15.600000",
+      "available": true,
+      "metadata": {
+        "tier": 5,
+        "denominationUsd": "15.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-006",
+      "name": "Twitch Bits Voucher 17 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "17.000000",
+      "markupBps": 450,
+      "salePriceUsd": "17.770000",
+      "available": true,
+      "metadata": {
+        "tier": 6,
+        "denominationUsd": "17.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-007",
+      "name": "Discord Nitro Token 19 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "19.000000",
+      "markupBps": 500,
+      "salePriceUsd": "19.950000",
+      "available": true,
+      "metadata": {
+        "tier": 7,
+        "denominationUsd": "19.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-008",
+      "name": "Kick Creator Tip Pass 21 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "21.000000",
+      "markupBps": 550,
+      "salePriceUsd": "22.160000",
+      "available": true,
+      "metadata": {
+        "tier": 8,
+        "denominationUsd": "21.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-009",
+      "name": "Patreon Patron Credit 23 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "23.000000",
+      "markupBps": 600,
+      "salePriceUsd": "24.380000",
+      "available": true,
+      "metadata": {
+        "tier": 9,
+        "denominationUsd": "23.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-010",
+      "name": "LiveStream SuperChat Voucher 25 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "25.000000",
+      "markupBps": 400,
+      "salePriceUsd": "26.000000",
+      "available": true,
+      "metadata": {
+        "tier": 10,
+        "denominationUsd": "25.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-011",
+      "name": "Twitch Bits Voucher 27 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "27.000000",
+      "markupBps": 450,
+      "salePriceUsd": "28.220000",
+      "available": true,
+      "metadata": {
+        "tier": 11,
+        "denominationUsd": "27.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-012",
+      "name": "Discord Nitro Token 29 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "29.000000",
+      "markupBps": 500,
+      "salePriceUsd": "30.450000",
+      "available": true,
+      "metadata": {
+        "tier": 12,
+        "denominationUsd": "29.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-013",
+      "name": "Kick Creator Tip Pass 31 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "31.000000",
+      "markupBps": 550,
+      "salePriceUsd": "32.710000",
+      "available": true,
+      "metadata": {
+        "tier": 13,
+        "denominationUsd": "31.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-014",
+      "name": "Patreon Patron Credit 33 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "33.000000",
+      "markupBps": 600,
+      "salePriceUsd": "34.980000",
+      "available": true,
+      "metadata": {
+        "tier": 14,
+        "denominationUsd": "33.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-015",
+      "name": "LiveStream SuperChat Voucher 35 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "35.000000",
+      "markupBps": 400,
+      "salePriceUsd": "36.400000",
+      "available": true,
+      "metadata": {
+        "tier": 15,
+        "denominationUsd": "35.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-016",
+      "name": "Twitch Bits Voucher 37 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "37.000000",
+      "markupBps": 450,
+      "salePriceUsd": "38.670000",
+      "available": true,
+      "metadata": {
+        "tier": 16,
+        "denominationUsd": "37.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-017",
+      "name": "Discord Nitro Token 39 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "39.000000",
+      "markupBps": 500,
+      "salePriceUsd": "40.950000",
+      "available": true,
+      "metadata": {
+        "tier": 17,
+        "denominationUsd": "39.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-018",
+      "name": "Kick Creator Tip Pass 41 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "41.000000",
+      "markupBps": 550,
+      "salePriceUsd": "43.260000",
+      "available": true,
+      "metadata": {
+        "tier": 18,
+        "denominationUsd": "41.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-019",
+      "name": "Patreon Patron Credit 43 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "43.000000",
+      "markupBps": 600,
+      "salePriceUsd": "45.580000",
+      "available": true,
+      "metadata": {
+        "tier": 19,
+        "denominationUsd": "43.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-020",
+      "name": "LiveStream SuperChat Voucher 45 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "45.000000",
+      "markupBps": 400,
+      "salePriceUsd": "46.800000",
+      "available": true,
+      "metadata": {
+        "tier": 20,
+        "denominationUsd": "45.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-021",
+      "name": "Twitch Bits Voucher 47 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "47.000000",
+      "markupBps": 450,
+      "salePriceUsd": "49.120000",
+      "available": true,
+      "metadata": {
+        "tier": 21,
+        "denominationUsd": "47.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-022",
+      "name": "Discord Nitro Token 49 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "49.000000",
+      "markupBps": 500,
+      "salePriceUsd": "51.450000",
+      "available": true,
+      "metadata": {
+        "tier": 22,
+        "denominationUsd": "49.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-023",
+      "name": "Kick Creator Tip Pass 51 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "51.000000",
+      "markupBps": 550,
+      "salePriceUsd": "53.810000",
+      "available": true,
+      "metadata": {
+        "tier": 23,
+        "denominationUsd": "51.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-024",
+      "name": "Patreon Patron Credit 53 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "53.000000",
+      "markupBps": 600,
+      "salePriceUsd": "56.180000",
+      "available": true,
+      "metadata": {
+        "tier": 24,
+        "denominationUsd": "53.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CRTR-025",
+      "name": "LiveStream SuperChat Voucher 55 USD",
+      "categoryId": "creator",
+      "categoryLabel": "Creator & Game Micro-Donations",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "voucher",
+      "baseCostUsd": "55.000000",
+      "markupBps": 400,
+      "salePriceUsd": "57.200000",
+      "available": true,
+      "metadata": {
+        "tier": 25,
+        "denominationUsd": "55.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-001",
+      "name": "LLM Inference Credit Pool Batch 1",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "7.000000",
+      "markupBps": 450,
+      "salePriceUsd": "7.320000",
+      "available": true,
+      "metadata": {
+        "tier": 1,
+        "denominationUsd": "7.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-002",
+      "name": "Vector DB Capacity Voucher Batch 2",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "9.000000",
+      "markupBps": 500,
+      "salePriceUsd": "9.450000",
+      "available": true,
+      "metadata": {
+        "tier": 2,
+        "denominationUsd": "9.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-003",
+      "name": "Embeddings API Bundle Batch 3",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "11.000000",
+      "markupBps": 550,
+      "salePriceUsd": "11.610000",
+      "available": true,
+      "metadata": {
+        "tier": 3,
+        "denominationUsd": "11.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-004",
+      "name": "Developer Agent Token Pack Batch 4",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "13.000000",
+      "markupBps": 600,
+      "salePriceUsd": "13.780000",
+      "available": true,
+      "metadata": {
+        "tier": 4,
+        "denominationUsd": "13.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-005",
+      "name": "AI Gateway Reserve Batch 5",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "15.000000",
+      "markupBps": 400,
+      "salePriceUsd": "15.600000",
+      "available": true,
+      "metadata": {
+        "tier": 5,
+        "denominationUsd": "15.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-006",
+      "name": "LLM Inference Credit Pool Batch 6",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "17.000000",
+      "markupBps": 450,
+      "salePriceUsd": "17.770000",
+      "available": true,
+      "metadata": {
+        "tier": 6,
+        "denominationUsd": "17.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-007",
+      "name": "Vector DB Capacity Voucher Batch 7",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "19.000000",
+      "markupBps": 500,
+      "salePriceUsd": "19.950000",
+      "available": true,
+      "metadata": {
+        "tier": 7,
+        "denominationUsd": "19.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-008",
+      "name": "Embeddings API Bundle Batch 8",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "21.000000",
+      "markupBps": 550,
+      "salePriceUsd": "22.160000",
+      "available": true,
+      "metadata": {
+        "tier": 8,
+        "denominationUsd": "21.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-009",
+      "name": "Developer Agent Token Pack Batch 9",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "23.000000",
+      "markupBps": 600,
+      "salePriceUsd": "24.380000",
+      "available": true,
+      "metadata": {
+        "tier": 9,
+        "denominationUsd": "23.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-010",
+      "name": "AI Gateway Reserve Batch 10",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "25.000000",
+      "markupBps": 400,
+      "salePriceUsd": "26.000000",
+      "available": true,
+      "metadata": {
+        "tier": 10,
+        "denominationUsd": "25.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-011",
+      "name": "LLM Inference Credit Pool Batch 11",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "27.000000",
+      "markupBps": 450,
+      "salePriceUsd": "28.220000",
+      "available": true,
+      "metadata": {
+        "tier": 11,
+        "denominationUsd": "27.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-012",
+      "name": "Vector DB Capacity Voucher Batch 12",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "29.000000",
+      "markupBps": 500,
+      "salePriceUsd": "30.450000",
+      "available": true,
+      "metadata": {
+        "tier": 12,
+        "denominationUsd": "29.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-013",
+      "name": "Embeddings API Bundle Batch 13",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "31.000000",
+      "markupBps": 550,
+      "salePriceUsd": "32.710000",
+      "available": true,
+      "metadata": {
+        "tier": 13,
+        "denominationUsd": "31.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-014",
+      "name": "Developer Agent Token Pack Batch 14",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "33.000000",
+      "markupBps": 600,
+      "salePriceUsd": "34.980000",
+      "available": true,
+      "metadata": {
+        "tier": 14,
+        "denominationUsd": "33.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-015",
+      "name": "AI Gateway Reserve Batch 15",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "35.000000",
+      "markupBps": 400,
+      "salePriceUsd": "36.400000",
+      "available": true,
+      "metadata": {
+        "tier": 15,
+        "denominationUsd": "35.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-016",
+      "name": "LLM Inference Credit Pool Batch 16",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "37.000000",
+      "markupBps": 450,
+      "salePriceUsd": "38.670000",
+      "available": true,
+      "metadata": {
+        "tier": 16,
+        "denominationUsd": "37.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-017",
+      "name": "Vector DB Capacity Voucher Batch 17",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "39.000000",
+      "markupBps": 500,
+      "salePriceUsd": "40.950000",
+      "available": true,
+      "metadata": {
+        "tier": 17,
+        "denominationUsd": "39.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-018",
+      "name": "Embeddings API Bundle Batch 18",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "41.000000",
+      "markupBps": 550,
+      "salePriceUsd": "43.260000",
+      "available": true,
+      "metadata": {
+        "tier": 18,
+        "denominationUsd": "41.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-019",
+      "name": "Developer Agent Token Pack Batch 19",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "43.000000",
+      "markupBps": 600,
+      "salePriceUsd": "45.580000",
+      "available": true,
+      "metadata": {
+        "tier": 19,
+        "denominationUsd": "43.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-020",
+      "name": "AI Gateway Reserve Batch 20",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "45.000000",
+      "markupBps": 400,
+      "salePriceUsd": "46.800000",
+      "available": true,
+      "metadata": {
+        "tier": 20,
+        "denominationUsd": "45.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-021",
+      "name": "LLM Inference Credit Pool Batch 21",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "47.000000",
+      "markupBps": 450,
+      "salePriceUsd": "49.120000",
+      "available": true,
+      "metadata": {
+        "tier": 21,
+        "denominationUsd": "47.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-022",
+      "name": "Vector DB Capacity Voucher Batch 22",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "49.000000",
+      "markupBps": 500,
+      "salePriceUsd": "51.450000",
+      "available": true,
+      "metadata": {
+        "tier": 22,
+        "denominationUsd": "49.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-023",
+      "name": "Embeddings API Bundle Batch 23",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "51.000000",
+      "markupBps": 550,
+      "salePriceUsd": "53.810000",
+      "available": true,
+      "metadata": {
+        "tier": 23,
+        "denominationUsd": "51.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-024",
+      "name": "Developer Agent Token Pack Batch 24",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "53.000000",
+      "markupBps": 600,
+      "salePriceUsd": "56.180000",
+      "available": true,
+      "metadata": {
+        "tier": 24,
+        "denominationUsd": "53.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-DEVP-025",
+      "name": "AI Gateway Reserve Batch 25",
+      "categoryId": "developer",
+      "categoryLabel": "Developer API & Token Bundles",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "api_key_pool",
+      "baseCostUsd": "55.000000",
+      "markupBps": 400,
+      "salePriceUsd": "57.200000",
+      "available": true,
+      "metadata": {
+        "tier": 25,
+        "denominationUsd": "55.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-001",
+      "name": "GPU H100 Cluster Hours Allocation 1",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "7.000000",
+      "markupBps": 450,
+      "salePriceUsd": "7.320000",
+      "available": true,
+      "metadata": {
+        "tier": 1,
+        "denominationUsd": "7.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-002",
+      "name": "Cloud A100 Compute Voucher Allocation 2",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "9.000000",
+      "markupBps": 500,
+      "salePriceUsd": "9.450000",
+      "available": true,
+      "metadata": {
+        "tier": 2,
+        "denominationUsd": "9.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-003",
+      "name": "Dedicated Inference Pod Access Allocation 3",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "11.000000",
+      "markupBps": 550,
+      "salePriceUsd": "11.610000",
+      "available": true,
+      "metadata": {
+        "tier": 3,
+        "denominationUsd": "11.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-004",
+      "name": "Serverless GPU Compute Token Allocation 4",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "13.000000",
+      "markupBps": 600,
+      "salePriceUsd": "13.780000",
+      "available": true,
+      "metadata": {
+        "tier": 4,
+        "denominationUsd": "13.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-005",
+      "name": "High-Memory Node Reserve Allocation 5",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "15.000000",
+      "markupBps": 400,
+      "salePriceUsd": "15.600000",
+      "available": true,
+      "metadata": {
+        "tier": 5,
+        "denominationUsd": "15.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-006",
+      "name": "GPU H100 Cluster Hours Allocation 6",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "17.000000",
+      "markupBps": 450,
+      "salePriceUsd": "17.770000",
+      "available": true,
+      "metadata": {
+        "tier": 6,
+        "denominationUsd": "17.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-007",
+      "name": "Cloud A100 Compute Voucher Allocation 7",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "19.000000",
+      "markupBps": 500,
+      "salePriceUsd": "19.950000",
+      "available": true,
+      "metadata": {
+        "tier": 7,
+        "denominationUsd": "19.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-008",
+      "name": "Dedicated Inference Pod Access Allocation 8",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "21.000000",
+      "markupBps": 550,
+      "salePriceUsd": "22.160000",
+      "available": true,
+      "metadata": {
+        "tier": 8,
+        "denominationUsd": "21.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-009",
+      "name": "Serverless GPU Compute Token Allocation 9",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "23.000000",
+      "markupBps": 600,
+      "salePriceUsd": "24.380000",
+      "available": true,
+      "metadata": {
+        "tier": 9,
+        "denominationUsd": "23.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-010",
+      "name": "High-Memory Node Reserve Allocation 10",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "25.000000",
+      "markupBps": 400,
+      "salePriceUsd": "26.000000",
+      "available": true,
+      "metadata": {
+        "tier": 10,
+        "denominationUsd": "25.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-011",
+      "name": "GPU H100 Cluster Hours Allocation 11",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "27.000000",
+      "markupBps": 450,
+      "salePriceUsd": "28.220000",
+      "available": true,
+      "metadata": {
+        "tier": 11,
+        "denominationUsd": "27.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-012",
+      "name": "Cloud A100 Compute Voucher Allocation 12",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "29.000000",
+      "markupBps": 500,
+      "salePriceUsd": "30.450000",
+      "available": true,
+      "metadata": {
+        "tier": 12,
+        "denominationUsd": "29.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-013",
+      "name": "Dedicated Inference Pod Access Allocation 13",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "31.000000",
+      "markupBps": 550,
+      "salePriceUsd": "32.710000",
+      "available": true,
+      "metadata": {
+        "tier": 13,
+        "denominationUsd": "31.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-014",
+      "name": "Serverless GPU Compute Token Allocation 14",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "33.000000",
+      "markupBps": 600,
+      "salePriceUsd": "34.980000",
+      "available": true,
+      "metadata": {
+        "tier": 14,
+        "denominationUsd": "33.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-015",
+      "name": "High-Memory Node Reserve Allocation 15",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "35.000000",
+      "markupBps": 400,
+      "salePriceUsd": "36.400000",
+      "available": true,
+      "metadata": {
+        "tier": 15,
+        "denominationUsd": "35.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-016",
+      "name": "GPU H100 Cluster Hours Allocation 16",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "37.000000",
+      "markupBps": 450,
+      "salePriceUsd": "38.670000",
+      "available": true,
+      "metadata": {
+        "tier": 16,
+        "denominationUsd": "37.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-017",
+      "name": "Cloud A100 Compute Voucher Allocation 17",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "39.000000",
+      "markupBps": 500,
+      "salePriceUsd": "40.950000",
+      "available": true,
+      "metadata": {
+        "tier": 17,
+        "denominationUsd": "39.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-018",
+      "name": "Dedicated Inference Pod Access Allocation 18",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "41.000000",
+      "markupBps": 550,
+      "salePriceUsd": "43.260000",
+      "available": true,
+      "metadata": {
+        "tier": 18,
+        "denominationUsd": "41.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-019",
+      "name": "Serverless GPU Compute Token Allocation 19",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "43.000000",
+      "markupBps": 600,
+      "salePriceUsd": "45.580000",
+      "available": true,
+      "metadata": {
+        "tier": 19,
+        "denominationUsd": "43.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-020",
+      "name": "High-Memory Node Reserve Allocation 20",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "45.000000",
+      "markupBps": 400,
+      "salePriceUsd": "46.800000",
+      "available": true,
+      "metadata": {
+        "tier": 20,
+        "denominationUsd": "45.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-021",
+      "name": "GPU H100 Cluster Hours Allocation 21",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "47.000000",
+      "markupBps": 450,
+      "salePriceUsd": "49.120000",
+      "available": true,
+      "metadata": {
+        "tier": 21,
+        "denominationUsd": "47.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-022",
+      "name": "Cloud A100 Compute Voucher Allocation 22",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "US"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "49.000000",
+      "markupBps": 500,
+      "salePriceUsd": "51.450000",
+      "available": true,
+      "metadata": {
+        "tier": 22,
+        "denominationUsd": "49.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-023",
+      "name": "Dedicated Inference Pod Access Allocation 23",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "51.000000",
+      "markupBps": 550,
+      "salePriceUsd": "53.810000",
+      "available": true,
+      "metadata": {
+        "tier": 23,
+        "denominationUsd": "51.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-024",
+      "name": "Serverless GPU Compute Token Allocation 24",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "GLOB",
+        "US",
+        "EU"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "53.000000",
+      "markupBps": 600,
+      "salePriceUsd": "56.180000",
+      "available": true,
+      "metadata": {
+        "tier": 24,
+        "denominationUsd": "53.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    },
+    {
+      "sku": "MRC-CLOD-025",
+      "name": "High-Memory Node Reserve Allocation 25",
+      "categoryId": "cloud",
+      "categoryLabel": "Cloud Compute & GPU Vouchers",
+      "regions": [
+        "APAC"
+      ],
+      "deliveryKind": "compute_voucher",
+      "baseCostUsd": "55.000000",
+      "markupBps": 400,
+      "salePriceUsd": "57.200000",
+      "available": true,
+      "metadata": {
+        "tier": 25,
+        "denominationUsd": "55.00",
+        "supportEmail": "support@mercenta.xyz"
+      }
+    }
+  ]
+}
