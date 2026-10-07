@@ -9,5 +9,62 @@
   "mainnetFinancialExecution": false,
   "newPaidOrders": 0,
   "newFundsMoved": 0,
-  "publication": "Source ready; live deployment verification pending"
+  "publication": "Published automatically from GitHub; app, testnet, mainnet and docs checked live.",
+  "docsTests": 36,
+  "liveVerification": {
+    "frontendCommit": "72f04945fd2eb2c56869d1f4f44e81f4949a79fa",
+    "hostProfiles": {
+      "app.mercenta.xyz": {
+        "network": "testnet",
+        "chainId": 5042002
+      },
+      "testnet.mercenta.xyz": {
+        "network": "testnet",
+        "chainId": 5042002
+      },
+      "mainnet.mercenta.xyz": {
+        "network": "mainnet",
+        "chainId": 5042
+      }
+    },
+    "openapi": {
+      "testnet": {
+        "status": 200,
+        "operations": 102
+      },
+      "mainnet": {
+        "status": 200,
+        "operations": 102
+      }
+    },
+    "mainnetFinancialGate": {
+      "status": 503,
+      "code": "MAINNET_CHECKOUT_NOT_ENABLED",
+      "checked": [
+        "/api/account/summary",
+        "/api/account/operator/runs",
+        "/api/v1/orders",
+        "/api/auth/verify",
+        "/api/me",
+        "/api/orders",
+        "/api/backend/account/summary"
+      ]
+    },
+    "browser": {
+      "draftPassedToAgentWithoutExecution": true,
+      "networkConfirmationAndMainnetNavigation": true,
+      "mainnetDesktopNoSidebarGap": true,
+      "mainnetMobileNoHorizontalOverflow": true,
+      "mobileLanguageControlsAvailable": true,
+      "mobileOnboardingDialogCentered": true,
+      "mobileOnboardingHeadingFont": "28px",
+      "swaggerGroups": 12,
+      "swaggerMobileExpandedConfirmationNoOverflow": true,
+      "swaggerMutatingTryItButtons": 0,
+      "temporaryBrowserStylesUsedForFinalChecks": false
+    },
+    "authenticatedAccountExecutionChecked": false,
+    "realPurchasesEnabled": false
+  },
+  "presentationRefinement": "Final descendant spacing correction built successfully; financial/runtime code unchanged."
 }

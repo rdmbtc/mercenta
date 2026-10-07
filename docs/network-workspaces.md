@@ -11,7 +11,7 @@
 
 260 web tests, including 24 network/onboarding tests, passed. Web TypeScript and production build passed. Docs tests/build passed. Existing unrelated lint warnings remain. No paid order, supplier invoice or on-chain transfer was created.
 
-Live deployment verification is pending. Real mainnet checkout, deposits, refunds, withdrawals, Earn and Borrow are not enabled by this release.
+Live app, testnet, mainnet and docs were verified against frontend commit `72f04945fd2eb2c56869d1f4f44e81f4949a79fa`. Mainnet financial API calls return 503 before forwarding. Onboarding draft transfer, centered mobile dialogs, separate network navigation and mobile Swagger response tables were checked without authentication or payments. A final descendant spacing correction was built successfully; financial/runtime code is unchanged. Real mainnet checkout, deposits, refunds, withdrawals, Earn and Borrow are not enabled by this release.
 
 ## Reproduce
 
