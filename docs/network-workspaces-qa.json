@@ -1,0 +1,13 @@
+{
+  "webTests": 260,
+  "networkAndJourneyTests": 24,
+  "webTypecheck": "passed",
+  "webProductionBuild": "passed",
+  "docsBuild": "passed",
+  "openapiOperations": 102,
+  "sourceInputSchemas": 44,
+  "mainnetFinancialExecution": false,
+  "newPaidOrders": 0,
+  "newFundsMoved": 0,
+  "publication": "Source ready; live deployment verification pending"
+}

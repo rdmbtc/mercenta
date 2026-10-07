@@ -1,0 +1,6 @@
+export type NetworkMode='testnet'|'mainnet';
+export const NETWORKS={testnet:{id:'testnet',name:'Arc Testnet',chainId:5042002,origin:'https://testnet.mercenta.xyz',nativeDecimals:18,tokenDecimals:6,asset:'test USDC',realPurchasesEnabled:false},mainnet:{id:'mainnet',name:'Arc Mainnet',chainId:5042,origin:'https://mainnet.mercenta.xyz',nativeDecimals:18,tokenDecimals:6,asset:'USDC',realPurchasesEnabled:false}} as const;
+export function networkFromHost(host:string):NetworkMode {const h=host.toLowerCase().split(':')[0].replace(/\.$/,'');return h==='mainnet.mercenta.xyz'?'mainnet':'testnet'}
+export function networkDestination(mode:NetworkMode,section='dashboard'){const allowed=['dashboard','shop','orders','funds','budget','agent-chat','financial-journal','support','api-access'];const u=new URL('/app',NETWORKS[mode].origin);if(allowed.includes(section)&&section!=='dashboard')u.searchParams.set('section',section);return u.toString()}
+export function allowedMainnetApi(path:string,method:string){return method==='GET'&&['/api/catalog','/api/network','/api/openapi'].includes(path)}
+export const MAINNET_CLOSED={code:'MAINNET_CHECKOUT_NOT_ENABLED',network:'mainnet',chainId:5042,realPurchasesEnabled:false,message:'Mainnet is preview-only. Real checkout, deposits and account operations are not enabled. No testnet account operation was forwarded.'} as const;

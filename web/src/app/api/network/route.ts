@@ -1,0 +1,3 @@
+import {NextResponse} from 'next/server';import {NETWORKS,networkFromHost} from '@/lib/network-profile';
+export const dynamic='force-dynamic';
+export function GET(req:Request){const mode=networkFromHost(new URL(req.url).hostname);return NextResponse.json({...NETWORKS[mode],mode,accountRuntime:mode==='testnet'?'testnet':'preview-only',checkoutEnabled:false,testnetRehearsalSupported:mode==='testnet',readiness:'Check account service status before execution',fulfillment:mode==='testnet'?'simulated-only':'not-enabled',walletSigningEnabled:mode==='testnet',balancesSharedAcrossNetworks:false},{headers:{'Cache-Control':'no-store'}})}

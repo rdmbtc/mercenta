@@ -1,6 +1,7 @@
 {
   "title": "Developer API",
   "pages": [
+    "swagger",
     "authentication",
     "endpoints",
     "sdks"
