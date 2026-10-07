@@ -7,7 +7,7 @@ New features: EN/RU buyer/reseller guide, preview catalog before sign-in, persis
 ## Deployment status
 New backend upload was blocked by SSH connection timeout from both execution environments. The public API health request also timed out. Do not mark server publication or live journal persistence as completed. The existing last verified backend was backend-circle-seller-20261002-171622; do not overwrite its database or restricted keys.
 
-An authenticated read-only AppRoute catalog request returned HTTP 403. No order was created. Obtain the official AppRoute API contract and resolve permitted API access with the provider; never assume `/orders` or retry an uncertain procurement with a new reference.
+An authenticated read-only supplier catalog request returned HTTP 403. No order was created. Obtain the official supplier API contract and resolve permitted API access with the provider; never assume `/orders` or retry an uncertain procurement with a new reference.
 
 ## Safe next deployment when VPS access is restored
 1. Confirm the pinned VPS host key and currently active release. Preserve `/etc/mercenta` secrets and Circle configuration.
@@ -16,6 +16,6 @@ An authenticated read-only AppRoute catalog request returned HTTP 403. No order 
 4. Take an online SQLite backup and integrity-check it. Do not restore an old DB during code rollback.
 5. Switch the release symlink, restart and confirm API health, anonymous journal/workspace 401, public simulated catalog 200 and launch-readiness mainnetEnabled=false.
 6. Verify real wallet sign-in/profile/budget/note persistence in the browser. Do not fabricate browser wallet sessions with the operator proxy secret.
-7. Keep mainnet and AppRoute paid procurement disabled until the separate launch gates have evidence.
+7. Keep mainnet and supplier paid procurement disabled until the separate launch gates have evidence.
 
-Tests validate code and mock model responses, not live AppRoute delivery or mainnet safety. See MAINNET-READINESS.md.
+Tests validate code and mock model responses, not live supplier delivery or mainnet safety. See MAINNET-READINESS.md.
