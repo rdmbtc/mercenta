@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "kind": "INTERNAL_TECHNICAL_TESTNET_ACCEPTANCE_NOT_EXTERNAL_BUSINESS_PILOT",
+  "timestamp": "2026-10-07T19:24:30.127Z",
+  "chainId": 5042002,
+  "provider": "local-eoa",
+  "walletAddress": "0x83758c71386c873d5c518251613bf340f5bd558d",
+  "ownerWallet": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+  "maxAmountUnits": "1000",
+  "newAuthorizations": 1,
+  "mainnetUsed": false,
+  "externalBusinessPilot": false,
+  "status": "VERIFIED_TECHNICAL_ACCEPTANCE",
+  "gatewayBeforeUnits": "100000",
+  "gatewayAfterUnits": "99000",
+  "payment": {
+    "id": "13c23b97-9106-4fa8-b694-8cc2543e1aac",
+    "serviceId": "mercenta-margin-report",
+    "status": "COMPLETED",
+    "amountUnits": "1000",
+    "wallet": "0x83758c71386c873d5c518251613bf340f5bd558d",
+    "payTo": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+    "network": "eip155:5042002",
+    "expiresAt": 1791401370358,
+    "responseDigest": "76f141db247623d633f610bb919cb149cbac20f8233a19828b27dab90bb114be",
+    "circleTransferId": "0ef4c8be-0335-42d4-9fbe-ea286b3be458",
+    "txHash": "0xef8037362a4b0e7f07b3c6d81b3327389b9271ab57fd7c5e537e4c7a578835b6",
+    "settled": true,
+    "requiresConfirmation": true
+  },
+  "journal": [
+    {
+      "account": "circle-external:wallet:0x58863e4a739da0e62c2eba258b7783e95d5c48ce:api-expense",
+      "currency": "USDC",
+      "direction": "DEBIT",
+      "amount_units": "1000"
+    },
+    {
+      "account": "circle-external:wallet:0x58863e4a739da0e62c2eba258b7783e95d5c48ce:gateway",
+      "currency": "USDC",
+      "direction": "CREDIT",
+      "amount_units": "1000"
+    }
+  ],
+  "batchProof": {
+    "kind": "DUAL_CANONICAL_BATCH_RECEIPT_PLUS_CIRCLE_NONCE_TRANSFER_ATTRIBUTION",
+    "txHash": "0xef8037362a4b0e7f07b3c6d81b3327389b9271ab57fd7c5e537e4c7a578835b6",
+    "blockHash": "0xc189cefb3826bdd123ed8d7f626205243754f7d464d80387239715e9d2b1fe49",
+    "confirmations": 10,
+    "independentPerPaymentBatchDecoding": false,
+    "explorerUrl": "https://testnet.arcscan.app/tx/0xef8037362a4b0e7f07b3c6d81b3327389b9271ab57fd7c5e537e4c7a578835b6"
+  },
+  "resource": {
+    "delivered": true,
+    "digest": "76f141db247623d633f610bb919cb149cbac20f8233a19828b27dab90bb114be",
+    "businessUsefulnessVerified": false
+  },
+  "supplementalVerification": {
+    "timestamp": "2026-10-07T19:33:08.475Z",
+    "status": "PASS",
+    "circleNonceTransferAttribution": "PASS",
+    "canonicalGatewayBatchContract": "PASS",
+    "distinctRpcHosts": true,
+    "providerAdministrativeIndependence": "NOT_INDEPENDENTLY_AUDITED",
+    "minimumConfirmations": 129,
+    "independentPerPaymentBatchDecoding": false
+  },
+  "evidenceDigest": "fa08b693a84eaa7efe55dc6a3533f16b561e5b40ef94ce7cc6cd787bd9142ac4",
+  "backendCommit": "a579a182d38c099cd5b418c10524d67442d5241d",
+  "recordedAt": "2026-10-07T19:33:08.475Z",
+  "limitations": [
+    "Internal technical acceptance is not an external business pilot or real revenue.",
+    "Payer uses the existing server-managed local EOA, not Circle MPC.",
+    "Individual transfer attribution is nonce-matched Circle API data plus canonical Gateway batch receipts; individual batch deltas were not independently decoded.",
+    "The evidence SHA-256 is an integrity digest, not a separate signed receipt."
+  ],
+  "integrityPayload": {
+    "kind": "INTERNAL_TECHNICAL_TESTNET_ACCEPTANCE_NOT_EXTERNAL_BUSINESS_PILOT",
+    "chainId": 5042002,
+    "paymentId": "13c23b97-9106-4fa8-b694-8cc2543e1aac",
+    "transferId": "0ef4c8be-0335-42d4-9fbe-ea286b3be458",
+    "payer": "0x83758c71386c873d5c518251613bf340f5bd558d",
+    "recipient": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+    "amountMicro": "1000",
+    "nonce": "0xb7dddd64c54ba0064911013dca6227ac8858ad5d186268d5b860adec0680b7ec",
+    "hash": "0xef8037362a4b0e7f07b3c6d81b3327389b9271ab57fd7c5e537e4c7a578835b6",
+    "blockHash": "0xc189cefb3826bdd123ed8d7f626205243754f7d464d80387239715e9d2b1fe49",
+    "responseDigest": "76f141db247623d633f610bb919cb149cbac20f8233a19828b27dab90bb114be"
+  },
+  "integrityAlgorithm": "sha256(JSON.stringify(integrityPayload)); not a digital signature"
+}
