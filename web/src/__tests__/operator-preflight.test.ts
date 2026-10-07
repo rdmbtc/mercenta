@@ -1,0 +1,10 @@
+import {it,expect} from 'vitest';
+import {operatorPreflight} from '@/lib/operator-preflight';
+const valid={goal:'Find Steam for my region',budget:'3.000000',reserve:'0.000000',region:'ANY',quantity:1};
+it('valid draft is an exact local estimate, never an authorization or server quote',()=>{expect(operatorPreflight(valid)).toMatchObject({valid:true,testAmountUnits:'1000000',budgetUnits:'3000000',spendingAuthorized:false,serverQuoteVerified:false});});
+for(const budget of ['-1','1e3','NaN','1.0000001','01',''])it('rejects malformed cap '+JSON.stringify(budget),()=>expect(operatorPreflight({...valid,budget}).issues).toContain('BUDGET'));
+it('zero cap cannot prepare a paid test order',()=>expect(operatorPreflight({...valid,budget:'0'}).valid).toBe(false));
+it('quantity total cannot exceed the task cap',()=>{expect(operatorPreflight({...valid,quantity:4}).issues).toContain('CAP_TOO_LOW');expect(operatorPreflight({...valid,quantity:3}).valid).toBe(true);});
+for(const quantity of [0,11,1.5,NaN])it('rejects invalid quantity '+quantity,()=>expect(operatorPreflight({...valid,quantity}).testAmountUnits).toBeNull());
+it('validates goal, reserve and region independently',()=>{expect(operatorPreflight({...valid,goal:' ',reserve:'-1',region:' '}).issues).toEqual(['GOAL','RESERVE','REGION']);});
+it('keeps micro precision without floating point arithmetic',()=>expect(operatorPreflight({...valid,budget:'1.000001',reserve:'0.000001'})).toMatchObject({valid:true,budgetUnits:'1000001',reserveUnits:'1'}));

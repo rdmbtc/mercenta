@@ -1,0 +1,13 @@
+// @vitest-environment jsdom
+import {it,expect,vi,afterEach} from 'vitest';import React,{act} from 'react';import {createRoot,type Root} from 'react-dom/client';
+import {CatalogCollection} from '@/components/product/CatalogCollection';import type {CatalogProduct} from '@/lib/supplier';
+vi.mock('@/components/product/CatalogFamilyCard',()=>({CatalogFamilyCard:({family}:{family:{name:string}})=>React.createElement('article',null,family.name)}));
+vi.mock('@/components/product/CatalogFamilyDialog',()=>({CatalogFamilyDialog:()=>null}));
+(globalThis as unknown as {IS_REACT_ACT_ENVIRONMENT:boolean}).IS_REACT_ACT_ENVIRONMENT=true;
+let root:Root|undefined,el:HTMLDivElement;
+const item=(n:number,countryCode='US'):CatalogProduct=>({id:String(n),name:'Aurora Voucher '+n,brand:'Aurora',category:'gaming',type:'voucher',countryCode,denominations:[{id:'d'+n,name:'One',price:1,currency:'USD',available:true}],minPrice:1,maxPrice:1,currency:'USD',inStock:1,totalStock:1});
+async function render(products:CatalogProduct[],extra:object={}){el=document.createElement('div');document.body.append(el);root=createRoot(el);await act(async()=>root!.render(React.createElement(CatalogCollection,{products,...extra})));}
+afterEach(async()=>{if(root)await act(async()=>root!.unmount());root=undefined;document.body.replaceChildren();});
+it('active region can be removed without losing products',async()=>{await render([item(1),item(2,'BR')],{initialRegion:'US'});expect(el.querySelectorAll('article')).toHaveLength(1);const remove=el.querySelector('button[aria-label^="Remove region"]') as HTMLButtonElement;await act(async()=>remove.click());expect(el.querySelectorAll('article')).toHaveLength(2);expect(el.querySelector('.cf-active-filters')).toBeNull();});
+it('empty results can clear every filter in one action',async()=>{await render([item(1)],{initialQuery:'missing-product',initialRegion:'BR'});expect(el.textContent).toContain('No matching products');const clear=[...el.querySelectorAll('button')].find(b=>b.textContent?.startsWith('Clear all filters'))!;await act(async()=>clear.click());expect(el.querySelectorAll('article')).toHaveLength(1);expect((el.querySelector('input') as HTMLInputElement).value).toBe('');expect((el.querySelector('select') as HTMLSelectElement).value).toBe('all');});
+it('show-more communicates the actual remainder',async()=>{await render(Array.from({length:25},(_,i)=>item(i)));const more=[...el.querySelectorAll('button')].find(b=>b.textContent==='Show 1 more')!;expect(more).toBeTruthy();await act(async()=>more.click());expect(el.querySelectorAll('article')).toHaveLength(25);expect(el.querySelector('.cf-more')).toBeNull();});
