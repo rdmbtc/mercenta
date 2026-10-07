@@ -10651,6 +10651,1263 @@
         }
       }
     },
+    "/api/account/operator/lab/status": {
+      "get": {
+        "tags": [
+          "Engineering lab"
+        ],
+        "operationId": "get__api_account_operator_lab_status",
+        "summary": "GET /api/account/operator/lab/status",
+        "description": "Authenticated Testnet engineering lab. Synthetic credentials only; software isolation is NOT hardware TEE. Treasury plans use user-supplied hypothetical amounts, not account balances. No USYC execution, real provider call or money movement. Mutation retries retain the original requestId; UNKNOWN outcomes retain quota and are never executed again.",
+        "security": [
+          {
+            "walletSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Engineering result; never a procurement order or financial receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/operator-lab.ts",
+        "x-runtime": "testnet",
+        "x-real-purchases-enabled": false,
+        "x-money-moved": false,
+        "x-attestation-verified": false,
+        "x-production-ingestion-enabled": false
+      }
+    },
+    "/api/account/operator/lab/plan": {
+      "post": {
+        "tags": [
+          "Engineering lab"
+        ],
+        "operationId": "post__api_account_operator_lab_plan",
+        "summary": "POST /api/account/operator/lab/plan",
+        "description": "Authenticated Testnet engineering lab. Synthetic credentials only; software isolation is NOT hardware TEE. Treasury plans use user-supplied hypothetical amounts, not account balances. No USYC execution, real provider call or money movement. Mutation retries retain the original requestId; UNKNOWN outcomes retain quota and are never executed again. Same-origin Origin header is required. Mutating Try it out remains disabled.",
+        "security": [
+          {
+            "walletSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Engineering result; never a procurement order or financial receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/operator-lab.ts",
+        "x-runtime": "testnet",
+        "x-real-purchases-enabled": false,
+        "x-try-it-disabled": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "snapshot": {
+                    "type": "object",
+                    "properties": {
+                      "settledCashUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "reserveFloorUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "reservedOrderUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "refundLiabilityUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "liquidityBufferUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "burn30dUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "pendingPurchaseUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "yieldRedeemableUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "pendingIncomingUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "maxActionUnits": {
+                        "type": "string",
+                        "pattern": "^(0|[1-9]\\d{0,17})$"
+                      },
+                      "observedAt": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "redemptionDelayMs": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 604800000
+                      },
+                      "obligations": {
+                        "maxItems": 100,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 100
+                            },
+                            "dueAt": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "amountUnits": {
+                              "type": "string",
+                              "pattern": "^(0|[1-9]\\d{0,17})$"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "dueAt",
+                            "amountUnits"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "redemptionState": {
+                        "type": "string",
+                        "enum": [
+                          "NONE",
+                          "PENDING",
+                          "UNKNOWN",
+                          "SETTLED",
+                          "FAILED"
+                        ]
+                      },
+                      "paused": {
+                        "type": "boolean"
+                      },
+                      "eligibilityVerified": {
+                        "type": "boolean"
+                      },
+                      "quoteFresh": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "settledCashUnits",
+                      "reserveFloorUnits",
+                      "reservedOrderUnits",
+                      "refundLiabilityUnits",
+                      "liquidityBufferUnits",
+                      "burn30dUnits",
+                      "pendingPurchaseUnits",
+                      "yieldRedeemableUnits",
+                      "pendingIncomingUnits",
+                      "maxActionUnits",
+                      "observedAt",
+                      "redemptionDelayMs",
+                      "obligations",
+                      "redemptionState",
+                      "paused",
+                      "eligibilityVerified",
+                      "quoteFresh"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "snapshot"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "x-money-moved": false,
+        "x-attestation-verified": false,
+        "x-production-ingestion-enabled": false
+      }
+    },
+    "/api/account/operator/lab/blind/grants": {
+      "post": {
+        "tags": [
+          "Engineering lab"
+        ],
+        "operationId": "post__api_account_operator_lab_blind_grants",
+        "summary": "POST /api/account/operator/lab/blind/grants",
+        "description": "Authenticated Testnet engineering lab. Synthetic credentials only; software isolation is NOT hardware TEE. Treasury plans use user-supplied hypothetical amounts, not account balances. No USYC execution, real provider call or money movement. Mutation retries retain the original requestId; UNKNOWN outcomes retain quota and are never executed again. Same-origin Origin header is required. Mutating Try it out remains disabled.",
+        "security": [
+          {
+            "walletSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Engineering result; never a procurement order or financial receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "handle": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "operation": {
+                      "type": "string",
+                      "const": "demo.digest"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "const": "SYNTHETIC_DEMO"
+                    },
+                    "expiresAt": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "EXPIRED",
+                        "REVOKED"
+                      ]
+                    },
+                    "callsRemaining": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "isolation": {
+                      "type": "string",
+                      "const": "SOFTWARE_ISOLATION_DEMO"
+                    },
+                    "attestationVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "productionIngestionEnabled": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "handle",
+                    "operation",
+                    "kind",
+                    "expiresAt",
+                    "status",
+                    "callsRemaining",
+                    "isolation",
+                    "attestationVerified",
+                    "productionIngestionEnabled"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/operator-lab.ts",
+        "x-runtime": "testnet",
+        "x-real-purchases-enabled": false,
+        "x-try-it-disabled": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "requestId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "confirmSynthetic": {
+                    "type": "boolean",
+                    "const": true
+                  }
+                },
+                "required": [
+                  "requestId",
+                  "confirmSynthetic"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "x-money-moved": false,
+        "x-attestation-verified": false,
+        "x-production-ingestion-enabled": false
+      }
+    },
+    "/api/account/operator/lab/blind/grants/{id}": {
+      "get": {
+        "tags": [
+          "Engineering lab"
+        ],
+        "operationId": "get__api_account_operator_lab_blind_grants_id_",
+        "summary": "GET /api/account/operator/lab/blind/grants/{id}",
+        "description": "Authenticated Testnet engineering lab. Synthetic credentials only; software isolation is NOT hardware TEE. Treasury plans use user-supplied hypothetical amounts, not account balances. No USYC execution, real provider call or money movement. Mutation retries retain the original requestId; UNKNOWN outcomes retain quota and are never executed again.",
+        "security": [
+          {
+            "walletSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Engineering result; never a procurement order or financial receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "handle": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "operation": {
+                      "type": "string",
+                      "const": "demo.digest"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "const": "SYNTHETIC_DEMO"
+                    },
+                    "expiresAt": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "EXPIRED",
+                        "REVOKED"
+                      ]
+                    },
+                    "callsRemaining": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "isolation": {
+                      "type": "string",
+                      "const": "SOFTWARE_ISOLATION_DEMO"
+                    },
+                    "attestationVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "productionIngestionEnabled": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "handle",
+                    "operation",
+                    "kind",
+                    "expiresAt",
+                    "status",
+                    "callsRemaining",
+                    "isolation",
+                    "attestationVerified",
+                    "productionIngestionEnabled"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/operator-lab.ts",
+        "x-runtime": "testnet",
+        "x-real-purchases-enabled": false,
+        "x-money-moved": false,
+        "x-attestation-verified": false,
+        "x-production-ingestion-enabled": false
+      }
+    },
+    "/api/account/operator/lab/blind/grants/{id}/revoke": {
+      "post": {
+        "tags": [
+          "Engineering lab"
+        ],
+        "operationId": "post__api_account_operator_lab_blind_grants_id_revoke",
+        "summary": "POST /api/account/operator/lab/blind/grants/{id}/revoke",
+        "description": "Authenticated Testnet engineering lab. Synthetic credentials only; software isolation is NOT hardware TEE. Treasury plans use user-supplied hypothetical amounts, not account balances. No USYC execution, real provider call or money movement. Mutation retries retain the original requestId; UNKNOWN outcomes retain quota and are never executed again. Same-origin Origin header is required. Mutating Try it out remains disabled.",
+        "security": [
+          {
+            "walletSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Engineering result; never a procurement order or financial receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "handle": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "operation": {
+                      "type": "string",
+                      "const": "demo.digest"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "const": "SYNTHETIC_DEMO"
+                    },
+                    "expiresAt": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "EXPIRED",
+                        "REVOKED"
+                      ]
+                    },
+                    "callsRemaining": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "isolation": {
+                      "type": "string",
+                      "const": "SOFTWARE_ISOLATION_DEMO"
+                    },
+                    "attestationVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "productionIngestionEnabled": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "handle",
+                    "operation",
+                    "kind",
+                    "expiresAt",
+                    "status",
+                    "callsRemaining",
+                    "isolation",
+                    "attestationVerified",
+                    "productionIngestionEnabled"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/operator-lab.ts",
+        "x-runtime": "testnet",
+        "x-real-purchases-enabled": false,
+        "x-try-it-disabled": true,
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "x-money-moved": false,
+        "x-attestation-verified": false,
+        "x-production-ingestion-enabled": false
+      }
+    },
+    "/api/account/operator/lab/blind/execute": {
+      "post": {
+        "tags": [
+          "Engineering lab"
+        ],
+        "operationId": "post__api_account_operator_lab_blind_execute",
+        "summary": "POST /api/account/operator/lab/blind/execute",
+        "description": "Authenticated Testnet engineering lab. Synthetic credentials only; software isolation is NOT hardware TEE. Treasury plans use user-supplied hypothetical amounts, not account balances. No USYC execution, real provider call or money movement. Mutation retries retain the original requestId; UNKNOWN outcomes retain quota and are never executed again. Same-origin Origin header is required. Mutating Try it out remains disabled.",
+        "security": [
+          {
+            "walletSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Engineering result; never a procurement order or financial receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "handle": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "operation": {
+                      "type": "string",
+                      "const": "demo.digest"
+                    },
+                    "state": {
+                      "type": "string",
+                      "enum": [
+                        "SUCCEEDED",
+                        "UNKNOWN"
+                      ]
+                    },
+                    "inputDigest": {
+                      "type": "string",
+                      "pattern": "^[a-f\\d]{64}$"
+                    },
+                    "outputDigest": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[a-f\\d]{64}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "isolation": {
+                      "type": "string",
+                      "const": "SOFTWARE_ISOLATION_DEMO"
+                    },
+                    "attestationVerified": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "realProviderCall": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "moneyMoved": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "quotaReservedUnits": {
+                      "type": "string",
+                      "const": "1000"
+                    },
+                    "createdAt": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "handle",
+                    "operation",
+                    "state",
+                    "inputDigest",
+                    "outputDigest",
+                    "isolation",
+                    "attestationVerified",
+                    "realProviderCall",
+                    "moneyMoved",
+                    "quotaReservedUnits",
+                    "createdAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/operator-lab.ts",
+        "x-runtime": "testnet",
+        "x-real-purchases-enabled": false,
+        "x-try-it-disabled": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "requestId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "handle": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "operation": {
+                    "type": "string",
+                    "const": "demo.digest"
+                  },
+                  "input": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "requestId",
+                  "handle",
+                  "operation",
+                  "input"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "x-money-moved": false,
+        "x-attestation-verified": false,
+        "x-production-ingestion-enabled": false
+      }
+    },
+    "/api/account/operator/lab/blind/receipts": {
+      "get": {
+        "tags": [
+          "Engineering lab"
+        ],
+        "operationId": "get__api_account_operator_lab_blind_receipts",
+        "summary": "GET /api/account/operator/lab/blind/receipts",
+        "description": "Authenticated Testnet engineering lab. Synthetic credentials only; software isolation is NOT hardware TEE. Treasury plans use user-supplied hypothetical amounts, not account balances. No USYC execution, real provider call or money movement. Mutation retries retain the original requestId; UNKNOWN outcomes retain quota and are never executed again.",
+        "security": [
+          {
+            "walletSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Engineering result; never a procurement order or financial receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "attestationVerified",
+                    "realProviderCall"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "handle": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "operation": {
+                            "type": "string",
+                            "const": "demo.digest"
+                          },
+                          "state": {
+                            "type": "string",
+                            "enum": [
+                              "SUCCEEDED",
+                              "UNKNOWN"
+                            ]
+                          },
+                          "inputDigest": {
+                            "type": "string",
+                            "pattern": "^[a-f\\d]{64}$"
+                          },
+                          "outputDigest": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "pattern": "^[a-f\\d]{64}$"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "isolation": {
+                            "type": "string",
+                            "const": "SOFTWARE_ISOLATION_DEMO"
+                          },
+                          "attestationVerified": {
+                            "type": "boolean",
+                            "const": false
+                          },
+                          "realProviderCall": {
+                            "type": "boolean",
+                            "const": false
+                          },
+                          "moneyMoved": {
+                            "type": "boolean",
+                            "const": false
+                          },
+                          "quotaReservedUnits": {
+                            "type": "string",
+                            "const": "1000"
+                          },
+                          "createdAt": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "handle",
+                          "operation",
+                          "state",
+                          "inputDigest",
+                          "outputDigest",
+                          "isolation",
+                          "attestationVerified",
+                          "realProviderCall",
+                          "moneyMoved",
+                          "quotaReservedUnits",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "attestationVerified": {
+                      "const": false
+                    },
+                    "realProviderCall": {
+                      "const": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/operator-lab.ts",
+        "x-runtime": "testnet",
+        "x-real-purchases-enabled": false,
+        "x-money-moved": false,
+        "x-attestation-verified": false,
+        "x-production-ingestion-enabled": false
+      }
+    },
     "/api/account/catalog-preview": {
       "get": {
         "tags": [
@@ -12218,8 +13475,8 @@
   "x-network": "testnet",
   "x-chain-id": 5042002,
   "x-coverage": {
-    "sourceRoutes": 100,
-    "documentedOperations": 102,
+    "sourceRoutes": 107,
+    "documentedOperations": 109,
     "excluded": [
       {
         "path": "/api/x402/margin-report",
