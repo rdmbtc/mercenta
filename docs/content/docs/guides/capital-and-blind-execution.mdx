@@ -1,0 +1,46 @@
+---
+title: "Capital planning & blind execution"
+description: "Two bounded engineering scenarios: protected liquidity and a secret-free model boundary."
+---
+
+## What works now
+
+In **Assistant → Liquidity & secret isolation**, the capital scenario computes protected cash and allocation candidates. It uses explicitly hypothetical inputs, not your wallet or account balance. The blind-execution scenario requires verified wallet ownership and runs one synthetic, server-side digest operation.
+
+| Capability | Current implementation | Not claimed |
+| --- | --- | --- |
+| Treasury policy | Exact integer micro-USDC, operating reserve, order reserves, refunds, obligations and buffers | Live USYC subscriptions, redemption or yield |
+| Liquidity wait | Pending flows excluded; unknown redemption requires reconciliation | Instant redemption or guaranteed purchase settlement |
+| Blind execution | Encrypted synthetic secret, owner-bound opaque handle, one permitted operation, durable retry state | Bought API credentials or real inference |
+| Isolation | Software boundary in the server process | TEE, remote attestation, protection from a compromised server administrator |
+
+## Capital: protect obligations first
+
+The policy protects the larger of the reserve floor and 14 days of trailing burn, then adds reserved orders, refund liabilities, the liquidity buffer and obligations inside the redemption horizon. An upcoming purchase is protected before calculating idle surplus. These categories must be disjoint in a future ledger-backed integration.
+
+Unconfirmed incoming funds are **not spendable**. A pending redemption waits for settlement. An unknown result requires reconciliation without resubmission. A failed redemption requires owner review. Even a successful planning decision has `executionEnabled: false`.
+
+The demo assumes a 24-hour redemption horizon and a 250 USDC proposal limit. These are scenario assumptions, not provider terms. Changing the eligibility checkbox changes the calculation only; it does not verify investment eligibility. No APR is specified or guaranteed, and earned yield is not reported.
+
+## Blind execution: use permission, not plaintext
+
+1. Sign in with a wallet; this verifies ownership, not a purchase.
+2. Create a synthetic demo permission. The server generates a random credential, encrypts it with an owner/handle/scope-bound AES-GCM envelope and returns an opaque handle.
+3. Run `demo.digest`. The credential remains inside the server-side executor. The response is a secret-free receipt containing digests and explicit demo flags.
+4. Revoke the permission to erase its encrypted payload. Receipt history remains available to the owner.
+
+The grant permits one operation and lasts ten minutes. It cannot select arbitrary URLs, headers, shell commands or providers. Twenty synthetic grants per owner per day is the demo issuance ceiling. Internal `quotaReservedUnits: "1000"` is a **demo compute allowance**, not a USDC debit or price.
+
+A repeated request ID returns the existing result. A changed body conflicts. If an operation is running or its result is unknown, retry does not rerun it or return the reserved allowance. Server exceptions are never serialized into receipts.
+
+## Protecting the model boundary
+
+The procurement agent sends an allowlisted observation DTO to the model rather than raw delivery, receipt or credential records. Delivery codes, encrypted payloads and secret-bearing object fields are excluded. This does not make arbitrary third-party executor code safe: that executor remains part of the trusted computing base.
+
+## Production release gates
+
+Real USYC needs verified access, trusted redemption quotes, ledger-backed liabilities, explicit investment authority and receipt-backed accounting. Actual credentials need a verified paid delivery source, provider-specific adapters, egress restrictions and a security review. Hardware-backed execution additionally needs an attested confidential runtime and key release tied to an approved image.
+
+Mainnet financial and lab mutations remain closed. This engineering lab does not activate production payments, custody, yield or borrowing.
+
+Support: [support@mercenta.xyz](mailto:support@mercenta.xyz).

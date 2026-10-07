@@ -1,4 +1,5 @@
 import {startProcurementMonitor,refreshProcurementHealth,reserveProcurement,procurementHealth} from './services/procurement-health.js';
+import {registerOperatorLab} from './routes/operator-lab.js';
 import {registerOperator} from './routes/agent-operator.js';
 import {registerCatalogTestCheckout} from './routes/catalog-test-checkout.js';
 import {registerAssistantPreview} from './routes/assistant-preview.js';
@@ -55,6 +56,7 @@ export async function buildServer(c: Config, products?: Product[], fulfillmentFa
   registerCircleDemoSeller(app, db, c);
   registerAgentChat(app, db, c);
   registerOperator(app, db, c);
+  registerOperatorLab(app, db, c);
   registerAssistantPreview(app, db, c);
   const stopProcurement = startProcurementMonitor(db,c);
   const stop = startReconciler(db, orders, node);
