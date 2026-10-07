@@ -1,0 +1,2 @@
+import testnet from '@/lib/openapi-testnet.json';import mainnet from '@/lib/openapi-mainnet.json';import {networkFromHost} from '@/lib/network-profile';
+export async function GET(req:Request){const url=new URL(req.url),network=url.searchParams.get('network')??networkFromHost(url.hostname);if(network!=='testnet'&&network!=='mainnet')return Response.json({code:'INVALID_NETWORK'},{status:400});return Response.json(network==='mainnet'?mainnet:testnet,{headers:{'Cache-Control':'public, max-age=300','X-Mercenta-API-Profile':network}})}

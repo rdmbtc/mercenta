@@ -1,0 +1,41 @@
+---
+title: OpenAPI & networks
+description: A source-derived API contract with clear Testnet and Mainnet boundaries.
+---
+
+## Open the API reference
+
+[Swagger UI](https://app.mercenta.xyz/api-docs) groups the public API by task: authentication, account, budget, assistant, agent operator, checkout, delivery, Circle Gateway and finance sandbox.
+
+- [Testnet OpenAPI 3.1 JSON](https://testnet.mercenta.xyz/api/openapi?network=testnet)
+- [Mainnet release-contract JSON](https://mainnet.mercenta.xyz/api/openapi?network=mainnet)
+
+Input schemas are generated from the server's Zod validation definitions. Some response objects remain deliberately untyped; this is not yet a fully typed SDK. Server business rules, ownership, stock, budget arithmetic and idempotency checks still apply.
+
+Swagger is for inspection and safe reading. Mutating **Try it out** is disabled. Mainnet **Try it out** is disabled entirely. Do not paste a wallet key, seed phrase or supplier credential into the reference.
+
+## Choose a workspace network
+
+Use the **Testnet / Mainnet** control in the workspace header. A confirmation explains the destination before opening it.
+
+| Workspace | Chain ID | Current capability |
+| --- | --- | --- |
+| `app.mercenta.xyz` | 5042002 | Default Testnet workspace |
+| `testnet.mercenta.xyz` | 5042002 | Test USDC; simulated, non-redeemable product delivery |
+| `mainnet.mercenta.xyz` | 5042 | Read-only catalogue and agent preview; no financial execution |
+
+Changing workspace does not transfer money or request a wallet signature. Sessions are host-only. Unsaved forms, balances and spending permissions do not carry between hosts. A mainnet account request is rejected before it can reach the testnet backend.
+
+## Real-buy API is closed
+
+Mainnet catalogue prices are indicative USD, not executable USDC quotes. Real purchases, account funding, withdrawals and agent execution remain disabled. Closed API operations return **503**, with code `MAINNET_CHECKOUT_NOT_ENABLED`. Never send funds to a testnet merchant address as a mainnet deposit.
+
+The Mainnet document describes release gates and an intended API surface. It does not activate checkout or guarantee a final production request schema. Production custody, merchant/token allowlists, restricted credentials, real delivery, settlement, refunds and independent security review must be verified before activation.
+
+## Authenticate on Testnet
+
+For account tools, sign in with your wallet in the matching workspace. The signed challenge creates an HttpOnly `mercenta_session` cookie. Mutating session requests require the matching `Origin`.
+
+For integrations, generate a scoped Mercenta key under Account. The current `/api/v1` surface supports account, dashboard and simulated orders. Send that integration key using `Authorization: Bearer ...`; a catalogue provider key is not a Mercenta integration key.
+
+USDC amount strings use up to six fractional decimal places. `amountUnits` fields are integer micro-USDC strings. Arc native gas uses an 18-decimal representation; do not confuse it with the six-decimal token interface.
