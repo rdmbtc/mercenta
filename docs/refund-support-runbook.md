@@ -21,4 +21,6 @@ The same nonfinancial support queue can store claims for either network; financi
 
 ## Inventory
 
-One coalesced server catalogue cache refreshes every 65 seconds while the service runs (not more than one upstream catalogue request/minute). The public CDN has at most 30 seconds of cache, without five-minute stale serving. Visible catalogue pages refresh every 75 seconds. Missing stock, explicit unavailable status, zero stock or conflicting zero counts fail closed. Long-order support does not prove stock. Prices, availability and payment authorization still require a fresh checkout check; this is not stock reservation or a Mainnet launch.
+One coalesced server catalogue cache refreshes every 65 seconds while the service runs (not more than one upstream catalogue request/minute). The public CDN has at most 30 seconds of cache, without five-minute stale serving. Visible catalogue pages refresh every 75 seconds. Missing all availability signals, explicit unavailable status, zero stock or conflicting zero counts fail closed. An explicit available flag without a count permits at most one unit, not a warehouse-stock claim. Long-order support does not prove stock. Prices, availability and payment authorization still require a fresh checkout check; this is not stock reservation or a Mainnet launch.
+
+The published form includes a manual email-draft fallback when it cannot confirm server persistence. The customer must send that draft through their own email service; it is not a saved queue ticket or an automatically delivered notification.

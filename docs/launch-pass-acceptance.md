@@ -5,7 +5,7 @@ This release changes the landing, public catalogue refresh and manual support re
 ## Source verification
 
 - Backend: 461 tests passed; TypeScript build passed.
-- Web: 358 tests passed; lint and production build passed on the final metadata/source-label changes. Docs: 36 tests and production build passed.
+- Web: 362 tests passed; lint and production build passed on the final metadata/source-label changes. Docs: 36 tests and production build passed.
 - New support POST is nonfinancial, same-origin, HMAC-forwarded, encrypted at rest and rate limited. No public request reader or automatic refund exists.
 - Inventory uses conservative stock signals and hides absent denominations/empty region products. A valid empty feed replaces old listings. Cache refresh is coalesced, with no long stale CDN window.
 - Motion is user-controlled and respects reduced-motion preferences; the landing journey panel is explicitly illustrative and has no financial API calls.
