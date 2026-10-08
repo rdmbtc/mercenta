@@ -1,3 +1,4 @@
+import {hasStock} from './catalog-stock.js';
 import {randomUUID,randomBytes,createHash} from 'node:crypto';
 import type {DB} from '../db.js';
 import type {SupplierPreview} from './supplier-preview.js';
@@ -25,7 +26,7 @@ export function createTestQuote(db:DB,actor:string,requestId:string,productId:st
  if(old){if(old.fingerprint!==fingerprint)throw Error('IDEMPOTENCY_CONFLICT');return publicQuote(old)}
  const count=db.prepare('SELECT count(*) n FROM catalog_test_quotes WHERE actor=? AND created_at>?').get(actor,now-3600000) as {n:number};if(count.n>=100)throw Error('TEST_QUOTE_RATE_LIMIT');
  if(feed.status!=='ready')throw Error('CATALOGUE_UNAVAILABLE');const p=feed.products.find(p=>p.id===productId),item=p?.items.find(i=>i.id===itemId);
- if(!p||!item)throw Error('CATALOGUE_OPTION_NOT_FOUND');const stock=item.stock??item.inStock;if(item.available===false||(stock!==undefined&&stock<quantity))throw Error('CATALOGUE_OPTION_UNAVAILABLE');
+ if(!p||!item)throw Error('CATALOGUE_OPTION_NOT_FOUND');if(!hasStock(item,quantity))throw Error('CATALOGUE_OPTION_UNAVAILABLE');
  const snapshot={productId,itemId,productName:p.name,optionName:item.name??p.name,region:p.countryCode??'GLOBAL',quantity,sourcePrice:item.price,sourceCurrency:item.currency,sourceFetchedAt:feed.fetchedAt,pricePolicy:'Fixed rehearsal price: 1 test USDC per unit. Not a conversion or real-product price.',delivery:'Non-redeemable test receipt; no stock reserved and no real top-up.'};
  const id=randomUUID();db.prepare('INSERT INTO catalog_test_quotes VALUES(?,?,?,?,?,?,?,?)').run(id,actor,requestId,fingerprint,JSON.stringify(snapshot),(TEST_UNIT_PRICE*BigInt(quantity)).toString(),now,now+300000);
  return getTestQuote(db,actor,id);

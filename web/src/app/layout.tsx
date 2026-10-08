@@ -17,7 +17,7 @@ const display = DM_Serif_Display({ variable: "--font-display", subsets: ["latin"
 
 const TITLE = "Mercenta — Commerce, with control.";
 const DESCRIPTION =
-  "Pre-launch preview of policy-controlled commerce for software agents. Explore illustrative spend and margin checks, an order record, and planned USDC settlement and delivery. No live orders or funds.";
+  "Digital products, your region and a bounded AI operator. Explore Mercenta’s catalogue and Testnet purchase journey. Mainnet payments remain closed; refunds are reviewed manually by Mercenta Support.";
 
 export const metadata: Metadata = {
   icons: { icon: [{url:'/favicon.ico?v=mercenta-2',sizes:'any'}, {url:'/favicon-32.png',type:'image/png',sizes:'32x32'}], apple: [{url:'/apple-touch-icon.png',sizes:'180x180'}] },

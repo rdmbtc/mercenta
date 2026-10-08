@@ -1,3 +1,5 @@
+import {registerSupportRefunds} from './routes/support-refunds.js';
+import {startCatalogStockMonitor} from './services/catalog-stock-monitor.js';
 import {startProcurementMonitor,refreshProcurementHealth,reserveProcurement,procurementHealth} from './services/procurement-health.js';
 import {registerOperatorLab} from './routes/operator-lab.js';
 import {registerOperator} from './routes/agent-operator.js';
@@ -58,6 +60,8 @@ export async function buildServer(c: Config, products?: Product[], fulfillmentFa
   registerOperator(app, db, c);
   registerOperatorLab(app, db, c);
   registerAssistantPreview(app, db, c);
+  registerSupportRefunds(app, db, c);
+  const stopStock = startCatalogStockMonitor(c);
   const stopProcurement = startProcurementMonitor(db,c);
   const stop = startReconciler(db, orders, node);
   app.setErrorHandler((e, _req, reply) => {
@@ -90,6 +94,7 @@ export async function buildServer(c: Config, products?: Product[], fulfillmentFa
   app.addHook("onClose", async () => {
     stop();
     stopProcurement();
+    stopStock();
     db.close();
   });
   return app;
