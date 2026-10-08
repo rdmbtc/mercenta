@@ -14,7 +14,7 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: true,
-    include: ["src/__tests__/**/*.test.ts"],
+    include: ["src/__tests__/**/*.test.{ts,tsx}"],
     env: {
       ARC_SESSION_SECRET: "test-only-session-secret-0123456789",
     },

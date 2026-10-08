@@ -1,6 +1,8 @@
 'use client';
-import {useEffect,useMemo,useState} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
 import {ArrowRight,ArrowUpRight,Bot,ShieldCheck,Sun,Moon,BookOpen,Globe,LockKeyhole,ReceiptText,Check,Info} from 'lucide-react';
+import {WorkspaceNavigator} from './WorkspaceNavigator';
+import {useSurfaceMotion} from '@/lib/surface-motion';
 import {Brand} from './ProductShell';import {NetworkSelector} from './NetworkSelector';import {CatalogFamilyCard} from './CatalogFamilyCard';import {CatalogFamilyDialog} from './CatalogFamilyDialog';import {CatalogCollection} from './CatalogCollection';import {OfficialContacts} from '@/components/OfficialContacts';
 import type {BrowseCatalog} from '@/lib/catalog-browse';import {unpackBrowse} from '@/lib/catalog-browse';import {homeFeaturedFamilies} from '@/lib/home-featured';import type {ProductFamily} from '@/lib/catalog-families';import {groupCatalog,regionLabel} from '@/lib/catalog-families';import {useGuideLanguage,GuideLanguage} from './WorkspaceGuide';import {isMainnetPreparation,type MainnetPreparation} from '@/lib/mainnet-preparation';
 import './account.css';import './workspace-ux.css';import './network-workspace.css';import './workspace-polish.css';import './mainnet-polish.css';
@@ -8,7 +10,9 @@ type View='home'|'catalogue'|'agent'|'launch';
 function Hint({label,text}:{label:string;text:string}){return <details className="mn-hint"><summary aria-label={label}><Info size={15}/></summary><p>{text}</p></details>;}
 export function MainnetWorkspace({catalog,initialSection='dashboard'}:{catalog:BrowseCatalog;initialSection?:string}){
  const [lang,setLang]=useGuideLanguage(),ru=lang==='ru';
+ const surface=useRef<HTMLElement>(null);
  const [theme,setTheme]=useState<'dark'|'light'>('dark'),[tab,setTab]=useState<View>(initialSection==='agent-chat'?'agent':initialSection==='shop'?'catalogue':['orders','funds','budget','support','api-access','launch'].includes(initialSection)?'launch':'home');
+ useSurfaceMotion(surface,tab);
  const [activeFamily,setActiveFamily]=useState<ProductFamily|null>(null),[goal,setGoal]=useState(''),[region,setRegion]=useState('all'),[query,setQuery]=useState(''),[report,setReport]=useState<MainnetPreparation|null>(null),[reportError,setReportError]=useState(false);
  const products=useMemo(()=>unpackBrowse(catalog).products,[catalog]),featured=useMemo(()=>homeFeaturedFamilies(catalog),[catalog]),regions=useMemo(()=>[...new Set(groupCatalog(products).flatMap(f=>f.regions))].sort(),[products]);
  useEffect(()=>{const c=new AbortController();fetch('/api/mainnet-readiness',{cache:'no-store',signal:c.signal}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(r=>{if(!isMainnetPreparation(r))throw Error();setReport(r)}).catch(()=>{if(!c.signal.aborted)setReportError(true)});return()=>c.abort();},[]);
@@ -17,8 +21,8 @@ export function MainnetWorkspace({catalog,initialSection='dashboard'}:{catalog:B
  const checks=report?.gates??[];
  return <div className="mp ma ma-ux nw-mainnet mn-prelaunch" data-theme={theme}>
   <a className="ux-skip" href="#mainnet-content">{ru?'Перейти к содержимому':'Skip to content'}</a>
-  <div className="ma-main"><header className="ma-header"><Brand small/><GuideLanguage lang={lang} onChange={setLang}/><NetworkSelector mode="mainnet" ru={ru}/><button className="ma-icon" aria-label={ru?'Сменить тему':'Change theme'} onClick={()=>setTheme(t=>t==='dark'?'light':'dark')}>{theme==='dark'?<Sun size={17}/>:<Moon size={17}/>}</button><a className="ma-button secondary" href="/api-docs"><BookOpen size={16}/>{ru?'API документация':'API docs'}</a></header>
-  <main id="mainnet-content" className="ma-content">
+  <div className="ma-main"><header className="ma-header"><Brand small/><GuideLanguage lang={lang} onChange={setLang}/><WorkspaceNavigator ru={ru} network="mainnet" disabled={!!activeFamily} onNavigate={s=>open(s==="Shop"?"catalogue":s==="Agent Chat"?"agent":s==="Dashboard"?"home":"launch")}/><NetworkSelector mode="mainnet" ru={ru}/><button className="ma-icon" aria-label={ru?'Сменить тему':'Change theme'} onClick={()=>setTheme(t=>t==='dark'?'light':'dark')}>{theme==='dark'?<Sun size={17}/>:<Moon size={17}/>}</button><a className="ma-button secondary" href="/api-docs"><BookOpen size={16}/>{ru?'API документация':'API docs'}</a></header>
+  <main ref={surface} id="mainnet-content" className="ma-content">
    <div className="mn-status-strip"><span><span className="mn-status-dot"/>{ru?'MAINNET · ПОДГОТОВКА К ЗАПУСКУ':'MAINNET · PRE-LAUNCH'}</span><button onClick={()=>open('launch')}>{ru?'Что ещё проверяем':'What remains'}<ArrowUpRight size={14}/></button></div>
    <div className="mn-safety" role="note"><LockKeyhole size={17}/><p>{ru?'Оплата пока закрыта. Не отправляйте средства. Здесь нет Testnet-баланса и тестовой выдачи.':'Payments are closed. Do not send funds. No Testnet balance or simulated delivery is shown here.'}</p></div>
    <div className="nw-mobile-language"><GuideLanguage lang={lang} onChange={setLang}/></div>
