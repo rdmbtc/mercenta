@@ -25,7 +25,7 @@ The original cinematic hero, policy-gate artwork, playground and guardrails rema
 
 ## Verification
 
-Local verification: 410 frontend tests across 57 files, TypeScript, zero-warning lint and production build passed. 480 backend tests and backend build passed. Six read-only SDK tests and five existing evidence-report tests passed. Source and client-bundle credential/identity scanning reported no findings within their stated scope; this is not a full security certification or historical-source audit.
+Local verification: 411 frontend tests across 57 files, TypeScript, zero-warning lint and production build passed. 480 backend tests and backend build passed. Six read-only SDK tests and five existing evidence-report tests passed. Source and client-bundle credential/identity scanning reported no findings within their stated scope; this is not a full security certification or historical-source audit.
 
 The packaged client also read the live public catalogue successfully, observing 1179 regional products and purchasingEnabled=false. This is an observation, not a completeness or future-stock guarantee.
 
