@@ -13,7 +13,7 @@ export async function GET(request:Request){
  if(id&&!product)return Response.json({error:'PRODUCT_NOT_FOUND'},{status:404,headers:{'Cache-Control':'no-store'}});
  const payload=id?{product,generatedAt:catalog.live?catalog.generatedAt:browseBootstrap.generatedAt,snapshot:!catalog.live,purchasingEnabled:false}:params.get('view')==='browse'?packBrowse(catalog):catalog;
  const json=JSON.stringify(payload),compressed=/\bgzip\b/.test(request.headers.get('accept-encoding')??'');
- const headers:Record<string,string>={'Content-Type':'application/json; charset=utf-8','Cache-Control':'public, max-age=60, s-maxage=60, stale-while-revalidate=300','Vary':'Accept-Encoding'};
+ const headers:Record<string,string>={'Content-Type':'application/json; charset=utf-8','Cache-Control':'public, max-age=30, s-maxage=30, must-revalidate','Vary':'Accept-Encoding'};
  if(compressed)headers['Content-Encoding']='gzip';
  return new Response(compressed?new Uint8Array(gzipSync(json)):json,{headers});
 }

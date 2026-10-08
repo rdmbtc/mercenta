@@ -6,7 +6,7 @@ let cached:{value:BrowseCatalog;at:number}|undefined,pending:Promise<BrowseCatal
 export function refreshPublicCatalog():Promise<BrowseCatalog>{
  if(cached&&Date.now()-cached.at<TTL)return Promise.resolve(cached.value);
  if(pending)return pending;
- pending=fetch('/api/catalog?view=browse',{credentials:'omit',signal:AbortSignal.timeout(10_000)}).then(async r=>{if(!r.ok)throw Error('CATALOG_UNAVAILABLE');const v=await r.json();const data:BrowseCatalog=v.version===1?v:packBrowse(v as Catalog);if(!Array.isArray(data.rows)||!data.rows.length)throw Error('INVALID_CATALOG');if(!data.live)throw Error('CATALOG_NOT_CURRENT');cached={value:data,at:Date.now()};return data}).finally(()=>{pending=undefined});
+ pending=fetch('/api/catalog?view=browse',{credentials:'omit',signal:AbortSignal.timeout(10_000)}).then(async r=>{if(!r.ok)throw Error('CATALOG_UNAVAILABLE');const v=await r.json();const data:BrowseCatalog=v.version===1?v:packBrowse(v as Catalog);if(!Array.isArray(data.rows))throw Error('INVALID_CATALOG');if(!data.live)throw Error('CATALOG_NOT_CURRENT');details.clear();cached={value:data,at:Date.now()};return data}).finally(()=>{pending=undefined});
  return pending;
 }
 const details=new Map<string,{at:number;value:CatalogProduct}>(),detailRequests=new Map<string,Promise<CatalogProduct>>();

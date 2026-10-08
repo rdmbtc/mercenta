@@ -11908,6 +11908,197 @@
         "x-production-ingestion-enabled": false
       }
     },
+    "/api/support/refund": {
+      "post": {
+        "tags": [
+          "Support"
+        ],
+        "operationId": "post__api_support_refund",
+        "summary": "POST /api/support/refund",
+        "description": "Submit an unverified claim for manual Mercenta owner review. No automatic refund, ledger credit or ownership proof. Same-origin Origin required; rate limited. No public ticket reader. Do not send credentials or purchased codes.",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "202": {
+            "description": "Request durably saved for manual review; no refund executed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ticketId",
+                    "status",
+                    "manualReview",
+                    "refundExecuted"
+                  ],
+                  "properties": {
+                    "ticketId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "SUBMITTED",
+                        "IN_REVIEW",
+                        "CLOSED"
+                      ]
+                    },
+                    "manualReview": {
+                      "const": true
+                    },
+                    "refundExecuted": {
+                      "const": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/support-refunds.ts",
+        "x-runtime": "nonfinancial-support",
+        "x-real-purchases-enabled": false,
+        "x-try-it-disabled": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "requestId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "email": {
+                    "type": "string",
+                    "maxLength": 254,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  "orderReference": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 100,
+                    "pattern": "^[A-Za-z0-9_.:/-]+$"
+                  },
+                  "network": {
+                    "type": "string",
+                    "enum": [
+                      "testnet",
+                      "mainnet"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "enum": [
+                      "NOT_DELIVERED",
+                      "WRONG_ITEM",
+                      "PAYMENT_ISSUE",
+                      "OTHER"
+                    ]
+                  },
+                  "details": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 2000
+                  },
+                  "transactionHash": {
+                    "type": "string",
+                    "pattern": "^(0x[a-fA-F0-9]{64})?$"
+                  },
+                  "manualReviewAcknowledged": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "website": {
+                    "type": "string",
+                    "const": ""
+                  }
+                },
+                "required": [
+                  "requestId",
+                  "email",
+                  "orderReference",
+                  "network",
+                  "reason",
+                  "details",
+                  "transactionHash",
+                  "manualReviewAcknowledged",
+                  "website"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "x-money-moved": false
+      }
+    },
     "/api/account/catalog-preview": {
       "get": {
         "tags": [
@@ -13475,8 +13666,8 @@
   "x-network": "testnet",
   "x-chain-id": 5042002,
   "x-coverage": {
-    "sourceRoutes": 107,
-    "documentedOperations": 109,
+    "sourceRoutes": 108,
+    "documentedOperations": 110,
     "excluded": [
       {
         "path": "/api/x402/margin-report",
