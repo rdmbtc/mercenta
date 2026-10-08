@@ -4,3 +4,5 @@ test('client rejects HTTP, authentication in origin and paths',()=>{for(const or
 test('client fails closed on HTTP error',async()=>{await assert.rejects(new MercentaClient({fetch:async()=>({ok:false,status:503})}).catalogue(),/503/)});
 test('client rejects invalid response instead of fabricating success',async()=>{await assert.rejects(new MercentaClient({fetch:async()=>({ok:true,json:async()=>({rows:[],live:true})})}).catalogue(),/Invalid catalogue/)});
 test('client exposes no payment or key methods',()=>{const client=new MercentaClient();assert.equal(client.purchase,undefined);assert.equal(client.sign,undefined);assert.equal(client.keys,undefined)});
+
+test("client binds native-style fetch to the global receiver",async()=>{const transport=async function(){assert.equal(this,globalThis);return {ok:true,json:async()=>({rows:[],live:true,generatedAt:"2026-10-08T00:00:00Z",purchasingEnabled:false})}};assert.equal((await new MercentaClient({fetch:transport}).catalogue()).live,true)});

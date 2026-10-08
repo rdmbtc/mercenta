@@ -8,7 +8,7 @@ The original cinematic hero, policy-gate artwork, playground and guardrails rema
 
 - Five-row matched workflow contrast, with a factual five-checkpoint footer rather than an invented setup-time statistic.
 - cURL, TypeScript and Python examples for the real public catalogue endpoint, active-snippet clipboard copying and error feedback.
-- Direct-download read-only client v0.1.0: npm/pnpm/bun tarball commands and a Deno module example. MIT licence, TypeScript declarations, no runtime dependencies, no registry-publication or popularity claim. No account writes, signing or purchasing methods.
+- Direct-download read-only client v0.1.1: npm/pnpm/bun tarball commands and a Deno module example. MIT licence, TypeScript declarations, no runtime dependencies, no registry-publication or popularity claim. No account writes, signing or purchasing methods.
 - Account activity overview uses authenticated backend dashboard aggregates. Rolling 24h, 7d, 30d and 90d ranges are supported by the backend and generated OpenAPI. Figures represent the user's Testnet account, not merchant sales or revenue. Missing comparison and time-series data stay unavailable.
 - Native first-run welcome dialog with Escape/backdrop dismissal, a tour link and storage-safe opt-out. Browsing never grants spending permission.
 - Actual newly created account API keys are initially masked, optionally revealed for 30 seconds and cleared when dismissed. Scope-aware warning, clipboard confirmation and an acknowledgement gate are provided. Secrets are not persisted in browser storage.
@@ -25,7 +25,7 @@ The original cinematic hero, policy-gate artwork, playground and guardrails rema
 
 ## Verification
 
-Local verification: 410 frontend tests across 57 files, TypeScript, zero-warning lint and production build passed. 480 backend tests and backend build passed. Five read-only SDK tests and five existing evidence-report tests passed. Source and client-bundle credential/identity scanning reported no findings within their stated scope; this is not a full security certification or historical-source audit.
+Local verification: 410 frontend tests across 57 files, TypeScript, zero-warning lint and production build passed. 480 backend tests and backend build passed. Six read-only SDK tests and five existing evidence-report tests passed. Source and client-bundle credential/identity scanning reported no findings within their stated scope; this is not a full security certification or historical-source audit.
 
 The packaged client also read the live public catalogue successfully, observing 1179 regional products and purchasingEnabled=false. This is an observation, not a completeness or future-stock guarantee.
 

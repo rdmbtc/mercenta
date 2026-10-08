@@ -1,1 +1,1 @@
-{"name":"@mercenta/read-only-client","version":"0.1.0","description":"Mercenta public read-only catalogue client","type":"module","exports":{".":{"types":"./index.d.ts","import":"./index.mjs"}},"files":["index.mjs","index.d.ts","LICENSE","README.md"],"license":"MIT","sideEffects":false}
+{"name":"@mercenta/read-only-client","version":"0.1.1","description":"Mercenta public read-only catalogue client","type":"module","exports":{".":{"types":"./index.d.ts","import":"./index.mjs"}},"files":["index.mjs","index.d.ts","LICENSE","README.md"],"license":"MIT","sideEffects":false}
