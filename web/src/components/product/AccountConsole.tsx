@@ -90,7 +90,7 @@ export function AccountConsole({initialSection='Dashboard',initialCatalog}:{init
  {!['Dashboard','Shop','Getting Started'].includes(section)&&<div className="ux-page-heading"><h1>{compactTitle[section]??section}</h1>{section==='Funds'&&<button className="ma-button" disabled={!summary?.depositConfigured||readOnly} onClick={fundingAction}><Plus size={16}/>{ru?'Пополнить':'Top up'}</button>}</div>}
  {section==='Budget'&&<BudgetPlanner initialPlan={draftBudget} key={summary?.wallet??'visitor'} wallet={summary?.wallet??null} readOnly={readOnly} navigate={s=>select(s as Section)}/>}
  {section==='Financial Journal'&&<FinancialJournal key={summary?.wallet??'visitor'} wallet={summary?.wallet??null} readOnly={readOnly}/>}
- {section==='Dashboard'&&<AccountOverview stats={stats} loading={loading} period={period} onPeriod={setPeriod} ru={ru}/>}
+ {section==='Dashboard'&&summary?.wallet&&<AccountOverview stats={stats} loading={loading} period={period} onPeriod={setPeriod} ru={ru}/>}
  <FirstRun ru={ru} onTour={()=>setSetupOpen(true)}/>
  {section==='Dashboard'&&<WorkspaceHome catalog={initialCatalog} readOnly={readOnly} products={products} onReview={openReview} lang={lang} wallet={summary?.wallet??null} available={summary?.availableUnits??null} reserved={summary?.reservedUnits??null} orders={stats?.totalOrders??null} spent={stats?.totalSpentUnits??null} recent={stats?.recentActivity??[]} loading={loading} onNavigate={s=>select(s as Section)} onSetup={()=>setSetupOpen(true)} onFund={fundingAction} canFund={!!summary?.depositConfigured&&!readOnly}/>}
  {section==='Shop'&&<WorkspaceShop initialCatalog={initialCatalog} lang={lang} products={products} wallet={summary?.wallet??null} readOnly={readOnly} onOrder={openReview} onConnect={connectWallet}/>}
