@@ -53,3 +53,12 @@
 
 .ma.ma-ux .pd-event-mark{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--a-line);background:var(--a-bg);border-radius:8px;flex-shrink:0;color:var(--a-muted)}.ma.ma-ux .pd-event-mark.success{color:var(--a-accent)}.ma.ma-ux .pd-event-mark.blocked{color:#c07a5e}.ma.ma-ux .op-timeline li{position:relative;align-items:flex-start;gap:13px}.ma.ma-ux .op-timeline li:not(:last-child)::after{content:"";position:absolute;left:13px;top:34px;bottom:-8px;width:1px;background:var(--a-line)}.ma.ma-ux .op-timeline li>div{min-width:0}.ma.ma-ux .op-timeline li small{font-family:var(--font-mono),monospace;font-size:9px;letter-spacing:.03em}.ma.ma-ux .op-empty{padding:28px 0!important;min-height:150px!important}.ma.ma-ux .op-empty>svg{padding:12px;width:54px;height:54px;border:1px solid var(--a-line);border-radius:15px;background:var(--a-bg)}
 @media(prefers-reduced-motion:no-preference){.ma.ma-ux .op-timeline li{animation:pd-dialog-in .2s ease-out}}
+
+/* Explicitly beat legacy column-label rules; keep search and sort controls on one line. */
+:is(.ma.ma-ux,.mp) .pd-nav-search,:is(.ma.ma-ux,.mp) .pd-catalog-controls label{display:flex;flex-direction:row;align-items:center;font-weight:400;gap:10px;margin-block:0}
+:is(.ma.ma-ux,.mp) .pd-nav-search{margin:0 16px 12px}
+:is(.ma.ma-ux,.mp) .pd-nav-search>svg,:is(.ma.ma-ux,.mp) .pd-catalog-controls label>svg{flex-shrink:0}
+:is(.ma.ma-ux,.mp) .pd-navigator h2{font-size:24px;line-height:1.2;font-weight:500;letter-spacing:-.035em;margin:10px 0 0}
+:is(.ma.ma-ux,.mp) .pd-catalog-guide{margin-top:12px;padding-bottom:10px}
+:is(.ma.ma-ux,.mp) .pd-collection .cf-toolbar{margin-top:18px;margin-bottom:14px}
+@media(max-width:700px){.ma.ma-ux:not(.nw-mainnet) .ux-header-actions>.pd-nav-trigger{grid-column:2;grid-row:2;justify-self:end;width:36px;height:36px;min-width:36px;padding:0;margin-right:40px;order:0;display:grid;place-items:center}}
