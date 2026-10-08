@@ -47,6 +47,7 @@ const schema = z.object({
   LLM_API_URL: z.string().url().optional(),
   LLM_API_KEY: z.string().optional(),
   LLM_MODEL: z.string().optional(),
+  LLM_FALLBACK_MODELS: z.string().max(512).optional(),
   PRIVATE_SUPPLY_IDENTITY: z.string().optional(),
   PRIVATE_MODEL_IDENTITY: z.string().optional(),
   PRIVATE_LEGACY_IDENTITY: z.string().optional(),
