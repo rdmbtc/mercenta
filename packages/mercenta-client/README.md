@@ -1,4 +1,4 @@
-# Mercenta read-only client · 0.1.0
+# Mercenta read-only client · 0.1.1
 Direct-download preview, not published to an npm registry. Zero runtime dependencies. Requires a modern runtime with fetch and AbortSignal.timeout.
 
 ```ts
