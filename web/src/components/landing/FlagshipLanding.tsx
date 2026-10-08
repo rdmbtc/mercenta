@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import BrandMark from "./BrandMark";
+import {WorkflowContrast,DeveloperBlock,SDKHero} from "@/components/experience/LandingBlocks";
 import {OfficialContacts} from '@/components/OfficialContacts';
 
 import ScrollStory from "./ScrollStory";
-import { MorphHeadline, SupplySection, BusinessPlaybooks, BuildSection, LandingFAQ } from "./LandingExperience";
+import { MorphHeadline, SupplySection, BusinessPlaybooks, LandingFAQ } from "./LandingExperience";
 import { CASES, ORDER, POLICY, evaluatePolicy, percent, usdc, type SupplierState } from "@/lib/policy";
 import {LiquidityBento} from './LiquidityBento';
 
@@ -115,7 +116,7 @@ export default function FlagshipLanding() {
     <header className="mx-nav">
       <div className="mx-wrap mx-nav-inner">
         <a href="#" className="mx-brand" aria-label="Mercenta home"><BrandMark /><span>mercenta<span className="mx-brand-dot">.</span></span></a>
-        <nav className="mx-desktop-links" aria-label="Main navigation"><a href="#business">For your business</a><a href="#architecture">How it works</a><a href="#playground">Playground</a><a href="/catalog">Catalog</a><a href="/status">Status</a></nav>
+        <nav className="mx-desktop-links" aria-label="Main navigation"><a href="#business">For your business</a><a href="#architecture">How it works</a><a href="#playground">Playground</a><a href="/catalog">Catalog</a><a href="/status">Status</a><a href="/releases">Releases</a></nav>
         <a className="mx-nav-console" href="/app">Console & Liquidity <Arrow diagonal /></a>
         <button ref={menuButton} type="button" className="mx-menu-toggle" aria-expanded={menu} aria-controls="mx-mobile-nav" aria-label={menu ? "Close navigation" : "Open navigation"} onClick={() => setMenu(!menu)}><span /><span /></button>
       </div>
@@ -193,16 +194,18 @@ export default function FlagshipLanding() {
         </div>
       </section>
 
+      <WorkflowContrast />
       <BusinessPlaybooks />
 
       <section className="mx-evidence" aria-labelledby="mx-evidence-title"><div className="mx-wrap mx-evidence-layout"><div><span className="mx-label">07 / THE AUDIT TRAIL</span><h2 id="mx-evidence-title">Not just approved.<br /><span>Accounted for.</span></h2><p>Price. Cost. Margin. Decision.<br />The order record keeps the context together, so you can inspect the outcome instead of trusting a summary.</p><button ref={receiptButton} className="mx-text-link" type="button" onClick={() => setReceiptOpen(true)}>Inspect example record <Arrow diagonal /></button></div><div className="mx-receipt"><div className="mx-receipt-top"><BrandMark /><span className="mx-label">ILLUSTRATIVE ORDER RECORD</span></div><span className="mx-label">{ORDER.id}</span><div className="mx-receipt-amount">{CASES.order.amount.toLocaleString("en-US")}<span>USDC</span></div><dl><div><dt>Supplier cost</dt><dd>{usdc(CASES.order.cost)}</dd></div><div><dt>Platform fee ({percent(POLICY.platformFee)})</dt><dd>{usdc(CASES.order.amount * POLICY.platformFee)}</dd></div><div><dt>Gross margin</dt><dd>{percent(example.margin)}</dd></div></dl><div className="mx-receipt-bottom"><StatusIcon state="pass" />{example.decision}<span>PREVIEW ONLY</span></div></div></div></section>
 
-      <BuildSection />
+      <DeveloperBlock />
+      <SDKHero />
       <LandingFAQ />
 
       <section className="mx-final" aria-labelledby="mx-final-title"><div className="mx-wrap"><div className="mx-final-top"><span className="mx-label">THE NEXT MOVE IS YOURS.</span><span className="mx-label">MERCENTA / PRE-LAUNCH</span></div><h2 id="mx-final-title">Let agents act.<br /><span>On your terms.</span></h2><div className="mx-final-bottom"><p>Intelligent commerce.<br />Non-negotiable control.</p><a href="/app" className="mx-button mx-button-primary">Enter the console <Arrow diagonal /></a></div></div><div className="mx-final-watermark" aria-hidden="true">mercenta.</div></section>
     </main>
-    <footer className="mx-footer"><div className="mx-wrap"><a href="#" className="mx-brand"><BrandMark /><span>mercenta.</span></a><p>© {new Date().getFullYear()} Mercenta · Pre-launch preview</p><div><a href="/catalog">Catalog <Arrow diagonal /></a><a href="/app">Console <Arrow diagonal /></a><a href="/status">Status <Arrow diagonal /></a><a href="#">Back to top ↑</a></div><OfficialContacts/></div></footer>
+    <footer className="mx-footer"><div className="mx-wrap"><a href="#" className="mx-brand"><BrandMark /><span>mercenta.</span></a><p>© {new Date().getFullYear()} Mercenta · Pre-launch preview</p><div><a href="/catalog">Catalog <Arrow diagonal /></a><a href="/app">Console <Arrow diagonal /></a><a href="/status">Status <Arrow diagonal /></a><a href="/releases">Releases <Arrow diagonal /></a><a href="/operations">Operations lab <Arrow diagonal /></a><a href="#">Back to top ↑</a></div><OfficialContacts/></div></footer>
     <dialog ref={dialog} className="mx-record-dialog" aria-labelledby="mx-record-title" onCancel={dismissReceipt} onClick={e => { if (e.target === e.currentTarget) dismissReceipt(); }}><div className="mx-record-inner"><div className="mx-record-heading"><span className="mx-label">ILLUSTRATIVE / NO LIVE SETTLEMENT</span><button ref={closeReceipt} type="button" onClick={dismissReceipt} aria-label="Close order record">×</button></div><h2 id="mx-record-title">{ORDER.id}</h2><p>{ORDER.units} {ORDER.unit} · {ORDER.supplier}</p><dl>{[["Client price", usdc(CASES.order.amount)], ["Supplier cost", usdc(CASES.order.cost)], ["Platform fee", usdc(CASES.order.amount * POLICY.platformFee)], ["Gross margin", percent(example.margin)], ["Decision", example.decision], ["Policy", POLICY.version]].map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl><p className="mx-record-note">This is an example record, not a signed receipt or proof of settlement.</p><button type="button" className="mx-button mx-button-primary" onClick={copyReceipt} aria-live="polite">{copied ? "Copied JSON ✓" : "Copy record as JSON"}<Arrow /></button></div></dialog>
 
   </div>;

@@ -5,6 +5,7 @@ import {operatorRequest,operatorRunSchema,operatorHistorySchema,operatorError,ty
 import {accountMoney} from '@/lib/account-format';import type {Language} from '@/lib/workspace-plan';
 import {operatorPreflight} from '@/lib/operator-preflight';
 import {OperatorEventMark} from './OperatorEventMark';
+import {RunTrace} from '@/components/experience/RunTrace';
 import {OperatorTaskPreview} from './OperatorTaskPreview';
 import './product-refinement.css';
 import {OperatorCapitalLab} from './OperatorCapitalLab';
@@ -40,5 +41,5 @@ export function AgentOperator({wallet,readOnly,lang,onChange,onConnect,onHelp}:{
  {wallet&&<details className="op-paid" open={report}><summary>{ru?'Платный отчёт · Circle Gateway / x402':'Paid report · Circle Gateway / x402'}</summary><p>{ru?'Отдельный кошелёк агента и баланс Gateway. 0.001 test USDC за фиксированный тестовый сценарий маржи, не за подтверждённую продажу. Подтверждение этой оплаты — отдельное.':'Separate agent wallet and Gateway balance. 0.001 test USDC for a fixed test margin scenario, not a verified sale. This payment requires separate confirmation.'}</p><button className="ma-button secondary" disabled={disabled} onClick={()=>void action(async()=>{const response=await fetch('/api/account/agent/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:crypto.randomUUID(),message:'Prepare a paid margin report'})});const data=await response.json();if(!response.ok||!data.circlePaymentId)throw Error(data.code??'SERVICE_UNAVAILABLE');setReport(true);window.dispatchEvent(new Event('mercenta-circle-quotes-changed'))})}>{ru?'Подготовить котировку отчёта — без оплаты':'Prepare report quote — no payment'}</button>{report&&<CircleAgentPanel key={wallet} wallet={wallet} readOnly={readOnly}/>}</details>}
  {history.length>0&&<details className="op-history"><summary>{ru?'История задач':'Task history'} · {history.length}</summary>{history.map(h=><button className="ma-link" key={h.id} disabled={!!planning&&h.id!==run?.id} onClick={()=>{accept(h);setPaused(h.status==='PLANNING');setQuoteConsent(false)}}><span>{h.input.message}</span><span>{h.status}</span></button>)}</details>}
  <OperatorCapitalLab wallet={wallet} readOnly={readOnly} lang={lang} onConnect={onConnect}/>
- </section>
+ {run&&<RunTrace run={run} ru={ru}/>}</section>
 }
