@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "kind": "READ_ONLY_NETWORK_PREFLIGHT_NOT_LAUNCH_APPROVAL",
+  "verifiedAt": "2026-10-09T10:59:58.983Z",
+  "status": "PASS",
+  "chainId": 5042,
+  "moneyMoved": false,
+  "keysLoaded": false,
+  "purchasesEnabled": false,
+  "signingEnabled": false,
+  "addresses": {
+    "usdc": "0x3600000000000000000000000000000000000000",
+    "gatewayWallet": "0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE",
+    "gatewayMinter": "0x2222222d7164433c4C09B0b0D809a9b52C04C205"
+  },
+  "witnesses": [
+    {
+      "endpoint": "https://rpc.mainnet.arc.io",
+      "chainId": 5042,
+      "head": "25060465",
+      "status": "PASS"
+    },
+    {
+      "endpoint": "https://rpc.quicknode.mainnet.arc.io",
+      "chainId": 5042,
+      "head": "25060465",
+      "status": "PASS"
+    }
+  ],
+  "canonical": {
+    "height": "25060462",
+    "hash": "0x23d3766e8a53444d380de7ca4716832389478c34b8fd42767a10b3bac3f2d2c7"
+  },
+  "erc20Decimals": 6,
+  "nativeDecimals": 18,
+  "contracts": [
+    {
+      "name": "gatewayWallet",
+      "address": "0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE",
+      "byteLength": 163,
+      "witnessesAgree": true
+    },
+    {
+      "name": "gatewayMinter",
+      "address": "0x2222222d7164433c4C09B0b0D809a9b52C04C205",
+      "byteLength": 163,
+      "witnessesAgree": true
+    }
+  ],
+  "sources": [
+    "https://docs.arc.io/arc/references/rpc-endpoints.md",
+    "https://docs.arc.io/arc/references/contract-addresses.md"
+  ],
+  "limitations": [
+    "Contract bytecode agreement is not an audit or verified implementation hash.",
+    "No signer, supply delivery, refund, custody entitlement or production runtime was verified.",
+    "Read-only network availability is not authorization to start financial operations."
+  ]
+}

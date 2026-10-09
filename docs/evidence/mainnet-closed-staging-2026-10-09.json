@@ -1,0 +1,64 @@
+{
+  "kind": "CLOSED_STAGING_ACCEPTANCE_NOT_GO_LIVE_APPROVAL",
+  "checkedAt": "2026-10-09T11:09:00.523947+00:00",
+  "deployedRevision": "922269886f17d2b7340d35fd43de32370981fb61",
+  "localBackendTests": {
+    "passed": 495,
+    "failed": 0
+  },
+  "serverMainnetTests": {
+    "passed": 60,
+    "failed": 0
+  },
+  "health": {
+    "ok": true,
+    "service": "mercenta-mainnet-staging",
+    "kind": "CLOSED_STAGING_NOT_COMMERCE_RUNTIME",
+    "chainId": 5042,
+    "orders": 0,
+    "journalMode": "wal",
+    "integrity": "ok",
+    "purchasesEnabled": false,
+    "signingEnabled": false
+  },
+  "readiness": {
+    "phase": "closed",
+    "chainId": 5042,
+    "purchasesEnabled": false,
+    "depositsEnabled": false,
+    "refundMode": "support-owner-manual",
+    "capabilities": {
+      "stagingDatabase": true,
+      "publicWriteRoutes": false,
+      "signer": false,
+      "supplyAdapter": false,
+      "paymentRoutes": false,
+      "deliveryRoutes": false
+    },
+    "remaining": [
+      "PRODUCTION_OWNER_SESSION",
+      "VERIFIED_CUSTODY",
+      "SUPPLY_AND_PAYMENT_INTEGRATION",
+      "LIABILITY_JOURNAL_AND_RECONCILIATION",
+      "ENCRYPTED_DELIVERY",
+      "MANUAL_REFUND_RECEIPT",
+      "RESTORE_AND_ALERT_DRILLS",
+      "FRESH_OWNER_CANARY_APPROVAL"
+    ]
+  },
+  "isolation": {
+    "separateUnixUser": true,
+    "separateDatabase": true,
+    "testnetConfigurationUnchanged": true,
+    "loopbackOnly": true,
+    "testnetSecretsReadableByStagingUser": false
+  },
+  "restoreDrill": {
+    "encrypted": true,
+    "digestAndIntegrityVerified": true,
+    "emptyStagingOnly": true,
+    "customerRecoveryProven": false
+  },
+  "newPayments": 0,
+  "externalPilotConfirmed": false
+}
