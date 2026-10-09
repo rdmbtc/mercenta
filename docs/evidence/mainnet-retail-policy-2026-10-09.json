@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-09T19:38:18Z",
+  "recipient": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+  "chainId": 5042,
+  "markupBps": 900,
+  "readOnlyPolicyHttps": "PASS",
+  "postDenied": true,
+  "unknownRouteDenied": true,
+  "corsExactOrigin": true,
+  "stockPositiveOnly": true,
+  "catalogProducts": 1176,
+  "supplyReady": true,
+  "paymentsEnabled": false,
+  "procurementExecuted": false,
+  "refundExecuted": false,
+  "testnetChanged": false,
+  "sourceKind": "engineering-read-only-not-traction",
+  "sourceCommit": "7d82fd45c14a1f22bafac06bfc3f7e5dd553b56e",
+  "backendTests": {
+    "passed": 573,
+    "failed": 0,
+    "execution": "sequential; reduced JS heap reservations after Windows allocation failure"
+  },
+  "backendBuild": "PASS",
+  "vpsFocusedTests": {
+    "passed": 93,
+    "failed": 0
+  },
+  "sourceAndBundleAudit": "PASS",
+  "exactPrivateCredentialAudit": "PASS",
+  "gitHistoryRewritten": false,
+  "gitHistoryAuditIncluded": false,
+  "originalLandingChanged": false,
+  "publicQuoteRouteEnabled": false,
+  "publicPaymentRouteEnabled": false,
+  "publicDeliveryRouteEnabled": false,
+  "vercelSourceRelease": {
+    "sha": "7d82fd45c14a1f22bafac06bfc3f7e5dd553b56e",
+    "state": "success",
+    "contexts": [
+      {
+        "name": "Vercel \u2013 mercenta",
+        "state": "success"
+      },
+      {
+        "name": "Vercel \u2013 status-mercenta",
+        "state": "success"
+      },
+      {
+        "name": "Vercel \u2013 mercenta-docs",
+        "state": "success"
+      }
+    ]
+  }
+}
