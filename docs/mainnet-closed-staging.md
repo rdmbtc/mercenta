@@ -25,7 +25,7 @@ curl --fail http://127.0.0.1:3014/api/health
 curl --fail http://127.0.0.1:3014/api/readiness
 ```
 
-Health must report chain 5042, WAL, integrity `ok` and payments/signing false. Unknown GET and every POST route must return 503. Testnet port 3013 must remain chain 5042002. A restart must retain the database; do not wipe it to obtain a passing check.
+Health must report chain 5042, WAL, integrity `ok` and payments/signing false. Unknown GET and every financial POST route must return 503. The separately mounted identity-only `/api/auth/` routes may issue and verify wallet challenges, read a session and revoke it; they never grant spending permission. The HTTPS proxy exposes only these four identity actions. See `mainnet-canary-integration.md` for the tested canary contract, which is not instantiated by this closed executable. Testnet port 3013 must remain chain 5042002. A restart must retain the database; do not wipe it to obtain a passing check.
 
 ## Still blocking money (in dependency order)
 

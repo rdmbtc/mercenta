@@ -2,6 +2,8 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {ArrowRight,ArrowUpRight,Bot,ShieldCheck,Sun,Moon,BookOpen,Globe,LockKeyhole,ReceiptText,Check,Info} from 'lucide-react';
 import {WorkspaceNavigator} from './WorkspaceNavigator';
+import {MainnetIdentity} from './MainnetIdentity';
+import './mainnet-identity.css';
 import {useSurfaceMotion} from '@/lib/surface-motion';
 import {Brand} from './ProductShell';import {NetworkSelector} from './NetworkSelector';import {CatalogFamilyCard} from './CatalogFamilyCard';import {CatalogFamilyDialog} from './CatalogFamilyDialog';import {CatalogCollection} from './CatalogCollection';import {OfficialContacts} from '@/components/OfficialContacts';
 import type {BrowseCatalog} from '@/lib/catalog-browse';import {unpackBrowse} from '@/lib/catalog-browse';import {homeFeaturedFamilies} from '@/lib/home-featured';import type {ProductFamily} from '@/lib/catalog-families';import {groupCatalog,regionLabel} from '@/lib/catalog-families';import {useGuideLanguage,GuideLanguage} from './WorkspaceGuide';import {isMainnetPreparation,type MainnetPreparation} from '@/lib/mainnet-preparation';
@@ -25,6 +27,7 @@ export function MainnetWorkspace({catalog,initialSection='dashboard'}:{catalog:B
   <main ref={surface} id="mainnet-content" className="ma-content">
    <div className="mn-status-strip"><span><span className="mn-status-dot"/>{ru?'MAINNET · ПОДГОТОВКА К ЗАПУСКУ':'MAINNET · PRE-LAUNCH'}</span><button onClick={()=>open('launch')}>{ru?'Что ещё проверяем':'What remains'}<ArrowUpRight size={14}/></button></div>
    <div className="mn-safety" role="note"><LockKeyhole size={17}/><p>{ru?'Оплата пока закрыта. Не отправляйте средства. Здесь нет Testnet-баланса и тестовой выдачи.':'Payments are closed. Do not send funds. No Testnet balance or simulated delivery is shown here.'}</p></div>
+   <div className="mn-identity-bar"><div><strong>{ru?'Отдельная личность Mainnet':'Separate Mainnet identity'}</strong><p>{ru?'Подпись только для входа. Сессия — 15 минут; покупка требует отдельного разрешения.':'Sign-in signature only. A 15-minute session; purchases require separate permission.'}</p></div><MainnetIdentity ru={ru}/></div>
    <div className="nw-mobile-language"><GuideLanguage lang={lang} onChange={setLang}/></div>
    <nav className="nw-mainnet-tabs" role="tablist" aria-label={ru?'Разделы Mainnet':'Mainnet sections'}>{sections.map(([id,label],i)=><button key={id} id={'mn-tab-'+id} role="tab" aria-selected={tab===id} tabIndex={tab===id?0:-1} aria-controls={'mn-panel-'+id} onClick={()=>open(id)} onKeyDown={e=>{if(!['ArrowRight','ArrowLeft','Home','End'].includes(e.key))return;e.preventDefault();const n=e.key==='Home'?0:e.key==='End'?sections.length-1:(i+(e.key==='ArrowRight'?1:sections.length-1))%sections.length;open(sections[n][0]);document.getElementById('mn-tab-'+sections[n][0])?.focus();}}>{label}</button>)}</nav>
    <section id={'mn-panel-'+tab} role="tabpanel" aria-labelledby={'mn-tab-'+tab} className="mn-panel">
