@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-09T16:28:42.843542+00:00",
+  "sourceCommit": "b28c14ab28a17c5222982151d2bd4ef002176860",
+  "environment": "ARC_MAINNET_CLOSED_STAGING",
+  "identityHttps": "https://api.mercenta.xyz/mainnet-auth/",
+  "frontend": "https://mainnet.mercenta.xyz/app",
+  "tests": {
+    "backend": 525,
+    "frontend": 416,
+    "serverMainnet": 90,
+    "integrationIncludedInBackend": 20,
+    "identityIncludedInFrontend": 5,
+    "builds": "PASS",
+    "lintMaxWarnings": 0
+  },
+  "checks": {
+    "httpsIdentity": "PASS",
+    "engineeringWalletEphemeral": true,
+    "secureHttpOnlyHostCookie": true,
+    "sameSite": "Strict",
+    "sessionMinutes": 15,
+    "replayRejected": true,
+    "testnetOriginRejected": true,
+    "logoutRevokes": true,
+    "financialProxyAbsent": true,
+    "testnetUnchanged": true,
+    "mainnetChainId": 5042,
+    "testnetChainId": 5042002,
+    "journalMode": "wal",
+    "integrity": "ok",
+    "emptyStagingEncryptedRestore": "PASS_NOT_CUSTOMER_DR"
+  },
+  "browser": {
+    "checkedAt": "2026-10-09T16:26:49.093Z",
+    "desktop": {
+      "width": 1280,
+      "overflow": false,
+      "identity": true,
+      "closed": true
+    },
+    "mobile": {
+      "width": 390,
+      "overflow": false,
+      "buttonVisible": true
+    },
+    "landing": {
+      "cinematicPreserved": true,
+      "overflow": false
+    },
+    "uncaughtPageErrors": [],
+    "moneyMoved": false
+  },
+  "vercel": {
+    "commit": "b28c14ab28a17c5222982151d2bd4ef002176860",
+    "state": "success",
+    "checks": [
+      {
+        "context": "Vercel \u2013 status-mercenta",
+        "state": "success"
+      },
+      {
+        "context": "Vercel \u2013 mercenta",
+        "state": "success"
+      },
+      {
+        "context": "Vercel \u2013 mercenta-docs",
+        "state": "success"
+      }
+    ]
+  },
+  "security": {
+    "sourceAndBundleHeuristicScan": "PASS",
+    "exactConfiguredCredentialScan": "PASS",
+    "historyRewritten": false,
+    "historyCleanClaimed": false
+  },
+  "financial": {
+    "purchasesEnabled": false,
+    "depositsEnabled": false,
+    "signerEnabled": false,
+    "financialWriteRoutes": false,
+    "orders": 0,
+    "moneyMoved": false,
+    "realProviderPurchaseTested": false,
+    "canaryTransportTests": "SYNTHETIC_ONLY",
+    "refunds": "MERCENTA_SUPPORT_OWNER_MANUAL_ONLY"
+  },
+  "tractionClaimed": false,
+  "remaining": [
+    "CONFIRMED_PRODUCTION_OWNER_AND_MERCHANT_PUBLIC_ADDRESSES",
+    "VERIFIED_PRODUCTION_CUSTODY_AND_SCOPED_OWNER_ROLE",
+    "FRESH_PROVIDER_SIDE_SPEND_CAP_EVIDENCE",
+    "AUTHENTICATED_LIVE_SUPPLY_AND_OPENING_BALANCE_RECONCILIATION",
+    "PROTECTED_FINANCIAL_HTTP_ROUTE_INTEGRATION",
+    "CUSTOMER_DATA_RESTORE_AND_REAL_OPERATOR_ALERT_DELIVERY",
+    "FRESH_EXACT_ONE_ORDER_OWNER_APPROVAL_INCLUDING_GAS",
+    "REAL_PAYMENT_DELIVERY_JOURNAL_MANUAL_REFUND_ACCEPTANCE",
+    "SEPARATE_GATEWAY_X402_ONRAMP_USYC_BORROW_ACCEPTANCE"
+  ]
+}
