@@ -1,0 +1,33 @@
+[Unit]
+Description=Mercenta Mainnet closed staging (not financial runtime)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mercenta-mainnet
+Group=mercenta-mainnet
+WorkingDirectory=/opt/mercenta-mainnet/current/backend
+Environment=NODE_ENV=production
+Environment=MAINNET_STAGING_DATABASE=/var/lib/mercenta-mainnet/staging.sqlite
+Environment=TESTNET_DATABASE_GUARD=/var/lib/mercenta/mercenta.sqlite
+Environment=MAINNET_STAGING_PORT=3014
+Environment=MAINNET_PAYMENTS_ENABLED=false
+Environment=ENABLE_FULFILLMENT=false
+ExecStart=/usr/local/bin/node dist/mainnet-staging-server.js
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/mercenta-mainnet
+InaccessiblePaths=/etc/mercenta /var/lib/mercenta /root
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target
