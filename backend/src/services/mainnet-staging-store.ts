@@ -1,6 +1,7 @@
 /** Durable preparation seam. No signer, supplier POST, automatic refund or public write route. */
 import Database from 'better-sqlite3';
-import {createHash, randomUUID} from 'node:crypto';
+import {createHash, randomUUID, randomBytes, createCipheriv, createDecipheriv, createHmac} from 'node:crypto';
+import {MainnetStagingJournal} from './mainnet-staging-journal.js';
 import {z} from 'zod';
 import {assertProductionNamespace} from './production-mainnet.js';
 import {verifyMainnetUsdcReceipt} from './mainnet-usdc-receipt.js';
@@ -28,13 +29,19 @@ const edges: Record<StagingState, readonly StagingState[]> = {
 
 export class MainnetStagingStore {
   readonly db: Database.Database;
+  readonly journal: MainnetStagingJournal;
   constructor(path: string, testnetPath: string) {
     assertProductionNamespace(path, testnetPath);
     this.db = new Database(path);
     const tables = this.db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all() as {name:string}[];
     if(tables.some(t=>!t.name.startsWith('staging_') && !t.name.startsWith('sqlite_'))) {this.db.close();throw Error('STAGING_DATABASE_NOT_EMPTY_OR_ISOLATED');}
+    if(!tables.some(t=>t.name==='staging_journals') && tables.some(t=>t.name==='staging_receipts')) {
+      const count=(this.db.prepare('SELECT COUNT(*) AS n FROM staging_receipts').get() as {n:number}).n;
+      if(count>0){this.db.close();throw Error('STAGING_MIGRATION_REQUIRES_RECEIPT_RECONCILIATION');}
+    }
     this.db.pragma('journal_mode = WAL');
     this.db.pragma('synchronous = FULL');
+    this.db.pragma('foreign_keys = ON');
     this.db.pragma('busy_timeout = 5000');
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS staging_metadata(key TEXT PRIMARY KEY,value TEXT NOT NULL);
@@ -47,6 +54,9 @@ export class MainnetStagingStore {
         from_state TEXT, to_state TEXT NOT NULL, occurred_at INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS staging_receipts(
         tx_hash TEXT PRIMARY KEY, order_id TEXT NOT NULL UNIQUE, binding TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS staging_delivery(order_id TEXT PRIMARY KEY, encrypted_payload TEXT NOT NULL, payload_digest TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS staging_refund_receipts(tx_hash TEXT PRIMARY KEY,order_id TEXT NOT NULL UNIQUE,binding TEXT NOT NULL);
+      CREATE TRIGGER IF NOT EXISTS staging_quote_immutable BEFORE UPDATE OF id,reference,owner,body,fingerprint,created_at ON staging_orders BEGIN SELECT RAISE(ABORT,'QUOTE_IMMUTABLE'); END;
       CREATE TABLE IF NOT EXISTS staging_refund_requests(
         order_id TEXT PRIMARY KEY, requested_at INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'MANUAL_REVIEW');
       CREATE TRIGGER IF NOT EXISTS staging_event_no_update BEFORE UPDATE ON staging_events BEGIN SELECT RAISE(ABORT,'APPEND_ONLY'); END;
@@ -55,6 +65,7 @@ export class MainnetStagingStore {
     const pin = this.db.prepare('SELECT value FROM staging_metadata WHERE key=?').get('network') as {value:string}|undefined;
     if (pin && pin.value !== 'arc-mainnet:5042:staging-v1') { this.db.close(); throw Error('DATABASE_NETWORK_MISMATCH'); }
     this.db.prepare('INSERT OR IGNORE INTO staging_metadata(key,value) VALUES(?,?)').run('network','arc-mainnet:5042:staging-v1');
+    this.journal=new MainnetStagingJournal(this.db);
   }
   close() { this.db.close(); }
   quote(raw: unknown, now = Date.now()) {
@@ -104,6 +115,7 @@ export class MainnetStagingStore {
       if (q.expiresAt <= now) throw Error('EXPIRED_PAYMENT_REQUIRES_MANUAL_RECONCILIATION');
       this.move(row,'PAYMENT_VERIFIED',now);
       this.db.prepare('INSERT INTO staging_receipts(tx_hash,order_id,binding) VALUES(?,?,?)').run(tx,id,JSON.stringify(receipt));
+      this.journal.payment(id,row.fingerprint,q.saleMicro,tx,now);
     }).immediate();
   }
   reserve(id: string, owner: string, raw: unknown, now = Date.now()) {
@@ -132,6 +144,56 @@ export class MainnetStagingStore {
       this.db.prepare('INSERT OR IGNORE INTO staging_refund_requests(order_id,requested_at) VALUES(?,?)').run(id,now);
     }).immediate();
     return {status:'MANUAL_REVIEW',refundExecuted:false as const};
+  }
+  /** Internal authenticated-adapter seam only. Partial, mismatched and unowned delivery is rejected.
+   * No real supplier adapter or public delivery route is attached to the closed service. */
+  sealDelivery(id:string,owner:string,raw:unknown,key:Buffer,now=Date.now()) {
+    const delivery=z.object({reference:z.string().uuid(),sku:z.string().min(1).max(128),region:z.string().min(2).max(16),costUsdMicro:micro,codes:z.array(z.string().min(1).max(4096)).length(1)}).strict().parse(raw);
+    if(key.length!==32)throw Error('DELIVERY_KEY_INVALID');
+    this.db.transaction(()=>{
+      const row=this.owned(id,owner),q=JSON.parse(row.body) as StagingQuote;
+      if(delivery.reference!==q.reference||delivery.sku!==q.sku||delivery.region!==q.region||delivery.costUsdMicro!==q.costMicro)throw Error('DELIVERY_BINDING_MISMATCH');
+      if(this.db.prepare('SELECT order_id FROM staging_refund_receipts WHERE order_id=?').get(id))throw Error('REFUNDED_ORDER_REQUIRES_MANUAL_RECONCILIATION');
+      const digest=createHmac('sha256',key).update(JSON.stringify(delivery)).digest('hex');
+      const previous=this.db.prepare('SELECT payload_digest FROM staging_delivery WHERE order_id=?').get(id) as {payload_digest:string}|undefined;
+      if(previous){if(previous.payload_digest!==digest)throw Error('DELIVERY_REPLAY_MISMATCH');return;}
+      const iv=randomBytes(12),cipher=createCipheriv('aes-256-gcm',key,iv);
+      cipher.setAAD(Buffer.from('arc-mainnet:5042:'+id+':'+row.owner+':'+row.fingerprint));
+      const ciphertext=Buffer.concat([cipher.update(JSON.stringify(delivery)),cipher.final()]);
+      // Both transitions and accounting are in one DB transaction; a crash cannot expose half a delivery.
+      this.move(row,'DELIVERY_PENDING',now);
+      this.move({...row,state:'DELIVERY_PENDING'},'DELIVERED',now);
+      this.db.prepare('INSERT INTO staging_delivery VALUES(?,?,?)').run(id,JSON.stringify({version:1,iv:iv.toString('base64'),tag:cipher.getAuthTag().toString('base64'),ciphertext:ciphertext.toString('base64')}),digest);
+      this.journal.delivery(id,row.fingerprint,q.saleMicro,q.costMicro,q.reference,now);
+      this.db.prepare('UPDATE staging_orders SET reserve_micro=? WHERE id=?').run('0',id);
+    }).immediate();
+    return {delivered:true,secretReturned:false};
+  }
+  /** Only a future authenticated customer endpoint may call this; never wire it into LLM tools. */
+  readOwnedDelivery(id:string,owner:string,key:Buffer) {
+    const row=this.owned(id,owner);
+    const stored=this.db.prepare('SELECT encrypted_payload FROM staging_delivery WHERE order_id=?').get(id) as {encrypted_payload:string}|undefined;
+    if(!stored)throw Error('DELIVERY_NOT_AVAILABLE');
+    const payload=JSON.parse(stored.encrypted_payload),dec=createDecipheriv('aes-256-gcm',key,Buffer.from(payload.iv,'base64'));
+    dec.setAAD(Buffer.from('arc-mainnet:5042:'+id+':'+row.owner+':'+row.fingerprint));dec.setAuthTag(Buffer.from(payload.tag,'base64'));
+    return JSON.parse(Buffer.concat([dec.update(Buffer.from(payload.ciphertext,'base64')),dec.final()]).toString()) as {reference:string;sku:string;region:string;codes:string[]};
+  }
+  /** Records an already-settled manual merchant-to-customer refund. Never authorizes, signs or sends it. */
+  async recordManualRefund(id:string,owner:string,hash:string,assetKind:'erc20'|'native',witnesses:{primaryWitness:WitnessPorts;secondaryWitness:WitnessPorts},now=Date.now()) {
+    const before=this.owned(id,owner),q=JSON.parse(before.body) as StagingQuote;
+    if(!this.db.prepare('SELECT order_id FROM staging_receipts WHERE order_id=?').get(id))throw Error('NO_VERIFIED_PAYMENT');
+    const receipt=await verifyMainnetUsdcReceipt({hash,sender:q.merchant,recipient:q.owner,amountMicro:BigInt(q.saleMicro),assetKind},witnesses);
+    if(receipt.status!=='VERIFIED')throw Error('REFUND_NOT_VERIFIED');
+    return this.db.transaction(()=>{
+      const row=this.owned(id,owner),tx=receipt.hash.toLowerCase();
+      const old=this.db.prepare('SELECT tx_hash FROM staging_refund_receipts WHERE order_id=?').get(id) as {tx_hash:string}|undefined;
+      if(old){if(old.tx_hash!==tx)throw Error('REFUND_ALREADY_RECORDED');return {recorded:true,refundExecuted:false};}
+      this.db.prepare('INSERT INTO staging_refund_receipts VALUES(?,?,?)').run(tx,id,JSON.stringify(receipt));
+      this.journal.refund(id,row.fingerprint,q.saleMicro,tx,row.state==='DELIVERED',now);
+      this.db.prepare('INSERT INTO staging_refund_requests(order_id,requested_at,status) VALUES(?,?,?) ON CONFLICT(order_id) DO UPDATE SET status=excluded.status').run(id,now,'MANUAL_REFUND_VERIFIED');
+      // A customer refund does not resolve an unknown procurement: its reservation is deliberately retained.
+      return {recorded:true,refundExecuted:false};
+    }).immediate();
   }
   snapshot() {
     const r = this.db.prepare('SELECT COUNT(*) AS count FROM staging_orders').get() as {count:number};
