@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-09T18:48:49.989358+00:00",
+  "sourceCommit": "88ed64eac276641b6b066333eaedb3ce0ac8b5c4",
+  "scope": "READ_ONLY_SUPPLY_MONITOR_AND_RETAIL_PRICING",
+  "tests": {
+    "backend": 532,
+    "frontend": 419,
+    "serverFocused": 45,
+    "backendBuild": "PASS",
+    "frontendBuild": "PASS",
+    "frontendLintMaxWarnings": 0
+  },
+  "policy": {
+    "retailMarkupBps": 900,
+    "costTenRetail": "10.900000",
+    "profitAfterFeesGuaranteed": false,
+    "pauseAtOrBelowUsd": "10.000000",
+    "resumeAboveUsd": "10.000000",
+    "balancePollSeconds": 15,
+    "catalogPollSeconds": 65,
+    "buyerEngineeringChecklistRemoved": true,
+    "outOfStockHiddenAndRestored": "PASS_SYNTHETIC_REGRESSION_AND_CURRENT_LIVE_STOCK_CHECK"
+  },
+  "deployment": {
+    "service": "mercenta-supply-monitor",
+    "loopbackPort": 3015,
+    "ownUnixUser": true,
+    "separateData": true,
+    "financialWritesRejected": true,
+    "existingTestnetAndMainnetIdentityUnchanged": true,
+    "restartEnabled": true,
+    "canonicalSymlinkEntrypointVerified": true
+  },
+  "liveNextCycle": {
+    "supplyReady": true,
+    "inventoryReady": true,
+    "maintenance": false,
+    "realPurchasesEnabled": false,
+    "checkedAt": 1791571682908,
+    "stockCheckedAt": 1791571697393
+  },
+  "browser": {
+    "checkedAt": "2026-10-09T18:47:07.775Z",
+    "commit": "35a6f5f466f9a0add5f96b31e46bf546d24b4012",
+    "desktop": {
+      "overflow": false,
+      "technicalChecklistRemoved": true
+    },
+    "mobile": {
+      "overflow": false
+    },
+    "price": {
+      "live": true,
+      "policy": "MERCENTA_RETAIL_9_V1",
+      "compared": 3,
+      "noDoubleMarkup": true,
+      "outOfStockExposed": false
+    },
+    "cinematicLandingPreserved": true,
+    "pageErrors": [],
+    "moneyMoved": false
+  },
+  "vercel": {
+    "commit": "88ed64eac276641b6b066333eaedb3ce0ac8b5c4",
+    "state": "success",
+    "checks": [
+      {
+        "context": "Vercel \u2013 status-mercenta",
+        "state": "success"
+      },
+      {
+        "context": "Vercel \u2013 mercenta-docs",
+        "state": "success"
+      },
+      {
+        "context": "Vercel \u2013 mercenta",
+        "state": "success"
+      }
+    ]
+  },
+  "security": {
+    "sourceBundleScan": "PASS_HEURISTIC",
+    "exactConfiguredCredentialScan": "PASS",
+    "gitHistoryRewritten": false
+  },
+  "refunds": "SUPPORT_OWNER_MANUAL_ONLY",
+  "realMainnetCheckoutEnabled": false,
+  "moneyMoved": false,
+  "businessPilotClaimed": false,
+  "remaining": [
+    "CONFIRMED_MAINNET_MERCHANT_RECIPIENT",
+    "PROTECTED_PRODUCTION_PAYMENT_PROCUREMENT_AND_DELIVERY_HTTP_INTEGRATION",
+    "LIVE_WEBSITE_PAYMENT_DELIVERY_AND_MANUAL_REFUND_ACCEPTANCE"
+  ]
+}
