@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-09T16:28:42.843542+00:00",
+  "checkedAt": "2026-10-09T17:01:58.617019+00:00",
   "sourceCommit": "b28c14ab28a17c5222982151d2bd4ef002176860",
   "environment": "ARC_MAINNET_CLOSED_STAGING",
   "identityHttps": "https://api.mercenta.xyz/mainnet-auth/",
@@ -12,7 +12,8 @@
     "integrationIncludedInBackend": 20,
     "identityIncludedInFrontend": 5,
     "builds": "PASS",
-    "lintMaxWarnings": 0
+    "lintMaxWarnings": 0,
+    "postPolishIdentityTests": 5
   },
   "checks": {
     "httpsIdentity": "PASS",
@@ -32,7 +33,9 @@
     "emptyStagingEncryptedRestore": "PASS_NOT_CUSTOMER_DR"
   },
   "browser": {
-    "checkedAt": "2026-10-09T16:26:49.093Z",
+    "checkedAt": "2026-10-09T17:01:42.900Z",
+    "frontendCommit": "41e2b3143f45a05d446e82266e62224580a81b76",
+    "hintInline": true,
     "desktop": {
       "width": 1280,
       "overflow": false,
@@ -52,19 +55,19 @@
     "moneyMoved": false
   },
   "vercel": {
-    "commit": "b28c14ab28a17c5222982151d2bd4ef002176860",
+    "commit": "41e2b3143f45a05d446e82266e62224580a81b76",
     "state": "success",
     "checks": [
-      {
-        "context": "Vercel \u2013 status-mercenta",
-        "state": "success"
-      },
       {
         "context": "Vercel \u2013 mercenta",
         "state": "success"
       },
       {
         "context": "Vercel \u2013 mercenta-docs",
+        "state": "success"
+      },
+      {
+        "context": "Vercel \u2013 status-mercenta",
         "state": "success"
       }
     ]
@@ -97,5 +100,6 @@
     "FRESH_EXACT_ONE_ORDER_OWNER_APPROVAL_INCLUDING_GAS",
     "REAL_PAYMENT_DELIVERY_JOURNAL_MANUAL_REFUND_ACCEPTANCE",
     "SEPARATE_GATEWAY_X402_ONRAMP_USYC_BORROW_ACCEPTANCE"
-  ]
+  ],
+  "frontendVerifiedCommit": "41e2b3143f45a05d446e82266e62224580a81b76"
 }
