@@ -17,6 +17,10 @@ It is pinned in the server-owned retail policy for Arc Mainnet (chain 5042). Thi
 - Expired quotes release unpaid holds; an observed late payment is recorded for manual review rather than silently discarded or automatically procured.
 - These libraries never sign, transfer, call the supply purchase API, expose voucher plaintext, or issue refunds.
 
+## Published read-only configuration
+
+`GET https://api.mercenta.xyz/commerce-read/payment-policy` exposes the pinned recipient, chain 5042, nine-percent markup and manual-refund mode. It explicitly returns `paymentsEnabled: false` and `transferInstructionsAvailable: false`. HTTPS origin/CORS, no-store, write rejection and positive-only stock were checked on 2026-10-09. This route does not accept payments or create orders. The VPS read-only monitor source is `7d82fd45c14a1f22bafac06bfc3f7e5dd553b56e`; its focused tests passed 93/93, and the full sequential backend suite passed 573/573 with a successful build. See `docs/evidence/mainnet-retail-policy-2026-10-09.json` for the acceptance snapshot. The original flagship landing and Testnet runtime were not changed.
+
 ## Not yet connected to public commerce
 
 No payment button, public quote/order route or purchasing worker is enabled by this checkpoint. The production adapter must bind authenticated Mainnet sessions to private live observations, persist a single procurement attempt before its POST, reconcile ambiguous outcomes by lookup only, seal delivered codes separately from LLM context, and book delivery/revenue atomically. Customer-owned order retrieval, monitoring, manual support and refund review must remain available while new sales pause.
