@@ -2,6 +2,7 @@
 import {createHash,randomUUID,randomBytes,createCipheriv} from 'node:crypto';
 import {verifyTypedData} from 'viem';
 import {z} from 'zod';
+import {retailMicro} from './retail-pricing.js';
 import {parseMoney} from '../money.js';
 import {MainnetStagingStore,type StagingQuote} from './mainnet-staging-store.js';
 import {evaluateProductionLaunch,type ProductionLaunch} from './production-mainnet.js';
@@ -14,7 +15,7 @@ type Grant=z.infer<typeof grantSchema>;
 type SupplyApi=Pick<PublicCommerceApi,'keyFingerprint'|'voucherService'|'item'|'procurementCashUsd'|'createVoucher'|'orderStatus'|'receiveVouchers'|'orderTransactions'>;
 type Witnesses={primaryWitness:WitnessPorts;secondaryWitness:WitnessPorts};
 type Attempt={order_id:string;reference:string;sku:string;cost_micro:string;provider_key:string;supply_order_id:string|null};
-export type CanaryPorts={api:SupplyApi;ownerWallet:string;merchantWallet:string;deliveryKey:Buffer;launchEvidence:()=>ProductionLaunch;capEvidence:()=>SpendCapEvidence|undefined;witnesses:Witnesses;allowedSku:(sku:string)=>boolean;clock?:()=>number;pricing?:()=>{usdPerUsdcMicro:string;marginBps:number;policyId:string}};
+export type CanaryPorts={api:SupplyApi;ownerWallet:string;merchantWallet:string;deliveryKey:Buffer;launchEvidence:()=>ProductionLaunch;capEvidence:()=>SpendCapEvidence|undefined;witnesses:Witnesses;allowedSku:(sku:string)=>boolean;clock?:()=>number;pricing?:()=>{usdPerUsdcMicro:string;markupBps:number;policyId:string}};
 export function canaryTypedData(q:StagingQuote,orderId:string,fingerprint:string,g:Pick<Grant,'nonce'|'expiresAt'|'gasCapMicro'|'allowVoucherReceipt'>){return {domain:{name:'Mercenta Mainnet Owner Canary',version:'1',chainId:5042,verifyingContract:q.merchant as `0x${string}`},types:CANARY_GRANT_TYPES,primaryType:'Canary' as const,message:{nonce:g.nonce as `0x${string}`,orderId,quoteDigest:('0x'+fingerprint) as `0x${string}`,customer:q.owner as `0x${string}`,merchant:q.merchant as `0x${string}`,costUsdMicro:BigInt(q.costMicro),saleUsdcMicro:BigInt(q.saleMicro),gasCapMicro:BigInt(g.gasCapMicro),expiresAtMs:BigInt(g.expiresAt),allowVoucherReceipt:g.allowVoucherReceipt}};}
 const orderSchema=z.object({orderId:z.string().min(1).max(180),reference:z.string().max(40),itemId:z.string(),quantity:z.literal(1),currency:z.literal('USD'),amount:z.union([z.string(),z.number()]).transform(String),status:z.string(),vouchers:z.array(z.object({pin:z.string().min(5).max(4096)})).max(1).optional()});
 export class MainnetCanaryOperator {
@@ -34,9 +35,9 @@ export class MainnetCanaryOperator {
  async prepareQuote(actor:string,sku:string,region:string) {
   address.parse(actor);if(!this.ports.allowedSku(sku))throw Error('SKU_NOT_ALLOWLISTED');const ids=this.ids(sku),service=await this.ports.api.voucherService(ids.service),item=await this.ports.api.item(ids.service,ids.item);
   if(service.countryCode!==region||item.inStock<1||item.isLongOrder)throw Error('REGION_OR_STOCK_UNAVAILABLE');
-  const pricing=z.object({usdPerUsdcMicro:micro,marginBps:z.number().int().min(1500).max(5000),policyId:z.string().min(1).max(100)}).strict().parse(this.ports.pricing?.());
+  const pricing=z.object({usdPerUsdcMicro:micro,markupBps:z.number().int().min(800).max(1000),policyId:z.string().min(1).max(100)}).strict().parse(this.ports.pricing?.());
   const rate=BigInt(pricing.usdPerUsdcMicro),cost=BigInt(item.priceUsdUnits);if(rate<=0n||cost<=0n||cost>1000000n)throw Error('CANARY_COST_OR_RATE_INVALID');
-  const denominator=rate*BigInt(10000-pricing.marginBps),sale=(cost*1000000n*10000n+denominator-1n)/denominator;
+  const retail=retailMicro(cost,pricing.markupBps),sale=(retail*1000000n+rate-1n)/rate;
   const q={reference:randomUUID(),owner:actor.toLowerCase(),merchant:this.ports.merchantWallet.toLowerCase(),sku,region,quantity:1 as const,saleMicro:sale.toString(),costMicro:cost.toString(),expiresAt:this.clock()+180000,chainId:5042 as const};
   return this.store.db.transaction(()=>{const id=this.store.quote(q,this.clock());this.store.db.prepare('INSERT INTO staging_quote_pricing VALUES(?,?)').run(id,JSON.stringify(pricing));return {id,saleMicro:q.saleMicro,region,expiresAt:q.expiresAt,pricingPolicy:pricing.policyId,kind:'PROPOSAL_NOT_PAYMENT_AUTHORIZATION',purchasesEnabled:false};}).immediate();
  }

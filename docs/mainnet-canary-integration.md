@@ -23,7 +23,7 @@ These four identity routes are not financial routes. All order, deposit and proc
 
 `MainnetCanaryOperator` connects the existing pinned Public API transport to the isolated order store:
 
-1. Read the exact allowlisted voucher, stock and region. Compute an integer quote under an explicitly configured USD/USDC pricing policy, with at least 15% gross margin before separately disclosed fees. An owner-fixed peg policy is not advertised as a live FX feed.
+1. Read the exact allowlisted voucher, stock and region. Compute an integer quote under an explicitly configured USD/USDC pricing policy, with the owner-selected 9% markup on cost before separately disclosed fees. An owner-fixed peg policy is not advertised as a live FX feed.
 2. Require an EIP-712 owner signature tied to chain, merchant, customer, immutable quote digest, order, exact cost/sale, nonce, gas ceiling, expiry and deliberate voucher receipt. Sign-in signatures and LLM text cannot substitute for this permission. The original signed grant is stored encrypted, not in public trace data.
 3. Verify exact payment using two canonical witnesses. Preserve received-payment liability even if gas exceeds the approved cap; do not procure in that case. Native fee wei are recorded separately, not added as a second USDC balance or charged to merchant books as customer gas.
 4. Recheck fresh stock, price, supplier cash, outstanding reservations and an independently verified exact provider-side spend cap. Require the server-owned release evidence, approved owner/merchant and exact server cost/sale pins. Preserve the $10 floor.

@@ -1,0 +1,23 @@
+[Unit]
+Description=Mercenta read-only supply availability monitor
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+User=mercenta-supply
+Group=mercenta-supply
+WorkingDirectory=/opt/mercenta-supply/current/backend
+EnvironmentFile=/etc/mercenta-supply/monitor.env
+ExecStart=/usr/local/bin/node /opt/mercenta-supply/current/backend/dist/supply-monitor-server.js
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/mercenta-supply
+InaccessiblePaths=/etc/mercenta /var/lib/mercenta /etc/mercenta-mainnet /var/lib/mercenta-mainnet /root
+CapabilityBoundingSet=
+[Install]
+WantedBy=multi-user.target

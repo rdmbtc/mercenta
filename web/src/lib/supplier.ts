@@ -1,3 +1,4 @@
+import {retailPrice,RETAIL_PRICE_POLICY} from './retail-pricing';
 import {hasStock,availableQuantity} from './catalog-stock';
 import {brandArtwork} from './brand-artwork';
 import {illustrationFor,safeProductImage} from './product-images';
@@ -69,6 +70,7 @@ export interface Catalog {
   sourceStatus?: string;
   coverage?: string;
   purchasingEnabled?: false;
+  pricingPolicy?: string;
 }
 
 const CATEGORY_BY_ID = Object.fromEntries(CATEGORIES.map((c) => [c.id, c])) as Record<CategoryId, Category>;
@@ -138,7 +140,7 @@ function brandOf(name: string): string {
   return clean.replace(/\s{2,}/g, " ") || name.trim();
 }
 
-export function normalizeCatalog(raw: RawProduct[]): CatalogProduct[] {
+export function normalizeCatalog(raw: RawProduct[], pricingPolicy?: string): CatalogProduct[] {
   const out: CatalogProduct[] = [];
   for (const p of raw) {
     const denominations: CatalogDenomination[] = (p.items ?? []).filter(it=>Number.isFinite(it.price)&&it.price>=0&&typeof it.currency==='string').map((it) => {
@@ -146,7 +148,7 @@ export function normalizeCatalog(raw: RawProduct[]): CatalogProduct[] {
       return {
         id: it.id,
         name: it.name ?? (it.nominal != null ? String(it.nominal) : "Standard"),
-        price: it.price,
+        price: pricingPolicy===RETAIL_PRICE_POLICY?it.price:retailPrice(it.price),
         currency: it.currency,
         available: hasStock(it),
         stock,
@@ -209,7 +211,7 @@ export function artworkFirst(products:CatalogProduct[]):CatalogProduct[]{
 }
 export async function getCatalog(): Promise<Catalog> {
  let sourceStatus='backend-unavailable';
- try {const res=await fetch((process.env.BACKEND_URL??'https://api.mercenta.xyz').replace(/\/$/,'')+'/api/account/supplier-catalog',{signal:AbortSignal.timeout(10000),cache:'no-store'});if(res.ok){const feed=await res.json() as {status:string;products:RawProduct[];fetchedAt:string;coverage:string};sourceStatus=feed.status;if(feed.status==='ready'){return {products:artworkFirst(diversify(normalizeCatalog(feed.products.map(p=>({...p,items:p.items?.filter(i=>hasStock(i))})).filter(p=>p.items?.length)))),live:true,generatedAt:feed.fetchedAt,sourceStatus,coverage:feed.coverage,purchasingEnabled:false}}}}catch{/* Never label examples as a successful supplier import. */}
+ try {const res=await fetch((process.env.BACKEND_URL??'https://api.mercenta.xyz').replace(/\/$/,'')+'/commerce-read/catalog',{signal:AbortSignal.timeout(10000),cache:'no-store'});if(res.ok){const feed=await res.json() as {status:string;products:RawProduct[];fetchedAt:string;coverage:string;pricingPolicy?:string};sourceStatus=feed.status;if(feed.status==='ready'){return {products:artworkFirst(diversify(normalizeCatalog(feed.products.map(p=>({...p,items:p.items?.filter(i=>hasStock(i))})).filter(p=>p.items?.length),feed.pricingPolicy))),live:true,generatedAt:feed.fetchedAt,sourceStatus,coverage:feed.coverage,pricingPolicy:RETAIL_PRICE_POLICY,purchasingEnabled:false}}}}catch{/* Never label examples as a successful supplier import. */}
  const examples=FALLBACK.map(p=>({...p,items:p.items?.map(i=>({...i,inStock:0,stock:0,available:false}))}));
  return {products:normalizeCatalog(examples),live:false,sourceStatus,coverage:'examples-only',generatedAt:new Date().toISOString()};
 }
