@@ -1,0 +1,55 @@
+{
+  "kind": "CLOSED_COMMERCE_MODULE_ACCEPTANCE_NOT_GO_LIVE_APPROVAL",
+  "checkedAt": "2026-10-09T11:27:04.284473+00:00",
+  "deployedRevision": "f9da51c5e74c51b61b8f54d2e0ee538c651336a1",
+  "tests": {
+    "localBackendPassed": 505,
+    "localBackendFailed": 0,
+    "serverMainnetPassed": 70,
+    "serverMainnetFailed": 0,
+    "previousFrontendPassed": 411
+  },
+  "closedStagingHealth": {
+    "ok": true,
+    "service": "mercenta-mainnet-staging",
+    "kind": "CLOSED_STAGING_NOT_COMMERCE_RUNTIME",
+    "chainId": 5042,
+    "orders": 0,
+    "journalMode": "wal",
+    "integrity": "ok",
+    "purchasesEnabled": false,
+    "signingEnabled": false
+  },
+  "testnetHealth": {
+    "ok": true,
+    "service": "mercenta-backend",
+    "chainId": 5042002
+  },
+  "verifiedEngineeringControls": [
+    "atomic_payment_receipt_and_balanced_journal",
+    "separate_USD_and_USDC_subledgers",
+    "quote_immutability",
+    "AES_256_GCM_order_bound_delivery",
+    "partial_and_wrong_region_delivery_rejected",
+    "read_only_manual_refund_receipt_recording",
+    "unknown_supply_reserve_retained_after_customer_refund",
+    "legacy_unjournaled_receipts_require_reconciliation",
+    "encrypted_backup_and_empty_clone_migration",
+    "private_Testnet_data_not_readable_by_staging_user"
+  ],
+  "purchasesEnabled": false,
+  "signingEnabled": false,
+  "newPayments": 0,
+  "realSupplyDeliveryTested": false,
+  "productionCustomerRecoveryProven": false,
+  "externalPilotConfirmed": false,
+  "remaining": [
+    "production_custody_and_owner_sessions",
+    "authenticated_stock_cost_balance_and_spend_cap_integration",
+    "actual_procurement_and_customer_delivery_routes",
+    "opening_balance_fee_and_FX_reconciliation",
+    "manual_refund_authorization_and_execution_acceptance",
+    "production_alerts_and_customer_restore_drill",
+    "fresh_exact_owner_canary_approval_and_bounded_real_cycle"
+  ]
+}
