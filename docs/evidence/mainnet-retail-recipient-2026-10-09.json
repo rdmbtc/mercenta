@@ -1,0 +1,27 @@
+{
+  "kind": "READ_ONLY_RECIPIENT_NETWORK_CHECK",
+  "checkedAt": "2026-10-09T19:25:27.888Z",
+  "recipient": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+  "witnesses": [
+    {
+      "host": "rpc.mainnet.arc.io",
+      "chainId": 5042,
+      "head": "25120244",
+      "blockTimestampUnix": "1791573926",
+      "recipientHasCode": false
+    },
+    {
+      "host": "rpc.quicknode.mainnet.arc.io",
+      "chainId": 5042,
+      "head": "25120245",
+      "blockTimestampUnix": "1791573927",
+      "recipientHasCode": false
+    }
+  ],
+  "moneyMoved": false,
+  "ownershipProven": false,
+  "sourceKind": "engineering-read-only-not-traction",
+  "paymentsEnabled": false,
+  "procurementExecuted": false,
+  "refundExecuted": false
+}
