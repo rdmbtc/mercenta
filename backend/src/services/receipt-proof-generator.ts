@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 export type TxReceipt={status:'0x1'|'0x0'|number;blockNumber:bigint;blockHash:string;from:string;to:string;logs?:{address:string;data:string;topics:string[]}[]};
 export type TxData={hash:string;from:string;to:string;value:bigint;chainId:number};
-export type WitnessPorts={name:string;endpoint:string;getChainId:()=>Promise<number>;getTransaction:(hash:string)=>Promise<TxData|null>;getReceipt:(hash:string)=>Promise<TxReceipt|null>;getBlock:(height:string|bigint)=>Promise<{hash:string;number:bigint}|null>;getHead:()=>Promise<bigint>};
+export type WitnessPorts={name:string;endpoint:string;getChainId:()=>Promise<number>;getTransaction:(hash:string)=>Promise<TxData|null>;getReceipt:(hash:string)=>Promise<TxReceipt|null>;getBlock:(height:string|bigint)=>Promise<{hash:string;number:bigint;timestamp?:bigint}|null>;getHead:()=>Promise<bigint>};
 export type DualWitnessPorts={primaryWitness:WitnessPorts;secondaryWitness:WitnessPorts};
 export type ReceiptProofInput={hash:string;expectedSender:string;expectedRecipient:string;expectedAmountMicro:bigint;chainId?:number;minConfirmations?:number;assetKind?:'erc20'|'native'};
 export type ProofStatus='VERIFIED'|'REJECTED'|'UNAVAILABLE';
