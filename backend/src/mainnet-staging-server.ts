@@ -5,15 +5,17 @@ import rateLimit from '@fastify/rate-limit';
 import {MainnetStagingStore} from './services/mainnet-staging-store.js';
 import {pathToFileURL} from 'node:url';
 import {z} from 'zod';
+import {registerMainnetIdentity} from './routes/mainnet-identity.js';
 
 export async function createMainnetStagingServer(path:string,testnetPath:string) {
   const store = new MainnetStagingStore(path,testnetPath);
-  const app = Fastify({logger:false,bodyLimit:4096,trustProxy:false});
+  const app = Fastify({logger:false,bodyLimit:4096,trustProxy:(ip:string)=>ip==='127.0.0.1'||ip==='::1'});
   await app.register(helmet);
   await app.register(rateLimit,{max:60,timeWindow:'1 minute'});
+  registerMainnetIdentity(app,store);
   app.addHook('onClose',async()=>store.close());
   app.get('/api/health',async(_req,reply)=>{const s=store.snapshot();return reply.code(s.integrity==='ok'?200:503).send({ok:s.integrity==='ok',service:'mercenta-mainnet-staging',...s});});
-  app.get('/api/readiness',async()=>({phase:'closed',chainId:5042,purchasesEnabled:false,depositsEnabled:false,refundMode:'support-owner-manual',capabilities:{stagingDatabase:true,publicWriteRoutes:false,signer:false,supplyAdapter:false,paymentRoutes:false,deliveryRoutes:false},remaining:['PRODUCTION_OWNER_SESSION','VERIFIED_CUSTODY','SUPPLY_AND_PAYMENT_INTEGRATION','LIABILITY_JOURNAL_AND_RECONCILIATION','ENCRYPTED_DELIVERY','MANUAL_REFUND_RECEIPT','RESTORE_AND_ALERT_DRILLS','FRESH_OWNER_CANARY_APPROVAL']}));
+  app.get('/api/readiness',async()=>({phase:'closed',chainId:5042,purchasesEnabled:false,depositsEnabled:false,refundMode:'support-owner-manual',capabilities:{stagingDatabase:true,publicFinancialWriteRoutes:false,identityRoutes:true,signer:false,supplyAdapter:false,paymentRoutes:false,deliveryRoutes:false},remaining:['PRODUCTION_OWNER_SESSION','VERIFIED_CUSTODY','SUPPLY_AND_PAYMENT_INTEGRATION','LIABILITY_JOURNAL_AND_RECONCILIATION','ENCRYPTED_DELIVERY','MANUAL_REFUND_RECEIPT','RESTORE_AND_ALERT_DRILLS','FRESH_OWNER_CANARY_APPROVAL']}));
   app.setNotFoundHandler((_req,reply)=>reply.code(503).send({code:'MAINNET_PAYMENTS_CLOSED',purchasesEnabled:false,message:'Payments are closed. Do not send funds. Contact support@mercenta.xyz for existing orders.'}));
   return app;
 }
