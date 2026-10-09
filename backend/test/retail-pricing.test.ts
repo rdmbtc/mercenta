@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {retailMicro,retailPrice} from '../src/services/retail-pricing.js';
+test('nine percent markup is applied once with integer upward rounding',()=>{assert.equal(retailMicro(10000000n),10900000n);assert.equal(retailMicro(1n),2n);assert.equal(retailPrice(10),10.9);assert.equal(retailPrice(2.7883),3.039247)});
+test('supported 8-10 percent policy rejects invalid prices and bps',()=>{assert.equal(retailMicro(100n,800),108n);assert.equal(retailMicro(100n,1000),110n);for(const n of [-1,NaN,Infinity,1.0000001])assert.throws(()=>retailPrice(n));assert.throws(()=>retailMicro(1n,1500));});

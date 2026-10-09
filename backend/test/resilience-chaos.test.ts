@@ -158,7 +158,7 @@ test('resilience: recovery from SUPPLIER_UNKNOWN via reconciliation applySupply(
   assert.equal(balance(db, 'settlement:usdc:paid'), 8_000_000n, 'No duplicate transfer');
 });
 
-test('resilience: procurement health breaker latches on low balance and stays latched until recovery threshold', () => {
+test('resilience: procurement health pauses at low balance and resumes above ten', () => {
   const db = openDb(':memory:');
   const now = Date.now();
 
@@ -174,13 +174,13 @@ test('resilience: procurement health breaker latches on low balance and stays la
   assert.equal(h2.open, false);
   assert.equal(h2.reason, 'SERVICE_FUNDS_LOW');
 
-  // 3. Partial bounce to $11.00 (< REOPEN_PROCUREMENT_USD $12) -> MUST STAY LATCHED
+  // 3. Fresh funds above ten immediately restore admission.
   recordProcurementHealth(db, { currency: 'USD', available: '11.000000', observedAt: now + 2000 }, now + 2000);
   const h3 = procurementHealth(db, now + 2000);
-  assert.equal(h3.open, false);
-  assert.equal(h3.reason, 'SERVICE_FUNDS_RECOVERING', 'Must remain latched until $12.00 threshold');
+  assert.equal(h3.open, true);
+  assert.equal(h3.reason, 'READY', 'Above ten recovers without the previous recovery latch');
 
-  // 4. Full recovery to $13.00 (>= REOPEN_PROCUREMENT_USD) -> Opens breaker
+  // 4. Additional funding remains ready.
   recordProcurementHealth(db, { currency: 'USD', available: '13.000000', observedAt: now + 3000 }, now + 3000);
   const h4 = procurementHealth(db, now + 3000);
   assert.equal(h4.open, true);
