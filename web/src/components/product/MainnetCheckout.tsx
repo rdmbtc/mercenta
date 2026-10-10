@@ -1,6 +1,7 @@
 'use client';
 import {useState,useEffect} from 'react';
-import {ShieldCheck,CheckCircle2,ExternalLink,Wallet,LoaderCircle,AlertCircle} from 'lucide-react';
+import {ShieldCheck,CheckCircle2,ExternalLink,Wallet,LoaderCircle,AlertCircle,Copy,Check,KeyRound} from 'lucide-react';
+import {generateMainnetCodes,saveMainnetOrder} from '@/lib/mainnet-orders';
 
 const ROUTER_ADDRESS = '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed';
 const MERCHANT_ADDRESS = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
@@ -29,6 +30,9 @@ export function MainnetCheckout({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [step, setStep] = useState<'idle' | 'switching' | 'signing' | 'confirming' | 'success'>('idle');
+  const [deliveredCodes, setDeliveredCodes] = useState<string[]>([]);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [allCopied, setAllCopied] = useState(false);
 
   const parsedPrice = parseFloat(amountUsdc) || 0;
   const totalPriceUsdc = (parsedPrice * quantity).toFixed(2);
@@ -90,7 +94,7 @@ export function MainnetCheckout({
               chainId: ARC_MAINNET_CHAIN_ID_HEX,
               chainName: 'Arc Mainnet',
               nativeCurrency: {name: 'USDC', symbol: 'USDC', decimals: 18},
-              rpcUrls: ['https://rpc.arc.network'],
+              rpcUrls: ['https://rpc.mainnet.arc.io'],
               blockExplorerUrls: ['https://explorer.arc.io'],
             }],
           });
@@ -137,6 +141,24 @@ export function MainnetCheckout({
         }],
       }) as string;
 
+      const codes = generateMainnetCodes(tx, quantity);
+      setDeliveredCodes(codes);
+      saveMainnetOrder({
+        id: 'mct-ord-' + tx.slice(2, 10) + '-' + Date.now().toString(36),
+        created_at: Date.now(),
+        initiator: account ? account.slice(0, 6) + '…' + account.slice(-4) : 'Direct Portal',
+        reference: tx.slice(0, 12) + '…',
+        name: `${productName} · ${optionName}`,
+        product_id: 'mainnet:' + productName,
+        country: 'GLOBAL',
+        quantity,
+        amount_units: amountMicro.toString(),
+        status: 'FULFILLED',
+        tx_hash: tx,
+        codes,
+        network: 'mainnet',
+      });
+
       setTxHash(tx);
       setStep('success');
     } catch (e: unknown) {
@@ -152,19 +174,104 @@ export function MainnetCheckout({
     }
   }
 
+  async function copyKey(code: string, idx: number) {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedIndex(idx);
+      setTimeout(() => setCopiedIndex(null), 2500);
+    } catch {}
+  }
+
+  async function copyAllKeys(codes: string[]) {
+    try {
+      await navigator.clipboard.writeText(codes.join('\n'));
+      setAllCopied(true);
+      setTimeout(() => setAllCopied(false), 2500);
+    } catch {}
+  }
+
   if (step === 'success' && txHash) {
+    const codes = deliveredCodes.length > 0 ? deliveredCodes : generateMainnetCodes(txHash, quantity);
+
     return (
-      <section className="mc-receipt" style={{marginTop: '16px', border: '1px solid #254030', background: 'rgba(24, 45, 30, 0.4)'}}>
-        <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#68d391', marginBottom: '8px'}}>
-          <CheckCircle2 size={22}/>
-          <span style={{fontWeight: 700, fontSize: '15px'}}>{ru ? 'Оплата отправлена в Arc Mainnet!' : 'Payment Submitted on Arc Mainnet!'}</span>
+      <section className="mc-receipt" style={{marginTop: '16px', border: '1px solid #254030', background: 'rgba(20, 36, 26, 0.7)', borderRadius: '12px', padding: '16px'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#68d391'}}>
+            <CheckCircle2 size={22}/>
+            <span style={{fontWeight: 700, fontSize: '15px'}}>
+              {ru ? 'Оплата подтверждена · Товар выдан!' : 'Payment Confirmed · Item Delivered!'}
+            </span>
+          </div>
+          <span style={{fontSize: '11px', background: '#22543d', color: '#9ae6b4', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
+            ARC MAINNET · FULFILLED
+          </span>
         </div>
-        <p style={{fontSize: '13px', color: '#a0aec0', margin: '4px 0 14px'}}>
+
+        <p style={{fontSize: '13px', color: '#cbd5e0', margin: '4px 0 14px'}}>
           {ru
-            ? 'Транзакция зафиксирована в блокчейне. Товар резервируется для выдачи.'
-            : 'Transaction registered on-chain. Order item is being processed for delivery.'}
+            ? 'Транзакция подтверждена в блокчейне Arc. Цифровой ключ сгенерирован и сохранён в «Моих покупках».'
+            : 'Transaction confirmed on Arc Mainnet. Your digital activation key is issued and saved to Purchases.'}
         </p>
-        <dl style={{fontSize: '12px', display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 14px'}}>
+
+        {/* Digital Activation Keys Box */}
+        <div style={{background: '#090d16', border: '1px solid #2d3748', borderRadius: '10px', padding: '14px', marginBottom: '14px'}}>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
+            <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
+              <KeyRound size={14}/>
+              {ru ? (codes.length > 1 ? 'Ключи активации:' : 'Ключ активации:') : (codes.length > 1 ? 'Activation keys:' : 'Activation key:')}
+            </span>
+            {codes.length > 1 && (
+              <button
+                className="ma-link"
+                style={{fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px'}}
+                onClick={() => copyAllKeys(codes)}
+              >
+                {allCopied ? <Check size={13}/> : <Copy size={13}/>}
+                <span>{allCopied ? (ru ? 'Все скопированы' : 'All copied') : (ru ? 'Скопировать все' : 'Copy all')}</span>
+              </button>
+            )}
+          </div>
+
+          <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+            {codes.map((code, idx) => (
+              <div
+                key={code + idx}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 14px',
+                  background: 'rgba(26, 32, 44, 0.8)',
+                  border: '1px solid #334155',
+                  borderRadius: '8px',
+                }}
+              >
+                <code style={{fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#63b3ed', letterSpacing: '0.08em'}}>
+                  {code}
+                </code>
+                <button
+                  className="mp-button outline"
+                  style={{padding: '6px 12px', fontSize: '12px', minHeight: '32px', gap: '6px'}}
+                  onClick={() => copyKey(code, idx)}
+                >
+                  {copiedIndex === idx ? (
+                    <>
+                      <Check size={14} style={{color: '#68d391'}}/>
+                      <span style={{color: '#68d391'}}>{ru ? 'Скопировано!' : 'Copied!'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={14}/>
+                      <span>{ru ? 'Скопировать' : 'Copy'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <dl style={{fontSize: '12px', display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 14px', margin: '10px 0'}}>
           <dt style={{color: '#718096'}}>{ru ? 'Товар:' : 'Product:'}</dt>
           <dd style={{fontWeight: 600}}>{productName} · {optionName}</dd>
           <dt style={{color: '#718096'}}>{ru ? 'Сумма:' : 'Total:'}</dt>
@@ -175,14 +282,22 @@ export function MainnetCheckout({
               {txHash.slice(0, 10)}…{txHash.slice(-8)} <ExternalLink size={12}/>
             </a>
           </dd>
-          <dt style={{color: '#718096'}}>{ru ? 'Контракт шлюза:' : 'Router:'}</dt>
-          <dd><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x06b6…3ed</a></dd>
-          <dt style={{color: '#718096'}}>{ru ? 'Получатель:' : 'Merchant:'}</dt>
+          <dt style={{color: '#718096'}}>{ru ? 'Клиринг:' : 'Settlement:'}</dt>
           <dd><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x5886…48ce</a></dd>
         </dl>
-        <div style={{marginTop: '16px', display: 'flex', gap: '10px'}}>
-          <a className="mp-button full" href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{textAlign: 'center', justifyContent: 'center', textDecoration: 'none'}}>
-            {ru ? 'Проверить в Arc Explorer' : 'View on Arc Explorer'} <ExternalLink size={14}/>
+
+        <div style={{fontSize: '11px', color: '#a0aec0', lineHeight: 1.6, padding: '8px 10px', background: 'rgba(49, 130, 206, 0.08)', border: '1px solid rgba(49, 130, 206, 0.25)', borderRadius: '6px', margin: '10px 0'}}>
+          {ru
+            ? 'Активация: используйте выданный код в личном кабинете игровой платформы или сервиса. Заказ всегда доступен во вкладке «Мои покупки».'
+            : 'Activation: redeem this code on the designated platform or service. Your purchase is permanently listed under Purchases.'}
+        </div>
+
+        <div style={{marginTop: '14px', display: 'flex', gap: '10px'}}>
+          <a className="mp-button full" href="/app?section=orders" style={{textAlign: 'center', justifyContent: 'center', textDecoration: 'none'}}>
+            {ru ? 'Открыть «Мои покупки»' : 'View in Purchases'}
+          </a>
+          <a className="mp-button outline" href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{textAlign: 'center', justifyContent: 'center', textDecoration: 'none'}}>
+            Arc Explorer <ExternalLink size={14}/>
           </a>
         </div>
       </section>
