@@ -13,7 +13,14 @@
   "salesUnpaused": true,
   "unpauseTx": "0xa88118ee669bd0ccf92c7e069ef4e878ab64f2abd890dca196490355ab58a805",
   "unpauseBlock": 25282379,
-  "explorer": "https://arcscan.app/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed",
-  "compiler": "0.8.28+commit.7893614a.Emscripten.clang",
-  "evmVersion": "paris"
+  "explorer": "https://explorer.arc.io/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed#code",
+  "verified": true,
+  "verificationType": "exact_match",
+  "verifiedAt": "2026-10-10T23:41:37Z",
+  "compiler": "0.8.28+commit.7893614a",
+  "evmVersion": "paris",
+  "optimization": {
+    "enabled": true,
+    "runs": 200
+  }
 }
