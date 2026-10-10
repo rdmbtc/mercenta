@@ -5061,31 +5061,18 @@
             }
           }
         },
-        "x-source": "routes/auth.ts",
+        "x-source": "routes/mainnet-identity.ts",
         "x-runtime": "testnet",
         "x-real-purchases-enabled": false,
         "x-try-it-disabled": true,
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "address": {
-                    "type": "string",
-                    "pattern": "^0x[a-fA-F0-9]{40}$"
-                  },
-                  "frontendOrigin": {
-                    "type": "string",
-                    "maxLength": 300,
-                    "format": "uri"
-                  }
-                },
-                "required": [
-                  "address",
-                  "frontendOrigin"
-                ]
+                "additionalProperties": false,
+                "description": "No JSON fields required by this handler."
               }
             }
           }
@@ -5175,47 +5162,18 @@
             }
           }
         },
-        "x-source": "routes/auth.ts",
+        "x-source": "routes/mainnet-identity.ts",
         "x-runtime": "testnet",
         "x-real-purchases-enabled": false,
         "x-try-it-disabled": true,
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "address": {
-                    "type": "string",
-                    "pattern": "^0x[a-fA-F0-9]{40}$"
-                  },
-                  "frontendOrigin": {
-                    "type": "string",
-                    "maxLength": 300,
-                    "format": "uri"
-                  },
-                  "nonce": {
-                    "type": "string",
-                    "pattern": "^[a-f0-9]{64}$"
-                  },
-                  "issuedAt": {
-                    "type": "integer",
-                    "minimum": -9007199254740991,
-                    "maximum": 9007199254740991
-                  },
-                  "signature": {
-                    "type": "string",
-                    "pattern": "^0x[a-fA-F0-9]{130}$"
-                  }
-                },
-                "required": [
-                  "address",
-                  "frontendOrigin",
-                  "nonce",
-                  "issuedAt",
-                  "signature"
-                ]
+                "additionalProperties": false,
+                "description": "No JSON fields required by this handler."
               }
             }
           }
@@ -10663,6 +10621,199 @@
         }
       }
     },
+    "/api/auth/session": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "get__api_auth_session",
+        "summary": "GET /api/auth/session",
+        "description": "Wallet sessions are host-only. Account operations require verified wallet ownership. Monetary strings use six fractional decimals; amountUnits are integer micro-USDC strings.",
+        "security": [
+          {
+            "walletSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON result. Response shape depends on this operation; no universal success envelope is imposed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/mainnet-identity.ts",
+        "x-runtime": "testnet",
+        "x-real-purchases-enabled": false
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "post__api_auth_logout",
+        "summary": "POST /api/auth/logout",
+        "description": "Wallet sessions are host-only. Account operations require verified wallet ownership. Monetary strings use six fractional decimals; amountUnits are integer micro-USDC strings. Mutating Try it out is disabled in the documentation. Session mutations additionally require same-origin Origin header.",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON result. Response shape depends on this operation; no universal success envelope is imposed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "x-source": "web route",
+        "x-runtime": "testnet",
+        "x-real-purchases-enabled": false,
+        "x-try-it-disabled": true,
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "No JSON fields required by this handler."
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/account/operator/lab/status": {
       "get": {
         "tags": [
@@ -13435,107 +13586,6 @@
         "x-real-purchases-enabled": false
       }
     },
-    "/api/auth/logout": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "operationId": "post__api_auth_logout",
-        "summary": "POST /api/auth/logout",
-        "description": "Wallet sessions are host-only. Account operations require verified wallet ownership. Monetary strings use six fractional decimals; amountUnits are integer micro-USDC strings. Mutating Try it out is disabled in the documentation. Session mutations additionally require same-origin Origin header.",
-        "security": [],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "JSON result. Response shape depends on this operation; no universal success envelope is imposed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": true
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Request rejected: invalid input, session, ownership, origin, configured capability, budget or idempotency conflict.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "x-source": "web route",
-        "x-runtime": "testnet",
-        "x-real-purchases-enabled": false,
-        "x-try-it-disabled": true,
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "additionalProperties": false,
-                "description": "No JSON fields required by this handler."
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/me": {
       "get": {
         "tags": [
@@ -13627,6 +13677,132 @@
         "x-runtime": "testnet",
         "x-real-purchases-enabled": false
       }
+    },
+    "/api/earn/market": {
+      "get": {
+        "tags": [
+          "External Earn"
+        ],
+        "operationId": "get_api_earn_market",
+        "summary": "Read-only external Ethereum USDC supply market",
+        "description": "Real Ethereum chain 1 observations, including on Testnet hosts. Metadata only: no Mercenta custody, signing, deposits, bridging or guaranteed returns. Unavailable/stale verification does not substitute a rate. No query parameters accepted.",
+        "security": [],
+        "parameters": [],
+        "x-enabled": true,
+        "x-runtime": "external-read-only",
+        "x-market-chain-id": 1,
+        "x-source": "web/src/app/api/earn/market/route.ts",
+        "x-try-it-disabled": true,
+        "responses": {
+          "200": {
+            "description": "Verified or unavailable market snapshot; never authority to invest.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "reason",
+                    "observedAt",
+                    "expiresAt",
+                    "chainId",
+                    "network",
+                    "protocol",
+                    "asset",
+                    "annualRatePercent",
+                    "rateKind",
+                    "blockNumber",
+                    "blockHash",
+                    "availableMicro",
+                    "externalExecutionOnly",
+                    "mercentaCustody",
+                    "principalGuaranteed",
+                    "interestGuaranteed",
+                    "arcNativeYield"
+                  ],
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "available",
+                        "blocked",
+                        "unavailable"
+                      ]
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "observedAt": {
+                      "type": "integer"
+                    },
+                    "expiresAt": {
+                      "type": "integer"
+                    },
+                    "chainId": {
+                      "const": 1
+                    },
+                    "network": {
+                      "const": "Ethereum Mainnet"
+                    },
+                    "protocol": {
+                      "const": "Aave V3"
+                    },
+                    "asset": {
+                      "const": "USDC"
+                    },
+                    "annualRatePercent": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "pattern": "^\\d+\\.\\d{2}$"
+                    },
+                    "rateKind": {
+                      "const": "VARIABLE_SUPPLY_APR"
+                    },
+                    "blockNumber": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "blockHash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "availableMicro": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "externalExecutionOnly": {
+                      "const": true
+                    },
+                    "mercentaCustody": {
+                      "const": false
+                    },
+                    "principalGuaranteed": {
+                      "const": false
+                    },
+                    "interestGuaranteed": {
+                      "const": false
+                    },
+                    "arcNativeYield": {
+                      "const": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Query input is not supported."
+          }
+        }
+      }
     }
   },
   "components": {
@@ -13678,8 +13854,8 @@
   "x-network": "testnet",
   "x-chain-id": 5042002,
   "x-coverage": {
-    "sourceRoutes": 108,
-    "documentedOperations": 110,
+    "sourceRoutes": 112,
+    "documentedOperations": 112,
     "excluded": [
       {
         "path": "/api/x402/margin-report",

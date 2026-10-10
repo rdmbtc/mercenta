@@ -1731,7 +1731,7 @@
             }
           }
         },
-        "x-source": "routes/auth.ts",
+        "x-source": "routes/mainnet-identity.ts",
         "x-runtime": "mainnet",
         "x-real-purchases-enabled": false,
         "x-try-it-disabled": true,
@@ -1766,7 +1766,7 @@
             }
           }
         },
-        "x-source": "routes/auth.ts",
+        "x-source": "routes/mainnet-identity.ts",
         "x-runtime": "mainnet",
         "x-real-purchases-enabled": false,
         "x-try-it-disabled": true,
@@ -3815,6 +3815,76 @@
         "x-enabled": false
       }
     },
+    "/api/auth/session": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "get__api_auth_session",
+        "summary": "GET /api/auth/session",
+        "description": "CLOSED. This path is not a real-buy endpoint. No invoice, debit, agent execution or testnet forwarding.",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "503": {
+            "description": "Mainnet release gate. No testnet fallback and no financial operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MainnetClosed"
+                },
+                "example": {
+                  "code": "MAINNET_CHECKOUT_NOT_ENABLED",
+                  "network": "mainnet",
+                  "chainId": 5042,
+                  "realPurchasesEnabled": false
+                }
+              }
+            }
+          }
+        },
+        "x-source": "routes/mainnet-identity.ts",
+        "x-runtime": "mainnet",
+        "x-real-purchases-enabled": false,
+        "x-enabled": false,
+        "x-try-it-disabled": true
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "post__api_auth_logout",
+        "summary": "POST /api/auth/logout",
+        "description": "CLOSED. This path is not a real-buy endpoint. No invoice, debit, agent execution or testnet forwarding.",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "503": {
+            "description": "Mainnet release gate. No testnet fallback and no financial operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MainnetClosed"
+                },
+                "example": {
+                  "code": "MAINNET_CHECKOUT_NOT_ENABLED",
+                  "network": "mainnet",
+                  "chainId": 5042,
+                  "realPurchasesEnabled": false
+                }
+              }
+            }
+          }
+        },
+        "x-source": "web route",
+        "x-runtime": "mainnet",
+        "x-real-purchases-enabled": false,
+        "x-try-it-disabled": true,
+        "x-enabled": false
+      }
+    },
     "/api/account/operator/lab/status": {
       "get": {
         "tags": [
@@ -4835,41 +4905,6 @@
         "x-try-it-disabled": true
       }
     },
-    "/api/auth/logout": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "operationId": "post__api_auth_logout",
-        "summary": "POST /api/auth/logout",
-        "description": "CLOSED. This path is not a real-buy endpoint. No invoice, debit, agent execution or testnet forwarding.",
-        "security": [],
-        "parameters": [],
-        "responses": {
-          "503": {
-            "description": "Mainnet release gate. No testnet fallback and no financial operation.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MainnetClosed"
-                },
-                "example": {
-                  "code": "MAINNET_CHECKOUT_NOT_ENABLED",
-                  "network": "mainnet",
-                  "chainId": 5042,
-                  "realPurchasesEnabled": false
-                }
-              }
-            }
-          }
-        },
-        "x-source": "web route",
-        "x-runtime": "mainnet",
-        "x-real-purchases-enabled": false,
-        "x-try-it-disabled": true,
-        "x-enabled": false
-      }
-    },
     "/api/me": {
       "get": {
         "tags": [
@@ -5017,6 +5052,132 @@
           }
         }
       }
+    },
+    "/api/earn/market": {
+      "get": {
+        "tags": [
+          "External Earn"
+        ],
+        "operationId": "get_api_earn_market",
+        "summary": "Read-only external Ethereum USDC supply market",
+        "description": "Real Ethereum chain 1 observations, including on Testnet hosts. Metadata only: no Mercenta custody, signing, deposits, bridging or guaranteed returns. Unavailable/stale verification does not substitute a rate. No query parameters accepted.",
+        "security": [],
+        "parameters": [],
+        "x-enabled": true,
+        "x-runtime": "external-read-only",
+        "x-market-chain-id": 1,
+        "x-source": "web/src/app/api/earn/market/route.ts",
+        "x-try-it-disabled": true,
+        "responses": {
+          "200": {
+            "description": "Verified or unavailable market snapshot; never authority to invest.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "reason",
+                    "observedAt",
+                    "expiresAt",
+                    "chainId",
+                    "network",
+                    "protocol",
+                    "asset",
+                    "annualRatePercent",
+                    "rateKind",
+                    "blockNumber",
+                    "blockHash",
+                    "availableMicro",
+                    "externalExecutionOnly",
+                    "mercentaCustody",
+                    "principalGuaranteed",
+                    "interestGuaranteed",
+                    "arcNativeYield"
+                  ],
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "available",
+                        "blocked",
+                        "unavailable"
+                      ]
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "observedAt": {
+                      "type": "integer"
+                    },
+                    "expiresAt": {
+                      "type": "integer"
+                    },
+                    "chainId": {
+                      "const": 1
+                    },
+                    "network": {
+                      "const": "Ethereum Mainnet"
+                    },
+                    "protocol": {
+                      "const": "Aave V3"
+                    },
+                    "asset": {
+                      "const": "USDC"
+                    },
+                    "annualRatePercent": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "pattern": "^\\d+\\.\\d{2}$"
+                    },
+                    "rateKind": {
+                      "const": "VARIABLE_SUPPLY_APR"
+                    },
+                    "blockNumber": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "blockHash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "availableMicro": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "externalExecutionOnly": {
+                      "const": true
+                    },
+                    "mercentaCustody": {
+                      "const": false
+                    },
+                    "principalGuaranteed": {
+                      "const": false
+                    },
+                    "interestGuaranteed": {
+                      "const": false
+                    },
+                    "arcNativeYield": {
+                      "const": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Query input is not supported."
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5068,8 +5229,8 @@
   "x-network": "mainnet",
   "x-chain-id": 5042,
   "x-coverage": {
-    "sourceRoutes": 108,
-    "documentedOperations": 110,
+    "sourceRoutes": 112,
+    "documentedOperations": 111,
     "excluded": [
       {
         "path": "/api/x402/margin-report",

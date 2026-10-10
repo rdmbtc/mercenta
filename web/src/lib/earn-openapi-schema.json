@@ -1,0 +1,97 @@
+{
+  "type": "object",
+  "required": [
+    "status",
+    "reason",
+    "observedAt",
+    "expiresAt",
+    "chainId",
+    "network",
+    "protocol",
+    "asset",
+    "annualRatePercent",
+    "rateKind",
+    "blockNumber",
+    "blockHash",
+    "availableMicro",
+    "externalExecutionOnly",
+    "mercentaCustody",
+    "principalGuaranteed",
+    "interestGuaranteed",
+    "arcNativeYield"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "available",
+        "blocked",
+        "unavailable"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "observedAt": {
+      "type": "integer"
+    },
+    "expiresAt": {
+      "type": "integer"
+    },
+    "chainId": {
+      "const": 1
+    },
+    "network": {
+      "const": "Ethereum Mainnet"
+    },
+    "protocol": {
+      "const": "Aave V3"
+    },
+    "asset": {
+      "const": "USDC"
+    },
+    "annualRatePercent": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^\\d+\\.\\d{2}$"
+    },
+    "rateKind": {
+      "const": "VARIABLE_SUPPLY_APR"
+    },
+    "blockNumber": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "blockHash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "availableMicro": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "externalExecutionOnly": {
+      "const": true
+    },
+    "mercentaCustody": {
+      "const": false
+    },
+    "principalGuaranteed": {
+      "const": false
+    },
+    "interestGuaranteed": {
+      "const": false
+    },
+    "arcNativeYield": {
+      "const": false
+    }
+  },
+  "additionalProperties": false
+}

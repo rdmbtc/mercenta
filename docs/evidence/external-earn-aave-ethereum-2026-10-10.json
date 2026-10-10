@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-10-10T14:54:41.850Z",
+  "kind": "AAVE_ETHEREUM_USDC_READ_ONLY_DISCOVERY",
+  "addressBookCommit": "6a83d11893d6687bf6b9fd091a2a5320b3e1966e",
+  "pool": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+  "usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "aToken": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+  "rows": [
+    {
+      "rpc": "ethereum-rpc.publicnode.com",
+      "chainId": 1,
+      "blockNumber": "26162758",
+      "blockHash": "0x702e1309c41861e3a5b0337089ef644b74b7b585507bb323f5f5851663eea347",
+      "blockTimestamp": "1791644039",
+      "liquidityRateRay": "43249868414399458660245477",
+      "configuration": "7237005577332262213973186574461225012726266025894705449840963830289119321420",
+      "active": true,
+      "frozen": false,
+      "paused": false,
+      "supplyCapTokens": "3000000000",
+      "availableCashUsdcMicro": "134489958516166",
+      "codes": {
+        "pool": "0x96107dc4006b4c7fecd1827cfb275ffeef31e6194cd50466f85f8eb24ccf2679",
+        "usdc": "0xd80d4b7c890cb9d6a4893e6b52bc34b56b25335cb13716e0d1d31383e6b41505",
+        "aToken": "0x82c6d153799b3226525e3b7ec27b843ef44c5f6bca21fcf8b3c80db61ba64881"
+      }
+    },
+    {
+      "rpc": "eth.drpc.org",
+      "chainId": 1,
+      "blockNumber": "26162758",
+      "blockHash": "0x702e1309c41861e3a5b0337089ef644b74b7b585507bb323f5f5851663eea347",
+      "blockTimestamp": "1791644039",
+      "liquidityRateRay": "43249868414399458660245477",
+      "configuration": "7237005577332262213973186574461225012726266025894705449840963830289119321420",
+      "active": true,
+      "frozen": false,
+      "paused": false,
+      "supplyCapTokens": "3000000000",
+      "availableCashUsdcMicro": "134489958516166",
+      "codes": {
+        "pool": "0x96107dc4006b4c7fecd1827cfb275ffeef31e6194cd50466f85f8eb24ccf2679",
+        "usdc": "0xd80d4b7c890cb9d6a4893e6b52bc34b56b25335cb13716e0d1d31383e6b41505",
+        "aToken": "0x82c6d153799b3226525e3b7ec27b843ef44c5f6bca21fcf8b3c80db61ba64881"
+      }
+    }
+  ],
+  "moneyMoved": false,
+  "mercentaCustody": false,
+  "arcNativeYield": false,
+  "productionAcceptance": false
+}
