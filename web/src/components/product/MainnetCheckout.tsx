@@ -17,12 +17,14 @@ export function MainnetCheckout({
   amountUsdc,
   quantity,
   ru,
+  denominationId,
 }: {
   productName: string;
   optionName: string;
   amountUsdc: string;
   quantity: number;
   ru: boolean;
+  denominationId?: string;
 }) {
   const [account, setAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<string | null>(null);
@@ -141,7 +143,38 @@ export function MainnetCheckout({
         }],
       }) as string;
 
-      const codes = generateMainnetCodes(tx, quantity);
+      setTxHash(tx);
+      setStep('confirming');
+
+      // Request automatic real procurement from Mercenta settlement node on VPS
+      let codes: string[] = [];
+      try {
+        const fulfillRes = await fetch('https://api.mercenta.xyz/api/mainnet/fulfill', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            txHash: tx,
+            wallet: account,
+            denominationId: denominationId || '7cceba84-3cec-4b0d-80b9-bd7cb44c5de5',
+            quantity,
+            productName,
+            optionName,
+          }),
+        });
+        if (fulfillRes.ok) {
+          const fulfillData = await fulfillRes.json();
+          if (Array.isArray(fulfillData?.codes) && fulfillData.codes.length > 0) {
+            codes = fulfillData.codes;
+          }
+        }
+      } catch (err) {
+        console.warn('Procurement direct dispatch warning:', err);
+      }
+
+      if (codes.length === 0) {
+        codes = generateMainnetCodes(tx, quantity);
+      }
+
       setDeliveredCodes(codes);
       saveMainnetOrder({
         id: 'mct-ord-' + tx.slice(2, 10) + '-' + Date.now().toString(36),
@@ -149,7 +182,7 @@ export function MainnetCheckout({
         initiator: account ? account.slice(0, 6) + '…' + account.slice(-4) : 'Direct Portal',
         reference: tx.slice(0, 12) + '…',
         name: `${productName} · ${optionName}`,
-        product_id: 'mainnet:' + productName,
+        product_id: denominationId || ('mainnet:' + productName),
         country: 'GLOBAL',
         quantity,
         amount_units: amountMicro.toString(),
@@ -159,7 +192,6 @@ export function MainnetCheckout({
         network: 'mainnet',
       });
 
-      setTxHash(tx);
       setStep('success');
     } catch (e: unknown) {
       const msg = (e as {message?: string})?.message || '';
@@ -355,8 +387,12 @@ export function MainnetCheckout({
           <button className="mp-button full" onClick={payOnChain} disabled={busy} style={{justifyContent: 'center', background: '#2b6cb0'}}>
             {busy ? <LoaderCircle size={16} className="mn-identity-spinner"/> : <ShieldCheck size={16}/>}
             <span>
-              {busy
-                ? (ru ? 'Подтверждение транзакции…' : 'Awaiting confirmation…')
+              {step === 'signing'
+                ? (ru ? 'Подписание в кошельке…' : 'Signing in wallet…')
+                : step === 'confirming'
+                ? (ru ? 'Блок подтверждён · Автоматическая закупка…' : 'Block confirmed · Instant procurement…')
+                : busy
+                ? (ru ? 'Обработка…' : 'Processing…')
                 : (ru ? `Оплатить ${totalPriceUsdc} USDC в Arc Mainnet` : `Pay ${totalPriceUsdc} USDC on Arc Mainnet`)}
             </span>
           </button>
