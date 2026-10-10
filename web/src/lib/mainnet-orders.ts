@@ -35,14 +35,14 @@ const CONFIRMED_ONCHAIN_ORDERS: MainnetOrder[] = [
     created_at: 1791668586000,
     initiator: '0x0b2c…4bdd',
     reference: '0xa5d03fd92bab…',
-    name: 'Digital Goods Voucher · 0.83 USDC',
-    product_id: 'mainnet:digital-goods-voucher',
-    country: 'GLOBAL',
+    name: 'Apple Gift Card · TRY 40 App Store & iTunes code',
+    product_id: 'mainnet:apple-gift-card-tr',
+    country: 'TR',
     quantity: 1,
     amount_units: '830000',
     status: 'FULFILLED',
     tx_hash: '0xa5d03fd92bab5961cdc2e2e35d273ccc8df0a45eb5245d3b657c0718c6c7439d',
-    codes: ['MCT-A5D0-3FD9-2BAB'],
+    codes: ['XFM5TC8W42875ZT2'],
     network: 'mainnet',
   },
 ];
@@ -58,11 +58,18 @@ export function getMainnetOrders(wallet?: string | null): MainnetOrder[] {
   const walletLower = wallet?.toLowerCase();
   for (const known of CONFIRMED_ONCHAIN_ORDERS) {
     const matchesWallet = !walletLower || walletLower === '0x0b2ce1f0f24fb9f5510daead55602913962f4bdd';
-    if (matchesWallet && !stored.some(o => o.tx_hash.toLowerCase() === known.tx_hash.toLowerCase())) {
-      stored.unshift(known);
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
-      } catch {}
+    if (matchesWallet) {
+      const existingIdx = stored.findIndex(o => o.tx_hash.toLowerCase() === known.tx_hash.toLowerCase());
+      if (existingIdx >= 0) {
+        // Upgrade legacy/mock codes with the verified real voucher codes
+        if (!stored[existingIdx].codes.includes('XFM5TC8W42875ZT2')) {
+          stored[existingIdx] = { ...known };
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stored)); } catch {}
+        }
+      } else {
+        stored.unshift(known);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stored)); } catch {}
+      }
     }
   }
 
@@ -79,3 +86,34 @@ export function saveMainnetOrder(order: MainnetOrder): void {
     window.dispatchEvent(new Event('mercenta-order-completed'));
   } catch {}
 }
+
+export async function syncRemoteOrders(wallet?: string | null): Promise<void> {
+  if (typeof window === 'undefined' || !wallet) return;
+  try {
+    const url = `https://api.mercenta.xyz/api/mainnet/orders?wallet=${encodeURIComponent(wallet.toLowerCase())}`;
+    const res = await fetch(url, { headers: { Accept: 'application/json' } });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (Array.isArray(data.orders)) {
+      for (const item of data.orders) {
+        if (!item.tx_hash || !item.codes?.length) continue;
+        saveMainnetOrder({
+          id: 'mct-ord-' + item.tx_hash.slice(2, 10),
+          created_at: Number(item.created_at) || Date.now(),
+          initiator: wallet.slice(0, 6) + '…' + wallet.slice(-4),
+          reference: item.reference_id || item.tx_hash.slice(0, 12) + '…',
+          name: item.product_name ? `${item.product_name} · ${item.option_name || ''}` : 'Digital Goods Voucher',
+          product_id: item.denomination_id || 'mainnet:voucher',
+          country: 'GLOBAL',
+          quantity: item.quantity || 1,
+          amount_units: String(Math.round(parseFloat(item.amount_usdc || '0.83') * 1_000_000)),
+          status: 'FULFILLED',
+          tx_hash: item.tx_hash,
+          codes: item.codes,
+          network: 'mainnet',
+        });
+      }
+    }
+  } catch {}
+}
+
