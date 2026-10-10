@@ -1,0 +1,69 @@
+{
+  "checkedAt": "2026-10-10T00:49:10.908Z",
+  "kind": "USYC_OFFICIAL_ADDRESS_READ_ONLY_CHECK",
+  "source": "https://developers.circle.com/tokenized/usyc/smart-contracts",
+  "rows": [
+    {
+      "host": "rpc.mainnet.arc.io",
+      "chainId": 5042,
+      "blockNumber": "25158519",
+      "blockHash": "0x18774d4d95f04ced20bc83d9cf0b0111cb16baf8c15428349286ad3e26e2818d",
+      "usycDecimals": 6,
+      "contracts": {
+        "usyc": {
+          "address": "0x8a5d989bbb96929f689b0200f435f53da42bf490",
+          "runtimeBytes": 183,
+          "codeHash": "0xe96bde928fd63b7eaa81c50f73f866d57d9e3fc06d011e6d8af307bbd2ef58ca"
+        },
+        "teller": {
+          "address": "0x51a8ce47dc08ba5cd19c7aa84ea6fd6664f60f9b",
+          "runtimeBytes": 183,
+          "codeHash": "0xf87bdcd8ebefde15beddcad3ac0ea497c6eddd396ab54ba298d320bdd70c4d55"
+        },
+        "entitlements": {
+          "address": "0xb69ecb156dc0028198028c501340d5367845ca72",
+          "runtimeBytes": 183,
+          "codeHash": "0xad305330a3b1430254d4e17a2521cda039ccc13db49cc55551e7c8f16a4f93d7"
+        },
+        "oracle": {
+          "address": "0x4bc8d5acd3d040d2903dd9c5b7048520c6ff537a",
+          "runtimeBytes": 183,
+          "codeHash": "0xd31629e8b4d61e3677d0df5ce0ba74bb0e5b763d6dca99f543ed1b5ba61a9e97"
+        }
+      }
+    },
+    {
+      "host": "rpc.quicknode.mainnet.arc.io",
+      "chainId": 5042,
+      "blockNumber": "25158519",
+      "blockHash": "0x18774d4d95f04ced20bc83d9cf0b0111cb16baf8c15428349286ad3e26e2818d",
+      "usycDecimals": 6,
+      "contracts": {
+        "usyc": {
+          "address": "0x8a5d989bbb96929f689b0200f435f53da42bf490",
+          "runtimeBytes": 183,
+          "codeHash": "0xe96bde928fd63b7eaa81c50f73f866d57d9e3fc06d011e6d8af307bbd2ef58ca"
+        },
+        "teller": {
+          "address": "0x51a8ce47dc08ba5cd19c7aa84ea6fd6664f60f9b",
+          "runtimeBytes": 183,
+          "codeHash": "0xf87bdcd8ebefde15beddcad3ac0ea497c6eddd396ab54ba298d320bdd70c4d55"
+        },
+        "entitlements": {
+          "address": "0xb69ecb156dc0028198028c501340d5367845ca72",
+          "runtimeBytes": 183,
+          "codeHash": "0xad305330a3b1430254d4e17a2521cda039ccc13db49cc55551e7c8f16a4f93d7"
+        },
+        "oracle": {
+          "address": "0x4bc8d5acd3d040d2903dd9c5b7048520c6ff537a",
+          "runtimeBytes": 183,
+          "codeHash": "0xd31629e8b4d61e3677d0df5ce0ba74bb0e5b763d6dca99f543ed1b5ba61a9e97"
+        }
+      }
+    }
+  ],
+  "investorEligibility": "UNVERIFIED",
+  "treasuryContractAllowlisting": "UNVERIFIED",
+  "yieldExecutionEnabled": false,
+  "moneyMoved": false
+}

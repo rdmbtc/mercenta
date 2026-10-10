@@ -1,0 +1,16 @@
+{
+  "chainId": 5042,
+  "contract": "MercentaTreasuryVault",
+  "deploymentAuthorized": false,
+  "owner": null,
+  "merchant": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+  "keeper": null,
+  "reserveFloorMicro": null,
+  "cycleLimitMicro": null,
+  "dayLimitMicro": null,
+  "maximumShares": null,
+  "issuerEligibility": "UNVERIFIED",
+  "vaultAllowlisting": "UNVERIFIED",
+  "custodyIntegration": "NOT_CONNECTED",
+  "schedulerEnabled": false
+}

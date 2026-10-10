@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-10-10T01:06:06.588Z",
+  "kind": "LOCAL_CANDIDATE_VALIDATION_NOT_MAINNET_ACCEPTANCE",
+  "checkoutAndExistingVaultTests": 59,
+  "treasuryVaultTests": 22,
+  "backendTests": 610,
+  "backendBuild": "PASS",
+  "sourceAndBundleSecurityScan": "PASS",
+  "configuredSecretScan": "PASS",
+  "historicalCommitScan": "NOT_RUN",
+  "compiler": "0.8.28+commit.7893614a.Emscripten.clang",
+  "evmVersion": "paris",
+  "treasuryRuntimeBytes": 7941,
+  "treasurySourceSha256": "8965a6427717fbc8cd1cd88f589bedae09006ed4f014ad740cf8d05ffee979b0",
+  "networkReadOnlyEvidence": "usyc-mainnet-addresses-2026-10-10.json",
+  "productionAcceptance": false,
+  "independentAudit": false,
+  "checkoutDeployed": false,
+  "treasuryDeployed": false,
+  "issuerEligibility": "UNVERIFIED",
+  "vaultAllowlisting": "UNVERIFIED",
+  "schedulerEnabled": false,
+  "mainnetPaymentsEnabled": false,
+  "yieldExecutionEnabled": false,
+  "moneyMoved": false,
+  "limitations": [
+    "Local mock EVM is not live Arc native/ERC20 alias acceptance",
+    "Code presence does not audit issuer proxies or permissions",
+    "Owner risk/eligibility attestations are trusted inputs, not cryptographic issuer proofs",
+    "Production quote/receipt, custody, NAV, outbox and scheduler remain disconnected"
+  ]
+}
