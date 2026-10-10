@@ -4,3 +4,13 @@
 
 /* Keep the wordmark legible rather than inheriting the dark marketing brand color. */
 .ma.ma-ux.mn-prelaunch .ma-header .mp-brand,.ma.ma-ux.mn-prelaunch .ma-header .mp-brand span{color:var(--ma-text)!important}.ma.ma-ux.mn-prelaunch[data-theme="light"]{--ma-muted:#566a85}
+
+.mn-status-dot.live{background:#48bb78!important;box-shadow:0 0 8px #48bb78}
+.mn-gateway-banner{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(135deg,rgba(20,45,30,.55),rgba(10,25,40,.65));border:1px solid rgba(72,187,120,.35);border-radius:12px;padding:16px 20px;margin-bottom:24px}
+.mn-gateway-info{display:flex;flex-direction:column;gap:6px}
+.mn-gateway-title{display:flex;align-items:center;gap:8px;color:#68d391;font-size:14px}
+.mn-gateway-info p{margin:0;font-size:13px;line-height:1.6;color:#cbd5e0}
+.mn-gateway-meta{display:flex;flex-direction:column;gap:6px;font-size:12px;white-space:nowrap}
+.mn-gateway-meta span{color:#a0aec0}
+.mn-gateway-meta a{color:#63b3ed;display:inline-flex;align-items:center;gap:4px;text-decoration:none}
+@media(max-width:800px){.mn-gateway-banner{flex-direction:column;align-items:flex-start}}
