@@ -2,7 +2,8 @@
 import {useState,useEffect} from 'react';
 import {ShieldCheck,CheckCircle2,ExternalLink,Wallet,LoaderCircle,AlertCircle} from 'lucide-react';
 
-const CONTRACT_ADDRESS = '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed';
+const ROUTER_ADDRESS = '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed';
+const MERCHANT_ADDRESS = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
 const ARC_MAINNET_CHAIN_ID_HEX = '0x13b2'; // 5042 in hex
 
 type Provider = {
@@ -126,12 +127,12 @@ export function MainnetCheckout({
       }
 
       setStep('signing');
-      // Direct payment to Mercenta on-chain gateway
+      // Direct payment to Mercenta on-chain settlement vault
       const tx = await eth.request({
         method: 'eth_sendTransaction',
         params: [{
           from: account,
-          to: CONTRACT_ADDRESS,
+          to: MERCHANT_ADDRESS,
           value: '0x' + nativeValueWei.toString(16),
         }],
       }) as string;
@@ -174,8 +175,10 @@ export function MainnetCheckout({
               {txHash.slice(0, 10)}…{txHash.slice(-8)} <ExternalLink size={12}/>
             </a>
           </dd>
-          <dt style={{color: '#718096'}}>{ru ? 'Контракт:' : 'Contract:'}</dt>
-          <dd><a href={`https://explorer.arc.io/address/${CONTRACT_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x06b6…3ed</a></dd>
+          <dt style={{color: '#718096'}}>{ru ? 'Контракт шлюза:' : 'Router:'}</dt>
+          <dd><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x06b6…3ed</a></dd>
+          <dt style={{color: '#718096'}}>{ru ? 'Получатель:' : 'Merchant:'}</dt>
+          <dd><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x5886…48ce</a></dd>
         </dl>
         <div style={{marginTop: '16px', display: 'flex', gap: '10px'}}>
           <a className="mp-button full" href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{textAlign: 'center', justifyContent: 'center', textDecoration: 'none'}}>
@@ -197,7 +200,7 @@ export function MainnetCheckout({
             ARC MAINNET · ON-CHAIN GATEWAY
           </h4>
         </div>
-        <a href={`https://explorer.arc.io/address/${CONTRACT_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{fontSize: '11px', color: '#63b3ed', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none'}}>
+        <a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{fontSize: '11px', color: '#63b3ed', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none'}}>
           {ru ? 'Контракт верифицирован' : 'Verified exact match'} <ExternalLink size={11}/>
         </a>
       </div>
@@ -209,8 +212,10 @@ export function MainnetCheckout({
         <dd>{quantity}</dd>
         <dt style={{color: '#718096'}}>{ru ? 'К оплате:' : 'Amount:'}</dt>
         <dd style={{fontWeight: 700, color: '#48bb78', fontSize: '15px'}}>{totalPriceUsdc} USDC</dd>
-        <dt style={{color: '#718096'}}>{ru ? 'Контракт шлюза:' : 'Router:'}</dt>
-        <dd style={{fontFamily: 'monospace', fontSize: '11px'}}>0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed</dd>
+        <dt style={{color: '#718096'}}>{ru ? 'Шлюз (Router):' : 'Router:'}</dt>
+        <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed</a></dd>
+        <dt style={{color: '#718096'}}>{ru ? 'Клиринг (Merchant):' : 'Merchant:'}</dt>
+        <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x58863e4a739da0e62c2eba258b7783e95d5c48ce</a></dd>
       </dl>
 
       {error && (
