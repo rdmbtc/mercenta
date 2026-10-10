@@ -1,0 +1,14 @@
+{
+  "address": "0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed",
+  "chainId": 5042,
+  "network": "Arc Mainnet",
+  "contract": "MercentaCheckout",
+  "merchant": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+  "owner": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+  "quoteSigner": "0xd138925168ad03fee0cca73cd949f1077c82c093",
+  "maxOrderMicro": "5000000000",
+  "dailyVolumeCapMicro": "100000000000",
+  "explorer": "https://arcscan.app/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed",
+  "compiler": "0.8.28+commit.7893614a.Emscripten.clang",
+  "evmVersion": "paris"
+}
