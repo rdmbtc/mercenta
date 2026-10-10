@@ -1,10 +1,10 @@
 {
   "chainId": 5042,
   "merchant": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
-  "owner": null,
-  "quoteSigner": null,
-  "deployer": null,
-  "maxOrderMicro": null,
-  "dailyVolumeCapMicro": null,
+  "owner": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+  "quoteSigner": "0xd138925168ad03fee0cca73cd949f1077c82c093",
+  "deployer": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+  "maxOrderMicro": "50000000",
+  "dailyVolumeCapMicro": "200000000",
   "deploymentApproved": false
 }
