@@ -8,6 +8,11 @@
   "quoteSigner": "0xd138925168ad03fee0cca73cd949f1077c82c093",
   "maxOrderMicro": "5000000000",
   "dailyVolumeCapMicro": "100000000000",
+  "status": "ACTIVE",
+  "paused": false,
+  "salesUnpaused": true,
+  "unpauseTx": "0xa88118ee669bd0ccf92c7e069ef4e878ab64f2abd890dca196490355ab58a805",
+  "unpauseBlock": 25282379,
   "explorer": "https://arcscan.app/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed",
   "compiler": "0.8.28+commit.7893614a.Emscripten.clang",
   "evmVersion": "paris"
