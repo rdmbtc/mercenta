@@ -5178,6 +5178,185 @@
           }
         }
       }
+    },
+    "/api/earn/morpho": {
+      "get": {
+        "tags": [
+          "External Earn"
+        ],
+        "operationId": "get_api_earn_morpho",
+        "summary": "Read-only Morpho Arc USDC research preview",
+        "description": "Three pinned vaults on Arc chain 5042. API-reported net APY and liquidity; indexer freshness and allocation review unverified. Contract observations are not an investment approval. No deposits, withdrawals, wallet signing or automatic allocation. Query parameters are not accepted.",
+        "security": [],
+        "parameters": [],
+        "x-enabled": true,
+        "x-runtime": "external-read-only",
+        "x-market-chain-id": 5042,
+        "x-source": "web/src/app/api/earn/morpho/route.ts",
+        "x-try-it-disabled": true,
+        "responses": {
+          "200": {
+            "description": "Read-only research snapshot, including unavailable observations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "chainId",
+                    "protocol",
+                    "asset",
+                    "observedAt",
+                    "expiresAt",
+                    "blockNumber",
+                    "blockHash",
+                    "rateKind",
+                    "indexerFreshness",
+                    "externalExecutionOnly",
+                    "mercentaCustody",
+                    "principalGuaranteed",
+                    "interestGuaranteed",
+                    "vaults"
+                  ],
+                  "properties": {
+                    "chainId": {
+                      "const": 5042
+                    },
+                    "protocol": {
+                      "const": "Morpho Vault V2"
+                    },
+                    "asset": {
+                      "const": "USDC"
+                    },
+                    "observedAt": {
+                      "type": "integer"
+                    },
+                    "expiresAt": {
+                      "type": "integer"
+                    },
+                    "blockNumber": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "blockHash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "rateKind": {
+                      "const": "API_REPORTED_VARIABLE_NET_APY"
+                    },
+                    "indexerFreshness": {
+                      "const": "not_verified"
+                    },
+                    "externalExecutionOnly": {
+                      "const": true
+                    },
+                    "mercentaCustody": {
+                      "const": false
+                    },
+                    "principalGuaranteed": {
+                      "const": false
+                    },
+                    "interestGuaranteed": {
+                      "const": false
+                    },
+                    "vaults": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "netApyPercent",
+                          "performanceFeePercent",
+                          "managementFeePercent",
+                          "totalAssetsMicro",
+                          "reportedLiquidityMicro",
+                          "id",
+                          "address",
+                          "name",
+                          "reason",
+                          "status",
+                          "allocationReview",
+                          "warnings"
+                        ],
+                        "properties": {
+                          "netApyPercent": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "performanceFeePercent": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "managementFeePercent": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "totalAssetsMicro": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "reportedLiquidityMicro": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "address": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "reason": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "observed",
+                              "blocked",
+                              "unavailable"
+                            ]
+                          },
+                          "allocationReview": {
+                            "const": "pending"
+                          },
+                          "warnings": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Query input is not supported."
+          }
+        }
+      }
     }
   },
   "components": {

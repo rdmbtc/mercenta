@@ -1,0 +1,107 @@
+{
+  "checkedAt": "2026-10-10T15:41:58.722Z",
+  "rows": [
+    {
+      "host": "rpc.mainnet.arc.io",
+      "chainId": 5042,
+      "blockNumber": "25264126",
+      "blockHash": "0xe1dc0a53639901753b405da47082d2462e4bab76c6a1cc696dcddb9fbd36d58b",
+      "contracts": {
+        "core": {
+          "address": "0x34CD04070dD72b14E241112F6d83812Df5Af7fCD",
+          "bytes": 15582,
+          "codeHash": "0xeb0972f2c33d0d3443136e2c42688082b9eef4ff1594a32e890f4f08669f1b08"
+        },
+        "factory": {
+          "address": "0x3b0eefaBfa22ec7CF2c73877ac16e78D76749f12",
+          "bytes": 23124,
+          "codeHash": "0xba55eb73d42937607d7e3c77f68353c2517c4fad4df02f0c9bbd2e4248475503"
+        },
+        "registry": {
+          "address": "0xdEBC92370Cd74d55DA144116138681dbbb528765",
+          "bytes": 1377,
+          "codeHash": "0x426928df6636ab7d3cd2a2cace4cefe83c1edf3a9bc7f0b33f34a596aaf19fe4"
+        },
+        "galaxy": {
+          "address": "0x8E357432CC12ff425c36432F312968aEb16112AF",
+          "bytes": 21808,
+          "codeHash": "0xac3d89c4bed30ede74f4e94e9c0e124a13ed24d0e011181515996362879bae57",
+          "asset": "0x3600000000000000000000000000000000000000",
+          "totalAssets": "89735350779916",
+          "totalSupply": "89743926724900302828495587",
+          "decimals": "18"
+        },
+        "keyrock": {
+          "address": "0x5bEfAb92a5A3D60F578Cb51EEb4e4FD50a1e3123",
+          "bytes": 21808,
+          "codeHash": "0xac3d89c4bed30ede74f4e94e9c0e124a13ed24d0e011181515996362879bae57",
+          "asset": "0x3600000000000000000000000000000000000000",
+          "totalAssets": "75034865712593",
+          "totalSupply": "75003852519071400553558489",
+          "decimals": "18"
+        },
+        "bitwise": {
+          "address": "0x7610094B846657dCF166D59e42973db52c7015F9",
+          "bytes": 21808,
+          "codeHash": "0xac3d89c4bed30ede74f4e94e9c0e124a13ed24d0e011181515996362879bae57",
+          "asset": "0x3600000000000000000000000000000000000000",
+          "totalAssets": "211728042112",
+          "totalSupply": "210730990551713819459212",
+          "decimals": "18"
+        }
+      }
+    },
+    {
+      "host": "rpc.quicknode.mainnet.arc.io",
+      "chainId": 5042,
+      "blockNumber": "25264126",
+      "blockHash": "0xe1dc0a53639901753b405da47082d2462e4bab76c6a1cc696dcddb9fbd36d58b",
+      "contracts": {
+        "core": {
+          "address": "0x34CD04070dD72b14E241112F6d83812Df5Af7fCD",
+          "bytes": 15582,
+          "codeHash": "0xeb0972f2c33d0d3443136e2c42688082b9eef4ff1594a32e890f4f08669f1b08"
+        },
+        "factory": {
+          "address": "0x3b0eefaBfa22ec7CF2c73877ac16e78D76749f12",
+          "bytes": 23124,
+          "codeHash": "0xba55eb73d42937607d7e3c77f68353c2517c4fad4df02f0c9bbd2e4248475503"
+        },
+        "registry": {
+          "address": "0xdEBC92370Cd74d55DA144116138681dbbb528765",
+          "bytes": 1377,
+          "codeHash": "0x426928df6636ab7d3cd2a2cace4cefe83c1edf3a9bc7f0b33f34a596aaf19fe4"
+        },
+        "galaxy": {
+          "address": "0x8E357432CC12ff425c36432F312968aEb16112AF",
+          "bytes": 21808,
+          "codeHash": "0xac3d89c4bed30ede74f4e94e9c0e124a13ed24d0e011181515996362879bae57",
+          "asset": "0x3600000000000000000000000000000000000000",
+          "totalAssets": "89735350779916",
+          "totalSupply": "89743926724900302828495587",
+          "decimals": "18"
+        },
+        "keyrock": {
+          "address": "0x5bEfAb92a5A3D60F578Cb51EEb4e4FD50a1e3123",
+          "bytes": 21808,
+          "codeHash": "0xac3d89c4bed30ede74f4e94e9c0e124a13ed24d0e011181515996362879bae57",
+          "asset": "0x3600000000000000000000000000000000000000",
+          "totalAssets": "75034865712593",
+          "totalSupply": "75003852519071400553558489",
+          "decimals": "18"
+        },
+        "bitwise": {
+          "address": "0x7610094B846657dCF166D59e42973db52c7015F9",
+          "bytes": 21808,
+          "codeHash": "0xac3d89c4bed30ede74f4e94e9c0e124a13ed24d0e011181515996362879bae57",
+          "asset": "0x3600000000000000000000000000000000000000",
+          "totalAssets": "211728042112",
+          "totalSupply": "210730990551713819459212",
+          "decimals": "18"
+        }
+      }
+    }
+  ],
+  "moneyMoved": false,
+  "permissioning": "NOT_YET_VERIFIED"
+}
