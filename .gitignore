@@ -98,3 +98,4 @@ TESTNET_LAUNCH.md
 /.openapi-dump.tmp
 /ca.pem
 /x.id
+.vercel
