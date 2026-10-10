@@ -1,0 +1,67 @@
+{
+  "durationMs": 3308,
+  "chainId": 5042,
+  "protocol": "Morpho Vault V2",
+  "asset": "USDC",
+  "observedAt": 1791647960024,
+  "expiresAt": 1791647990024,
+  "blockNumber": "25266175",
+  "blockHash": "0xb6bb57927e39b93e2e2bf248e05e9768ce57419ab206521b596efcc330b682db",
+  "rateKind": "API_REPORTED_VARIABLE_NET_APY",
+  "indexerFreshness": "not_verified",
+  "externalExecutionOnly": true,
+  "mercentaCustody": false,
+  "principalGuaranteed": false,
+  "interestGuaranteed": false,
+  "vaults": [
+    {
+      "id": "galaxy",
+      "address": "0x8E357432CC12ff425c36432F312968aEb16112AF",
+      "name": "Galaxy USDC",
+      "status": "observed",
+      "reason": "CONTRACT_OBSERVED_NOT_AUDITED",
+      "netApyPercent": "2.30",
+      "performanceFeePercent": "0.00",
+      "managementFeePercent": "0.00",
+      "totalAssetsMicro": "89735418050720",
+      "reportedLiquidityMicro": "1059558428811",
+      "warnings": [],
+      "allocationReview": "pending"
+    },
+    {
+      "id": "keyrock",
+      "address": "0x5bEfAb92a5A3D60F578Cb51EEb4e4FD50a1e3123",
+      "name": "Keyrock Prime USDC",
+      "status": "observed",
+      "reason": "CONTRACT_OBSERVED_NOT_AUDITED",
+      "netApyPercent": "2.30",
+      "performanceFeePercent": "0.00",
+      "managementFeePercent": "0.00",
+      "totalAssetsMicro": "75034921963064",
+      "reportedLiquidityMicro": "1059558428811",
+      "warnings": [],
+      "allocationReview": "pending"
+    },
+    {
+      "id": "bitwise",
+      "address": "0x7610094B846657dCF166D59e42973db52c7015F9",
+      "name": "Bitwise Premium RWA USDC",
+      "status": "observed",
+      "reason": "CONTRACT_OBSERVED_NOT_AUDITED",
+      "netApyPercent": "4.16",
+      "performanceFeePercent": "0.00",
+      "managementFeePercent": "0.39",
+      "totalAssetsMicro": "211733353587",
+      "reportedLiquidityMicro": "27237598601",
+      "warnings": [],
+      "allocationReview": "pending"
+    }
+  ],
+  "kind": "MORPHO_ARC_ADAPTER_READ_ONLY_PROBE",
+  "moneyMoved": false,
+  "source": "https://api.morpho.org/graphql",
+  "onchainWitnesses": [
+    "https://rpc.mainnet.arc.io",
+    "https://rpc.quicknode.mainnet.arc.io"
+  ]
+}
