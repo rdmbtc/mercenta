@@ -125,9 +125,9 @@ Mercenta incorporates the **Circle Agent Stack** across three distinct operation
 
 ---
 
-## 🏆 Tameion Hackathon Track Alignment
+## 🏆 Institutional Architecture: Autonomous Business Operator
 
-Mercenta directly addresses **RFB 04: Autonomous Business Operator** from the Canteen Tameion Hackathon:
+Mercenta delivers an autonomous procurement and commerce gateway on Arc:
 > *"An agent that pays for services on its own authority should know what it bought, enforce limits, verify deliveries, and settle on Arc in USDC."*
 
 - **Autonomous Procurement:** AI agents browse live digital services (compute, token pools, gaming keys, platform subscriptions).
@@ -161,5 +161,6 @@ npm run build
 ---
 
 <div align="center">
-  <i>Built with ❤️ for the Arc Open Source Showcase · Tameion Hackathon</i>
+  <i>Mercenta — Deterministic Commerce & Policy Gateway on Arc</i>
 </div>
+
