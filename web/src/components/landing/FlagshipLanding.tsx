@@ -30,6 +30,37 @@ const GOODS = [
   { name: "Creator tips", tag: "Micro-transactions", code: "TIP", title: "Small payments. Full context.", description: "Illustrative creator micro-donations with the same transparent approval path. Every amount stays accountable.", detail: "Creator support · Micro-donations", symbol: "+" },
 ];
 
+const SELLER_POINTS = [
+  ["Console, CSV or REST", "Buy in batches from the web console, upload a CSV, or wire one endpoint. About 40 lines to a first order."],
+  ["USDC settlement", "Arc, Base or Solana. A signed receipt for every batch — no chargebacks, no payment anxiety."],
+  ["Daily restock", "Steam, PlayStation, Xbox, Epic, Riot, Blizzard, Roblox, Razer Gold — region-labeled, live price feed."],
+  ["Launch offer", "We beat your current wholesale quote by 1–2 points, or your first order is free. 0% API fee for 30 days. No minimums."],
+];
+
+function SellersSection() {
+  return <section className="mx-sellers" id="sellers" aria-labelledby="mx-sellers-title">
+    <div className="mx-wrap mx-sellers-layout">
+      <div className="mx-sellers-copy">
+        <div className="mx-section-meta"><span className="mx-label">10 / FOR RESELLERS</span><span className="mx-label">WHOLESALE. NO WAREHOUSE.</span></div>
+        <h2 id="mx-sellers-title">You sell.<br /><span>We restock.</span></h2>
+        <p>Wholesale digital goods for marketplace shops and Telegram stores. Order what your shop needs today — supply, pricing and receipts stay Mercenta&rsquo;s problem.</p>
+        <ul className="mx-seller-points">{SELLER_POINTS.map(([t, d]) => <li key={t}><strong>{t}</strong><p>{d}</p></li>)}</ul>
+        <div className="mx-actions"><a className="mx-button mx-button-primary" href="https://t.me/mercenta" target="_blank" rel="noreferrer">Get wholesale access <Arrow diagonal /></a><a className="mx-button mx-button-quiet" href="/api-docs">Read the API contract <Arrow /></a></div>
+      </div>
+      <aside className="mx-sellers-card" aria-label="How to request a wholesale quote">
+        <div className="mx-envelope-top"><BrandMark /><span className="mx-label">QUOTE REQUEST</span><span className="mx-label">REPLY WITHIN 24H</span></div>
+        <p className="mx-sellers-card-title">Send three things.<br /><span>Get a price sheet.</span></p>
+        <ol>
+          <li><span className="mx-label">01</span><span>Your shop link — FunPay, GGSel, G2G or a Telegram store</span></li>
+          <li><span className="mx-label">02</span><span>Monthly volume, in USD</span></li>
+          <li><span className="mx-label">03</span><span>The SKUs you restock most</span></li>
+        </ol>
+        <div className="mx-sellers-card-foot"><StatusIcon state="pass" /><span>Graduated daily limits grow with a clean order history.</span></div>
+      </aside>
+    </div>
+  </section>;
+}
+
 export default function FlagshipLanding() {
   const [menu, setMenu] = useState(false);
   const [motion, setMotion] = useState(true);
@@ -63,7 +94,7 @@ export default function FlagshipLanding() {
         }
       });
     }, { threshold: .15 });
-    document.querySelectorAll(".mx-control-intro, .mx-section-heading, .mx-playground-copy, .mx-catalog h2, .mx-evidence-layout > div:first-child, .mx-final h2, .mx-expansion-copy, .mx-expansion-heading, .mx-ownership-strip article, .mx-playbook-grid article, .mx-faq h2").forEach(el => observer.observe(el));
+    document.querySelectorAll(".mx-control-intro, .mx-section-heading, .mx-playground-copy, .mx-catalog h2, .mx-evidence-layout > div:first-child, .mx-final h2, .mx-sellers h2, .mx-sellers-card, .mx-expansion-copy, .mx-expansion-heading, .mx-ownership-strip article, .mx-playbook-grid article, .mx-faq h2").forEach(el => observer.observe(el));
     return () => observer.disconnect();
   }, []);
   useEffect(() => {
@@ -116,11 +147,11 @@ export default function FlagshipLanding() {
     <header className="mx-nav">
       <div className="mx-wrap mx-nav-inner">
         <a href="#" className="mx-brand" aria-label="Mercenta home"><BrandMark /><span>mercenta<span className="mx-brand-dot">.</span></span></a>
-        <nav className="mx-desktop-links" aria-label="Main navigation"><a href="#business">For your business</a><a href="#architecture">How it works</a><a href="#playground">Playground</a><a href="/catalog">Catalog</a><a href="/status">Status</a><a href="/releases">Releases</a><a href="/earn">Earn</a></nav>
+        <nav className="mx-desktop-links" aria-label="Main navigation"><a href="#business">For your business</a><a href="#sellers">Wholesale</a><a href="#architecture">How it works</a><a href="#playground">Playground</a><a href="/catalog">Catalog</a><a href="/status">Status</a><a href="/releases">Releases</a><a href="/earn">Earn</a></nav>
         <a className="mx-nav-console" href="/app">Console & Liquidity <Arrow diagonal /></a>
         <button ref={menuButton} type="button" className="mx-menu-toggle" aria-expanded={menu} aria-controls="mx-mobile-nav" aria-label={menu ? "Close navigation" : "Open navigation"} onClick={() => setMenu(!menu)}><span /><span /></button>
       </div>
-      {menu && <nav className="mx-mobile-links" id="mx-mobile-nav" aria-label="Mobile navigation"><a href="#business" onClick={() => setMenu(false)}>For your business <Arrow /></a><a href="#architecture" onClick={() => setMenu(false)}>How it works <Arrow /></a><a href="#playground" onClick={() => setMenu(false)}>Playground <Arrow /></a><a href="#catalog" onClick={() => setMenu(false)}>Catalog <Arrow /></a><a href="/status">Status <Arrow diagonal /></a><a href="/earn">External Earn <Arrow diagonal /></a><a href="/app">Console & Liquidity <Arrow diagonal /></a></nav>}
+      {menu && <nav className="mx-mobile-links" id="mx-mobile-nav" aria-label="Mobile navigation"><a href="#business" onClick={() => setMenu(false)}>For your business <Arrow /></a><a href="#sellers" onClick={() => setMenu(false)}>Wholesale <Arrow /></a><a href="#architecture" onClick={() => setMenu(false)}>How it works <Arrow /></a><a href="#playground" onClick={() => setMenu(false)}>Playground <Arrow /></a><a href="#catalog" onClick={() => setMenu(false)}>Catalog <Arrow /></a><a href="/status">Status <Arrow diagonal /></a><a href="/earn">External Earn <Arrow diagonal /></a><a href="/app">Console & Liquidity <Arrow diagonal /></a></nav>}
     </header>
     <main id="main">
       <section className="mx-hero" aria-labelledby="mx-hero-title">
@@ -135,6 +166,7 @@ export default function FlagshipLanding() {
             <MorphHeadline motion={motion} />
             <p className="mx-hero-description">You run the business. Mercenta brings the goods.<br className="mx-desktop-break" /> Give agents the power to buy — inside your rules.</p>
             <div className="mx-actions"><a href="/app" className="mx-button mx-button-primary">Launch console <Arrow diagonal /></a><a href="#playground" className="mx-button mx-button-quiet">Test the guardrails <Arrow /></a></div>
+            <a className="mx-hero-seller" href="#sellers">Running a shop? Wholesale supply <Arrow /></a>
             <p className="mx-disclaimer">Illustrative environment. No live orders or funds.</p><button className="mx-motion-toggle" type="button" aria-pressed={!motion} onClick={() => setMotion(!motion)}>{motion ? "Ⅱ" : "▷"}<span>{motion ? "Pause hero motion" : "Resume hero motion"}</span></button>
           </div>
           <div className="mx-art-caption"><span className="mx-cross">+</span><div><span className="mx-label">THE POLICY GATE / 001</span><p>Intelligence moves fast.<br />Control moves with it.</p></div></div>
@@ -202,6 +234,8 @@ export default function FlagshipLanding() {
       <DeveloperBlock />
       <SDKHero />
       <LandingFAQ />
+
+      <SellersSection />
 
       <section className="mx-final" aria-labelledby="mx-final-title"><div className="mx-wrap"><div className="mx-final-top"><span className="mx-label">THE NEXT MOVE IS YOURS.</span><span className="mx-label">MERCENTA / PRE-LAUNCH</span></div><h2 id="mx-final-title">Let agents act.<br /><span>On your terms.</span></h2><div className="mx-final-bottom"><p>Intelligent commerce.<br />Non-negotiable control.</p><a href="/app" className="mx-button mx-button-primary">Enter the console <Arrow diagonal /></a></div></div><div className="mx-final-watermark" aria-hidden="true">mercenta.</div></section>
     </main>

@@ -1,7 +1,7 @@
 'use client';
-import {useState,useEffect} from 'react';
-import {ShieldCheck,CheckCircle2,ExternalLink,Wallet,LoaderCircle,AlertCircle,Copy,Check,KeyRound} from 'lucide-react';
-import {generateMainnetCodes,saveMainnetOrder} from '@/lib/mainnet-orders';
+import {useState, useEffect} from 'react';
+import {ShieldCheck, CheckCircle2, ExternalLink, Wallet, LoaderCircle, AlertCircle, Copy, Check, KeyRound} from 'lucide-react';
+import {generateMainnetCodes, saveMainnetOrder} from '@/lib/mainnet-orders';
 
 const ROUTER_ADDRESS = '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed';
 const MERCHANT_ADDRESS = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
@@ -9,6 +9,9 @@ const ARC_MAINNET_CHAIN_ID_HEX = '0x13b2'; // 5042 in hex
 
 type Provider = {
   request: (args: {method: string; params?: unknown[]}) => Promise<unknown>;
+  selectedAddress?: string;
+  on?: (event: string, handler: (...args: unknown[]) => void) => void;
+  removeListener?: (event: string, handler: (...args: unknown[]) => void) => void;
 };
 
 export function MainnetCheckout({
@@ -20,6 +23,7 @@ export function MainnetCheckout({
   denominationId,
   productType = 'voucher',
   accountReference = '',
+  initialAccount = null,
 }: {
   productName: string;
   optionName: string;
@@ -29,12 +33,22 @@ export function MainnetCheckout({
   denominationId?: string;
   productType?: 'voucher' | 'direct_topup' | 'esim';
   accountReference?: string;
+  initialAccount?: string | null;
 }) {
   const isTopup = productType === 'direct_topup' || productName.toLowerCase().includes('telegram');
   const [recipientAccount, setRecipientAccount] = useState(accountReference);
   const effectiveAccount = recipientAccount.trim() || accountReference.trim();
   const needsAccountRef = isTopup && !effectiveAccount;
-  const [account, setAccount] = useState<string | null>(null);
+
+  const [account, setAccount] = useState<string | null>(() => {
+    if (initialAccount) return initialAccount.toLowerCase();
+    if (typeof window !== 'undefined') {
+      const eth = (window as unknown as {ethereum?: Provider})?.ethereum;
+      if (eth?.selectedAddress) return eth.selectedAddress.toLowerCase();
+    }
+    return null;
+  });
+
   const [chainId, setChainId] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -46,21 +60,57 @@ export function MainnetCheckout({
 
   const parsedPrice = parseFloat(amountUsdc) || 0;
   const totalPriceUsdc = (parsedPrice * quantity).toFixed(2);
-  // 1 USDC = 10^18 native gas tokens or 10^6 ERC-20 on Arc
-  // In native value for Arc payment: value in wei (18 decimals)
   const amountMicro = BigInt(Math.round(parseFloat(totalPriceUsdc) * 1_000_000));
   const nativeValueWei = amountMicro * 1_000_000_000_000n; // 6 decimals -> 18 decimals
 
   useEffect(() => {
+    if (initialAccount) {
+      setAccount(initialAccount.toLowerCase());
+    }
+  }, [initialAccount]);
+
+  useEffect(() => {
+    if (accountReference && !recipientAccount) {
+      setRecipientAccount(accountReference);
+    }
+  }, [accountReference, recipientAccount]);
+
+  useEffect(() => {
     const eth = (window as unknown as {ethereum?: Provider})?.ethereum;
     if (!eth) return;
+
+    if (eth.selectedAddress && !account) {
+      setAccount(eth.selectedAddress.toLowerCase());
+    }
+
     eth.request({method: 'eth_accounts'}).then((accs) => {
       if (Array.isArray(accs) && accs[0]) setAccount((accs[0] as string).toLowerCase());
     }).catch(() => {});
+
     eth.request({method: 'eth_chainId'}).then((id) => {
       if (typeof id === 'string') setChainId(id.toLowerCase());
     }).catch(() => {});
-  }, []);
+
+    const handleAccounts = (accs: unknown) => {
+      if (Array.isArray(accs) && accs.length > 0) {
+        setAccount((accs[0] as string).toLowerCase());
+      } else {
+        setAccount(null);
+      }
+    };
+
+    const handleChain = (cId: unknown) => {
+      if (typeof cId === 'string') setChainId(cId.toLowerCase());
+    };
+
+    eth.on?.('accountsChanged', handleAccounts);
+    eth.on?.('chainChanged', handleChain);
+
+    return () => {
+      eth.removeListener?.('accountsChanged', handleAccounts);
+      eth.removeListener?.('chainChanged', handleChain);
+    };
+  }, [account]);
 
   async function connectWallet() {
     setError('');
@@ -73,7 +123,9 @@ export function MainnetCheckout({
     try {
       const accounts = await eth.request({method: 'eth_requestAccounts'}) as string[];
       if (Array.isArray(accounts) && accounts[0]) {
-        setAccount(accounts[0].toLowerCase());
+        const addr = accounts[0].toLowerCase();
+        setAccount(addr);
+        window.dispatchEvent(new Event('mercenta-auth-change'));
       }
       const cId = await eth.request({method: 'eth_chainId'}) as string;
       setChainId(cId.toLowerCase());
@@ -146,7 +198,6 @@ export function MainnetCheckout({
       }
 
       setStep('signing');
-      // Direct payment to Mercenta on-chain settlement vault
       const tx = await eth.request({
         method: 'eth_sendTransaction',
         params: [{
@@ -164,7 +215,7 @@ export function MainnetCheckout({
       try {
         const fulfillRes = await fetch('https://api.mercenta.xyz/api/mainnet/fulfill', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
             txHash: tx,
             wallet: account,
@@ -200,6 +251,7 @@ export function MainnetCheckout({
         id: 'mct-ord-' + tx.slice(2, 10) + '-' + Date.now().toString(36),
         created_at: Date.now(),
         initiator: account ? account.slice(0, 6) + '…' + account.slice(-4) : 'Direct Portal',
+        initiator_address: account.toLowerCase(),
         reference: tx.slice(0, 12) + '…',
         name: `${productName} · ${optionName}`,
         product_id: denominationId || ('mainnet:' + productName),
@@ -246,53 +298,92 @@ export function MainnetCheckout({
     const codes = deliveredCodes.length > 0 ? deliveredCodes : generateMainnetCodes(txHash, quantity);
 
     return (
-      <section className="mc-receipt" style={{marginTop: '16px', border: '1px solid #254030', background: 'rgba(20, 36, 26, 0.7)', borderRadius: '12px', padding: '16px'}}>
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
-          <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#68d391'}}>
-            <CheckCircle2 size={22}/>
-            <span style={{fontWeight: 700, fontSize: '15px'}}>
-              {ru ? 'Оплата подтверждена · Товар выдан!' : 'Payment Confirmed · Item Delivered!'}
+      <section
+        className="mc-receipt"
+        style={{
+          marginTop: '16px',
+          border: '1px solid rgba(56, 189, 248, 0.25)',
+          background: 'linear-gradient(180deg, #090f1d 0%, #060a12 100%)',
+          boxShadow: '0 12px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
+          borderRadius: '12px',
+          padding: '20px',
+        }}
+      >
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px'}}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: 'rgba(56, 189, 248, 0.1)',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+              color: '#38bdf8'
+            }}>
+              <CheckCircle2 size={18} />
             </span>
+            <div>
+              <h4 style={{margin: 0, fontSize: '15px', fontWeight: 700, color: '#f8fafc', letterSpacing: '0.02em'}}>
+                {ru ? 'Оплата подтверждена · Товар выдан' : 'Payment Confirmed · Item Delivered'}
+              </h4>
+              <span style={{fontSize: '11px', color: '#64748b'}}>
+                {ru ? 'Расчёт в Arc Mainnet · Блок подтверждён' : 'Arc Mainnet Settlement · Finalized'}
+              </span>
+            </div>
           </div>
-          <span style={{fontSize: '11px', background: '#22543d', color: '#9ae6b4', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
+          <span style={{
+            fontSize: '11px',
+            background: 'rgba(56, 189, 248, 0.08)',
+            color: '#7dd3fc',
+            border: '1px solid rgba(56, 189, 248, 0.25)',
+            padding: '3px 10px',
+            borderRadius: '6px',
+            fontWeight: 600,
+            letterSpacing: '0.06em'
+          }}>
             ARC MAINNET · FULFILLED
           </span>
         </div>
 
-        <p style={{fontSize: '13px', color: '#cbd5e0', margin: '4px 0 14px'}}>
+        <p style={{fontSize: '13px', color: '#94a3b8', lineHeight: 1.5, margin: '0 0 16px'}}>
           {ru
-            ? (isTopup ? 'Транзакция подтверждена в сети Arc. Заказ направлен на прямое пополнение аккаунта.' : 'Транзакция подтверждена в блокчейне Arc. Цифровой ключ сгенерирован и сохранён в «Моих покупках».')
+            ? (isTopup ? 'Транзакция подтверждена в сети Arc. Заказ направлен на прямое зачисление на аккаунт.' : 'Транзакция подтверждена в блокчейне Arc. Цифровой ключ активации сгенерирован и сохранён в «Моих покупках».')
             : (isTopup ? 'Transaction confirmed on Arc Mainnet. Direct top-up dispatched to designated account.' : 'Transaction confirmed on Arc Mainnet. Your digital activation key is issued and saved to Purchases.')}
         </p>
 
         {isTopup ? (
-          <div style={{background: '#090d16', border: '1px solid #2d3748', borderRadius: '10px', padding: '14px', marginBottom: '14px'}}>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
-              <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
-                <ShieldCheck size={14}/>
-                {ru ? 'Прямое зачисление на аккаунт:' : 'Direct Top-Up Account:'}
+          <div style={{background: '#04070e', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '10px', padding: '14px 16px', marginBottom: '16px'}}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px'}}>
+              <span style={{fontSize: '12px', fontWeight: 600, color: '#7dd3fc', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.04em'}}>
+                <ShieldCheck size={14} style={{color: '#38bdf8'}}/>
+                {ru ? 'АККАУНТ ЗАЧИСЛЕНИЯ' : 'RECIPIENT ACCOUNT'}
+              </span>
+              <span style={{fontSize: '11px', color: '#85debc', background: 'rgba(133, 222, 188, 0.1)', border: '1px solid rgba(133, 222, 188, 0.25)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
+                {ru ? 'Зачислено' : 'Credited'}
               </span>
             </div>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'rgba(26, 32, 44, 0.8)', border: '1px solid #334155', borderRadius: '8px'}}>
-              <span style={{fontSize: '15px', fontWeight: 700, color: '#68d391', fontFamily: 'monospace'}}>
-                {accountReference ? `@${accountReference.replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '')}` : (codes[0]?.replace('TOPUP_CREDITED:', '') || 'Аккаунт получателя')}
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '8px'}}>
+              <span style={{fontSize: '16px', fontWeight: 700, color: '#f8fafc', fontFamily: 'monospace', letterSpacing: '0.04em'}}>
+                {effectiveAccount ? `@${effectiveAccount.replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '')}` : (codes[0]?.replace('TOPUP_CREDITED:', '') || '@username')}
               </span>
-              <span style={{fontSize: '12px', color: '#9ae6b4', background: '#22543d', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
-                {ru ? 'Отправлено' : 'Dispatched'}
+              <span style={{fontSize: '12px', color: '#94a3b8'}}>
+                {productName}
               </span>
             </div>
           </div>
         ) : (
-          <div style={{background: '#090d16', border: '1px solid #2d3748', borderRadius: '10px', padding: '14px', marginBottom: '14px'}}>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
-              <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
-                <KeyRound size={14}/>
-                {ru ? (codes.length > 1 ? 'Ключи активации:' : 'Ключ активации:') : (codes.length > 1 ? 'Activation keys:' : 'Activation key:')}
+          <div style={{background: '#04070e', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '10px', padding: '14px 16px', marginBottom: '16px'}}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px'}}>
+              <span style={{fontSize: '12px', fontWeight: 600, color: '#7dd3fc', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.04em'}}>
+                <KeyRound size={14} style={{color: '#38bdf8'}}/>
+                {ru ? (codes.length > 1 ? 'КЛЮЧИ АКТИВАЦИИ' : 'КЛЮЧ АКТИВАЦИИ') : (codes.length > 1 ? 'ACTIVATION KEYS' : 'ACTIVATION KEY')}
               </span>
               {codes.length > 1 && (
                 <button
                   className="ma-link"
-                  style={{fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px'}}
+                  style={{fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#38bdf8'}}
                   onClick={() => copyAllKeys(codes)}
                 >
                   {allCopied ? <Check size={13}/> : <Copy size={13}/>}
@@ -310,27 +401,27 @@ export function MainnetCheckout({
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '10px 14px',
-                    background: 'rgba(26, 32, 44, 0.8)',
-                    border: '1px solid #334155',
+                    background: 'rgba(15, 23, 42, 0.6)',
+                    border: '1px solid rgba(56, 189, 248, 0.2)',
                     borderRadius: '8px',
                   }}
                 >
-                  <code style={{fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#63b3ed', letterSpacing: '0.08em'}}>
+                  <code style={{fontFamily: 'monospace', fontSize: '15px', fontWeight: 700, color: '#b2e5ff', letterSpacing: '0.08em'}}>
                     {code}
                   </code>
                   <button
                     className="mp-button outline"
-                    style={{padding: '6px 12px', fontSize: '12px', minHeight: '32px', gap: '6px'}}
+                    style={{padding: '6px 12px', fontSize: '12px', minHeight: '32px', gap: '6px', background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.15)'}}
                     onClick={() => copyKey(code, idx)}
                   >
                     {copiedIndex === idx ? (
                       <>
-                        <Check size={14} style={{color: '#68d391'}}/>
-                        <span style={{color: '#68d391'}}>{ru ? 'Скопировано!' : 'Copied!'}</span>
+                        <Check size={14} style={{color: '#85debc'}}/>
+                        <span style={{color: '#85debc'}}>{ru ? 'Скопировано!' : 'Copied!'}</span>
                       </>
                     ) : (
                       <>
-                        <Copy size={14}/>
+                        <Copy size={14} style={{color: '#7dd3fc'}}/>
                         <span>{ru ? 'Скопировать' : 'Copy'}</span>
                       </>
                     )}
@@ -341,32 +432,60 @@ export function MainnetCheckout({
           </div>
         )}
 
-        <dl style={{fontSize: '12px', display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 14px', margin: '10px 0'}}>
-          <dt style={{color: '#718096'}}>{ru ? 'Товар:' : 'Product:'}</dt>
-          <dd style={{fontWeight: 600}}>{productName} · {optionName}</dd>
-          <dt style={{color: '#718096'}}>{ru ? 'Сумма:' : 'Total:'}</dt>
-          <dd style={{fontWeight: 600, color: '#68d391'}}>{totalPriceUsdc} USDC</dd>
-          <dt style={{color: '#718096'}}>Tx Hash:</dt>
+        <dl style={{display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 16px', fontSize: '13px', margin: '14px 0', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)'}}>
+          <dt style={{color: '#64748b'}}>{ru ? 'Товар:' : 'Item:'}</dt>
+          <dd style={{fontWeight: 600, color: '#e2e8f0'}}>{productName} · {optionName}</dd>
+          <dt style={{color: '#64748b'}}>{ru ? 'Сумма:' : 'Amount:'}</dt>
+          <dd style={{fontWeight: 700, color: '#b2e5ff'}}>{totalPriceUsdc} USDC</dd>
+          <dt style={{color: '#64748b'}}>Tx Hash:</dt>
           <dd style={{wordBreak: 'break-all'}}>
-            <a href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{color: '#63b3ed', display: 'inline-flex', alignItems: 'center', gap: '4px'}}>
+            <a href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none'}}>
               {txHash.slice(0, 10)}…{txHash.slice(-8)} <ExternalLink size={12}/>
             </a>
           </dd>
-          <dt style={{color: '#718096'}}>{ru ? 'Клиринг:' : 'Settlement:'}</dt>
-          <dd><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x5886…48ce</a></dd>
+          <dt style={{color: '#64748b'}}>{ru ? 'Клиринг:' : 'Settlement:'}</dt>
+          <dd>
+            <a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>
+              0x5886…48ce
+            </a>
+          </dd>
         </dl>
 
-        <div style={{fontSize: '11px', color: '#a0aec0', lineHeight: 1.6, padding: '8px 10px', background: 'rgba(49, 130, 206, 0.08)', border: '1px solid rgba(49, 130, 206, 0.25)', borderRadius: '6px', margin: '10px 0'}}>
+        <div style={{fontSize: '11px', color: '#94a3b8', lineHeight: 1.5, padding: '10px 12px', background: 'rgba(56, 189, 248, 0.04)', border: '1px solid rgba(56, 189, 248, 0.16)', borderRadius: '8px', margin: '14px 0'}}>
           {ru
-            ? 'Активация: используйте выданный код в личном кабинете игровой платформы или сервиса. Заказ всегда доступен во вкладке «Мои покупки».'
-            : 'Activation: redeem this code on the designated platform or service. Your purchase is permanently listed under Purchases.'}
+            ? (isTopup ? 'Начисление: звёзды Telegram зачисляются напрямую на баланс указанного аккаунта. Заказ сохранён в «Моих покупках».' : 'Активация: используйте выданный код в личном кабинете платформы. Заказ сохранён в «Моих покупках».')
+            : (isTopup ? 'Credit: Telegram Stars are credited directly to the specified account. Your order is listed under Purchases.' : 'Activation: redeem this code on the designated platform. Your order is listed under Purchases.')}
         </div>
 
-        <div style={{marginTop: '14px', display: 'flex', gap: '10px'}}>
-          <a className="mp-button full" href="/app?section=orders" style={{textAlign: 'center', justifyContent: 'center', textDecoration: 'none'}}>
+        <div style={{marginTop: '16px', display: 'flex', gap: '10px'}}>
+          <a
+            className="mp-button full"
+            href="/app?section=orders"
+            style={{
+              textAlign: 'center',
+              justifyContent: 'center',
+              textDecoration: 'none',
+              background: '#1d4ed8',
+              color: '#ffffff',
+              fontWeight: 600,
+            }}
+          >
             {ru ? 'Открыть «Мои покупки»' : 'View in Purchases'}
           </a>
-          <a className="mp-button outline" href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{textAlign: 'center', justifyContent: 'center', textDecoration: 'none'}}>
+          <a
+            className="mp-button outline"
+            href={`https://explorer.arc.io/tx/${txHash}`}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              textAlign: 'center',
+              justifyContent: 'center',
+              textDecoration: 'none',
+              background: 'rgba(255, 255, 255, 0.04)',
+              borderColor: 'rgba(255, 255, 255, 0.15)',
+              color: '#e2e8f0',
+            }}
+          >
             Arc Explorer <ExternalLink size={14}/>
           </a>
         </div>
@@ -377,45 +496,58 @@ export function MainnetCheckout({
   const isArcMainnet = chainId === ARC_MAINNET_CHAIN_ID_HEX;
 
   return (
-    <section className="mc-checkout" style={{marginTop: '16px', border: '1px solid #1a365d', background: 'rgba(10, 25, 47, 0.45)', borderRadius: '12px', padding: '16px'}}>
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px'}}>
+    <section
+      className="mc-checkout"
+      style={{
+        marginTop: '16px',
+        border: '1px solid rgba(56, 189, 248, 0.22)',
+        background: 'linear-gradient(180deg, #090f1d 0%, #060a12 100%)',
+        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+        borderRadius: '12px',
+        padding: '18px',
+      }}
+    >
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px'}}>
         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-          <span style={{width: '8px', height: '8px', borderRadius: '50%', background: '#48bb78', display: 'inline-block'}}/>
-          <h4 style={{margin: 0, fontSize: '14px', fontWeight: 700, letterSpacing: '0.04em'}}>
+          <span style={{width: '8px', height: '8px', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8', display: 'inline-block'}}/>
+          <h4 style={{margin: 0, fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', color: '#f8fafc'}}>
             ARC MAINNET · ON-CHAIN GATEWAY
           </h4>
         </div>
-        <a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{fontSize: '11px', color: '#63b3ed', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none'}}>
+        <a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{fontSize: '11px', color: '#7dd3fc', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none'}}>
           {ru ? 'Контракт верифицирован' : 'Verified exact match'} <ExternalLink size={11}/>
         </a>
       </div>
 
-      <dl style={{display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '6px 12px', fontSize: '13px', margin: '10px 0'}}>
-        <dt style={{color: '#718096'}}>{ru ? 'Товар:' : 'Item:'}</dt>
-        <dd style={{fontWeight: 600}}>{productName} ({optionName})</dd>
-        <dt style={{color: '#718096'}}>{ru ? 'Количество:' : 'Qty:'}</dt>
-        <dd>{quantity}</dd>
-        <dt style={{color: '#718096'}}>{ru ? 'К оплате:' : 'Amount:'}</dt>
-        <dd style={{fontWeight: 700, color: '#48bb78', fontSize: '15px'}}>{totalPriceUsdc} USDC</dd>
-        <dt style={{color: '#718096'}}>{ru ? 'Шлюз (Router):' : 'Router:'}</dt>
-        <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed</a></dd>
-        <dt style={{color: '#718096'}}>{ru ? 'Клиринг (Merchant):' : 'Merchant:'}</dt>
-        <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x58863e4a739da0e62c2eba258b7783e95d5c48ce</a></dd>
+      <dl style={{display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '6px 14px', fontSize: '13px', margin: '12px 0', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)'}}>
+        <dt style={{color: '#64748b'}}>{ru ? 'Товар:' : 'Item:'}</dt>
+        <dd style={{fontWeight: 600, color: '#e2e8f0'}}>{productName} ({optionName})</dd>
+        <dt style={{color: '#64748b'}}>{ru ? 'Количество:' : 'Qty:'}</dt>
+        <dd style={{color: '#f8fafc'}}>{quantity}</dd>
+        <dt style={{color: '#64748b'}}>{ru ? 'К оплате:' : 'Amount:'}</dt>
+        <dd style={{fontWeight: 700, color: '#b2e5ff', fontSize: '15px'}}>{totalPriceUsdc} USDC</dd>
+        <dt style={{color: '#64748b'}}>{ru ? 'Шлюз (Router):' : 'Router:'}</dt>
+        <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed</a></dd>
+        <dt style={{color: '#64748b'}}>{ru ? 'Клиринг (Merchant):' : 'Merchant:'}</dt>
+        <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>0x58863e4a739da0e62c2eba258b7783e95d5c48ce</a></dd>
       </dl>
 
       {isTopup && (
-        <div style={{margin: '12px 0'}}>
-          <label htmlFor="topup-username-input" style={{display: 'block', fontSize: '12px', fontWeight: 600, color: '#e2e8f0', marginBottom: '6px'}}>
-            {ru
-              ? (productName.toLowerCase().includes('telegram')
-                  ? 'Telegram username (@username) для начисления Stars:'
-                  : 'Аккаунт получателя (@username или ID):')
-              : 'Recipient account / Telegram username (@username):'}
+        <div style={{margin: '14px 0'}}>
+          <label htmlFor="topup-username-input" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', fontWeight: 600, color: '#e2e8f0', marginBottom: '6px'}}>
+            <span>
+              {ru
+                ? (productName.toLowerCase().includes('telegram')
+                    ? 'Telegram username для начисления Stars:'
+                    : 'Имя аккаунта получателя (@username или ID):')
+                : 'Recipient account / Telegram username (@username):'}
+              <span style={{color: '#f87171', marginLeft: '4px'}}>*</span>
+            </span>
           </label>
           <input
             id="topup-username-input"
             type="text"
-            placeholder="@username"
+            placeholder="@username (например @durov)"
             value={recipientAccount}
             onChange={(e) => {
               setRecipientAccount(e.target.value);
@@ -424,21 +556,29 @@ export function MainnetCheckout({
             disabled={busy}
             style={{
               width: '100%',
-              padding: '9px 12px',
+              padding: '10px 14px',
               borderRadius: '8px',
-              border: needsAccountRef ? '1px solid #f6ad55' : '1px solid #4a5568',
-              background: '#090d16',
+              border: needsAccountRef ? '1px solid rgba(245, 158, 11, 0.6)' : '1px solid rgba(56, 189, 248, 0.3)',
+              background: '#04070e',
               color: '#f8fafc',
               fontSize: '14px',
               fontFamily: 'monospace',
               boxSizing: 'border-box',
+              outline: 'none',
             }}
           />
+          <p style={{margin: '6px 0 0', fontSize: '11px', color: '#94a3b8'}}>
+            {ru
+              ? (productName.toLowerCase().includes('telegram')
+                  ? 'Звёзды зачисляются напрямую на этот Telegram-аккаунт через официальный шлюз Fragment.'
+                  : 'Пополнение будет зачислено напрямую на указанный аккаунт.')
+              : 'Direct top-up will be credited to this designated account.'}
+          </p>
         </div>
       )}
 
       {needsAccountRef && (
-        <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#f6ad55', background: 'rgba(237, 137, 54, 0.1)', border: '1px solid rgba(237, 137, 54, 0.3)', borderRadius: '8px', padding: '10px 12px', margin: '8px 0', fontSize: '12px'}}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#fbbf24', background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '8px', padding: '10px 12px', margin: '10px 0', fontSize: '12px'}}>
           <AlertCircle size={16}/>
           <span>
             {ru
@@ -451,25 +591,57 @@ export function MainnetCheckout({
       )}
 
       {error && (
-        <div role="alert" style={{display: 'flex', alignItems: 'center', gap: '6px', color: '#fc8181', fontSize: '12px', margin: '8px 0'}}>
+        <div role="alert" style={{display: 'flex', alignItems: 'center', gap: '6px', color: '#f87171', background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '8px', padding: '10px 12px', fontSize: '12px', margin: '10px 0'}}>
           <AlertCircle size={14}/>
           <span>{error}</span>
         </div>
       )}
 
-      <div style={{marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px'}}>
+      <div style={{marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px'}}>
         {!account ? (
-          <button className="mp-button full" onClick={connectWallet} disabled={busy} style={{justifyContent: 'center'}}>
+          <button
+            className="mp-button full"
+            onClick={connectWallet}
+            disabled={busy}
+            style={{
+              justifyContent: 'center',
+              background: '#1d4ed8',
+              color: '#ffffff',
+              fontWeight: 600,
+            }}
+          >
             {busy ? <LoaderCircle size={16} className="mn-identity-spinner"/> : <Wallet size={16}/>}
             <span>{ru ? 'Подключить кошелёк для оплаты' : 'Connect wallet to pay'}</span>
           </button>
         ) : !isArcMainnet ? (
-          <button className="mp-button full" onClick={switchNetwork} disabled={busy} style={{justifyContent: 'center', background: '#d69e2e'}}>
+          <button
+            className="mp-button full"
+            onClick={switchNetwork}
+            disabled={busy}
+            style={{
+              justifyContent: 'center',
+              background: '#b45309',
+              color: '#ffffff',
+              fontWeight: 600,
+            }}
+          >
             {busy ? <LoaderCircle size={16} className="mn-identity-spinner"/> : <ShieldCheck size={16}/>}
             <span>{ru ? 'Переключить кошелёк на Arc Mainnet' : 'Switch wallet to Arc Mainnet'}</span>
           </button>
         ) : (
-          <button className="mp-button full" onClick={payOnChain} disabled={busy || needsAccountRef} style={{justifyContent: 'center', background: needsAccountRef ? '#4a5568' : '#2b6cb0', cursor: needsAccountRef ? 'not-allowed' : 'pointer'}}>
+          <button
+            className="mp-button full"
+            onClick={payOnChain}
+            disabled={busy || needsAccountRef}
+            style={{
+              justifyContent: 'center',
+              background: needsAccountRef ? 'rgba(255, 255, 255, 0.06)' : '#1d4ed8',
+              color: needsAccountRef ? '#64748b' : '#ffffff',
+              cursor: needsAccountRef ? 'not-allowed' : 'pointer',
+              fontWeight: 600,
+              boxShadow: needsAccountRef ? 'none' : '0 4px 14px rgba(29, 78, 216, 0.4)',
+            }}
+          >
             {busy ? <LoaderCircle size={16} className="mn-identity-spinner"/> : <ShieldCheck size={16}/>}
             <span>
               {step === 'signing'
@@ -486,9 +658,9 @@ export function MainnetCheckout({
         )}
       </div>
 
-      <p style={{fontSize: '11px', color: '#718096', margin: '10px 0 0', textAlign: 'center'}}>
+      <p style={{fontSize: '11px', color: '#64748b', margin: '12px 0 0', textAlign: 'center'}}>
         {ru
-          ? 'Транзакция отправляется на смарт-контракт MercentaCheckout (Chain ID 5042). Без скрытых списаний.'
+          ? 'Транзакция отправляется на смарт-контракт MercentaCheckout (Chain ID 5042). Прямой ончейн-клиринг.'
           : 'Payment sent to MercentaCheckout router (Chain ID 5042). Non-custodial on-chain settlement.'}
       </p>
     </section>
