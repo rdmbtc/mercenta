@@ -1,7 +1,7 @@
 import {fallbackSnapshot} from './backend-fallback';
 import "server-only";
 import { NextResponse } from "next/server";
-import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHmac, createHash, randomUUID, timingSafeEqual } from "node:crypto";
 import { requireSession } from "@/lib/auth";
 import { getCatalog, CATEGORIES } from "@/lib/supplier";
 const cookieName = "mercenta_advisor";
@@ -61,9 +61,10 @@ export async function proxyBackend(req: Request, path: string) {
   );
   const previous = match ? validCookie(match[1], secret) : null;
   const session = previous ?? randomUUID();
+  const guestHex = createHash("sha256").update(session).digest("hex").slice(0, 40);
   const actor = wallet
     ? "wallet:" + wallet.toLowerCase()
-    : "session:" + session;
+    : "wallet:0x" + guestHex;
   if (path === "agent/chat" && body) {
     try {
       const catalog = await getCatalog();
