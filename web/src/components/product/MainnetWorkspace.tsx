@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {ArrowRight,ArrowUpRight,Bot,ShieldCheck,Sun,Moon,BookOpen,Globe,Info} from 'lucide-react';
 import {MainnetServiceStatus} from './MainnetServiceStatus';
@@ -19,7 +19,9 @@ export function MainnetWorkspace({catalog,initialSection='dashboard'}:{catalog:B
  useSurfaceMotion(surface,tab);
  const [activeFamily,setActiveFamily]=useState<ProductFamily|null>(null),[goal,setGoal]=useState(''),[region,setRegion]=useState('all'),[query,setQuery]=useState('');
  const [feed,setFeed]=useState(catalog);
- const products=useMemo(()=>unpackBrowse(feed).products,[feed]),featured=useMemo(()=>homeFeaturedFamilies(feed),[feed]),regions=useMemo(()=>[...new Set(groupCatalog(products).flatMap(f=>f.regions))].sort(),[products]);
+ const products=useMemo(()=>unpackBrowse(feed).products,[feed]),regions=useMemo(()=>[...new Set(groupCatalog(products).flatMap(f=>f.regions))].sort(),[products]);
+ const [featured,setFeatured]=useState(()=>homeFeaturedFamilies(feed,false));
+ useEffect(()=>{if(feed)setFeatured(homeFeaturedFamilies(feed,true));},[feed]);
  useEffect(()=>{let active=true;const refresh=()=>{if(document.visibilityState==='hidden')return;void refreshPublicCatalog().then(v=>{if(active)setFeed(v)}).catch(()=>{});};refresh();const timer=setInterval(refresh,75000);return()=>{active=false;clearInterval(timer)};},[]);
  const open=(v:View)=>{setTab(v);const section={home:'dashboard',catalogue:'shop',agent:'agent-chat',launch:'launch'}[v];window.history.replaceState(null,'',section==='dashboard'?'/app':'/app?section='+section);};
  const sections:readonly [View,string][]=[['home',ru?'Главная':'Overview'],['catalogue',ru?'Каталог':'Catalogue'],['agent',ru?'Агент':'Agent'],['launch',ru?'Статус сервиса':'Service status']];
