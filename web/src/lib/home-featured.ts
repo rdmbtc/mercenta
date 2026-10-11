@@ -14,5 +14,5 @@ export function homeFeatured(catalog?:BrowseCatalog):BrowseRow[]{
 export function saveHomeGoal(goal:string){const clean=goal.trim().slice(0,140);if(!clean)return false;try{sessionStorage.setItem('mercenta-agent-draft',JSON.stringify({goal:clean,mode:'testnet'}))}catch{}return true}
 export function saveCatalogIntent(row:BrowseRow){try{sessionStorage.setItem('mercenta-catalog-intent',JSON.stringify({query:row[1].slice(0,200),region:row[5]||'all'}))}catch{}}
 
-export function homeFeaturedFamilies(catalog?:BrowseCatalog):ProductFamily[]{if(!catalog)return [];const groups=groupCatalog(unpackBrowse(catalog).products,true);const featured=groups.filter(g=>topProductRank(g.name)<999);return featured.length>=3?featured.slice(0,8):groups.slice(0,8);}
+export function homeFeaturedFamilies(catalog?:BrowseCatalog,randomize=false):ProductFamily[]{if(!catalog)return [];const groups=groupCatalog(unpackBrowse(catalog).products,randomize);const featured=groups.filter(g=>topProductRank(g.name)<999);return featured.length>=3?featured.slice(0,8):groups.slice(0,8);}
 export function saveFamilyIntent(family:ProductFamily){try{sessionStorage.setItem('mercenta-catalog-intent',JSON.stringify({query:family.name.slice(0,200),region:'all'}))}catch{}}
