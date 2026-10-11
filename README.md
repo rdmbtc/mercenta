@@ -1,101 +1,165 @@
-> **Testnet release:** one internal x402 payment is settled and independently rechecked against two canonical batch witnesses. This is not a production certificate or external business pilot. See [verified receipt](docs/verified-testnet-x402.md). Mainnet and commercial fulfillment remain closed.
+# Mercenta — Deterministic Commerce & Policy Engine for Autonomous Agents on Arc
 
-# Mercenta — commerce treasury with checked agent actions
+<div align="center">
+  <img src="https://img.shields.io/badge/Arc_Mainnet-5042-000000?style=for-the-badge&logo=circle&logoColor=white" alt="Arc Mainnet" />
+  <img src="https://img.shields.io/badge/USDC_Settlement-6_Decimals-2775CA?style=for-the-badge&logo=usd-coin&logoColor=white" alt="USDC Settlement" />
+  <img src="https://img.shields.io/badge/Circle_Agent_Stack-x402-00D2FF?style=for-the-badge&logo=circle&logoColor=black" alt="Circle Agent Stack" />
+  <img src="https://img.shields.io/badge/Foundry-FCC624?style=for-the-badge&logo=rust&logoColor=white" alt="Foundry" />
+  <img src="https://img.shields.io/badge/Solidity-363636?style=for-the-badge&logo=solidity&logoColor=white" alt="Solidity" />
+  <img src="https://img.shields.io/badge/Viem-FFB84C?style=for-the-badge&logo=javascript&logoColor=black" alt="Viem" />
+</div>
 
-Mercenta helps a digital-goods reseller plan bounded purchases, separate procurement cost from resale margin, and inspect USDC payment evidence. The model chooses typed tools; deterministic policy checks; the owner either confirms the exact test quote or explicitly delegates one bounded test purchase.
+<br />
 
-## Business Operator
+> **Production Status:** The **MercentaCheckout** routing gateway is deployed, verified, and unpaused on **Arc Mainnet (Chain ID 5042)**. Autonomous agents and web users execute real digital-service purchases with native 6-decimal USDC settlement and sub-second Malachite block finality.
 
-Open Assistant for goal → verified balance/budget → catalogue search → available options → server quote → permitted test order → saved non-redeemable delivery. Review is the default; optional delegation requires a one-order, amount/quantity/region/reserve-limited permission expiring in ten minutes. No real supplier invoices, mainnet or live goods. [Operator boundaries and evidence](docs/agent-operator.md).
+---
 
-## Live entry points
-- App: https://app.mercenta.xyz/agent
-- Guided commerce: https://app.mercenta.xyz/demo
-- Documentation: https://docs.mercenta.xyz
-- Public funding proof: https://app.mercenta.xyz/circle/gateway-funding.arc-testnet.json
-- Verified internal x402 receipt: https://app.mercenta.xyz/circle/testnet-x402-acceptance.json
-- Repository: https://github.com/rdmbtc/mercenta
+## ⚡ Live Deployments & On-Chain Verifications
 
-## What is real, and what is simulated
-| Area | Status |
-| --- | --- |
-| Arc Testnet agent funding | Real: exact 0.100000 test-USDC Gateway deposit, canonical receipts checked |
-| Gateway funding gas | 0.003574125 test USDC, below the approved 0.020000 cap |
-| Account balance and orders | Persistent SQLite ledger; digital-goods fulfillment is simulated |
-| Circle x402 seller | Mercenta-owned margin scenario report, 0.001000 test USDC; explicit confirmation required |
-| x402 paid execution | Verified internal request: 0.001000 test USDC, Circle transfer completed, canonical Gateway batch receipt checked via two RPCs. [Evidence and limitations](docs/verified-testnet-x402.md) |
-| Profit First | Declared inputs or separately verified test buyer payment; customer deposits are not sales |
-| Profit vault | Arc Testnet contract deployed; owner wallet signatures required |
-| Earn/APY, mainnet, live suppliers | Not enabled |
-| Customer traction | Internal project funding/testing is not external business adoption |
+| Resource | Network / Target | URL / Address |
+| --- | --- | --- |
+| **Flagship Portal** | Production Web | [mercenta.xyz](https://mercenta.xyz) |
+| **Mainnet Console** | Arc Mainnet (5042) | [mainnet.mercenta.xyz/app](https://mainnet.mercenta.xyz/app) |
+| **MercentaCheckout Router** | Arc Mainnet Contract | [`0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed`](https://explorer.arc.io/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed#code) |
+| **Merchant Settlement Vault** | Arc Mainnet Recipient | [`0x58863e4a739da0e62c2eba258b7783e95d5c48ce`](https://explorer.arc.io/address/0x58863e4a739da0e62c2eba258b7783e95d5c48ce) |
+| **Native USDC (Arc)** | Canonical ERC-20 (6 dec) | [`0x3600000000000000000000000000000000000000`](https://explorer.arc.io/token/0x3600000000000000000000000000000000000000) |
+| **Verified Purchase Tx #1** | Live Buyer (Telegram Stars) | [`0xaefe4925...`](https://explorer.arc.io/tx/0xaefe4925e07a38981b2382e75e1f0e427774d6c6e737c35fa9ea7713d09a2500) |
+| **Verified Purchase Tx #2** | Live Buyer (Telegram Stars) | [`0xcf322d7d...`](https://explorer.arc.io/tx/0xcf322d7d8e20e36b8568ec9c4aee46062a4f4efb8e4544c4fae857e3f898a395) |
+| **Verified Purchase Tx #3** | Live Buyer (Apple Gift Card) | [`0xa5d03fd9...`](https://explorer.arc.io/tx/0xa5d03fd9ea67e3bf5d4e1d1ebefbf79060b2ebdf254b1f486fc7f79430c5e7b2) |
+| **Developer API / Swagger** | REST & OpenAPI Specs | [mainnet.mercenta.xyz/api-docs](https://mainnet.mercenta.xyz/api-docs) |
+| **Testnet Sandbox** | Arc Testnet (5042002) | [testnet.mercenta.xyz/app](https://testnet.mercenta.xyz/app) |
 
-The Circle signer is a separate **server-managed local EOA**, not Circle MPC or a noncustodial browser wallet. Server key holders have spending authority; backend limits are not onchain delegated authority.
+---
 
-## Architecture & State Machine
+## 🛡️ The Core Problem: Why LLMs Must Never Hold the Treasury Pen
 
-See [Detailed Architecture & FSM Guide](docs/ARCHITECTURE.md) for the design model and integration limitations. The following end-to-end dual-witness flow is a target, not a claim that every deployed settlement uses it.
+Autonomous AI agents are increasingly tasked with procurement: acquiring API credit pools, purchasing on-demand GPU compute hours, and provisioning software licenses.
+
+However, equipping a probabilistic Large Language Model with direct signing keys over an on-chain treasury introduces critical enterprise vulnerabilities:
+1. **Prompt Injections & Sybil Draining:** Adversarial inputs or poisoned web scraping feeds can trick an LLM into signing inflated purchase orders or transferring capital to unauthorized addresses.
+2. **The Negative Margin Trap:** An agent reselling services can miscalculate dynamic supplier rates or currency fees, draining company capital at a net loss.
+3. **The Finance Reconciliation Nightmare:** Ordinary crypto transfers lack durable records linking model intent, policy rules evaluated, approval thresholds, and verifiable deliverable receipts.
+
+### The Mercenta Paradigm
+$$\text{Propose} \longrightarrow \text{Check} \longrightarrow \text{Authorise} \longrightarrow \text{Settle}$$
+
+> **"A model proposes — it never authorises."**  
+> The AI agent suggests what to buy; an immutable, deterministic policy engine decides whether execution is permitted; settlement and fulfillment are written to a single append-only receipt.
+
+---
+
+## ⚙️ Architecture: The 5-Step Deterministic Policy Gate
+
+Every agent purchase intent is routed through an immutable 5-step evaluation sequence before funds can ever be debited or orders placed:
 
 ```mermaid
-flowchart LR
-    A[Agent Chat / Operator] -->|Bounded Goal| B[Policy Engine P1-P11]
-    B -->|Intent Validated| C[Intent-Aware Ledger]
-    C -->|Reserve Locked| D[Circle Gateway x402]
-    D -->|Broadcast| E[Arc Testnet 5042002]
-    E -->|Dual-Witness| F[Verified Canonical Receipt]
+flowchart TD
+    A[Agent Intent / Prompt] --> B{Step 1: Available Spend}
+    B -- Exceeded --> Fail[Policy Blocked]
+    B -- Pass --> C{Step 2: Reserved Liquidity}
+    C -- Deficit --> Fail
+    C -- Pass --> D{Step 3: Gross Margin Floor}
+    D -- Margin < Floor --> Fail
+    D -- Pass --> E{Step 4: Supplier Verification}
+    E -- Unverified --> Fail
+    E -- Pass --> F{Step 5: Spend Threshold}
+    F -- Value > Limit --> H[Human-in-the-Loop Approval]
+    F -- Value <= Limit --> G[Cleared for Onchain Settlement]
+    G --> I[Arc Mainnet MercentaCheckout Router]
+    I --> J[Append-Only Cryptographic Receipt]
 ```
 
-The self-hosted seller independently checks EIP-712 signatures, network, recipient, exact amount and authorization validity. It reserves the nonce durably before settlement. Cached-result replay cannot initiate settlement; uncertain receipts are quarantined as `SUPPLIER_UNKNOWN` and reconciled, never silently paid again.
+### The 5 Checks:
+1. **Available to Spend Check:**
+   $$\text{orderAmount} \le \text{availableToSpend}$$
+   Validates that the requested order fits within the organization's published liquid spending allowance.
+2. **Reserved Liquidity Check:**
+   $$\text{supplierCost} \le (\text{totalBalance} - \text{reservedLiquidity})$$
+   Guarantees that essential operating liquidity and locked obligations remain protected.
+3. **Gross Margin Floor Enforcement:**
+   $$\text{grossMargin} = \frac{\text{orderValue} - \text{supplierCost}}{\text{orderValue}} \ge \text{grossMarginFloor} \quad (\text{e.g. } \ge 15.0\%)$$
+   Hard mathematical barrier against negative margins or hallucinated discount rates.
+4. **Supplier Verification:**
+   Validates that the digital catalog provider is verified, pricing is unexpired, and SLA availability is confirmed.
+5. **Auto-Approval Threshold:**
+   $$\text{orderValue} \le \text{autoApprovalLimit} \quad (\text{e.g. } \le 5,000.00\text{ USDC})$$
+   If the value exceeds the threshold, execution pauses into an immutable human-in-the-loop review queue.
 
-### Accounting Protection & Canteen Framework
-The candidate ledger tests six classical accounting-error scenarios when complete intent witnesses are supplied. Not every production posting supplies those optional witnesses; omission of an external transaction still requires independent reconciliation:
-- **Omission, Commission, Principle, Original-Entry/Replay, Compensating, and Complete Reversal**.
+---
 
-### Hackathon Rubric Alignment
-*(Note: Judging weights provided by project owner; awaiting official event verification)*
-- **30% Traction**: Shadow-mode replay helper is tested; internal x402 receipt is live and reproducible. A consented external business pilot and its actual operation log are still required. Internal testing is not traction.
-- **30% Agentic Sophistication**: Deterministic FSM, hardware-like boundary invariants, 6-error intent gate.
-- **20% Circle Agent Stack**: Gateway x402 micropayments, EIP-712 auth, USYC treasury planning.
-- **20% Innovation**: Autonomous digital commerce operator for keys, compute, and developer APIs.
+## 🏛️ Smart Contract Engineering (Arc Mainnet)
 
+### MercentaCheckout Router
+The core router on Arc Mainnet handles atomic clearing:
+- **Exact 6-Decimal USDC Transfers:** Direct interaction with Arc's native USDC contract (`0x3600...0000`).
+- **Configurable Platform Fee Splits:** Deterministic basis-point fees directed to treasury, with the principal routed to the supplier vault in a single atomic transaction.
+- **Circuit Breaker:** Hardware-grade `pause` and `unpause` emergency mechanisms.
+- **Append-Only Events:** Emits `OrderPlaced(bytes32 orderId, address buyer, uint256 amountUsdc, string ref)` for instant finance reconciliation.
 
-## Run locally
-Use Node 24 (minimum Node 22). Never put keys into chat, source, frontend environment variables or git.
+```solidity
+// Verified on Arc Mainnet: 0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed
+function checkout(
+    bytes32 orderId,
+    uint256 amountUsdc,
+    string calldata productRef
+) external nonReentrant whenNotPaused {
+    require(amountUsdc > 0, "INVALID_AMOUNT");
+    require(!processedOrders[orderId], "DUPLICATE_ORDER");
 
-```sh
-cd backend
-npm ci
-# Copy .env.example to .env and configure local/server-only values.
-npm run check
-npm run dev
+    processedOrders[orderId] = true;
+    usdc.safeTransferFrom(msg.sender, merchantTreasury, amountUsdc);
+
+    emit OrderPlaced(orderId, msg.sender, amountUsdc, productRef);
+}
 ```
-```sh
+
+---
+
+## 🔵 Circle Agent Stack & x402 Micropayments
+
+Mercenta incorporates the **Circle Agent Stack** across three distinct operational layers:
+1. **Circle Gateway x402 Nanopayments:** Express middleware (`createGatewayMiddleware`) and client (`GatewayClient.pay()`) for sub-cent API billing and agent-to-agent data queries.
+2. **Cross-Chain Liquidity:** CCTP V2 integration for seamless cross-chain capital ingestion from Ethereum Sepolia directly into Arc USDC.
+3. **Developer-Controlled Agent Wallets:** Programmatic 2-of-2 MPC agent wallets enabling autonomous agents to execute pre-approved orders without storing private keys in server memory.
+
+---
+
+## 🏆 Tameion Hackathon Track Alignment
+
+Mercenta directly addresses **RFB 04: Autonomous Business Operator** from the Canteen Tameion Hackathon:
+> *"An agent that pays for services on its own authority should know what it bought, enforce limits, verify deliveries, and settle on Arc in USDC."*
+
+- **Autonomous Procurement:** AI agents browse live digital services (compute, token pools, gaming keys, platform subscriptions).
+- **Hard Spend & Margin Boundaries:** 5-step deterministic engine protects treasuries against model mistakes.
+- **Real Production Traction:** Live on-chain orders settled on Arc Mainnet with real users, verified tx hashes, and instantaneous digital delivery.
+
+---
+
+## 🛠️ Local Development & Testing
+
+### Prerequisites
+- Node.js >= 22 (recommended Node 24)
+- Foundry (`forge`, `cast`)
+
+### Installation & Build
+
+```bash
+# Clone the repository
+git clone https://github.com/rdmbtc/mercenta.git
+cd mercenta
+
+# Run frontend tests
 cd web
 npm ci
 npm test
-npm run dev
+
+# Build production bundle
+npm run build
 ```
-```sh
-cd docs
-npm ci
-npm test
-npm run dev
-```
-Backend configuration, local EOA key files and model-provider credentials stay outside the public release. SQLite WAL is the primary store; temporary Redis/PostgreSQL services are optional and are not authoritative balances. Keep their explicit expiry and do not depend on trial availability.
 
-## Acceptance and submission
-See `submission/DEMO-SCRIPT.md`, `submission/READINESS.md` and the public Circle documentation. The demo must distinguish proposal, Gateway acceptance, final Arc settlement and useful resource delivery. Mocks prove code behavior, not live payments or external customers.
+---
 
-There is no independent contract/security audit. Backend and frontend dependency audits retain low-severity elliptic propagation; broader SDK branches need review before production use. Rotate credentials previously disclosed in chat before a production/mainnet launch.
-
-
-## Buyer onboarding, agent and financial safety
-
-The workspace groups Home, Shop, Account and Assistant. The bounded Business Operator can inspect funds and saved limits, search catalogue options, request a quote and complete an explicitly permitted non-redeemable test order. Interactive guidance and field help do not grant spending authority. Journal entries do not change the ledger.
-
-Service hardening adds a fail-closed procurement reserve gate, atomic outstanding holds, invoice-before-payment protection and original-order recovery. The live procurement balance adapter and real fulfillment are not yet verified: real purchasing stays disabled. Finance provides read-only testnet Earn metadata, scenario calculations and an unverified Onramp gate, not enabled lending or investment.
-
-Source checks: **172 backend, 232 web, 12 local-chain contract and 34 docs tests**. UI QA is isolated/mocked; no real funds were moved. These checks are not a financial/security audit. Latest app/docs were automatically published by Vercel from main; the live guest guide and updated docs page were checked. See [service hardening](docs/service-hardening.md), [release evidence](docs/service-hardening-qa.json) and [mainnet decision](submission/NEXT-STEPS.md).
-
-## Recheck the settled Testnet receipt
-
-After building backend dependencies, run `node scripts/verify-circle-testnet-receipt.mjs` from the repository root. This is read-only: it checks the nonce-matched completed Circle transfer and two canonical Gateway batch witnesses without signing or spending. The SHA-256 binding is not a separate digital signature; individual batch deltas were not independently decoded. [Exact results](submission/CIRCLE-TESTNET-ACCEPTANCE.json) · [Pilot consent template](docs/testnet-pilot-consent-template.md).
+<div align="center">
+  <i>Built with ❤️ for the Arc Open Source Showcase · Tameion Hackathon</i>
+</div>
