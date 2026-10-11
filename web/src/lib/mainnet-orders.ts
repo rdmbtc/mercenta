@@ -28,8 +28,23 @@ export function generateMainnetCodes(txHash: string, quantity: number): string[]
   return codes;
 }
 
-// User on-chain confirmed order (Tx: 0xa5d03fd92bab5961cdc2e2e35d273ccc8df0a45eb5245d3b657c0718c6c7439d)
+// User on-chain confirmed orders
 const CONFIRMED_ONCHAIN_ORDERS: MainnetOrder[] = [
+  {
+    id: 'mct-ord-cf322d7d-stars',
+    created_at: 1791671529000,
+    initiator: '0x0b2c…4bdd',
+    reference: '0xcf322d7d8049…',
+    name: 'Telegram Stars (custom quantity) · Telegram Stars',
+    product_id: '7295df4e-6fb0-4dfb-b962-ded3d073bc03',
+    country: 'GLOBAL',
+    quantity: 1,
+    amount_units: '830000',
+    status: 'FULFILLED',
+    tx_hash: '0xcf322d7d8049bbf7f11d6cde15d8c56bde4a81dade45a1201b41e4751662253e',
+    codes: ['TOPUP_CREDITED:@therdm'],
+    network: 'mainnet',
+  },
   {
     id: 'mct-ord-a5d03fd9-canary',
     created_at: 1791668586000,

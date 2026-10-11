@@ -1,6 +1,6 @@
 import {retailPrice,RETAIL_PRICE_POLICY} from './retail-pricing';
 import {hasStock,availableQuantity} from './catalog-stock';
-import {brandArtwork} from './brand-artwork';
+import {brandArtwork,topProductRank} from './brand-artwork';
 import {illustrationFor,safeProductImage} from './product-images';
 // Server-side supplier catalog adapter.
 //
@@ -207,7 +207,13 @@ export function diversify(products: CatalogProduct[]): CatalogProduct[] {
 /** Genuine photos/platform artwork first, stable within each partition. */
 export function artworkFirst(products:CatalogProduct[]):CatalogProduct[]{
  const hasArt=(p:CatalogProduct)=>p.imageSource==='supplier'&&!!safeProductImage(p.imageUrl)||!!brandArtwork(p.name);
- return [...products.filter(hasArt),...products.filter(p=>!hasArt(p))];
+ return products.slice().sort((a,b)=>{
+  const rankA=topProductRank(a.name),rankB=topProductRank(b.name);
+  if(rankA!==rankB)return rankA-rankB;
+  const artA=hasArt(a),artB=hasArt(b);
+  if(artA!==artB)return Number(artB)-Number(artA);
+  return a.name.localeCompare(b.name);
+ });
 }
 export async function getCatalog(): Promise<Catalog> {
  let sourceStatus='backend-unavailable';

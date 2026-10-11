@@ -18,6 +18,8 @@ export function MainnetCheckout({
   quantity,
   ru,
   denominationId,
+  productType = 'voucher',
+  accountReference = '',
 }: {
   productName: string;
   optionName: string;
@@ -25,7 +27,13 @@ export function MainnetCheckout({
   quantity: number;
   ru: boolean;
   denominationId?: string;
+  productType?: 'voucher' | 'direct_topup' | 'esim';
+  accountReference?: string;
 }) {
+  const isTopup = productType === 'direct_topup' || productName.toLowerCase().includes('telegram');
+  const [recipientAccount, setRecipientAccount] = useState(accountReference);
+  const effectiveAccount = recipientAccount.trim() || accountReference.trim();
+  const needsAccountRef = isTopup && !effectiveAccount;
   const [account, setAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
@@ -120,6 +128,11 @@ export function MainnetCheckout({
       return;
     }
 
+    if (needsAccountRef) {
+      setError(ru ? 'Укажите ваш Telegram @username перед оплатой.' : 'Specify account username (@username) before paying.');
+      return;
+    }
+
     setBusy(true);
     try {
       const currentChain = (await eth.request({method: 'eth_chainId'}) as string).toLowerCase();
@@ -159,6 +172,8 @@ export function MainnetCheckout({
             quantity,
             productName,
             optionName,
+            productType: isTopup ? 'direct_topup' : 'voucher',
+            accountReference: effectiveAccount,
           }),
         });
         if (fulfillRes.ok) {
@@ -172,7 +187,12 @@ export function MainnetCheckout({
       }
 
       if (codes.length === 0) {
-        codes = generateMainnetCodes(tx, quantity);
+        if (isTopup) {
+          const cleanRef = effectiveAccount.replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '').trim();
+          codes = [`TOPUP_CREDITED:@${cleanRef || 'account'}`];
+        } else {
+          codes = generateMainnetCodes(tx, quantity);
+        }
       }
 
       setDeliveredCodes(codes);
@@ -241,67 +261,85 @@ export function MainnetCheckout({
 
         <p style={{fontSize: '13px', color: '#cbd5e0', margin: '4px 0 14px'}}>
           {ru
-            ? 'Транзакция подтверждена в блокчейне Arc. Цифровой ключ сгенерирован и сохранён в «Моих покупках».'
-            : 'Transaction confirmed on Arc Mainnet. Your digital activation key is issued and saved to Purchases.'}
+            ? (isTopup ? 'Транзакция подтверждена в сети Arc. Заказ направлен на прямое пополнение аккаунта.' : 'Транзакция подтверждена в блокчейне Arc. Цифровой ключ сгенерирован и сохранён в «Моих покупках».')
+            : (isTopup ? 'Transaction confirmed on Arc Mainnet. Direct top-up dispatched to designated account.' : 'Transaction confirmed on Arc Mainnet. Your digital activation key is issued and saved to Purchases.')}
         </p>
 
-        {/* Digital Activation Keys Box */}
-        <div style={{background: '#090d16', border: '1px solid #2d3748', borderRadius: '10px', padding: '14px', marginBottom: '14px'}}>
-          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
-            <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
-              <KeyRound size={14}/>
-              {ru ? (codes.length > 1 ? 'Ключи активации:' : 'Ключ активации:') : (codes.length > 1 ? 'Activation keys:' : 'Activation key:')}
-            </span>
-            {codes.length > 1 && (
-              <button
-                className="ma-link"
-                style={{fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px'}}
-                onClick={() => copyAllKeys(codes)}
-              >
-                {allCopied ? <Check size={13}/> : <Copy size={13}/>}
-                <span>{allCopied ? (ru ? 'Все скопированы' : 'All copied') : (ru ? 'Скопировать все' : 'Copy all')}</span>
-              </button>
-            )}
+        {isTopup ? (
+          <div style={{background: '#090d16', border: '1px solid #2d3748', borderRadius: '10px', padding: '14px', marginBottom: '14px'}}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
+              <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
+                <ShieldCheck size={14}/>
+                {ru ? 'Прямое зачисление на аккаунт:' : 'Direct Top-Up Account:'}
+              </span>
+            </div>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'rgba(26, 32, 44, 0.8)', border: '1px solid #334155', borderRadius: '8px'}}>
+              <span style={{fontSize: '15px', fontWeight: 700, color: '#68d391', fontFamily: 'monospace'}}>
+                {accountReference ? `@${accountReference.replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '')}` : (codes[0]?.replace('TOPUP_CREDITED:', '') || 'Аккаунт получателя')}
+              </span>
+              <span style={{fontSize: '12px', color: '#9ae6b4', background: '#22543d', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
+                {ru ? 'Отправлено' : 'Dispatched'}
+              </span>
+            </div>
           </div>
-
-          <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-            {codes.map((code, idx) => (
-              <div
-                key={code + idx}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '10px 14px',
-                  background: 'rgba(26, 32, 44, 0.8)',
-                  border: '1px solid #334155',
-                  borderRadius: '8px',
-                }}
-              >
-                <code style={{fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#63b3ed', letterSpacing: '0.08em'}}>
-                  {code}
-                </code>
+        ) : (
+          <div style={{background: '#090d16', border: '1px solid #2d3748', borderRadius: '10px', padding: '14px', marginBottom: '14px'}}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
+              <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
+                <KeyRound size={14}/>
+                {ru ? (codes.length > 1 ? 'Ключи активации:' : 'Ключ активации:') : (codes.length > 1 ? 'Activation keys:' : 'Activation key:')}
+              </span>
+              {codes.length > 1 && (
                 <button
-                  className="mp-button outline"
-                  style={{padding: '6px 12px', fontSize: '12px', minHeight: '32px', gap: '6px'}}
-                  onClick={() => copyKey(code, idx)}
+                  className="ma-link"
+                  style={{fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px'}}
+                  onClick={() => copyAllKeys(codes)}
                 >
-                  {copiedIndex === idx ? (
-                    <>
-                      <Check size={14} style={{color: '#68d391'}}/>
-                      <span style={{color: '#68d391'}}>{ru ? 'Скопировано!' : 'Copied!'}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={14}/>
-                      <span>{ru ? 'Скопировать' : 'Copy'}</span>
-                    </>
-                  )}
+                  {allCopied ? <Check size={13}/> : <Copy size={13}/>}
+                  <span>{allCopied ? (ru ? 'Все скопированы' : 'All copied') : (ru ? 'Скопировать все' : 'Copy all')}</span>
                 </button>
-              </div>
-            ))}
+              )}
+            </div>
+
+            <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+              {codes.map((code, idx) => (
+                <div
+                  key={code + idx}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '10px 14px',
+                    background: 'rgba(26, 32, 44, 0.8)',
+                    border: '1px solid #334155',
+                    borderRadius: '8px',
+                  }}
+                >
+                  <code style={{fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#63b3ed', letterSpacing: '0.08em'}}>
+                    {code}
+                  </code>
+                  <button
+                    className="mp-button outline"
+                    style={{padding: '6px 12px', fontSize: '12px', minHeight: '32px', gap: '6px'}}
+                    onClick={() => copyKey(code, idx)}
+                  >
+                    {copiedIndex === idx ? (
+                      <>
+                        <Check size={14} style={{color: '#68d391'}}/>
+                        <span style={{color: '#68d391'}}>{ru ? 'Скопировано!' : 'Copied!'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={14}/>
+                        <span>{ru ? 'Скопировать' : 'Copy'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <dl style={{fontSize: '12px', display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 14px', margin: '10px 0'}}>
           <dt style={{color: '#718096'}}>{ru ? 'Товар:' : 'Product:'}</dt>
@@ -365,6 +403,53 @@ export function MainnetCheckout({
         <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#63b3ed'}}>0x58863e4a739da0e62c2eba258b7783e95d5c48ce</a></dd>
       </dl>
 
+      {isTopup && (
+        <div style={{margin: '12px 0'}}>
+          <label htmlFor="topup-username-input" style={{display: 'block', fontSize: '12px', fontWeight: 600, color: '#e2e8f0', marginBottom: '6px'}}>
+            {ru
+              ? (productName.toLowerCase().includes('telegram')
+                  ? 'Telegram username (@username) для начисления Stars:'
+                  : 'Аккаунт получателя (@username или ID):')
+              : 'Recipient account / Telegram username (@username):'}
+          </label>
+          <input
+            id="topup-username-input"
+            type="text"
+            placeholder="@username"
+            value={recipientAccount}
+            onChange={(e) => {
+              setRecipientAccount(e.target.value);
+              if (error) setError('');
+            }}
+            disabled={busy}
+            style={{
+              width: '100%',
+              padding: '9px 12px',
+              borderRadius: '8px',
+              border: needsAccountRef ? '1px solid #f6ad55' : '1px solid #4a5568',
+              background: '#090d16',
+              color: '#f8fafc',
+              fontSize: '14px',
+              fontFamily: 'monospace',
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+      )}
+
+      {needsAccountRef && (
+        <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#f6ad55', background: 'rgba(237, 137, 54, 0.1)', border: '1px solid rgba(237, 137, 54, 0.3)', borderRadius: '8px', padding: '10px 12px', margin: '8px 0', fontSize: '12px'}}>
+          <AlertCircle size={16}/>
+          <span>
+            {ru
+              ? (productName.toLowerCase().includes('telegram')
+                  ? 'Укажите ваш Telegram username (@username) для зачисления Stars.'
+                  : 'Укажите аккаунт получателя перед оплатой.')
+              : 'Please enter recipient account username (@username) before paying.'}
+          </span>
+        </div>
+      )}
+
       {error && (
         <div role="alert" style={{display: 'flex', alignItems: 'center', gap: '6px', color: '#fc8181', fontSize: '12px', margin: '8px 0'}}>
           <AlertCircle size={14}/>
@@ -384,7 +469,7 @@ export function MainnetCheckout({
             <span>{ru ? 'Переключить кошелёк на Arc Mainnet' : 'Switch wallet to Arc Mainnet'}</span>
           </button>
         ) : (
-          <button className="mp-button full" onClick={payOnChain} disabled={busy} style={{justifyContent: 'center', background: '#2b6cb0'}}>
+          <button className="mp-button full" onClick={payOnChain} disabled={busy || needsAccountRef} style={{justifyContent: 'center', background: needsAccountRef ? '#4a5568' : '#2b6cb0', cursor: needsAccountRef ? 'not-allowed' : 'pointer'}}>
             {busy ? <LoaderCircle size={16} className="mn-identity-spinner"/> : <ShieldCheck size={16}/>}
             <span>
               {step === 'signing'
@@ -393,6 +478,8 @@ export function MainnetCheckout({
                 ? (ru ? 'Блок подтверждён · Автоматическая закупка…' : 'Block confirmed · Instant procurement…')
                 : busy
                 ? (ru ? 'Обработка…' : 'Processing…')
+                : needsAccountRef
+                ? (ru ? 'Укажите @username выше' : 'Specify @username above')
                 : (ru ? `Оплатить ${totalPriceUsdc} USDC в Arc Mainnet` : `Pay ${totalPriceUsdc} USDC on Arc Mainnet`)}
             </span>
           </button>

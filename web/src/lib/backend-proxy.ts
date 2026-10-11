@@ -1,4 +1,3 @@
-import {networkFromHost,MAINNET_CLOSED} from './network-profile';
 import {fallbackSnapshot} from './backend-fallback';
 import "server-only";
 import { NextResponse } from "next/server";
@@ -29,7 +28,6 @@ function validCookie(v: string, key: string) {
   }
 }
 export async function proxyBackend(req: Request, path: string) {
-  if(networkFromHost(new URL(req.url).hostname)==='mainnet')return NextResponse.json(MAINNET_CLOSED,{status:503,headers:{'Cache-Control':'no-store'}});
   if (!allowed.test(path))
     return NextResponse.json({ code: "NOT_FOUND" }, { status: 404 });
   const secret = process.env.BACKEND_PROXY_SECRET;
