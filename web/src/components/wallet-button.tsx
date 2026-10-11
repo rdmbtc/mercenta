@@ -11,34 +11,18 @@ import {
 
 type Phase = "idle" | "connecting" | "signing" | "authed" | "error";
 
-interface InjectedEthereum {
-  selectedAddress?: string;
-}
-
 export default function WalletButton() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [address, setAddress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const injected = typeof window !== "undefined"
-      ? (window as unknown as { ethereum?: InjectedEthereum }).ethereum
-      : undefined;
-
     fetchSession().then((s) => {
       if (s.authenticated && s.address) {
         setAddress(s.address);
         setPhase("authed");
-      } else if (typeof window !== 'undefined' && window.location.hostname.includes('mainnet') && injected?.selectedAddress) {
-        setAddress(injected.selectedAddress);
-        setPhase("authed");
       }
-    }).catch(() => {
-      if (typeof window !== 'undefined' && window.location.hostname.includes('mainnet') && injected?.selectedAddress) {
-        setAddress(injected.selectedAddress);
-        setPhase("authed");
-      }
-    });
+    }).catch(() => {});
   }, []);
 
   const handleClick = useCallback(async () => {
@@ -58,20 +42,11 @@ export default function WalletButton() {
       }
       setPhase("connecting");
       const addr = await connectWallet();
-      try {
-        setPhase("signing");
-        await signInWithWallet(addr);
-      } catch (signErr) {
-        if (typeof window !== 'undefined' && window.location.hostname.includes('mainnet')) {
-          setAddress(addr);
-          setPhase("authed");
-          window.dispatchEvent(new Event("mercenta-auth-change"));
-          return;
-        }
-        throw signErr;
-      }
+      setPhase("signing");
+      await signInWithWallet(addr);
       setAddress(addr);
       setPhase("authed");
+      window.dispatchEvent(new Event("mercenta-auth-change"));
     } catch (e) {
       setError((e as Error).message || "wallet error");
       setPhase("error");

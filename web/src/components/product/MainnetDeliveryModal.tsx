@@ -35,9 +35,12 @@ export function MainnetDeliveryModal({
   const amountUsdc = (Number(order.amount_units) / 1_000_000).toFixed(2);
   const dateStr = new Date(order.created_at).toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
 
+  const isTopup = order.codes.some(c => c.startsWith('TOPUP_CREDITED:')) || order.name.toLowerCase().includes('telegram');
+  const recipient = order.codes.find(c => c.startsWith('TOPUP_CREDITED:'))?.replace('TOPUP_CREDITED:', '') || '';
+
   return (
     <Modal
-      title={ru ? 'Ключ активации цифрового товара' : 'Digital Goods Activation Key'}
+      title={isTopup ? (ru ? 'Прямое зачисление цифрового товара' : 'Direct Top-Up Delivery') : (ru ? 'Ключ активации цифрового товара' : 'Digital Goods Activation Key')}
       onClose={onClose}
     >
       <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
@@ -45,7 +48,7 @@ export function MainnetDeliveryModal({
           <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#68d391'}}>
             <CheckCircle2 size={20}/>
             <span style={{fontWeight: 700, fontSize: '14px'}}>
-              {ru ? 'Заказ исполнен · Товар выдан' : 'Order Fulfilled · Delivered'}
+              {ru ? (isTopup ? 'Заказ исполнен · Товар зачислен' : 'Заказ исполнен · Товар выдан') : (isTopup ? 'Order Fulfilled · Top-Up Credited' : 'Order Fulfilled · Delivered')}
             </span>
           </div>
           <span style={{fontSize: '11px', background: '#22543d', color: '#9ae6b4', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
@@ -58,27 +61,45 @@ export function MainnetDeliveryModal({
             {order.name}
           </h4>
           <p style={{margin: 0, fontSize: '13px', color: '#a0aec0'}}>
-            {ru ? 'Цифровой код активации / ваучер для вашей учетной записи.' : 'Redeemable activation code / voucher for your account.'}
+            {isTopup
+              ? (ru ? 'Товар зачислен напрямую на баланс указанного аккаунта.' : 'Top-up credited directly to designated recipient account.')
+              : (ru ? 'Цифровой код активации / ваучер для вашей учетной записи.' : 'Redeemable activation code / voucher for your account.')}
           </p>
         </div>
 
-        <div style={{background: 'rgba(15, 23, 42, 0.75)', border: '1px solid #334155', borderRadius: '10px', padding: '14px'}}>
-          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px'}}>
+        {isTopup ? (
+          <div style={{background: 'rgba(15, 23, 42, 0.75)', border: '1px solid #334155', borderRadius: '10px', padding: '14px'}}>
             <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
-              <KeyRound size={14}/>
-              {ru ? (order.codes.length > 1 ? 'Ключи активации:' : 'Ключ активации:') : (order.codes.length > 1 ? 'Activation keys:' : 'Activation key:')}
+              <ShieldCheck size={14}/>
+              {ru ? 'Получатель пополнения:' : 'Top-Up Recipient:'}
             </span>
-            {order.codes.length > 1 && (
-              <button
-                className="ma-link"
-                style={{fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px'}}
-                onClick={copyAll}
-              >
-                {allCopied ? <Check size={13}/> : <Copy size={13}/>}
-                <span>{allCopied ? (ru ? 'Все скопированы' : 'All copied') : (ru ? 'Скопировать все' : 'Copy all')}</span>
-              </button>
-            )}
+            <div style={{marginTop: '10px', padding: '12px 14px', background: '#090d16', border: '1px solid #2d3748', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+              <span style={{fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#68d391'}}>
+                {recipient || 'Аккаунт получателя'}
+              </span>
+              <span style={{fontSize: '12px', color: '#9ae6b4', background: '#22543d', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
+                {ru ? 'Зачислено' : 'Credited'}
+              </span>
+            </div>
           </div>
+        ) : (
+          <div style={{background: 'rgba(15, 23, 42, 0.75)', border: '1px solid #334155', borderRadius: '10px', padding: '14px'}}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px'}}>
+              <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
+                <KeyRound size={14}/>
+                {ru ? (order.codes.length > 1 ? 'Ключи активации:' : 'Ключ активации:') : (order.codes.length > 1 ? 'Activation keys:' : 'Activation key:')}
+              </span>
+              {order.codes.length > 1 && (
+                <button
+                  className="ma-link"
+                  style={{fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px'}}
+                  onClick={copyAll}
+                >
+                  {allCopied ? <Check size={13}/> : <Copy size={13}/>}
+                  <span>{allCopied ? (ru ? 'Все скопированы' : 'All copied') : (ru ? 'Скопировать все' : 'Copy all')}</span>
+                </button>
+              )}
+            </div>
 
           <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
             {order.codes.map((code, idx) => (
@@ -118,6 +139,7 @@ export function MainnetDeliveryModal({
             ))}
           </div>
         </div>
+        )}
 
         <div style={{background: 'rgba(26, 32, 44, 0.4)', borderRadius: '8px', padding: '12px', border: '1px solid #2d3748'}}>
           <span style={{fontSize: '11px', fontWeight: 600, color: '#a0aec0', textTransform: 'uppercase', letterSpacing: '0.05em'}}>
