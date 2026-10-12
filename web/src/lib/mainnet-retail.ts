@@ -3,6 +3,7 @@ import {requireSession} from '@/lib/auth';
 import {getCatalog} from '@/lib/supplier';
 import {mainnetAmountUnits} from '@/lib/mainnet-orders';
 import {z} from 'zod';
+import {mainnetRuntimeStatus} from './mainnet-status';
 const address=/^0x[a-f0-9]{40}$/i;
 const inputSchema=z.object({denominationId:z.string().min(1).max(200),quantity:z.number().int().min(1).max(100),accountReference:z.string().max(200).default('')}).strict();
 export const fulfillSchema=z.object({txHash:z.string().regex(/^0x[a-f0-9]{64}$/i),wallet:z.string().regex(address),denominationId:z.string().min(1).max(200),quantity:z.number().int().min(1).max(100),productName:z.string().max(300),optionName:z.string().max(300),productType:z.enum(['voucher','direct_topup','esim']),accountReference:z.string().max(200),quote:z.string().min(1).max(4000)}).strict();
@@ -22,6 +23,8 @@ export async function makeQuote(req:Request){
  const key=retailKey();if(!key)return retailResponse({error:'RETAIL_NOT_CONFIGURED'},503);
  let input;try{input=inputSchema.parse(await smallJson(req));}catch{return retailResponse({error:'INVALID_REQUEST'},400);}
  try{
+  const status=await mainnetRuntimeStatus();
+  if(!status.realPurchasesEnabled)return retailResponse({error:'RETAIL_PAUSED'},503);
   const catalog=await getCatalog();
   const age=Date.now()-Date.parse(catalog.generatedAt);
   if(!catalog.live||catalog.snapshot||!Number.isFinite(age)||age< -60000||age>300000)return retailResponse({error:'LIVE_QUOTE_UNAVAILABLE'},503);

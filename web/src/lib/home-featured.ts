@@ -12,7 +12,7 @@ export function homeFeatured(catalog?:BrowseCatalog):BrowseRow[]{
  for(const row of sorted){if(!result.some(r=>r[2]===row[2])){result.push(row);if(result.length===6)break;}}
  return result.length>=3?result:sorted.slice(0,6);
 }
-export function saveHomeGoal(goal:string){const clean=goal.trim().slice(0,140);if(!clean)return false;try{sessionStorage.setItem('mercenta-agent-draft',JSON.stringify({goal:clean,mode:'testnet'}))}catch{}return true}
+export function saveHomeGoal(goal:string,mode:'testnet'|'mainnet'='testnet'){const clean=goal.trim().slice(0,140);if(!clean)return false;try{sessionStorage.setItem('mercenta-agent-draft',JSON.stringify({goal:clean,mode}))}catch{}return true}
 export function saveCatalogIntent(row:BrowseRow){try{sessionStorage.setItem('mercenta-catalog-intent',JSON.stringify({query:row[1].slice(0,200),region:row[5]||'all'}))}catch{}}
 
 export function homeFeaturedFamilies(catalog?:BrowseCatalog,randomize=false):ProductFamily[]{if(!catalog)return [];const groups=groupCatalog(unpackBrowse(catalog).products,randomize);const featured=groups.filter(g=>topProductRank(g.name)<999);return featured.length>=3?featured.slice(0,8):groups.slice(0,8);}

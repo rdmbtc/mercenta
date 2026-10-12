@@ -26,6 +26,7 @@ export function MainnetCheckout({
   productType = 'voucher',
   accountReference = '',
   initialAccount = null,
+  onLock,
 }: {
   productName: string;
   optionName: string;
@@ -36,6 +37,7 @@ export function MainnetCheckout({
   productType?: 'voucher' | 'direct_topup' | 'esim';
   accountReference?: string;
   initialAccount?: string | null;
+  onLock?: (locked:boolean) => void;
 }) {
   const isTopup = productType === 'direct_topup' || productName.toLowerCase().includes('telegram');
   const [recipientAccount, setRecipientAccount] = useState(accountReference);
@@ -60,6 +62,10 @@ export function MainnetCheckout({
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [allCopied, setAllCopied] = useState(false);
 
+  const lockHandler = useRef(onLock);
+  lockHandler.current=onLock;
+  useEffect(()=>{lockHandler.current?.(busy)},[busy]);
+  useEffect(()=>()=>{lockHandler.current?.(false)},[]);
   const paymentClaim = useRef(false);
   const submittedHash = useRef<string | null>(null);
   let amountMicro = 0n;
