@@ -1,5 +1,6 @@
 'use client';
 import {useState} from 'react';
+import './mainnet-record.css';
 import {Modal} from './ProductShell';
 import {mainnetReceiptExport, mainnetAmountDisplay, type MainnetOrder} from '@/lib/mainnet-orders';
 import {CheckCircle2,Copy,Check,ExternalLink,ShieldCheck,KeyRound} from 'lucide-react';
@@ -35,7 +36,7 @@ export function MainnetDeliveryModal({
   const amountUsdc = mainnetAmountDisplay(order.amount_units);
   const downloadReceipt = () => {const blob=new Blob([JSON.stringify(mainnetReceiptExport(order),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mercenta-receipt-'+order.tx_hash.slice(2,10)+'.json';a.click();URL.revokeObjectURL(url);};
   const exportAction = <button type="button" className="mp-button outline full" onClick={downloadReceipt}>{ru ? 'Скачать квитанцию без секретных кодов' : 'Download redacted receipt'}</button>;
-  if (order.status !== 'FULFILLED' || order.delivery_source !== 'provider_response') return <Modal title={ru ? 'Квитанция заказа' : 'Order record'} onClose={onClose}><section className="mc-receipt"><span className="mc-kicker">ARC MAINNET / {order.status}</span><h3>{order.name}</h3><p>{ru ? 'Этот сохранённый перевод не доказывает выдачу товара. Проверьте подтверждение провайдера и историю покупки; не оплачивайте повторно.' : 'This saved transfer reference does not prove delivery. Check the provider confirmation and purchase history before sending another payment.'}</p><p>{amountUsdc} USDC</p><a className="mp-button outline full" href={`https://explorer.arc.io/tx/${order.tx_hash}`} target="_blank" rel="noreferrer">Arc Explorer <ExternalLink size={14}/></a>{exportAction}<a href="/support">{ru ? 'Связаться с поддержкой' : 'Contact support'}</a></section></Modal>;
+  if (order.status !== 'FULFILLED' || order.delivery_source !== 'provider_response') return <Modal title={ru ? 'Квитанция заказа' : 'Order record'} onClose={onClose}><section className="mc-receipt mainnet-record-receipt"><span className="mc-kicker">ARC MAINNET / {order.status}</span><h3>{order.name}</h3><p>{ru ? 'Этот сохранённый перевод не доказывает выдачу товара. Проверьте подтверждение провайдера и историю покупки; не оплачивайте повторно.' : 'This saved transfer reference does not prove delivery. Check the provider confirmation and purchase history before sending another payment.'}</p><p className="mainnet-record-amount">{amountUsdc} <span>USDC</span></p><a className="mp-button outline full" href={`https://explorer.arc.io/tx/${order.tx_hash}`} target="_blank" rel="noreferrer">Arc Explorer <ExternalLink size={14}/></a>{exportAction}<a href="/support">{ru ? 'Связаться с поддержкой' : 'Contact support'}</a></section></Modal>;
   const dateStr = new Date(order.created_at).toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
 
   const isTopup = order.codes.some(c => c.startsWith('TOPUP_CREDITED:')) || order.name.toLowerCase().includes('telegram');

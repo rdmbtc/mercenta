@@ -1,0 +1,14 @@
+.mc-receipt.mainnet-record-receipt{display:grid;gap:18px;padding:24px;border:1px solid var(--mx-line,#354757);border-radius:8px;text-align:left;min-width:0}
+.mainnet-record-receipt h3,.mainnet-record-receipt p,.mainnet-record-receipt dl{margin:0}
+.mainnet-record-receipt h3{font-size:24px;line-height:1.25;letter-spacing:-.035em}
+.mainnet-record-receipt p{font-size:14px;line-height:1.65;color:var(--mx-muted,#a1afbf)}
+.mainnet-record-receipt .mainnet-record-amount{font-family:var(--font-mono,monospace);font-size:26px;color:inherit;font-variant-numeric:tabular-nums}
+.mainnet-record-amount span{font-size:12px;color:var(--mx-muted,#a1afbf);letter-spacing:.06em}
+.mainnet-record-receipt .mp-button{min-height:44px;margin:0;outline:none;border:1px solid var(--mx-line,#354757);display:flex;justify-content:center;align-items:center;gap:10px;padding:12px 16px;line-height:1.4;text-decoration:none;white-space:normal}
+.mainnet-record-receipt .mp-button:hover{border-color:var(--mx-blue,#b2e5ff)}
+.mainnet-record-receipt a:focus-visible,.mainnet-record-receipt button:focus-visible{outline:2px solid var(--mx-blue,#b2e5ff);outline-offset:3px}
+.mainnet-record-receipt dl{display:grid;gap:12px}
+.mainnet-record-receipt dd{margin:4px 0 0;overflow-wrap:anywhere;font-family:var(--font-mono,monospace);font-size:13px}
+.mainnet-record-receipt dt{font-size:12px;color:var(--mx-muted,#a1afbf)}
+.mainnet-record-receipt>a:not(.mp-button){font-size:14px;text-underline-offset:4px}
+@media(max-width:600px){.mc-receipt.mainnet-record-receipt{padding:20px;gap:18px}.mainnet-record-receipt h3{font-size:22px}}

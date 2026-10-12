@@ -1,5 +1,7 @@
 'use client';
 import {useState, useEffect, useRef} from 'react';
+import {signInWithWallet,fetchSession} from '@/lib/wallet';
+import './mainnet-record.css';
 import {ShieldCheck, CheckCircle2, ExternalLink, Wallet, LoaderCircle, AlertCircle, Copy, Check, KeyRound} from 'lucide-react';
 import {saveMainnetOrder, getMainnetOrders, syncRemoteOrders, mainnetAmountUnits, mainnetAmountDisplay, providerDeliveryCodes} from '@/lib/mainnet-orders';
 
@@ -132,6 +134,7 @@ export function MainnetCheckout({
       const accounts = await eth.request({method: 'eth_requestAccounts'}) as string[];
       if (Array.isArray(accounts) && accounts[0]) {
         const addr = accounts[0].toLowerCase();
+        await signInWithWallet(addr as `0x${string}`);
         setAccount(addr);
         window.dispatchEvent(new Event('mercenta-auth-change'));
       }
@@ -201,6 +204,14 @@ export function MainnetCheckout({
     paymentClaim.current = true;
     setBusy(true);
     try {
+      const session = await fetchSession();
+      if (!session.authenticated || session.address?.toLowerCase() !== account.toLowerCase()) {
+        await signInWithWallet(account as `0x${string}`);
+      }
+      const quoteRes = await fetch('/api/mainnet/quote', {method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(15000),body:JSON.stringify({denominationId,quantity,accountReference:effectiveAccount})});
+      if (!quoteRes.ok) throw new Error('LIVE_QUOTE_UNAVAILABLE');
+      const quoteData = await quoteRes.json();
+      if (quoteData.amountUnits !== amountMicro.toString() || typeof quoteData.quote !== 'string') throw new Error('PRICE_CHANGED');
       const currentChain = (await eth.request({method: 'eth_chainId'}) as string).toLowerCase();
       if (currentChain !== ARC_MAINNET_CHAIN_ID_HEX) {
         const switched = await switchNetwork();
@@ -231,12 +242,14 @@ export function MainnetCheckout({
       // Request automatic real procurement from Mercenta settlement node on VPS
       let codes: string[] = [];
       try {
-        const fulfillRes = await fetch('https://api.mercenta.xyz/api/mainnet/fulfill', {
+        const fulfillRes = await fetch('/api/mainnet/fulfill', {
+          credentials: 'same-origin',
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           signal: AbortSignal.timeout(25000),
           body: JSON.stringify({
             txHash: tx,
+            quote: quoteData.quote,
             wallet: account,
             denominationId,
             quantity,
@@ -276,7 +289,9 @@ export function MainnetCheckout({
       setStep(codes.length ? 'success' : 'pending');
     } catch (e: unknown) {
       const msg = (e as {message?: string})?.message || '';
-      if (msg.includes('User rejected') || msg.includes('user rejected')) {
+      if (msg === 'LIVE_QUOTE_UNAVAILABLE' || msg === 'PRICE_CHANGED') {
+        setError(ru ? 'Живая цена или наличие не подтверждены. Обновите товар; деньги не отправлены.' : 'Live price or availability could not be confirmed. Refresh this product; no payment was sent.');
+      } else if (msg.includes('User rejected') || msg.includes('user rejected')) {
         setError(ru ? 'Транзакция отменена в кошельке.' : 'Transaction was cancelled in wallet.');
       } else {
         setError(ru ? 'Ошибка отправки транзакции. Проверьте баланс USDC сети Arc.' : 'Transaction failed. Check Arc USDC balance.');
@@ -299,7 +314,7 @@ export function MainnetCheckout({
   }
 
   if (step === 'pending' && txHash) return (
-    <section className="mc-receipt" aria-live="polite">
+    <section className="mc-receipt mainnet-record-receipt" aria-live="polite">
       <span className="mc-kicker">ARC MAINNET / DELIVERY PENDING</span>
       <h3>{ru ? 'Перевод отправлен. Проверяем выдачу.' : 'Transfer submitted. Delivery pending.'}</h3>
       <p>{ru ? 'Подтверждение оплаты и выдачи пока не получено. Не платите повторно. Хеш сохранён в покупках; обновление статуса не отправляет деньги.' : 'Payment and delivery confirmation are not yet available. Do not pay again. The hash is saved in Purchases; checking status never sends another payment.'}</p>
