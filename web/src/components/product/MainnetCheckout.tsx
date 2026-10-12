@@ -551,7 +551,7 @@ export function MainnetCheckout({
 
   return (
     <section
-      className="mc-checkout"
+      className="mc-checkout mainnet-retail-checkout"
       style={{
         marginTop: '16px',
         border: '1px solid rgba(56, 189, 248, 0.22)',
@@ -569,13 +569,13 @@ export function MainnetCheckout({
           </h4>
         </div>
         <a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{fontSize: '11px', color: '#7dd3fc', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none'}}>
-          {ru ? 'Контракт верифицирован' : 'Verified exact match'} <ExternalLink size={11}/>
+          {ru ? 'Код роутера · справочно' : 'Router code · reference'} <ExternalLink size={11}/>
         </a>
       </div>
 
       <dl style={{display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '6px 14px', fontSize: '13px', margin: '12px 0', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)'}}>
         <dt style={{color: '#64748b'}}>{ru ? 'Товар:' : 'Item:'}</dt>
-        <dd style={{fontWeight: 600, color: '#e2e8f0'}}>{productName} ({optionName})</dd>
+        <dd style={{fontWeight: 600, color: '#e2e8f0'}}>{productName}{optionName&&optionName!==productName?' ('+optionName+')':''}</dd>
         <dt style={{color: '#64748b'}}>{ru ? 'Количество:' : 'Qty:'}</dt>
         <dd style={{color: '#f8fafc'}}>{quantity}</dd>
         <dt style={{color: '#64748b'}}>{ru ? 'К оплате:' : 'Amount:'}</dt>
@@ -624,9 +624,9 @@ export function MainnetCheckout({
           <p style={{margin: '6px 0 0', fontSize: '11px', color: '#94a3b8'}}>
             {ru
               ? (productName.toLowerCase().includes('telegram')
-                  ? 'Звёзды зачисляются напрямую на этот Telegram-аккаунт через официальный шлюз Fragment.'
+                  ? 'Этот аккаунт будет передан провайдеру. Зачисление требует отдельного подтверждения.'
                   : 'Пополнение будет зачислено напрямую на указанный аккаунт.')
-              : 'Direct top-up will be credited to this designated account.'}
+              : 'This recipient is sent to the provider. Delivery requires separate confirmation.'}
           </p>
         </div>
       )}

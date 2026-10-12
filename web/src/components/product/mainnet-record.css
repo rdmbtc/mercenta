@@ -12,3 +12,22 @@
 .mainnet-record-receipt dt{font-size:12px;color:var(--mx-muted,#a1afbf)}
 .mainnet-record-receipt>a:not(.mp-button){font-size:14px;text-underline-offset:4px}
 @media(max-width:600px){.mc-receipt.mainnet-record-receipt{padding:20px;gap:18px}.mainnet-record-receipt h3{font-size:22px}}
+
+/* Exact-payment review: contain long identifiers and retain brand/readability at 390px. */
+.mainnet-retail-checkout{min-width:0;background:var(--mx-surface,#10151d)!important;border:1px solid var(--mx-line,#354757)!important;box-shadow:none!important;border-radius:8px!important;color:var(--mx-ink,#f3f6fa)}
+.mainnet-retail-checkout>div:first-child{flex-wrap:wrap;gap:12px;align-items:flex-start!important}
+.mainnet-retail-checkout>div:first-child>div{min-width:0;flex:1 1 200px}
+.mainnet-retail-checkout>div:first-child>div>span{flex-shrink:0;background:var(--mx-blue,#b2e5ff)!important;box-shadow:none!important}
+.mainnet-retail-checkout h4{line-height:1.5;color:inherit!important}
+.mainnet-retail-checkout a{color:var(--mx-blue,#b2e5ff)!important;overflow-wrap:anywhere;min-width:0}
+.mainnet-retail-checkout>div:first-child>a{font-size:14px!important}
+.mainnet-retail-checkout dl{grid-template-columns:minmax(100px,.6fr) minmax(0,1.4fr)!important;gap:12px 16px!important;background:var(--mx-bg,#080b10)!important;border-color:var(--mx-line,#354757)!important}
+.mainnet-retail-checkout dt{font-size:14px!important;line-height:1.5;color:var(--mx-muted,#a1afbf)!important}
+.mainnet-retail-checkout dd{margin:0;min-width:0;overflow-wrap:anywhere;word-break:normal;color:var(--mx-ink,#f3f6fa)!important;line-height:1.55;font-size:14px!important}
+.mainnet-retail-checkout dd a{font-family:var(--font-mono,monospace);font-size:13px}
+.mainnet-retail-checkout p,.mainnet-retail-checkout label{font-size:14px!important;line-height:1.6}
+.mainnet-retail-checkout p{color:var(--mx-muted,#a1afbf)!important}
+.mainnet-retail-checkout .mp-button{background:var(--mx-blue,#b2e5ff)!important;color:#10202d!important;min-height:48px;border-radius:4px!important;white-space:normal;line-height:1.5}
+.mainnet-retail-checkout .mp-button:disabled{opacity:.5;cursor:not-allowed}
+.mainnet-retail-checkout input:focus-visible,.mainnet-retail-checkout button:focus-visible,.mainnet-retail-checkout a:focus-visible{outline:2px solid var(--mx-blue,#b2e5ff)!important;outline-offset:3px}
+@media(max-width:600px){.mainnet-retail-checkout{padding:16px!important}.mainnet-retail-checkout dl{grid-template-columns:minmax(0,1fr)!important;gap:6px!important;padding:16px!important}.mainnet-retail-checkout dd{margin-bottom:10px}.mainnet-retail-checkout dd:last-child{margin-bottom:0}}

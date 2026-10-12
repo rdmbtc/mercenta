@@ -12,14 +12,14 @@ export async function sourceLiveMainnetProducts(goal:string,budget:string,region
  const age=Date.now()-Date.parse(catalog.generatedAt);
  if(!catalog.live||catalog.snapshot||!Number.isFinite(age)||age>300000||age< -60000)throw Error('CATALOG_NOT_CURRENT');
  const place=region.toUpperCase();
- const candidates=catalog.products.filter(p=>p.inStock>0&&p.currency==='USD'&&(!place||place==='ANY'||normalizedRegion(p.countryCode??'')===place||normalizedRegion(p.countryCode??'')==='GLOBAL')&&terms.some(t=>[p.name,p.brand,p.searchText].join(' ').toLowerCase().includes(t))).sort((a,b)=>a.minPrice-b.minPrice||a.name.localeCompare(b.name)).slice(0,8);
+ const candidates=catalog.products.filter(p=>p.inStock>0&&p.currency==='USD'&&(!place||place==='ANY'||normalizedRegion(p.countryCode??'')===place||normalizedRegion(p.countryCode??'')==='GLOBAL')&&terms.some(t=>[p.name,p.brand,p.searchText].join(' ').toLowerCase().split(/[^\p{L}\p{N}]+/u).includes(t))).sort((a,b)=>a.minPrice-b.minPrice||a.name.localeCompare(b.name)).slice(0,8);
  let successes=0;
  const details=await Promise.all(candidates.map(async p=>{try{const product=await loadPublicProduct(p.id);successes++;return product;}catch{return null;}}));
  if(candidates.length&&!successes)throw Error('DETAIL_UNAVAILABLE');
  const rows:QuickSelectProduct[]=[];
  for(const p of details){if(!p)continue;for(const d of p.denominations){
   if(!d.available||d.isLongOrder||d.currency!=='USD'||(d.stock!==undefined&&d.stock<1)||!/^[-a-zA-Z0-9]{1,200}$/.test(d.id)||d.id.startsWith('mainnet:')||p.type==='direct_topup'&&!supportedTopups.has(d.id))continue;
-  try{const units=mainnetAmountUnits(String(d.price));if(BigInt(units)>cap)continue;rows.push({id:d.id,denomination_id:d.id,name:p.name+' · '+(d.id==='7295df4e-6fb0-4dfb-b962-ded3d073bc03'?'50 Stars':d.name),category:p.category,country:normalizedRegion(p.countryCode??'GLOBAL'),price:mainnetAmountDisplay(units),kind:p.type==='direct_topup'?'Direct Top-Up':'Shop'});}catch{/* invalid price is not purchasable */}
+  try{const units=mainnetAmountUnits(String(d.price));if(BigInt(units)>cap)continue;rows.push({id:d.id,denomination_id:d.id,name:d.id==='7295df4e-6fb0-4dfb-b962-ded3d073bc03'?p.name+' · 50 Stars':p.name.includes(d.name)?p.name:p.name+' · '+d.name,category:p.category,country:normalizedRegion(p.countryCode??'GLOBAL'),price:mainnetAmountDisplay(units),kind:p.type==='direct_topup'?'Direct Top-Up':'Shop'});}catch{/* invalid price is not purchasable */}
  }}
  return rows.sort((a,b)=>{const x=BigInt(mainnetAmountUnits(a.price)),y=BigInt(mainnetAmountUnits(b.price));return x<y?-1:x>y?1:a.name.localeCompare(b.name);}).slice(0,6);
 }
