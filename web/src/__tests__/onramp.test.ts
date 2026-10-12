@@ -1,0 +1,34 @@
+import {beforeEach,afterEach,describe,it,expect,vi} from 'vitest';
+import {onrampConfig,boundedBody,publicOnrampConfig} from '@/lib/onramp-config';
+import {allowedMainnetApi} from '@/lib/network-profile';
+vi.mock('@/lib/auth',()=>({requireSession:vi.fn()}));
+vi.mock('@/lib/onramp-store',()=>({reserveOnrampAttempt:vi.fn(),recordOnrampSession:vi.fn()}));
+vi.mock('@circle-fin/onramp-kit/server',()=>({createOnrampServerKit:vi.fn(),KitError:class extends Error{type='SERVICE';}}));
+import {requireSession} from '@/lib/auth';
+import {reserveOnrampAttempt,recordOnrampSession} from '@/lib/onramp-store';
+import {createOnrampServerKit} from '@circle-fin/onramp-kit/server';
+import {POST} from '@/app/api/onramp/sessions/route';
+const address='0x'+'a'.repeat(40),createSession=vi.fn();
+const origin='http://localhost:3000';
+const request=(body:unknown={},headers:Record<string,string>={origin})=>new Request(origin+'/api/onramp/sessions',{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(body)});
+beforeEach(()=>{vi.clearAllMocks();vi.stubEnv('ONRAMP_ENABLED','true');vi.stubEnv('ONRAMP_ENVIRONMENT','sandbox');vi.stubEnv('ONRAMP_API_KEY','server-secret');vi.stubEnv('ONRAMP_APP_ORIGIN',origin);vi.mocked(requireSession).mockReturnValue({address,iat:Date.now(),exp:Date.now()+3600000});vi.mocked(reserveOnrampAttempt).mockResolvedValue();vi.mocked(recordOnrampSession).mockResolvedValue();vi.mocked(createOnrampServerKit).mockReturnValue({createSession} as unknown as ReturnType<typeof createOnrampServerKit>);createSession.mockResolvedValue({sessionId:'session-1',sessionToken:'short-token',widgetUrl:'https://onramp-sandbox.arc.io/fund',expiresAt:new Date(Date.now()+1800000).toISOString(),traceId:'trace',destinationWallet:address});});
+afterEach(()=>vi.unstubAllEnvs());
+describe('configuration and isolation',()=>{
+ it('fails closed by default',()=>expect(onrampConfig({}).enabled).toBe(false));
+ it('keeps production off without reconciliation',()=>expect(onrampConfig({ONRAMP_ENABLED:'true',ONRAMP_ENVIRONMENT:'production',ONRAMP_API_KEY:'secret',ONRAMP_APP_ORIGIN:'https://mainnet.mercenta.xyz'}).reason).toBe('production_reconciliation_required'));
+ it.each(['https://mainnet.mercenta.xyz/','https://x.test/path','http://x.test','not-a-url'])('rejects unsafe origin %s',appOrigin=>expect(onrampConfig({ONRAMP_ENABLED:'true',ONRAMP_API_KEY:'secret',ONRAMP_APP_ORIGIN:appOrigin}).enabled).toBe(false));
+ it('pairs sandbox origins and exposes no key',()=>{const c=publicOnrampConfig(origin);expect(c.widgetBaseUrl).toBe('https://onramp-sandbox.arc.io');expect(JSON.stringify(c)).not.toContain('server-secret');expect(publicOnrampConfig('https://evil.test').enabled).toBe(false);});
+ it('only opens exact onramp methods, not Testnet finance',()=>{expect(allowedMainnetApi('/api/onramp/config','GET')).toBe(true);expect(allowedMainnetApi('/api/onramp/sessions','POST')).toBe(true);expect(allowedMainnetApi('/api/onramp/webhooks','POST')).toBe(true);expect(allowedMainnetApi('/api/onramp/config','POST')).toBe(false);expect(allowedMainnetApi('/api/onramp/sessions','GET')).toBe(false);expect(allowedMainnetApi('/api/account/deposits','POST')).toBe(false);});
+ it('bounds streaming input',async()=>{await expect(boundedBody(new Request(origin,{method:'POST',body:'a'.repeat(100)}),10)).rejects.toThrow('BODY_TOO_LARGE');});
+});
+describe('session boundary',()=>{
+ it('rejects cross-origin and missing origin',async()=>{expect((await POST(request({}, {origin:'https://evil.test'}))).status).toBe(403);expect((await POST(request({},{}))).status).toBe(403);expect(createSession).not.toHaveBeenCalled();});
+ it('requires wallet auth',async()=>{vi.mocked(requireSession).mockReturnValue(null);expect((await POST(request())).status).toBe(401);});
+ it('requires operator configuration',async()=>{vi.stubEnv('ONRAMP_ENABLED','false');expect((await POST(request())).status).toBe(503);});
+ it.each([{destinationAddress:'0xbad'},{appUserId:'other'},{assets:{tokens:['ETH']}},{amount:'0'},{amount:'-1'},{amount:'10001'},{amount:'1.123'},{currency:'JPY'}])('rejects injected or invalid parameters %j',async body=>{expect((await POST(request(body))).status).toBe(400);expect(createSession).not.toHaveBeenCalled();});
+ it('binds provider parameters to signed identity',async()=>{const res=await POST(request({amount:'50',currency:'USD'}));expect(res.status).toBe(200);expect(res.headers.get('cache-control')).toBe('no-store');expect(createSession).toHaveBeenCalledWith(expect.objectContaining({appUserId:'mercenta:sandbox:'+address,destinationAddress:address,destinationChain:'arc',assets:{tokens:['USDC'],chains:['arc']}}));expect(createOnrampServerKit).toHaveBeenCalledWith(expect.objectContaining({apiKey:'server-secret',referrerDomain:'localhost'}));expect(recordOnrampSession).toHaveBeenCalledWith('sandbox','session-1',address,expect.any(String));expect(JSON.stringify(await res.json())).not.toContain('server-secret');});
+ it('rejects a provider destination mismatch',async()=>{createSession.mockResolvedValue({sessionId:'id',sessionToken:'t',widgetUrl:'https://onramp-sandbox.arc.io',expiresAt:new Date(Date.now()+60000).toISOString(),destinationWallet:'0x'+'b'.repeat(40)});expect((await POST(request())).status).toBe(502);expect(recordOnrampSession).not.toHaveBeenCalled();});
+ it('rejects expired and foreign-widget sessions',async()=>{createSession.mockResolvedValue({sessionId:'id',sessionToken:'t',widgetUrl:'https://evil.test',expiresAt:new Date(Date.now()+60000).toISOString()});expect((await POST(request())).status).toBe(502);});
+ it('limits payload size',async()=>expect((await POST(request({padding:'a'.repeat(5000)}))).status).toBe(413));
+ it('limits attempts and hides internal failures',async()=>{vi.mocked(reserveOnrampAttempt).mockRejectedValue(Error('ONRAMP_RATE_LIMIT'));expect((await POST(request())).status).toBe(429);vi.mocked(reserveOnrampAttempt).mockRejectedValue(Error('postgres password server-secret'));const res=await POST(request());expect(res.status).toBe(503);expect(await res.text()).not.toContain('server-secret');});
+});

@@ -1,354 +1,42 @@
 'use client';
-
-import React, { useState } from 'react';
-import { CreditCard, ArrowRight, ShieldCheck, Zap, Copy, Check, ExternalLink, RefreshCw } from 'lucide-react';
-import Link from 'next/link';
-
-interface ArcOnrampKitProps {
-  defaultAddress?: string;
-  defaultAmount?: string;
-  lang?: 'en' | 'ru';
-}
-
-export function ArcOnrampKit({ defaultAddress = '', defaultAmount = '50', lang = 'en' }: ArcOnrampKitProps) {
-  const ru = lang === 'ru';
-  const [address, setAddress] = useState(defaultAddress);
-  const [amount, setAmount] = useState(defaultAmount);
-  const [currency, setCurrency] = useState<'USD' | 'EUR'>('USD');
-  const [rail, setRail] = useState<'card' | 'cctp'>('card');
-  const [sourceChain, setSourceChain] = useState<'base' | 'arbitrum' | 'ethereum' | 'solana'>('base');
-  const [copied, setCopied] = useState(false);
-  const [simulating, setSimulating] = useState(false);
-  const [completed, setCompleted] = useState(false);
-
-  const parsedAmount = Math.max(1, parseFloat(amount) || 0);
-  const feeRate = rail === 'card' ? 0.015 : 0.001; // 1.5% fiat card fee vs 0.1% CCTP bridge fee
-  const estimatedFee = (parsedAmount * feeRate).toFixed(2);
-  const netUsdc = Math.max(0, parsedAmount - parseFloat(estimatedFee)).toFixed(2);
-
-  const onrampUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/onramp?address=${encodeURIComponent(address)}&amount=${amount}&rail=${rail}`
-    : `https://mainnet.mercenta.xyz/onramp?address=${encodeURIComponent(address)}&amount=${amount}&rail=${rail}`;
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(onrampUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleInitiate = () => {
-    setSimulating(true);
-    setCompleted(false);
-    setTimeout(() => {
-      setSimulating(false);
-      setCompleted(true);
-    }, 1800);
-  };
-
-  return (
-    <div style={{
-      maxWidth: '680px',
-      margin: '0 auto',
-      background: 'rgba(10, 16, 23, 0.95)',
-      border: '1px solid rgba(0, 210, 255, 0.25)',
-      borderRadius: '16px',
-      padding: '2rem',
-      boxShadow: '0 24px 64px rgba(0, 0, 0, 0.6), 0 0 32px rgba(0, 210, 255, 0.08)',
-      backdropFilter: 'blur(16px)',
-      color: '#fff',
-      fontFamily: 'var(--font-sans, system-ui, sans-serif)'
-    }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <span style={{ fontSize: '11px', letterSpacing: '0.08em', color: '#00d2ff', textTransform: 'uppercase', fontWeight: 600 }}>
-            {ru ? 'ОФИЦИАЛЬНЫЙ ШЛЮЗ ARC ONRAMP' : 'OFFICIAL ARC ONRAMP GATEWAY'}
-          </span>
-          <h2 style={{ fontSize: '24px', fontWeight: 700, margin: '4px 0 0', letterSpacing: '-0.02em' }}>
-            {ru ? 'Пополнение баланса Arc USDC' : 'Fund Your Arc USDC Balance'}
-          </h2>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '4px 10px', borderRadius: '20px', fontSize: '12px', color: '#10b981' }}>
-          <Zap size={14} />
-          <span>Arc Mainnet (5042)</span>
-        </div>
-      </div>
-
-      {/* Rail Tabs */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '1.5rem', background: 'rgba(255, 255, 255, 0.03)', padding: '4px', borderRadius: '10px' }}>
-        <button
-          type="button"
-          onClick={() => { setRail('card'); setCompleted(false); }}
-          style={{
-            padding: '10px',
-            borderRadius: '8px',
-            border: 'none',
-            fontSize: '13px',
-            fontWeight: rail === 'card' ? 600 : 500,
-            background: rail === 'card' ? 'rgba(0, 210, 255, 0.15)' : 'transparent',
-            color: rail === 'card' ? '#00d2ff' : '#92a6b6',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            transition: 'all 0.2s'
-          }}
-        >
-          <CreditCard size={16} />
-          {ru ? 'Банковская карта / Apple Pay' : 'Debit Card / Apple Pay'}
-        </button>
-        <button
-          type="button"
-          onClick={() => { setRail('cctp'); setCompleted(false); }}
-          style={{
-            padding: '10px',
-            borderRadius: '8px',
-            border: 'none',
-            fontSize: '13px',
-            fontWeight: rail === 'cctp' ? 600 : 500,
-            background: rail === 'cctp' ? 'rgba(0, 210, 255, 0.15)' : 'transparent',
-            color: rail === 'cctp' ? '#00d2ff' : '#92a6b6',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            transition: 'all 0.2s'
-          }}
-        >
-          <ExternalLink size={16} />
-          {ru ? 'Мост Circle CCTP (L2/Solana)' : 'Circle CCTP Cross-Chain Bridge'}
-        </button>
-      </div>
-
-      {/* Amount Selector */}
-      <div style={{ marginBottom: '1.25rem' }}>
-        <label style={{ display: 'block', fontSize: '12px', color: '#92a6b6', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-          {ru ? 'Сумма к оплате' : 'Amount to pay'}
-        </label>
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-          {['20', '50', '100', '250'].map(val => (
-            <button
-              key={val}
-              type="button"
-              onClick={() => { setAmount(val); setCompleted(false); }}
-              style={{
-                flex: 1,
-                padding: '8px',
-                borderRadius: '6px',
-                fontSize: '13px',
-                fontWeight: amount === val ? 600 : 500,
-                background: amount === val ? 'rgba(0, 210, 255, 0.12)' : 'rgba(255, 255, 255, 0.04)',
-                border: amount === val ? '1px solid #00d2ff' : '1px solid rgba(255, 255, 255, 0.08)',
-                color: amount === val ? '#00d2ff' : '#fff',
-                cursor: 'pointer'
-              }}
-            >
-              ${val}
-            </button>
-          ))}
-        </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <input
-            type="number"
-            min="1"
-            value={amount}
-            onChange={e => { setAmount(e.target.value); setCompleted(false); }}
-            placeholder={ru ? 'Другая сумма' : 'Custom amount'}
-            style={{
-              flex: 1,
-              padding: '12px 14px',
-              borderRadius: '8px',
-              background: 'rgba(0, 0, 0, 0.4)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              color: '#fff',
-              fontSize: '15px'
-            }}
-          />
-          <select
-            value={currency}
-            onChange={e => setCurrency(e.target.value as 'USD' | 'EUR')}
-            style={{
-              width: '90px',
-              padding: '12px',
-              borderRadius: '8px',
-              background: 'rgba(0, 0, 0, 0.4)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              color: '#fff',
-              fontSize: '14px',
-              cursor: 'pointer'
-            }}
-          >
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Recipient Address */}
-      <div style={{ marginBottom: '1.25rem' }}>
-        <label style={{ display: 'block', fontSize: '12px', color: '#92a6b6', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-          {ru ? 'Адрес получателя на Arc (0x...)' : 'Arc Recipient Wallet (0x...)'}
-        </label>
-        <input
-          type="text"
-          value={address}
-          onChange={e => { setAddress(e.target.value); setCompleted(false); }}
-          placeholder="0x..."
-          style={{
-            width: '100%',
-            padding: '12px 14px',
-            borderRadius: '8px',
-            background: 'rgba(0, 0, 0, 0.4)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            color: '#fff',
-            fontFamily: 'var(--font-mono, monospace)',
-            fontSize: '13px'
-          }}
-        />
-      </div>
-
-      {/* Cross-chain source selector if rail === 'cctp' */}
-      {rail === 'cctp' && (
-        <div style={{ marginBottom: '1.25rem' }}>
-          <label style={{ display: 'block', fontSize: '12px', color: '#92a6b6', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            {ru ? 'Исходная сеть (откуда переводим)' : 'Source Network (Origin)'}
-          </label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
-            {(['base', 'arbitrum', 'ethereum', 'solana'] as const).map(net => (
-              <button
-                key={net}
-                type="button"
-                onClick={() => setSourceChain(net)}
-                style={{
-                  padding: '8px',
-                  borderRadius: '6px',
-                  fontSize: '12px',
-                  fontWeight: sourceChain === net ? 600 : 500,
-                  textTransform: 'capitalize',
-                  background: sourceChain === net ? 'rgba(0, 210, 255, 0.12)' : 'rgba(255, 255, 255, 0.04)',
-                  border: sourceChain === net ? '1px solid #00d2ff' : '1px solid rgba(255, 255, 255, 0.08)',
-                  color: sourceChain === net ? '#00d2ff' : '#92a6b6',
-                  cursor: 'pointer'
-                }}
-              >
-                {net}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Summary Box */}
-      <div style={{
-        background: 'rgba(0, 0, 0, 0.35)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '10px',
-        padding: '14px 16px',
-        marginBottom: '1.5rem',
-        fontSize: '13px'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: '#92a6b6' }}>
-          <span>{ru ? 'Комиссия шлюза' : 'Gateway Fee'}</span>
-          <span>~{estimatedFee} {currency} ({rail === 'card' ? '1.5%' : '0.1%'})</span>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: '#92a6b6' }}>
-          <span>{ru ? 'Время зачисления на Arc' : 'Settlement Time'}</span>
-          <span style={{ color: '#10b981', fontWeight: 500 }}>&lt; 3s (Malachite Finality)</span>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontWeight: 600, fontSize: '15px' }}>
-          <span>{ru ? 'Будет зачислено USDC' : 'Estimated Arc USDC Received'}</span>
-          <span style={{ color: '#00d2ff' }}>{netUsdc} USDC</span>
-        </div>
-      </div>
-
-      {/* Action Button */}
-      {completed ? (
-        <div style={{
-          background: 'rgba(16, 185, 129, 0.1)',
-          border: '1px solid rgba(16, 185, 129, 0.3)',
-          borderRadius: '10px',
-          padding: '16px',
-          textAlign: 'center',
-          color: '#10b981',
-          marginBottom: '1rem'
-        }}>
-          <ShieldCheck size={28} style={{ margin: '0 auto 8px' }} />
-          <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>
-            {ru ? 'Запрос на пополнение успешно обработан!' : 'Onramp Session Initiated!'}
-          </h4>
-          <p style={{ margin: '6px 0 0', fontSize: '13px', color: '#ade4fb' }}>
-            {ru
-              ? `Ожидайте зачисления ${netUsdc} USDC на ваш кошелёк Arc в течение нескольких секунд.`
-              : `Expect ${netUsdc} USDC deposited to your Arc wallet within seconds via Malachite consensus.`}
-          </p>
-        </div>
-      ) : (
-        <button
-          type="button"
-          disabled={simulating || parsedAmount <= 0}
-          onClick={handleInitiate}
-          style={{
-            width: '100%',
-            padding: '14px',
-            borderRadius: '10px',
-            border: 'none',
-            background: '#00d2ff',
-            color: '#000',
-            fontWeight: 700,
-            fontSize: '15px',
-            cursor: simulating ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            boxShadow: '0 0 20px rgba(0, 210, 255, 0.3)',
-            transition: 'all 0.2s',
-            opacity: simulating ? 0.7 : 1
-          }}
-        >
-          {simulating ? (
-            <>
-              <RefreshCw size={18} style={{ animation: 'spin 1s linear infinite' }} />
-              {ru ? 'Обработка через шлюз Arc...' : 'Routing through Arc Gateway...'}
-            </>
-          ) : (
-            <>
-              {ru ? 'Начать пополнение →' : 'Initiate Arc Onramp →'}
-              <ArrowRight size={18} />
-            </>
-          )}
-        </button>
-      )}
-
-      {/* Shareable Link Helper */}
-      <div style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', color: '#92a6b6' }}>
-        <span>{ru ? 'Прямая ссылка для агента или пользователя' : 'Shareable link for agents / users'}</span>
-        <button
-          type="button"
-          onClick={handleCopyLink}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: copied ? '#10b981' : '#00d2ff',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            cursor: 'pointer',
-            fontSize: '12px'
-          }}
-        >
-          {copied ? <Check size={14} /> : <Copy size={14} />}
-          {copied ? (ru ? 'Скопировано!' : 'Copied!') : (ru ? 'Скопировать ссылку' : 'Copy link')}
-        </button>
-      </div>
-
-      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-        <Link href="/app" style={{ color: '#92a6b6', fontSize: '13px', textDecoration: 'none' }}>
-          ← {ru ? 'Вернуться в консоль Mercenta' : 'Back to Mercenta Console'}
-        </Link>
-      </div>
-    </div>
-  );
+import {useEffect,useRef,useState} from 'react';
+import {ArrowRight,ArrowUpRight,Check,ChevronRight,CreditCard,Info,LockKeyhole,ShieldCheck,Wallet} from 'lucide-react';
+import WalletButton from '@/components/wallet-button';
+import type {createOnrampKit} from '@circle-fin/onramp-kit';
+type OnrampIframeInstance=ReturnType<ReturnType<typeof createOnrampKit>['mountIframe']>;
+import './onramp.css';
+type Config={enabled:boolean;environment:'sandbox'|'production';widgetBaseUrl:string;reason:string|null};
+type Phase='idle'|'loading'|'ready'|'pending'|'reported'|'incomplete'|'error';
+const messages:Record<string,string>={INVALID_SESSION_TOKEN:'This funding session expired. Start a new session to continue.',SESSION_TIMEOUT:'This session timed out. You can start again.',CANCELED_BY_CUSTOMER:'Funding was cancelled. No completion has been confirmed.',NO_PAYMENT_OPTIONS:'No payment methods are available for your region or account. Check with the provider or return later.',CUSTOMER_PENDING_REVIEW:'Your identity verification needs review. Follow the provider’s instructions before trying again.',CUSTOMER_REJECTED:'The provider could not approve this account. Contact provider support for next steps.',PAYMENT_PROVIDER_ERROR:'The payment provider could not complete this deposit. Check its status before retrying.',PAGE_NOT_LOADED:'The funding widget could not load. Check your connection and browser privacy settings, then retry.'};
+export function ArcOnrampKit({defaultAmount='50'}:{defaultAddress?:string;defaultAmount?:string;lang?:'en'|'ru'}){
+ const [config,setConfig]=useState<Config|null>(null),[wallet,setWallet]=useState<string|null>(null),[checked,setChecked]=useState(false),[amount,setAmount]=useState(defaultAmount),[currency,setCurrency]=useState('USD'),[phase,setPhase]=useState<Phase>('idle'),[message,setMessage]=useState('');
+ const container=useRef<HTMLDivElement>(null),widget=useRef<OnrampIframeInstance|null>(null),controller=useRef<AbortController|null>(null),epoch=useRef(0),locked=useRef(false);
+ const dispose=()=>{epoch.current++;controller.current?.abort();controller.current=null;widget.current?.close();widget.current=null;locked.current=false;};
+ useEffect(()=>{let live=true,revision=0;const sync=async()=>{const v=++revision;dispose();setWallet(null);setChecked(false);setPhase('idle');setMessage('');try{const [c,s]=await Promise.all([fetch('/api/onramp/config',{cache:'no-store'}),fetch('/api/me',{cache:'no-store'})]);const cfg=await c.json(),session=await s.json();if(!live||v!==revision)return;if(!c.ok)throw Error('CONFIG_FAILED');setConfig(cfg);setWallet(s.ok&&session.authenticated?session.address:null);}catch{if(live&&v===revision){setConfig(null);setMessage('Could not check funding availability. Reload the page to try again.');}}finally{if(live&&v===revision)setChecked(true);}};void sync();window.addEventListener('mercenta-auth-change',sync);return()=>{live=false;revision++;dispose();window.removeEventListener('mercenta-auth-change',sync);};},[]);
+ const valid=/^\d{1,5}(\.\d{1,2})?$/.test(amount)&&Number(amount)>0&&Number(amount)<=10000;
+ const active=['loading','ready','pending','reported'].includes(phase);
+ const start=async()=>{
+  if(locked.current||active||!wallet||!config?.enabled||!valid)return;
+  dispose();locked.current=true;const version=epoch.current;const abort=new AbortController();controller.current=abort;setPhase('loading');setMessage('Creating your secure funding session…');
+  try{const response=await fetch('/api/onramp/sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount,currency}),signal:abort.signal});if(!response.ok){if(response.status===401)throw Error('Your sign-in expired. Reconnect your wallet.');if(response.status===429)throw Error('Too many funding attempts. Wait 10 minutes before starting again.');throw Error('Funding is unavailable right now. Please try again later.');}const body=await response.json();const sdk=await import('@circle-fin/onramp-kit');if(version!==epoch.current||abort.signal.aborted)return;const session=sdk.parseOnrampSession(body);if(session.destinationWallet&&session.destinationWallet.toLowerCase()!==wallet.toLowerCase())throw Error('Destination wallet mismatch. Reconnect and try again.');if(!container.current)throw Error('Funding view is unavailable. Reload and try again.');const kit=sdk.createOnrampKit({widgetBaseUrl:config.widgetBaseUrl});const update=(next:Phase,text:string)=>{if(version===epoch.current){setPhase(next);setMessage(text);}};
+   widget.current=kit.mountIframe({session,container:container.current,onInitializationSuccess:()=>update('ready','Your secure funding session is ready. Review the provider’s quote before paying.'),onInitializationError:(event)=>update('error',messages[event.code]??'The widget could not start. Close this session and try again.'),onDepositSubmitted:()=>update('pending','Deposit submitted. Settlement has not been confirmed. Keep the provider reference and check your wallet before retrying.'),onDepositSettled:()=>{update('reported','The provider reported settlement. Check your wallet balance. This browser notification does not credit the Mercenta ledger.');window.dispatchEvent(new Event('mercenta-wallet-balance-refresh'));},onDepositNotCompleted:(event)=>update('incomplete',messages[event.code]??'The deposit did not complete. Check the provider’s status before starting another session.'),onSessionExpired:()=>update('incomplete',messages.SESSION_TIMEOUT)});
+   const frame=container.current.querySelector('iframe');if(frame){frame.title='Circle secure USDC funding';frame.style.width='100%';frame.style.height='720px';frame.style.border='0';}
+  }catch(e){if(version===epoch.current&&!abort.signal.aborted){setPhase('error');setMessage((e as Error).message||'Could not start funding. Try again later.');}}finally{if(version===epoch.current)locked.current=false;}
+ };
+ const close=()=>{dispose();setPhase('idle');setMessage('Session closed. If you submitted a payment, check its provider status before starting again.');};
+ return <section className="onramp-shell" aria-label="Add USDC to your wallet">
+  <div className="onramp-intro"><div className="onramp-eyebrow"><span/> WALLET FUNDING</div><h1>Add funds.<br/><span>Stay in your flow.</span></h1><p>Convert fiat to USDC in a secure, hosted funding flow. Delivered to your signed-in wallet on Arc.</p><div className="onramp-network"><span className="onramp-coin">$</span><div><strong>USDC on Arc</strong><small>Destination selected by Mercenta</small></div></div></div>
+  <div className="onramp-card"><header><div className="onramp-icon"><Wallet size={22}/></div><div><h2>Fund your wallet</h2><p>Powered by Circle Onramp Kit</p></div>{config&&<span className={'onramp-badge '+(config.environment==='sandbox'?'sandbox':'')}>{config.environment==='sandbox'?'Sandbox':'Production'}</span>}</header>
+   <div className="onramp-card-body"><div className="onramp-destination"><div><span>Destination wallet</span><ShieldCheck size={16}/></div>{wallet?<><strong className="onramp-address">{wallet}</strong><small>Funds go to this wallet, not to a Mercenta custodial account.</small></>:<p>{checked?'Connect and sign in to set your destination.':'Checking your wallet session…'}</p>}<WalletButton/></div>
+    {config?.environment==='sandbox'&&<div className="onramp-notice"><Info size={18}/><p><strong>Test environment.</strong> Sandbox funding does not add real USDC. Never enter real payment details in a test flow.</p></div>}
+    {checked&&!config?.enabled&&<div className="onramp-notice"><LockKeyhole size={18}/><p><strong>Funding is not available yet.</strong> {config?.reason==='production_reconciliation_required'?'Production settlement verification must be configured before payments can start.':'The operator needs to finish Circle setup for this environment.'} You can still connect your wallet and explore Mercenta.</p></div>}
+    <form onSubmit={e=>{e.preventDefault();void start();}}><label className="onramp-label" htmlFor="funding-amount">Amount to spend</label><div className="onramp-amount"><input id="funding-amount" inputMode="decimal" autoComplete="off" value={amount} onChange={e=>setAmount(e.target.value)} disabled={active} aria-invalid={!valid} aria-describedby="funding-amount-hint"/><select aria-label="Fiat currency" value={currency} onChange={e=>setCurrency(e.target.value)} disabled={active}><option>USD</option><option>EUR</option></select></div><small id="funding-amount-hint">{valid?'Indicative fiat amount. Final USDC, fees and limits are shown by the provider.':'Enter an amount from 0.01 to 10,000, with up to two decimal places.'}</small><div className="onramp-quick" aria-label="Suggested funding amounts">{['25','50','100'].map(v=><button type="button" key={v} disabled={active} aria-pressed={amount===v} onClick={()=>setAmount(v)}>{currency==='USD'?'$':'€'}{v}</button>)}</div>
+    <button className="onramp-primary" type="submit" disabled={!checked||!wallet||!config?.enabled||!valid||active} aria-busy={phase==='loading'}>{phase==='loading'?'Opening secure funding…':active?'Funding session open':'Continue to secure funding'}<ArrowRight size={18}/></button></form>
+    <div className="onramp-methods"><CreditCard size={17}/><span>Debit card · Apple Pay · Google Pay</span></div><p className="onramp-fine">Methods depend on your region, verification and provider eligibility. Credit cards are not supported. No rate or fee is promised here.</p>
+    {message&&<div className={'onramp-status '+(phase==='error'?'error':'')} role={phase==='error'?'alert':'status'} aria-live="polite">{phase==='reported'?<Check size={18}/>:<Info size={18}/>}<p>{message}</p></div>}
+    <div ref={container} className={'onramp-widget '+(active||phase==='error'||phase==='incomplete'?'is-open':'')} aria-label="Secure provider widget"/>
+    {(active||phase==='error'||phase==='incomplete')&&<button className="onramp-close" type="button" onClick={close}>Close session <ChevronRight size={16}/></button>}
+   </div><footer><LockKeyhole size={16}/><p>Payment and identity details stay in the provider’s flow. Mercenta never asks for your seed phrase.</p></footer></div>
+ <aside className="onramp-how" aria-label="How wallet funding works"><ol className="onramp-steps"><li><span>01</span><div><strong>Connect your wallet</strong><p>Sign in to confirm the destination. Signing in is not a payment.</p></div></li><li><span>02</span><div><strong>Review the provider’s quote</strong><p>Available methods, fees and verification appear in the hosted flow.</p></div></li><li><span>03</span><div><strong>Return ready to explore</strong><p>Check your wallet when the provider confirms settlement.</p></div></li></ol><a className="onramp-back" href="/app?section=funds">Back to your workspace <ArrowUpRight size={16}/></a></aside>
+ </section>;
 }
