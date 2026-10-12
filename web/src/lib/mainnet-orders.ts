@@ -83,7 +83,7 @@ export async function syncRemoteOrders(wallet?: string | null): Promise<void> {
   if (typeof window === 'undefined' || !wallet || !addressPattern.test(wallet.trim())) return;
   const w = wallet.trim().toLowerCase();
   try {
-    const res = await fetch(`https://api.mercenta.xyz/api/mainnet/orders?wallet=${encodeURIComponent(w)}`,{headers:{Accept:'application/json'},cache:'no-store'});
+    const res = await fetch(`/api/mainnet/orders?wallet=${encodeURIComponent(w)}`,{headers:{Accept:'application/json'},credentials:'same-origin',cache:'no-store'});
     if (!res.ok) return;
     const data = await res.json();
     if (!Array.isArray(data.orders)) return;
