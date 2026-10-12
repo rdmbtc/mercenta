@@ -4,6 +4,7 @@ import {GET} from '@/app/api/mainnet/orders/route';
 import {POST} from '@/app/api/mainnet/fulfill/route';
 import {makeQuote,sealQuote,readQuote} from '@/lib/mainnet-retail';
 vi.mock('@/lib/supplier',()=>({getCatalog:vi.fn()}));
+vi.mock('@/lib/mainnet-status',()=>({mainnetRuntimeStatus:vi.fn(async()=>({realPurchasesEnabled:true}))}));
 import {getCatalog} from '@/lib/supplier';
 const wallet='0x'+'11'.repeat(20),other='0x'+'22'.repeat(20),key='test-only-retail-key-'.repeat(3),hash='0x'+'ab'.repeat(32);
 function req(path:string,body?:unknown,who=wallet,origin='https://mainnet.mercenta.xyz'){const cookie='mercenta_session='+encodeURIComponent(mintSession(who,Date.now()).token);return new Request('https://mainnet.mercenta.xyz/api/mainnet/'+path,{method:body?'POST':'GET',headers:{cookie,origin,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});}

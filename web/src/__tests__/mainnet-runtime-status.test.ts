@@ -1,0 +1,12 @@
+import {beforeEach,afterEach,it,expect,vi} from 'vitest';
+import {mainnetRuntimeStatus} from '@/lib/mainnet-status';
+import {GET as network} from '@/app/api/network/route';
+const response=(url:string)=>url.includes('/availability')?Response.json({supplyReady:true,inventoryReady:true,maintenance:false,realPurchasesEnabled:false,checkedAt:Date.now(),stockCheckedAt:Date.now()}):Response.json({ok:true,service:'mercenta-mainnet-fulfillment'});
+beforeEach(()=>{vi.stubEnv('MERCENTA_RETAIL_PROXY_KEY','QA-PRIVATE-KEY-'.repeat(4));vi.stubEnv('MERCENTA_RETAIL_PAUSED','false');vi.stubGlobal('fetch',vi.fn(async(url:string)=>response(url)));});
+afterEach(()=>{vi.unstubAllGlobals();vi.unstubAllEnvs();});
+it('composes retail health rather than treating a read-only feed as checkout',async()=>{expect(await mainnetRuntimeStatus()).toMatchObject({realPurchasesEnabled:true,fulfillmentReady:true,paymentMode:'wallet-direct-merchant',agentExecutionEnabled:false});});
+it('fails closed when retail credential is missing',async()=>{vi.stubEnv('MERCENTA_RETAIL_PROXY_KEY','');expect((await mainnetRuntimeStatus()).realPurchasesEnabled).toBe(false);});
+it('operator pause is honored',async()=>{vi.stubEnv('MERCENTA_RETAIL_PAUSED','true');expect(await mainnetRuntimeStatus()).toMatchObject({realPurchasesEnabled:false,reason:'operator_paused'});});
+it('unavailable fulfillment is not advertised as available',async()=>{vi.mocked(fetch).mockImplementation(async(url)=>String(url).includes('/health')?Response.json({}, {status:503}):response(String(url)));expect((await mainnetRuntimeStatus()).realPurchasesEnabled).toBe(false);});
+it('stale supply monitor cannot permit a quote',async()=>{vi.mocked(fetch).mockImplementation(async(url)=>String(url).includes('/availability')?Response.json({supplyReady:true,inventoryReady:true,maintenance:false,checkedAt:1}):response(String(url)));expect((await mainnetRuntimeStatus()).realPurchasesEnabled).toBe(false);});
+it('network metadata distinguishes configured retail from unsupported agent execution',async()=>{const r=await network(new Request('https://mainnet.mercenta.xyz/api/network'));expect(await r.json()).toMatchObject({checkoutEnabled:true,walletSigningEnabled:true,accountRuntime:'wallet-direct',agentExecutionEnabled:false,balancesSharedAcrossNetworks:false});expect(r.headers.get('Cache-Control')).toBe('no-store');});
