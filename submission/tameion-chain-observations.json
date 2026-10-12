@@ -1,0 +1,53 @@
+{
+  "schema": "mercenta.chain-observations.v1",
+  "checkedAt": "2026-10-12T06:17:44.518Z",
+  "chainId": 5042,
+  "verification": "Single RPC observations only; no independent business, sponsor-funding or delivery verification.",
+  "transactions": [
+    {
+      "id": "friend-assisted-pilot",
+      "hash": "0xaefe4925160179f02222d4ccb23be28c93bc7c4c8c3a51cc101f474f157d99d3",
+      "status": "confirmed_direct_native_payment",
+      "buyer": "0x5d11017ff3e9fdbb9aaa2d4daf56450322ecb139",
+      "recipient": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+      "amountMicro": "830000",
+      "valueWei": "830000000000000000",
+      "blockNumber": 25472533,
+      "blockHash": "0x4fbab534f1968027e0eb12471be5c82765335b7516aead10db0cb2f068c84201",
+      "timestamp": "2026-10-11T21:04:04.000Z",
+      "routerUsed": false,
+      "deliveryVerifiedByThisCheck": false,
+      "customerIdentityVerifiedByThisCheck": false
+    },
+    {
+      "id": "owner-stars-probe",
+      "hash": "0xcf322d7d8049bbf7f11d6cde15d8c56bde4a81dade45a1201b41e4751662253e",
+      "status": "confirmed_direct_native_payment",
+      "buyer": "0x0b2ce1f0f24fb9f5510daead55602913962f4bdd",
+      "recipient": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+      "amountMicro": "830000",
+      "valueWei": "830000000000000000",
+      "blockNumber": 25319753,
+      "blockHash": "0xabaadad2e330cfe72258edce9ba5c3cb4d9fa9d9226b5d0820743233e2547ec1",
+      "timestamp": "2026-10-10T23:32:12.000Z",
+      "routerUsed": false,
+      "deliveryVerifiedByThisCheck": false,
+      "customerIdentityVerifiedByThisCheck": false
+    },
+    {
+      "id": "owner-voucher-canary",
+      "hash": "0xa5d03fd92bab5961cdc2e2e35d273ccc8df0a45eb5245d3b657c0718c6c7439d",
+      "status": "confirmed_direct_native_payment",
+      "buyer": "0x0b2ce1f0f24fb9f5510daead55602913962f4bdd",
+      "recipient": "0x58863e4a739da0e62c2eba258b7783e95d5c48ce",
+      "amountMicro": "830000",
+      "valueWei": "830000000000000000",
+      "blockNumber": 25306841,
+      "blockHash": "0x659640702d39dfe7a0b30bc2632904fb1e53ce1b9b07f85a82069e16b6343c52",
+      "timestamp": "2026-10-10T21:43:06.000Z",
+      "routerUsed": false,
+      "deliveryVerifiedByThisCheck": false,
+      "customerIdentityVerifiedByThisCheck": false
+    }
+  ]
+}
