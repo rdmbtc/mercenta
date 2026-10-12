@@ -96,7 +96,7 @@ export function LiquidityBento() {
           </a>
           <a
             className="mx-liquidity-onramp"
-            href="/app?section=liquidity&tab=onramp"
+            href="/onramp"
           >
             <div>
               <CreditCard size={24} />

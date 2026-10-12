@@ -11,6 +11,7 @@ import "@/components/product/workspace-guide.css";
 import '@/components/product/experience-polish.css';
 import Atmosphere from "@/components/Atmosphere";
 import "@/components/experience/experience.css";
+import '@/components/experience/mercenta-ledger-polish.css';
 import {ToastStack,PrivacyConsent} from "@/components/experience/Primitives";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
