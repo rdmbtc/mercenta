@@ -99,3 +99,7 @@ TESTNET_LAUNCH.md
 /ca.pem
 /x.id
 .vercel
+scripts/*.py
+scripts/*.png
+scripts/*.mjs*
+scripts/*.vps_bak
