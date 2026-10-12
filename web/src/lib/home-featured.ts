@@ -5,8 +5,9 @@ import {unpackBrowse} from './catalog-browse';
 /** Editorial entry points from the received catalogue, never invented stock or prices. */
 export function homeFeatured(catalog?:BrowseCatalog):BrowseRow[]{
  if(!catalog)return [];
- const valid=catalog.rows.filter(r=>r[4]==='voucher'&&!isSteamAccountOffer({name:r[1],brand:r[2]})&&!/accounts?|auto[ -]?regs|access[ -]?token/i.test(r[1])&&r[10]==='USD'&&Number.isFinite(r[8])&&r[8]>0&&!!brandArtwork(r[1]));
- const sorted=valid.slice().sort((a,b)=>{const rA=topProductRank(a[1]),rB=topProductRank(b[1]);if(rA!==rB)return rA-rB;return a[1].localeCompare(b[1]);});
+ const valid=catalog.rows.filter(r=>r[4]==='voucher'&&!isSteamAccountOffer({name:r[1],brand:r[2]})&&!/accounts?|auto[ -]?regs?|emails?|e-mails?|gmail|outlook|mailboxes?|access[ -]?token/i.test(r[1]+' '+r[2])&&r[10]==='USD'&&Number.isFinite(r[8])&&r[8]>0&&!!brandArtwork(r[1]));
+ const rank=(r:BrowseRow)=>/^(GLOB|GLOBAL|ANY)$/i.test(r[5])?0:r[5]==='US'?1:2;
+ const sorted=valid.slice().sort((a,b)=>{const rA=topProductRank(a[1]),rB=topProductRank(b[1]);if(rA!==rB)return rA-rB;const gA=rank(a),gB=rank(b);if(gA!==gB)return gA-gB;return a[1].localeCompare(b[1]);});
  const result:BrowseRow[]=[];
  for(const row of sorted){if(!result.some(r=>r[2]===row[2])){result.push(row);if(result.length===6)break;}}
  return result.length>=3?result:sorted.slice(0,6);

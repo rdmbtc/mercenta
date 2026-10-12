@@ -7,6 +7,7 @@ export interface QuickSelectProduct {
   price: string; // in USDC
   kind: 'Shop' | 'Direct Top-Up';
   denomination_id?: string;
+  outOfStock?: boolean;
 }
 
 export const mainnetQuickSelect: QuickSelectProduct[] = [
@@ -81,6 +82,7 @@ export const mainnetQuickSelect: QuickSelectProduct[] = [
     country: 'GLOBAL',
     price: '9.500000',
     kind: 'Shop',
+    outOfStock: true,
   },
   {
     id: 'mainnet:developer-api-bundle',
@@ -90,5 +92,6 @@ export const mainnetQuickSelect: QuickSelectProduct[] = [
     country: 'GLOBAL',
     price: '6.000000',
     kind: 'Shop',
+    outOfStock: true,
   },
 ];
