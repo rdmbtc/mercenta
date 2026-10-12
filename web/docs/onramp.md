@@ -8,6 +8,14 @@ The old `/onramp` simulator has been replaced by `@circle-fin/onramp-kit` 1.0.3.
 
 Map the complete issued live key to the sensitive server-only `ONRAMP_API_KEY` deployment variable. Use `ONRAMP_ENVIRONMENT=production` and `ONRAMP_APP_ORIGIN=https://mainnet.mercenta.xyz`. Keep `ONRAMP_ENABLED`, `ONRAMP_WEBHOOK_CONTRACT_VERIFIED` and `ONRAMP_RECONCILIATION_VERIFIED` false until the production blockers below are resolved. The supplied client key is not used by the standalone Onramp SDK and must not be published in a frontend bundle. VPS SSH credentials are deployment access only, not browser or Vercel application configuration. The original private credentials file remains untracked and is not uploaded with source code.
 
+### Webhook endpoint reachability
+
+The v2 webhook setup guide requires both HEAD and POST. `HEAD https://mainnet.mercenta.xyz/api/onramp/webhooks` returns 204 with no response body and no side effects, including before event processing is enabled. Mainnet middleware allows HEAD only for this exact webhook route. A successful HEAD check proves the route is reachable, not that a subscription exists, notifications are accepted, or settlement reconciliation is ready. POST remains 503 until the explicit provider contract and durable inbox configuration are ready.
+
+The supplied general webhook guide lists v2 products but does not list Onramp or provide its settlement notification schema. The Onramp lifecycle guide requires backend webhooks for final deposit state. Do not invent event names, treat a Wallets transaction event as an Onramp order, or register a wildcard subscription as proof of compatibility. Confirm the Onramp notification API version, event names, payload fields, order/session correlation, and authoritative status lookup with Circle before implementing the reconciliation worker.
+
+References: https://developers.circle.com/api-reference/webhooks, https://developers.circle.com/api-reference/webhook-endpoints, https://docs.arc.io/app-kit/tutorials/onramp/handle-lifecycle-events.
+
 ### Sandbox setup
 
 Configure server-side deployment secrets (never commit a key):
