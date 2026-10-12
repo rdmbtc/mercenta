@@ -4,7 +4,8 @@ vi.mock('server-only',()=>({}));
 vi.mock('@/lib/onramp-store',()=>({storeVerifiedOnrampNotification:vi.fn()}));
 import {verifyOnrampNotification} from '@/lib/onramp-webhook';
 import {storeVerifiedOnrampNotification} from '@/lib/onramp-store';
-import {POST} from '@/app/api/onramp/webhooks/route';
+import {POST,HEAD} from '@/app/api/onramp/webhooks/route';
+import {allowedMainnetApi} from '@/lib/network-profile';
 const {publicKey,privateKey}=generateKeyPairSync('ec',{namedCurve:'prime256v1'});
 const body=Buffer.from(JSON.stringify({notificationId:'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',notificationType:'UNKNOWN'}));let index=0;
 let keyId:string;const mockFetch=vi.fn();
@@ -12,6 +13,8 @@ beforeEach(()=>{vi.clearAllMocks();keyId='bbbbbbbb-bbbb-bbbb-bbbb-'+String(++ind
 afterEach(()=>{vi.unstubAllGlobals();vi.unstubAllEnvs();});
 const signature=()=>sign('sha256',body,privateKey).toString('base64');
 const req=()=>new Request('https://mainnet.mercenta.xyz/api/onramp/webhooks',{method:'POST',headers:{'x-circle-key-id':keyId,'x-circle-signature':signature()},body});
+it('answers subscription HEAD checks without accepting or processing events',async()=>{vi.stubEnv('ONRAMP_WEBHOOK_CONTRACT_VERIFIED','false');vi.stubEnv('ONRAMP_API_KEY','');const res=await HEAD();expect(res.status).toBe(204);expect(await res.text()).toBe('');expect(res.headers.get('cache-control')).toBe('no-store');expect(mockFetch).not.toHaveBeenCalled();expect(storeVerifiedOnrampNotification).not.toHaveBeenCalled();});
+it('allows Mainnet HEAD for only the exact webhook endpoint',()=>{expect(allowedMainnetApi('/api/onramp/webhooks','HEAD')).toBe(true);expect(allowedMainnetApi('/api/onramp/webhooks','POST')).toBe(true);for(const method of ['GET','PUT','PATCH','DELETE','OPTIONS'])expect(allowedMainnetApi('/api/onramp/webhooks',method)).toBe(false);for(const route of ['/api/onramp/webhooks/extra','/api/onramp/sessions','/api/onramp/config','/api/account/deposits'])expect(allowedMainnetApi(route,'HEAD')).toBe(false);});
 it('requires explicit verified provider profile',async()=>{vi.stubEnv('ONRAMP_WEBHOOK_CONTRACT_VERIFIED','false');expect((await POST(req())).status).toBe(503);expect(mockFetch).not.toHaveBeenCalled();});
 it('verifies exact raw bytes using a fixed provider endpoint',async()=>{expect(await verifyOnrampNotification(body,keyId,signature())).toBe('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa');expect(mockFetch).toHaveBeenCalledWith('https://api-test.circle.com/v2/notifications/publicKey/'+keyId,expect.objectContaining({headers:{Authorization:'Bearer secret'}}));await expect(verifyOnrampNotification(Buffer.concat([body,Buffer.from(' ')]),keyId,signature())).rejects.toThrow('INVALID_SIGNATURE');});
 it('rejects malformed key ids and missing signatures without fetch',async()=>{await expect(verifyOnrampNotification(body,'../../evil',signature())).rejects.toThrow('INVALID_SIGNATURE');await expect(verifyOnrampNotification(body,keyId,null)).rejects.toThrow('INVALID_SIGNATURE');expect(mockFetch).not.toHaveBeenCalled();});
