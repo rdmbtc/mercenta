@@ -3,7 +3,7 @@ import React,{act,useState} from 'react';
 import {createRoot,type Root} from 'react-dom/client';
 import {beforeEach,afterEach,it,expect,vi} from 'vitest';
 import {readFileSync} from 'node:fs';
-vi.mock('@/components/onramp/ArcOnrampKit',()=>({ArcOnrampKit:({compact}:{compact?:boolean})=><div data-compact={String(compact)}>Provider funding view</div>}));
+vi.mock('@/components/onramp/ArcOnrampKit',()=>({ArcOnrampKit:({widgetOnly}:{widgetOnly?:boolean})=><div data-widget-only={String(widgetOnly)}>Provider funding view</div>}));
 import {AddUsdcDialog} from '@/components/onramp/AddUsdcDialog';
 (globalThis as unknown as {IS_REACT_ACT_ENVIRONMENT:boolean}).IS_REACT_ACT_ENVIRONMENT=true;
 let root:Root,host:HTMLDivElement;
@@ -12,7 +12,7 @@ beforeEach(()=>{vi.clearAllMocks();Object.defineProperty(HTMLDialogElement.proto
 afterEach(async()=>{await act(async()=>root.unmount());host.remove();vi.restoreAllMocks();document.body.style.overflow='';});
 function Demo({theme='dark'}:{theme?:'dark'|'light'}){const [open,setOpen]=useState(false);return <><button onClick={()=>setOpen(true)}>Add USDC</button>{open&&<AddUsdcDialog theme={theme} onClose={()=>setOpen(false)}/>}</>;}
 async function open(theme:'dark'|'light'='dark'){await act(async()=>root.render(<Demo theme={theme}/>));const trigger=host.querySelector('button')!;trigger.focus();await act(async()=>trigger.click());return trigger;}
-it('opens compact funding in a native modal without navigation',async()=>{const href=window.location.href;await open();expect(show).toHaveBeenCalledTimes(1);expect(host.querySelector('dialog')?.getAttribute('aria-labelledby')).toBe('add-usdc-title');expect(host.querySelector('[data-compact=true]')).not.toBeNull();expect(window.location.href).toBe(href);expect(document.body.style.overflow).toBe('hidden');expect(host.textContent).toContain('does not cancel a submitted transfer');});
+it('opens compact funding in a native modal without navigation',async()=>{const href=window.location.href;await open();expect(show).toHaveBeenCalledTimes(1);expect(host.querySelector('dialog')?.getAttribute('aria-labelledby')).toBe('add-usdc-title');expect(host.querySelector('[data-widget-only=true]')).not.toBeNull();expect(window.location.href).toBe(href);expect(document.body.style.overflow).toBe('hidden');expect(host.textContent).toContain('does not cancel a submitted transfer');});
 it('close restores scrolling, focus, and removes funding content',async()=>{document.body.style.overflow='auto';const trigger=await open();await act(async()=>host.querySelector<HTMLButtonElement>('[aria-label="Close Add USDC"]')!.click());expect(host.querySelector('dialog')).toBeNull();expect(close).toHaveBeenCalled();expect(document.body.style.overflow).toBe('auto');expect(document.activeElement).toBe(trigger);});
 it('Escape dismisses via cancel and leaves no hidden widget',async()=>{await open();await act(async()=>host.querySelector('dialog')!.dispatchEvent(new Event('cancel',{cancelable:true})));expect(host.querySelector('dialog')).toBeNull();});
 it('inherits the selected workspace light theme',async()=>{await open('light');expect(host.querySelector('dialog')?.getAttribute('data-theme')).toBe('light');});
