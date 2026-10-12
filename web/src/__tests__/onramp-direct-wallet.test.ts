@@ -1,0 +1,16 @@
+import {beforeEach,afterEach,it,expect,vi} from 'vitest';
+vi.mock('server-only',()=>({}));
+vi.mock('pg',()=>({Pool:vi.fn()}));
+import {Pool} from 'pg';
+import {onrampConfig,publicOnrampConfig} from '@/lib/onramp-config';
+import {reserveOnrampAttempt,recordOnrampSession} from '@/lib/onramp-store';
+const origin='https://mainnet.mercenta.xyz',wallet='0x'+'d'.repeat(40);
+beforeEach(()=>{vi.clearAllMocks();vi.stubEnv('ONRAMP_MODE','direct_wallet');vi.stubEnv('ONRAMP_DATABASE_URL','');vi.stubEnv('ONRAMP_ENABLED','true');vi.stubEnv('ONRAMP_ENVIRONMENT','production');vi.stubEnv('ONRAMP_API_KEY','server-only-test-key');vi.stubEnv('ONRAMP_APP_ORIGIN',origin);vi.stubEnv('ONRAMP_WEBHOOK_CONTRACT_VERIFIED','false');vi.stubEnv('ONRAMP_RECONCILIATION_VERIFIED','false');});
+afterEach(()=>{vi.useRealTimers();vi.unstubAllEnvs();});
+it('enables explicitly requested direct wallet funding without asserting reconciliation',()=>{const c=onrampConfig();expect(c.enabled).toBe(true);expect(c.mode).toBe('direct_wallet');expect(c.webhookReady).toBe(false);expect(publicOnrampConfig(origin).settlementTracking).toBe('provider_and_wallet_only');expect(JSON.stringify(publicOnrampConfig(origin))).not.toContain('server-only-test-key');});
+it('keeps the default recorded mode gated',()=>{vi.stubEnv('ONRAMP_MODE','recorded');expect(onrampConfig().reason).toBe('production_reconciliation_required');vi.stubEnv('ONRAMP_MODE','direct-wallet-typo');expect(onrampConfig().enabled).toBe(false);});
+it('requires the production mainnet origin and a server key',()=>{vi.stubEnv('ONRAMP_APP_ORIGIN','https://other.example');expect(onrampConfig().reason).toBe('direct_wallet_origin_required');vi.stubEnv('ONRAMP_APP_ORIGIN',origin);vi.stubEnv('ONRAMP_API_KEY','');expect(onrampConfig().enabled).toBe(false);});
+it('does not expose live funding on a different host',()=>expect(publicOnrampConfig('https://testnet.mercenta.xyz').enabled).toBe(false));
+it('honors the explicit operator off switch',()=>{vi.stubEnv('ONRAMP_ENABLED','false');expect(onrampConfig().reason).toBe('disabled');});
+it('keeps best-effort instance limits and allows no-store direct sessions',async()=>{vi.useFakeTimers();vi.setSystemTime(new Date('2030-01-01T00:00:00Z'));for(let i=0;i<3;i++)await reserveOnrampAttempt(wallet,'production');await expect(reserveOnrampAttempt(wallet.toUpperCase(),'production')).rejects.toThrow('ONRAMP_RATE_LIMIT');vi.setSystemTime(new Date('2030-01-01T00:11:00Z'));await expect(reserveOnrampAttempt(wallet,'production')).resolves.toBeUndefined();await expect(recordOnrampSession('production','launch-ref',wallet,'2030-01-01T00:30:00Z')).resolves.toBeUndefined();expect(Pool).not.toHaveBeenCalled();});
+it('does not relax recorded-mode production storage requirements',async()=>{vi.stubEnv('ONRAMP_MODE','recorded');await expect(reserveOnrampAttempt(wallet,'production')).rejects.toThrow('ONRAMP_STORAGE_REQUIRED');await expect(recordOnrampSession('production','ref',wallet,'2030-01-01T00:30:00Z')).rejects.toThrow('ONRAMP_STORAGE_REQUIRED');});
