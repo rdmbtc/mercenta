@@ -4,7 +4,7 @@
  * MetaMask wallet helpers for app.mercenta.xyz.
  * No external deps beyond viem. EIP-1193 window.ethereum only.
  */
-import { verifyMessage } from "viem";
+import { verifyMessage, stringToHex, isAddress } from "viem";
 
 export interface Eip1193Provider {
   request: (args: { method: string; params?: unknown[] | object }) => Promise<unknown>;
@@ -28,7 +28,7 @@ export async function connectWallet(): Promise<`0x${string}`> {
   const accounts = (await eth.request({
     method: "eth_requestAccounts",
   })) as string[];
-  if (!accounts || accounts.length === 0) throw new Error("NO_ACCOUNTS");
+  if (!accounts || !isAddress(accounts[0] ?? "")) throw new Error("NO_ACCOUNTS");
   return accounts[0] as `0x${string}`;
 }
 
@@ -48,7 +48,7 @@ export async function signInWithWallet(address: `0x${string}`): Promise<SignInRe
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ address }),
   });
-  if (!nonceRes.ok) throw new Error("NONCE_FAILED");
+  if (!nonceRes.ok) { const d = await nonceRes.json().catch(() => ({})); throw new Error(d.code ?? d.error ?? "NONCE_FAILED"); }
   const { nonce } = (await nonceRes.json()) as { nonce: string };
 
   const issuedAt = Date.now();
@@ -65,7 +65,7 @@ export async function signInWithWallet(address: `0x${string}`): Promise<SignInRe
   const eth = window.ethereum!;
   const signature = (await eth.request({
     method: "personal_sign",
-    params: [message, address],
+    params: [stringToHex(message), address],
   })) as `0x${string}`;
 
   // Local pre-check (server re-verifies authoritatively)
@@ -78,13 +78,13 @@ export async function signInWithWallet(address: `0x${string}`): Promise<SignInRe
     credentials: "same-origin",
     body: JSON.stringify({ address, nonce, signature, issuedAt }),
   });
-  if (!verifyRes.ok) throw new Error("VERIFY_FAILED");
+  if (!verifyRes.ok) { const d = await verifyRes.json().catch(() => ({})); throw new Error(d.code ?? d.error ?? "VERIFY_FAILED"); }
   return (await verifyRes.json()) as SignInResult;
 }
 
 /** Fetch current session from the hub. */
 export async function fetchSession(): Promise<{ authenticated: boolean; address: string | null }> {
-  const res = await fetch("/api/me", { credentials: "same-origin" });
+  const res = await fetch("/api/me", { credentials: "same-origin", cache: "no-store" });
   if (!res.ok) return { authenticated: false, address: null };
   const data = (await res.json()) as { authenticated: boolean; address: string | null };
   return data;

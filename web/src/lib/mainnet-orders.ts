@@ -95,7 +95,7 @@ export function getMainnetOrders(wallet?: string | null): MainnetOrder[] {
   const isWalletMatch = (o: MainnetOrder) => {
     if (o.initiator_address && o.initiator_address.toLowerCase() === walletLower) return true;
     if (o.initiator && o.initiator.toLowerCase() === walletLower) return true;
-    if (o.initiator && o.initiator.toLowerCase().startsWith(walletLower.slice(0, 6))) return true;
+    // Never attribute an order by a shortened address or a shared prefix.
     return false;
   };
 
