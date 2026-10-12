@@ -1,0 +1,19 @@
+// @vitest-environment jsdom
+import React,{act} from 'react';
+import {createRoot,type Root} from 'react-dom/client';
+import {beforeEach,afterEach,it,expect,vi} from 'vitest';
+import {MainnetCheckout} from '@/components/product/MainnetCheckout';
+import {getMainnetOrders} from '@/lib/mainnet-orders';
+(globalThis as unknown as {IS_REACT_ACT_ENVIRONMENT:boolean}).IS_REACT_ACT_ENVIRONMENT=true;
+const wallet='0x1111111111111111111111111111111111111111',hash='0x'+'ab'.repeat(32);
+let root:Root,host:HTMLElement;
+let request:ReturnType<typeof vi.fn>;
+beforeEach(()=>{localStorage.clear();host=document.createElement('div');document.body.append(host);root=createRoot(host);request=vi.fn(async({method}:{method:string})=>method==='eth_chainId'?'0x13b2':method==='eth_accounts'?[wallet]:method==='eth_sendTransaction'?hash:undefined);window.ethereum={request};});
+afterEach(async()=>{await act(async()=>root.unmount());host.remove();delete window.ethereum;vi.unstubAllGlobals();vi.restoreAllMocks();});
+async function render(props:Partial<React.ComponentProps<typeof MainnetCheckout>>={}){await act(async()=>root.render(<MainnetCheckout productName="Steam voucher" optionName="Global" amountUsdc="0.830001" quantity={1} ru={false} initialAccount={wallet} denominationId="sku-one" {...props}/>));}
+async function clickContains(text:string){const button=Array.from(host.querySelectorAll('button')).find(b=>b.textContent?.includes(text));expect(button).toBeTruthy();await act(async()=>button!.click());}
+it('keeps failed fulfillment pending, preserves exact payment and never invents keys',async()=>{vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:false,status:503}));await render();await clickContains('Pay ');expect(host.textContent).toContain('Delivery pending');expect(host.textContent).not.toContain('Payment Confirmed');expect(host.textContent).not.toContain('MCT-');expect(getMainnetOrders(wallet)[0]).toMatchObject({status:'PENDING',amount_units:'830001',codes:[]});const payment=request.mock.calls.find(([arg])=>arg.method==='eth_sendTransaction')![0];expect(BigInt(payment.params[0].value)).toBe(830001000000000000n);await clickContains('Check delivery');expect(request.mock.calls.filter(([arg])=>arg.method==='eth_sendTransaction')).toHaveLength(1);});
+it('does not falsely credit a top-up when delivery times out',async()=>{vi.stubGlobal('fetch',vi.fn().mockRejectedValue(new Error('timeout')));vi.spyOn(console,'warn').mockImplementation(()=>{});await render({productName:'Telegram Stars',productType:'direct_topup',accountReference:'@recipient'});await clickContains('Pay ');expect(getMainnetOrders(wallet)[0].codes).toEqual([]);expect(host.textContent).toContain('Delivery pending');expect(host.textContent).not.toContain('Credited');});
+it('uses only provider response codes and labels provenance',async()=>{vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>({codes:['PROVIDER-ISSUED-CODE']})}));await render();await clickContains('Pay ');expect(host.textContent).toContain('Delivery received from provider');expect(host.textContent).toContain('PROVIDER-ISSUED-CODE');expect(getMainnetOrders(wallet)[0]).toMatchObject({status:'FULFILLED',delivery_source:'provider_response'});});
+it('blocks missing options and invalid precision before asking wallet to pay',async()=>{await render({denominationId:undefined,amountUsdc:'0.0000001'});expect(host.querySelector<HTMLButtonElement>('button.mp-button.full')?.disabled).toBe(true);expect(request.mock.calls.some(([arg])=>arg.method==='eth_sendTransaction')).toBe(false);});
+it('prevents concurrent click paths from sending twice',async()=>{vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:false}));await render();const button=Array.from(host.querySelectorAll('button')).find(b=>b.textContent?.startsWith('Pay '))!;await act(async()=>{button.click();button.click();});expect(request.mock.calls.filter(([arg])=>arg.method==='eth_sendTransaction')).toHaveLength(1);});

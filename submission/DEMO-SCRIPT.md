@@ -22,7 +22,7 @@ Explain: the paid report uses fixed scenario assumptions, not earned revenue. A 
 Show labelled automated tests: cancellation in flight cannot execute; restart/replay retains one original order/debit; bad model IDs are blocked; current saved budgets are rechecked. Do not interrupt production or fake an incident to manufacture proof.
 
 ## 02:30–02:45 — evidence and next step
-Show public repo, app, funding/contract addresses and documented boundaries. State real external pilot counts from evidence only. Mainnet and real supplier invoices remain off.
+Show public repo, app, funding/contract addresses and documented boundaries. State pilot classifications from evidence only. Mainnet retail direct transfers and embedded Circle funding are available separately from this Testnet operator. The founder-funded friend pilot is not independent market demand. Show its actual receipt and invoice only after inspection and consent; do not claim that its direct transfer called the router.
 
 ## Recording gate
 This is a rehearsal until the genuine owner-authenticated run, paid request and final settlement actually exist. Under-three-minute video required; a read-only walkthrough or live-model fixture probe alone is supplementary. No invented traction, buyer revenue, production debits or settlement claims.

@@ -1,7 +1,7 @@
 'use client';
 import {useState} from 'react';
 import {Modal} from './ProductShell';
-import {type MainnetOrder} from '@/lib/mainnet-orders';
+import {mainnetReceiptExport, mainnetAmountDisplay, type MainnetOrder} from '@/lib/mainnet-orders';
 import {CheckCircle2,Copy,Check,ExternalLink,ShieldCheck,KeyRound} from 'lucide-react';
 
 export function MainnetDeliveryModal({
@@ -32,7 +32,10 @@ export function MainnetDeliveryModal({
     } catch {}
   }
 
-  const amountUsdc = (Number(order.amount_units) / 1_000_000).toFixed(2);
+  const amountUsdc = mainnetAmountDisplay(order.amount_units);
+  const downloadReceipt = () => {const blob=new Blob([JSON.stringify(mainnetReceiptExport(order),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mercenta-receipt-'+order.tx_hash.slice(2,10)+'.json';a.click();URL.revokeObjectURL(url);};
+  const exportAction = <button type="button" className="mp-button outline full" onClick={downloadReceipt}>{ru ? 'Скачать квитанцию без секретных кодов' : 'Download redacted receipt'}</button>;
+  if (order.status !== 'FULFILLED' || order.delivery_source !== 'provider_response') return <Modal title={ru ? 'Квитанция заказа' : 'Order record'} onClose={onClose}><section className="mc-receipt"><span className="mc-kicker">ARC MAINNET / {order.status}</span><h3>{order.name}</h3><p>{ru ? 'Этот сохранённый перевод не доказывает выдачу товара. Проверьте подтверждение провайдера и историю покупки; не оплачивайте повторно.' : 'This saved transfer reference does not prove delivery. Check the provider confirmation and purchase history before sending another payment.'}</p><p>{amountUsdc} USDC</p><a className="mp-button outline full" href={`https://explorer.arc.io/tx/${order.tx_hash}`} target="_blank" rel="noreferrer">Arc Explorer <ExternalLink size={14}/></a>{exportAction}<a href="/support">{ru ? 'Связаться с поддержкой' : 'Contact support'}</a></section></Modal>;
   const dateStr = new Date(order.created_at).toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
 
   const isTopup = order.codes.some(c => c.startsWith('TOPUP_CREDITED:')) || order.name.toLowerCase().includes('telegram');
@@ -170,11 +173,12 @@ export function MainnetDeliveryModal({
           <ShieldCheck size={14} style={{display: 'inline', verticalAlign: 'middle', marginRight: '6px', color: '#63b3ed'}}/>
           <span>
             {ru
-              ? 'Инструкция: Скопируйте полученный ключ активации и активируйте его в соответствующей платформе (Steam, PlayStation, App Store или веб-сервисе). Код подтвержден транзакцией в блокчейне Arc.'
-              : 'Instructions: Copy the activation key and redeem it in your account on the designated platform (Steam, PlayStation, App Store or web console). Verified on-chain via Arc.'}
+              ? 'Инструкция: Скопируйте полученный ключ активации и активируйте его в соответствующей платформе (Steam, PlayStation, App Store или веб-сервисе). Подтверждение оплаты не доказывает активацию кода.'
+              : 'Instructions: Copy the activation key and redeem it in your account on the designated platform (Steam, PlayStation, App Store or web console). Payment confirmation does not prove code redemption.'}
           </span>
         </div>
 
+        {exportAction}
         <div style={{display: 'flex', gap: '10px', marginTop: '4px'}}>
           <a
             className="mp-button outline full"

@@ -1,7 +1,7 @@
 'use client';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {ShieldCheck, CheckCircle2, ExternalLink, Wallet, LoaderCircle, AlertCircle, Copy, Check, KeyRound} from 'lucide-react';
-import {generateMainnetCodes, saveMainnetOrder} from '@/lib/mainnet-orders';
+import {saveMainnetOrder, getMainnetOrders, syncRemoteOrders, mainnetAmountUnits, mainnetAmountDisplay, providerDeliveryCodes} from '@/lib/mainnet-orders';
 
 const ROUTER_ADDRESS = '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed';
 const MERCHANT_ADDRESS = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
@@ -53,14 +53,16 @@ export function MainnetCheckout({
   const [txHash, setTxHash] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [step, setStep] = useState<'idle' | 'switching' | 'signing' | 'confirming' | 'success'>('idle');
+  const [step, setStep] = useState<'idle' | 'switching' | 'signing' | 'confirming' | 'pending' | 'success'>('idle');
   const [deliveredCodes, setDeliveredCodes] = useState<string[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [allCopied, setAllCopied] = useState(false);
 
-  const parsedPrice = parseFloat(amountUsdc) || 0;
-  const totalPriceUsdc = (parsedPrice * quantity).toFixed(2);
-  const amountMicro = BigInt(Math.round(parseFloat(totalPriceUsdc) * 1_000_000));
+  const paymentClaim = useRef(false);
+  const submittedHash = useRef<string | null>(null);
+  let amountMicro = 0n;
+  try { amountMicro = BigInt(mainnetAmountUnits(amountUsdc, quantity)); } catch {}
+  const totalPriceUsdc = mainnetAmountDisplay(amountMicro.toString());
   const nativeValueWei = amountMicro * 1_000_000_000_000n; // 6 decimals -> 18 decimals
 
   useEffect(() => {
@@ -68,6 +70,12 @@ export function MainnetCheckout({
       setAccount(initialAccount.toLowerCase());
     }
   }, [initialAccount]);
+
+  useEffect(() => {
+    if (!account || submittedHash.current || !denominationId) return;
+    const pending = getMainnetOrders(account).find(o => o.status === 'PENDING' && o.product_id === denominationId && o.quantity === quantity && o.amount_units === amountMicro.toString());
+    if (pending) {submittedHash.current = pending.tx_hash;setTxHash(pending.tx_hash);setStep('pending');}
+  }, [account, denominationId, quantity, amountMicro]);
 
   useEffect(() => {
     if (accountReference && !recipientAccount) {
@@ -173,6 +181,11 @@ export function MainnetCheckout({
   }
 
   async function payOnChain() {
+    if (paymentClaim.current || submittedHash.current) return;
+    if (amountMicro <= 0n || !denominationId) {
+      setError(ru ? 'Нет действительной цены или варианта товара. Обновите каталог.' : 'A valid price and product option are required. Refresh the catalogue.');
+      return;
+    }
     setError('');
     const eth = (window as unknown as {ethereum?: Provider})?.ethereum;
     if (!eth || !account) {
@@ -185,6 +198,7 @@ export function MainnetCheckout({
       return;
     }
 
+    paymentClaim.current = true;
     setBusy(true);
     try {
       const currentChain = (await eth.request({method: 'eth_chainId'}) as string).toLowerCase();
@@ -197,6 +211,7 @@ export function MainnetCheckout({
         }
       }
 
+      paymentClaim.current = true;
       setStep('signing');
       const tx = await eth.request({
         method: 'eth_sendTransaction',
@@ -207,8 +222,11 @@ export function MainnetCheckout({
         }],
       }) as string;
 
+      if (!/^0x[a-f0-9]{64}$/i.test(tx)) throw new Error('INVALID_TRANSACTION_HASH');
+      submittedHash.current = tx;
       setTxHash(tx);
       setStep('confirming');
+      saveMainnetOrder({id:'mct-ord-'+tx.slice(2),created_at:Date.now(),initiator:account,initiator_address:account.toLowerCase(),reference:tx,name:`${productName} · ${optionName}`,product_id:denominationId,country:'GLOBAL',quantity,amount_units:amountMicro.toString(),status:'PENDING',tx_hash:tx,codes:[],network:'mainnet',delivery_source:'unconfirmed'});
 
       // Request automatic real procurement from Mercenta settlement node on VPS
       let codes: string[] = [];
@@ -216,10 +234,11 @@ export function MainnetCheckout({
         const fulfillRes = await fetch('https://api.mercenta.xyz/api/mainnet/fulfill', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
+          signal: AbortSignal.timeout(25000),
           body: JSON.stringify({
             txHash: tx,
             wallet: account,
-            denominationId: denominationId || '7cceba84-3cec-4b0d-80b9-bd7cb44c5de5',
+            denominationId,
             quantity,
             productName,
             optionName,
@@ -229,21 +248,10 @@ export function MainnetCheckout({
         });
         if (fulfillRes.ok) {
           const fulfillData = await fulfillRes.json();
-          if (Array.isArray(fulfillData?.codes) && fulfillData.codes.length > 0) {
-            codes = fulfillData.codes;
-          }
+          codes = providerDeliveryCodes(fulfillData?.codes);
         }
       } catch (err) {
         console.warn('Procurement direct dispatch warning:', err);
-      }
-
-      if (codes.length === 0) {
-        if (isTopup) {
-          const cleanRef = effectiveAccount.replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '').trim();
-          codes = [`TOPUP_CREDITED:@${cleanRef || 'account'}`];
-        } else {
-          codes = generateMainnetCodes(tx, quantity);
-        }
       }
 
       setDeliveredCodes(codes);
@@ -258,13 +266,14 @@ export function MainnetCheckout({
         country: 'GLOBAL',
         quantity,
         amount_units: amountMicro.toString(),
-        status: 'FULFILLED',
+        status: codes.length ? 'FULFILLED' : 'PENDING',
         tx_hash: tx,
         codes,
         network: 'mainnet',
+        delivery_source: codes.length ? 'provider_response' : 'unconfirmed',
       });
 
-      setStep('success');
+      setStep(codes.length ? 'success' : 'pending');
     } catch (e: unknown) {
       const msg = (e as {message?: string})?.message || '';
       if (msg.includes('User rejected') || msg.includes('user rejected')) {
@@ -272,11 +281,35 @@ export function MainnetCheckout({
       } else {
         setError(ru ? 'Ошибка отправки транзакции. Проверьте баланс USDC сети Arc.' : 'Transaction failed. Check Arc USDC balance.');
       }
-      setStep('idle');
+      setStep(submittedHash.current ? 'pending' : 'idle');
     } finally {
+      paymentClaim.current = false;
       setBusy(false);
     }
   }
+
+  async function refreshDelivery() {
+    if (!account || !txHash || busy) return;
+    setBusy(true);
+    try {
+      await syncRemoteOrders(account);
+      const order = getMainnetOrders(account).find(o => o.tx_hash.toLowerCase() === txHash.toLowerCase());
+      if (order?.delivery_source === 'provider_response' && order.codes.length) {setDeliveredCodes(order.codes);setStep('success');}
+    } finally {setBusy(false);}
+  }
+
+  if (step === 'pending' && txHash) return (
+    <section className="mc-receipt" aria-live="polite">
+      <span className="mc-kicker">ARC MAINNET / DELIVERY PENDING</span>
+      <h3>{ru ? 'Перевод отправлен. Проверяем выдачу.' : 'Transfer submitted. Delivery pending.'}</h3>
+      <p>{ru ? 'Подтверждение оплаты и выдачи пока не получено. Не платите повторно. Хеш сохранён в покупках; обновление статуса не отправляет деньги.' : 'Payment and delivery confirmation are not yet available. Do not pay again. The hash is saved in Purchases; checking status never sends another payment.'}</p>
+      <dl><div><dt>USDC</dt><dd>{totalPriceUsdc}</dd></div><div><dt>Transaction</dt><dd style={{overflowWrap:'anywhere'}}>{txHash}</dd></div></dl>
+      <button type="button" className="mp-button outline full" onClick={refreshDelivery} disabled={busy}>{busy ? <LoaderCircle size={16}/> : null}{ru ? 'Проверить выдачу' : 'Check delivery'}</button>
+      <a className="mp-button outline full" href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer">Arc Explorer <ExternalLink size={14}/></a>
+      <a className="mp-button outline full" href="/app?section=orders">{ru ? 'Открыть покупки' : 'Open Purchases'}</a>
+      <a href="/support">{ru ? 'Связаться с поддержкой' : 'Contact support'}</a>
+    </section>
+  );
 
   async function copyKey(code: string, idx: number) {
     try {
@@ -295,7 +328,7 @@ export function MainnetCheckout({
   }
 
   if (step === 'success' && txHash) {
-    const codes = deliveredCodes.length > 0 ? deliveredCodes : generateMainnetCodes(txHash, quantity);
+    const codes = deliveredCodes;
 
     return (
       <section
@@ -326,10 +359,10 @@ export function MainnetCheckout({
             </span>
             <div>
               <h4 style={{margin: 0, fontSize: '15px', fontWeight: 700, color: '#f8fafc', letterSpacing: '0.02em'}}>
-                {ru ? 'Оплата подтверждена · Товар выдан' : 'Payment Confirmed · Item Delivered'}
+                {ru ? 'Выдача получена от провайдера' : 'Delivery received from provider'}
               </h4>
               <span style={{fontSize: '11px', color: '#64748b'}}>
-                {ru ? 'Расчёт в Arc Mainnet · Блок подтверждён' : 'Arc Mainnet Settlement · Finalized'}
+                {ru ? 'Оплата и выдача проверяются отдельно' : 'Payment and delivery are separate records'}
               </span>
             </div>
           </div>
@@ -349,8 +382,8 @@ export function MainnetCheckout({
 
         <p style={{fontSize: '13px', color: '#94a3b8', lineHeight: 1.5, margin: '0 0 16px'}}>
           {ru
-            ? (isTopup ? 'Транзакция подтверждена в сети Arc. Заказ направлен на прямое зачисление на аккаунт.' : 'Транзакция подтверждена в блокчейне Arc. Цифровой ключ активации сгенерирован и сохранён в «Моих покупках».')
-            : (isTopup ? 'Transaction confirmed on Arc Mainnet. Direct top-up dispatched to designated account.' : 'Transaction confirmed on Arc Mainnet. Your digital activation key is issued and saved to Purchases.')}
+            ? (isTopup ? 'Провайдер сообщил о выдаче пополнения. Проверьте баланс аккаунта получателя.' : 'Код получен от провайдера и сохранён в покупках.')
+            : (isTopup ? 'Provider reports top-up delivery. Check the recipient account balance.' : 'Your provider-issued activation key is saved to Purchases. A transfer alone does not prove redemption.')}
         </p>
 
         {isTopup ? (
@@ -511,7 +544,7 @@ export function MainnetCheckout({
         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
           <span style={{width: '8px', height: '8px', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8', display: 'inline-block'}}/>
           <h4 style={{margin: 0, fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', color: '#f8fafc'}}>
-            ARC MAINNET · ON-CHAIN GATEWAY
+            ARC MAINNET · DIRECT MERCHANT PAYMENT
           </h4>
         </div>
         <a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{fontSize: '11px', color: '#7dd3fc', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none'}}>
@@ -526,7 +559,7 @@ export function MainnetCheckout({
         <dd style={{color: '#f8fafc'}}>{quantity}</dd>
         <dt style={{color: '#64748b'}}>{ru ? 'К оплате:' : 'Amount:'}</dt>
         <dd style={{fontWeight: 700, color: '#b2e5ff', fontSize: '15px'}}>{totalPriceUsdc} USDC</dd>
-        <dt style={{color: '#64748b'}}>{ru ? 'Шлюз (Router):' : 'Router:'}</dt>
+        <dt style={{color: '#64748b'}}>{ru ? 'Контракт (не используется этим переводом):' : 'Contract (not used by this transfer):'}</dt>
         <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed</a></dd>
         <dt style={{color: '#64748b'}}>{ru ? 'Клиринг (Merchant):' : 'Merchant:'}</dt>
         <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>0x58863e4a739da0e62c2eba258b7783e95d5c48ce</a></dd>
@@ -632,7 +665,7 @@ export function MainnetCheckout({
           <button
             className="mp-button full"
             onClick={payOnChain}
-            disabled={busy || needsAccountRef}
+            disabled={busy || needsAccountRef || amountMicro <= 0n || !denominationId}
             style={{
               justifyContent: 'center',
               background: needsAccountRef ? 'rgba(255, 255, 255, 0.06)' : '#1d4ed8',
@@ -647,7 +680,7 @@ export function MainnetCheckout({
               {step === 'signing'
                 ? (ru ? 'Подписание в кошельке…' : 'Signing in wallet…')
                 : step === 'confirming'
-                ? (ru ? 'Блок подтверждён · Автоматическая закупка…' : 'Block confirmed · Instant procurement…')
+                ? (ru ? 'Перевод отправлен · Проверяем выдачу…' : 'Transfer submitted · Checking delivery…')
                 : busy
                 ? (ru ? 'Обработка…' : 'Processing…')
                 : needsAccountRef
@@ -660,8 +693,8 @@ export function MainnetCheckout({
 
       <p style={{fontSize: '11px', color: '#64748b', margin: '12px 0 0', textAlign: 'center'}}>
         {ru
-          ? 'Транзакция отправляется на смарт-контракт MercentaCheckout (Chain ID 5042). Прямой ончейн-клиринг.'
-          : 'Payment sent to MercentaCheckout router (Chain ID 5042). Non-custodial on-chain settlement.'}
+          ? 'Этот перевод отправляет нативный USDC напрямую продавцу на Arc (5042), не через контракт MercentaCheckout. Выдача подтверждается отдельно.'
+          : 'This flow sends native USDC directly to the merchant on Arc (5042), not through the MercentaCheckout contract. Delivery requires separate confirmation.'}
       </p>
     </section>
   );
