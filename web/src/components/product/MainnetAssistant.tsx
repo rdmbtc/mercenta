@@ -77,17 +77,26 @@ export function MainnetAssistant({
 
   // Match quick products from catalogue for conversational requests
   const matchCopilotProducts = (query: string): QuickSelectProduct[] => {
-    const q = query.toLowerCase();
+    const q = query.toLowerCase().trim();
     const matches: QuickSelectProduct[] = [];
+    if (/^(hi|hello|hey|yo|greetings|start|привет|здравствуй|хай|салам)\b/i.test(q)) {
+      const stars = mainnetQuickSelect.find(p => p.name.toLowerCase().includes('telegram stars'));
+      const steam = mainnetQuickSelect.find(p => p.name.toLowerCase().includes('steam'));
+      const apple = mainnetQuickSelect.find(p => p.name.toLowerCase().includes('apple'));
+      if (stars) matches.push(stars);
+      if (apple) matches.push(apple);
+      if (steam) matches.push(steam);
+      return matches;
+    }
     if (/steam|стим/.test(q)) {
       const steam = mainnetQuickSelect.find(p => p.name.toLowerCase().includes('steam'));
       if (steam) matches.push(steam);
     }
-    if (/creator|stars|звезд|создател/.test(q)) {
+    if (/creator|stars|звезд|создател|telegram/.test(q)) {
       const stars = mainnetQuickSelect.find(p => p.name.toLowerCase().includes('telegram stars'));
       const apple = mainnetQuickSelect.find(p => p.name.toLowerCase().includes('apple'));
-      if (stars) matches.push(stars);
-      if (apple) matches.push(apple);
+      if (stars && !matches.some(m => m.id === stars.id)) matches.push(stars);
+      if (apple && !matches.some(m => m.id === apple.id)) matches.push(apple);
     }
     if (/apple|itunes/.test(q) && !matches.some(m => m.name.toLowerCase().includes('apple'))) {
       const apple = mainnetQuickSelect.find(p => p.name.toLowerCase().includes('apple'));
@@ -108,6 +117,15 @@ export function MainnetAssistant({
     if (/psn|playstation/.test(q)) {
       const psn = mainnetQuickSelect.find(p => p.name.toLowerCase().includes('playstation'));
       if (psn) matches.push(psn);
+    }
+    if (matches.length === 0) {
+      const words = q.split(/\s+/).filter(w => w.length > 2);
+      for (const p of mainnetQuickSelect) {
+        if (words.some(w => p.name.toLowerCase().includes(w) || p.category.toLowerCase().includes(w))) {
+          matches.push(p);
+          if (matches.length >= 3) break;
+        }
+      }
     }
     return matches.slice(0, 3);
   };
