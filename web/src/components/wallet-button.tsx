@@ -70,7 +70,7 @@ export default function WalletButton() {
 
       if (!live || v !== version.current) return;
 
-      const resolved = sessionAddr || ethAddr || (typeof window !== "undefined" && !window.ethereum ? cachedAddr : null);
+      const resolved = sessionAddr || ethAddr || cachedAddr;
 
       if (resolved) {
         setAddress(resolved);
@@ -79,7 +79,6 @@ export default function WalletButton() {
       } else {
         setAddress(null);
         setPhase("idle");
-        try { localStorage.removeItem("mercenta_wallet_address"); } catch {}
       }
     };
 
