@@ -9,6 +9,7 @@ import {
   signOut,
   truncateAddress,
 } from "@/lib/wallet";
+import "./wallet-button.css";
 
 type Phase = "idle" | "connecting" | "signing" | "authed" | "error";
 
@@ -256,7 +257,7 @@ export default function WalletButton() {
           : phase === "signing"
           ? "Confirm sign-in…"
           : phase === "authed" && address
-          ? truncateAddress(address)
+          ? `${truncateAddress(address)} ▾`
           : phase === "error"
           ? "Retry connection"
           : "Connect wallet"}
@@ -300,13 +301,28 @@ export default function WalletButton() {
 
           <div className="wallet-pop-actions">
             <a
-              href={explorerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/app"
               className="wallet-pop-link"
+              onClick={() => setProfileOpen(false)}
             >
-              <span>View on Arc Explorer</span>
-              <span aria-hidden="true">↗</span>
+              <span>Workspace Console</span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href="/app?section=settings"
+              className="wallet-pop-link"
+              onClick={() => setProfileOpen(false)}
+            >
+              <span>Profile & Settings</span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href="/app?section=api-access"
+              className="wallet-pop-link"
+              onClick={() => setProfileOpen(false)}
+            >
+              <span>API Keys & Agent Access</span>
+              <span aria-hidden="true">→</span>
             </a>
             <a
               href="/app?section=orders"
@@ -321,8 +337,17 @@ export default function WalletButton() {
               className="wallet-pop-link"
               onClick={() => setProfileOpen(false)}
             >
-              <span>Fund Account (Onramp)</span>
+              <span>Fund Account (Circle Onramp)</span>
               <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href={explorerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="wallet-pop-link"
+            >
+              <span>View on Arc Explorer</span>
+              <span aria-hidden="true">↗</span>
             </a>
           </div>
 
