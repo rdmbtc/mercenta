@@ -147,11 +147,11 @@ export default function FlagshipLanding() {
     <header className="mx-nav">
       <div className="mx-wrap mx-nav-inner">
         <a href="#" className="mx-brand" aria-label="Mercenta home"><BrandMark /><span>mercenta<span className="mx-brand-dot">.</span></span></a>
-        <nav className="mx-desktop-links" aria-label="Main navigation"><a href="/catalog">Catalog</a><a href="#architecture">How it works</a><a href="#sellers">Wholesale</a><a href="#business">For your business</a></nav>
-        <a className="mx-nav-console" href="/app">Console & Liquidity <Arrow diagonal /></a>
+        <nav className="mx-desktop-links" aria-label="Main navigation"><a href="/catalog">Catalog</a><a href="#playground">Playground</a><a href="#architecture">How it works</a><a href="/app?section=agent-chat">Business Operator</a></nav>
+        <a className="mx-nav-console" href="/app">Console <Arrow diagonal /></a>
         <button ref={menuButton} type="button" className="mx-menu-toggle" aria-expanded={menu} aria-controls="mx-mobile-nav" aria-label={menu ? "Close navigation" : "Open navigation"} onClick={() => setMenu(!menu)}><span /><span /></button>
       </div>
-      {menu && <nav className="mx-mobile-links" id="mx-mobile-nav" aria-label="Mobile navigation"><a href="/catalog" onClick={() => setMenu(false)}>Catalog <Arrow diagonal /></a><a href="#architecture" onClick={() => setMenu(false)}>How it works <Arrow /></a><a href="#sellers" onClick={() => setMenu(false)}>Wholesale <Arrow /></a><a href="#business" onClick={() => setMenu(false)}>For your business <Arrow /></a><a href="/app">Console & Liquidity <Arrow diagonal /></a></nav>}
+      {menu && <nav className="mx-mobile-links" id="mx-mobile-nav" aria-label="Mobile navigation"><a href="/catalog" onClick={() => setMenu(false)}>Catalog <Arrow diagonal /></a><a href="#playground" onClick={() => setMenu(false)}>Playground <Arrow /></a><a href="#architecture" onClick={() => setMenu(false)}>How it works <Arrow /></a><a href="/app?section=agent-chat" onClick={() => setMenu(false)}>Business Operator <Arrow diagonal /></a><a href="/app" onClick={() => setMenu(false)}>Console <Arrow diagonal /></a></nav>}
     </header>
     <main id="main">
       <section className="mx-hero" aria-labelledby="mx-hero-title">

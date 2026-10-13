@@ -27,8 +27,12 @@
 .ma-ux .mn-assistant .mn-as-connect{background:var(--a-bg)}
 .ma-ux .ao-panel :focus-visible,.ma-ux .mn-assistant :focus-visible{outline:2px solid var(--a-accent);outline-offset:4px}
 .ma-ux .ao-panel .ao-footer :focus-visible{outline-color:#195e82}
-.ma-ux .wallet-control .wallet-btn{border-radius:4px;min-height:44px;background:#b2e5ff;color:#0b1b28;border-color:#b2e5ff}
-.ma-ux .wallet-control .wallet-dot{background:#0b1b28}
+.ma-ux .wallet-control .wallet-btn{border-radius:10px;min-height:42px;background:rgba(255,255,255,.04);color:#f4f5f7;border:1px solid rgba(255,255,255,.14)}
+.ma-ux .wallet-control .wallet-btn:hover{border-color:rgba(62,230,168,.45);background:rgba(255,255,255,.07)}
+.ma-ux .wallet-control .wallet-btn[data-phase=authed]{border-color:rgba(62,230,168,.3);background:rgba(62,230,168,.06);color:#f4f5f7}
+.ma-ux .wallet-control .wallet-btn[data-phase=authed]:hover{border-color:#3ee6a8;background:rgba(62,230,168,.12);box-shadow:0 0 20px rgba(62,230,168,.15)}
+.ma-ux .wallet-control .wallet-dot{background:#7d8391}
+.ma-ux .wallet-control .wallet-btn[data-phase=authed] .wallet-dot{background:#3ee6a8;box-shadow:0 0 8px #3ee6a8}
 .ma-ux .wallet-control .wallet-btn[data-phase=error]{background:#391d27;color:#ffb9be;border-color:#894752}
 .ma-ux .wallet-error{border-color:#894752;background:#391d27;color:#ffd0d2;border-radius:4px}
 .ma-ux .wallet-error button{min-height:44px;min-width:44px}
