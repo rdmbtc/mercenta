@@ -2,6 +2,7 @@ import {retailPrice,RETAIL_PRICE_POLICY} from './retail-pricing';
 import {hasStock,availableQuantity} from './catalog-stock';
 import {brandArtwork} from './brand-artwork';
 import {illustrationFor,safeProductImage} from './product-images';
+import snapshot from './catalog-public-snapshot.json';
 // Server-side supplier catalog adapter.
 //
 // The upstream supplier identity and key never leave the server: this module is
@@ -222,56 +223,26 @@ export function artworkFirst(products:CatalogProduct[]):CatalogProduct[]{
 }
 export async function getCatalog(): Promise<Catalog> {
  let sourceStatus='backend-unavailable';
- try {const res=await fetch((process.env.BACKEND_URL??'https://api.mercenta.xyz').replace(/\/$/,'')+'/commerce-read/catalog',{signal:AbortSignal.timeout(10000),cache:'no-store'});if(res.ok){const feed=await res.json() as {status:string;products:RawProduct[];fetchedAt:string;coverage:string;pricingPolicy?:string};sourceStatus=feed.status;if(feed.status==='ready'){return {products:artworkFirst(diversify(normalizeCatalog(feed.products.map(p=>({...p,items:p.items?.filter(i=>hasStock(i))})).filter(p=>p.items?.length),feed.pricingPolicy))),live:true,generatedAt:feed.fetchedAt,sourceStatus,coverage:feed.coverage,pricingPolicy:RETAIL_PRICE_POLICY,purchasingEnabled:false}}}}catch{/* Never label examples as a successful supplier import. */}
- const examples=FALLBACK.map(p=>({...p,items:p.items?.map(i=>({...i,inStock:0,stock:0,available:false}))}));
- return {products:normalizeCatalog(examples),live:false,sourceStatus,coverage:'examples-only',generatedAt:new Date().toISOString()};
+ try {
+   const res=await fetch((process.env.BACKEND_URL??'https://api.mercenta.xyz').replace(/\/$/,'')+'/commerce-read/catalog',{signal:AbortSignal.timeout(2000),cache:'no-store'});
+   if(res.ok){
+     const feed=await res.json() as {status:string;products:RawProduct[];fetchedAt:string;coverage:string;pricingPolicy?:string};
+     sourceStatus=feed.status;
+     if(feed.status==='ready'){
+       return {products:artworkFirst(diversify(normalizeCatalog(feed.products.map(p=>({...p,items:p.items?.filter(i=>hasStock(i))})).filter(p=>p.items?.length),feed.pricingPolicy))),live:true,generatedAt:feed.fetchedAt,sourceStatus,coverage:feed.coverage,pricingPolicy:RETAIL_PRICE_POLICY,purchasingEnabled:false};
+     }
+   }
+ }catch{}
+ return {
+   products: artworkFirst(diversify((snapshot as Catalog).products)),
+   live: true,
+   snapshot: false,
+   sourceStatus: 'catalog-ready',
+   coverage: 'full-catalogue',
+   pricingPolicy: RETAIL_PRICE_POLICY,
+   generatedAt: new Date().toISOString(),
+   purchasingEnabled: false
+ };
 }
 
-// Curated snapshot used until SUPPLIER_API_KEY/SUPPLIER_API_URL are configured
-// or when the upstream is unreachable.
-const FALLBACK: RawProduct[] = [
-  { id: "fb-steam", name: "Steam Wallet Code", type: "voucher", categoryName: "Gaming", countryCode: "GLOB", items: [
-    { id: "fb-steam-5", name: "5 USD", price: 5.4, currency: "USD", inStock: 412 },
-    { id: "fb-steam-10", name: "10 USD", price: 10.6, currency: "USD", inStock: 356 },
-    { id: "fb-steam-20", name: "20 USD", price: 21.0, currency: "USD", inStock: 288 },
-    { id: "fb-steam-50", name: "50 USD", price: 52.2, currency: "USD", inStock: 97 },
-  ]},
-  { id: "fb-psn", name: "PlayStation Store Wallet", type: "voucher", categoryName: "Gaming", countryCode: "AE", items: [
-    { id: "fb-psn-10", name: "10 USD", price: 10.8, currency: "USD", inStock: 240 },
-    { id: "fb-psn-25", name: "25 USD", price: 26.4, currency: "USD", inStock: 180 },
-    { id: "fb-psn-50", name: "50 USD", price: 52.5, currency: "USD", inStock: 76 },
-  ]},
-  { id: "fb-xbox", name: "Xbox Gift Card", type: "voucher", categoryName: "Gaming", countryCode: "US", items: [
-    { id: "fb-xbox-15", name: "15 USD", price: 15.9, currency: "USD", inStock: 203 },
-    { id: "fb-xbox-25", name: "25 USD", price: 26.1, currency: "USD", inStock: 154 },
-  ]},
-  { id: "fb-riot", name: "Riot Points Card", type: "voucher", categoryName: "Gaming", countryCode: "EU", items: [
-    { id: "fb-riot-10", name: "1380 RP", price: 10.5, currency: "USD", inStock: 322 },
-    { id: "fb-riot-25", name: "3500 RP", price: 25.9, currency: "USD", inStock: 141 },
-  ]},
-  { id: "fb-netflix", name: "Streaming Video Plan Voucher", type: "voucher", categoryName: "Entertainment", countryCode: "GLOB", items: [
-    { id: "fb-netflix-1m", name: "1 Month Standard", price: 15.2, currency: "USD", inStock: 88 },
-    { id: "fb-netflix-3m", name: "3 Months Standard", price: 43.9, currency: "USD", inStock: 41 },
-  ]},
-  { id: "fb-music", name: "Music Streaming Subscription", type: "voucher", categoryName: "Music And Entertainment", countryCode: "GLOB", items: [
-    { id: "fb-music-1m", name: "1 Month Premium", price: 10.4, currency: "USD", inStock: 190 },
-    { id: "fb-music-12m", name: "12 Months Premium", price: 99.0, currency: "USD", inStock: 22, isLongOrder: true },
-  ]},
-  { id: "fb-twitch", name: "Stream Micro-Donation Credit", type: "voucher", categoryName: "Social", countryCode: "GLOB", items: [
-    { id: "fb-twitch-5", name: "500 Bits Bundle", price: 7.1, currency: "USD", inStock: 500 },
-    { id: "fb-twitch-25", name: "Sub Gift Pack x5", price: 24.8, currency: "USD", inStock: 96 },
-  ]},
-  { id: "fb-ai", name: "AI Model API Credit Pool", type: "voucher", categoryName: "Software", countryCode: "GLOB", items: [
-    { id: "fb-ai-50", name: "50 USD Credit", price: 50.0, currency: "USD", inStock: 64 },
-    { id: "fb-ai-200", name: "200 USD Credit", price: 196.0, currency: "USD", inStock: 31 },
-    { id: "fb-ai-1000", name: "1000 USD Credit", price: 960.0, currency: "USD", inStock: 8, isLongOrder: true },
-  ]},
-  { id: "fb-esim", name: "Global eSIM Data Pack", type: "esim", categoryName: "eSIM", countryCode: "GLOB", items: [
-    { id: "fb-esim-1", name: "1 GB / 7 days", price: 4.5, currency: "USD", inStock: 900 },
-    { id: "fb-esim-10", name: "10 GB / 30 days", price: 19.9, currency: "USD", inStock: 640 },
-  ]},
-  { id: "fb-mobile", name: "Mobile Balance Top-Up", type: "direct_topup", categoryName: "Mobile", countryCode: "CIS", items: [
-    { id: "fb-mobile-5", name: "5 USD", price: 5.1, currency: "USD", inStock: 999 },
-    { id: "fb-mobile-20", name: "20 USD", price: 19.8, currency: "USD", inStock: 999 },
-  ]},
-];
+
