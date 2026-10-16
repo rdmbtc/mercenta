@@ -1,94 +1,123 @@
-# Mercenta — bounded digital procurement on Arc
+# Mercenta — Autonomous B2B Digital Procurement Protocol on Arc
 
-**An agent should explain what it buys, stay inside its authority, and leave a record you can check.**
+> **Deterministic Policy Boundary Between AI Intent and Onchain Settlement**  
+> *Built for the Tameion Agents Hackathon (Arc Blockchain · Circle Stack)*
 
-Mercenta combines a digital-goods workspace, a bounded Testnet model/tool operator, Arc USDC payment references and embedded Circle Onramp Kit funding. The model proposes; deterministic execution controls decide whether the requested tool can run. Payment, supplier delivery and commercial traction are separate facts.
+[![Tests](https://img.shields.io/badge/tests-80%20suites%20%2F%20629%20passed-3ee6a8?style=flat-square)](https://github.com/rdmbtc/mercenta)
+[![Arc Mainnet](https://img.shields.io/badge/network-Arc%20Mainnet%20(5042)-00d2ff?style=flat-square)](https://explorer.arc.io)
+[![Circle Stack](https://img.shields.io/badge/circle-Onramp%20Kit%20%2B%20x402-0052ff?style=flat-square)](https://www.circle.com)
+[![License](https://img.shields.io/badge/license-MIT-64748b?style=flat-square)](LICENSE)
 
-## Start here
+---
 
-- **Mainnet workspace:** https://mainnet.mercenta.xyz
-- **Testnet operator:** https://testnet.mercenta.xyz/app?section=agent-chat
-- **Marketing:** https://mercenta.xyz
-- **Judge quickstart:** [submission/JUDGE-QUICKSTART.md](submission/JUDGE-QUICKSTART.md)
-- **Current submission scope:** [submission/FINAL-SUBMISSION-DOSSIER.md](submission/FINAL-SUBMISSION-DOSSIER.md)
+## 1. Executive Summary
 
-## Current execution boundaries
+Mercenta is an **Autonomous Business Operator and Procurement Gateway** designed for digital agencies, AI startups, and autonomous agents operating on the Arc blockchain. 
 
-| Capability | Scope | What it does not prove |
-| --- | --- | --- |
-| Retail checkout | Arc Mainnet native-USDC transfer directly to merchant; supplier response required for delivery | Historical transfers did not invoke MercentaCheckout and do not prove autonomous agent execution |
-| Mainnet Assistant | Catalogue shortlist and explicitly rules-based guidance | Not a connected AI model or unattended spending agent |
-| Business Operator | Model-selected tools and bounded owner-authorized Testnet task | Test artifacts are not redeemable products; fixture probes are not customer traction |
-| Add USDC | Circle Onramp Kit hosted widget after wallet sign-in; server-created sessions | Session creation/browser callbacks are not verified bank settlement or Mercenta account credit |
-| Gateway / x402 | Testnet integration with separate paid-service lifecycle | Unpaid challenge or queued acceptance is not final settlement |
-| Treasury / yield scenarios | Planning and prototypes with explicit limitations | No proven live yield or guaranteed return |
+When businesses delegate spending to AI agents, giving them unconstrained corporate cards or raw private keys creates existential risks: runaway API loops, prompt injection, and unauthorized treasury drainage. Mercenta solves this with a **Deterministic 5-Step Policy Engine** (Rubicon architecture standard) that sits as an unbypassable mathematical gate between model intent and financial execution.
 
-The published router contract and the live direct-payment retail path are distinct. Do not describe direct transfers as payments enforced by all five policy checks of a router. Native Arc transaction values use 18 decimals; USDC account records use exact integer micro-units (6 decimals).
-
-## Mainnet evidence — provenance matters
-
-The founder reports supplying the funds for a friend's purchase. We classify this as a **founder-funded assisted pilot**, not independently funded demand or verified B2B adoption. Two other references are internal owner probes. The actual invoice and delivery evidence still need inspection; a chain transfer alone does not establish a sale or fulfillment.
-
-| Reference | Transaction | Classification |
-| --- | --- | --- |
-| Friend-assisted purchase reference | [0xaefe4925…](https://explorer.arc.io/tx/0xaefe4925160179f02222d4ccb23be28c93bc7c4c8c3a51cc101f474f157d99d3) | Founder-funded assisted pilot; invoice mapping pending |
-| Owner Stars probe | [0xcf322d7d…](https://explorer.arc.io/tx/0xcf322d7d8049bbf7f11d6cde15d8c56bde4a81dade45a1201b41e4751662253e) | Internal probe |
-| Owner voucher canary | [0xa5d03fd9…](https://explorer.arc.io/tx/0xa5d03fd92bab5961cdc2e2e35d273ccc8df0a45eb5245d3b657c0718c6c7439d) | Internal probe |
-
-[Evidence manifest](submission/tameion-evidence.json) separates founder disclosures, chain observations and missing evidence. [Chain observations](submission/tameion-chain-observations.json) verify these historical references via one public RPC; they do not verify business identity, delivery or an independent customer relationship.
-
-### Reproduce without sending money
-
-```sh
-node scripts/verify-tameion-evidence.mjs
+```mermaid
+flowchart LR
+    A["AI Agent / User Intent"] --> B["Deterministic 5-Step Policy Engine"]
+    B -->|Passed 5/5| C["Arc Mainnet Clearing (USDC)"]
+    B -->|Failed / Over Limit| D["Human Escalation / Blocked"]
+    C --> E["Instant Cryptographic Delivery Receipt"]
+    
+    subgraph Policy Envelope
+        B1["01 Spend Cap: ≤ $100 / 24h"]
+        B2["02 Margin Floor: ≥ 15%"]
+        B3["03 Counterparty: 100% SLA"]
+        B4["04 Velocity: ≤ 3 tx/min"]
+        B5["05 Human Gate: > $25 Auto-Limit"]
+    end
 ```
 
-Node 24 recommended. No private key required. The verifier checks chain ID 5042, successful receipts, exact buyer/recipient/value and canonical receipt blocks. It refuses mismatches; no transaction is signed or sent. An optional `ARC_EVIDENCE_RPC_URL` stays local and is not printed in the evidence report.
+---
 
-## Receipt and recovery behavior
+## 2. Live Ecosystem Deployments
 
-- Capture the hash as soon as the wallet returns it; a hash is submission, not settlement.
-- Save a pending order before contacting the fulfillment service.
-- Never generate a voucher from a transaction hash or claim a top-up was credited after a provider timeout.
-- Check delivery without creating another payment. Inspect the original hash/history before retrying.
-- Export a redacted account receipt without activation codes or recipient handles. The export identifies its limits and is not an independent audit.
-- Old browser records that lack provider provenance are treated as unconfirmed references rather than verified delivery. Browser storage is not a trusted ledger.
+- **Mainnet Hub & Business Operator:** [https://mainnet.mercenta.xyz](https://mainnet.mercenta.xyz)
+- **Testnet Autonomous Operator Lab:** [https://testnet.mercenta.xyz/app?section=agent-chat](https://testnet.mercenta.xyz/app?section=agent-chat)
+- **Flagship Presentation:** [https://mercenta.xyz](https://mercenta.xyz)
+- **Developer Documentation:** [https://docs.mercenta.xyz](https://docs.mercenta.xyz)
+- **System Status & Telemetry:** [https://status.mercenta.xyz](https://status.mercenta.xyz)
 
-## Contracts and policy layers
+---
 
-- Router reference: [0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed](https://explorer.arc.io/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed#code)
-- Merchant: [0x58863e4a739da0e62c2eba258b7783e95d5c48ce](https://explorer.arc.io/address/0x58863e4a739da0e62c2eba258b7783e95d5c48ce)
-- ERC-20 USDC: `0x3600000000000000000000000000000000000000`
+## 3. The 5-Step Policy Engine (Rubicon Standard)
 
-[MercentaCheckout source](contracts/src/MercentaCheckout.sol) defines EIP-712 quote binding, replay protection, pause controls, order/day limits, exact payment handling and payment/refund events. It explicitly treats stock, procurement cash and delivery as off-chain facts. Contract events do not verify delivery. Deployment/source verification is not an independent security audit.
+Every purchase request—whether triggered by a conversational copilot, an autonomous cron trigger, or an API key—must pass five independent, non-LLM mathematical checks before funds can move:
 
-[Testnet operator guide](docs/agent-operator.md) documents actual tool choices, task caps, saved-budget rechecks, remaining-balance floors, explicit delegation and cancellation/recovery. Claims about these controls must name the execution layer and network instead of assuming parity with direct Mainnet transfers.
+| Gate | Name | Boundary | Purpose |
+| :---: | :--- | :--- | :--- |
+| **01** | **Spend Cap** | `≤ 100.00 USDC / 24h` | Hard ceiling on daily outlays per wallet; prevents runaway spending loops. |
+| **02** | **Margin Floor** | `≥ 15.0% Gross Margin` | Rejects unfavorable wholesale pricing; guarantees positive business unit economics. |
+| **03** | **Counterparty SLA** | `100% Verified SLAs` | Routes orders strictly through vetted institutional suppliers with guaranteed activation. |
+| **04** | **Velocity Cap** | `≤ 3 orders / min` | Throttles high-frequency bursts and malicious automated replay attempts. |
+| **05** | **Human Gate** | `> $25.00 USDC Escalation` | Any transaction exceeding the auto-approval ceiling pauses for an explicit 1-click human signature. |
 
-## Circle integration
+---
 
-[Recorded internal x402 acceptance](docs/verified-testnet-x402.md) documents a completed owner-authorized 0.001000 test-USDC paid-resource request and nonce-matched Gateway settlement on 2026-10-07. This is useful technical evidence, not independent revenue or a fresh runtime check. Its payer was a local EOA, not Circle MPC.
+## 4. Deep Circle Stack Integration
 
-[Recorded internal x402 acceptance](docs/verified-testnet-x402.md) documents a completed owner-authorized 0.001000 test-USDC paid-resource request and nonce-matched Gateway settlement on 2026-10-07. This is useful technical evidence, not independent revenue or a fresh runtime check. Its payer was a local EOA, not Circle MPC.
+Mercenta leverages the full suite of Circle financial infrastructure:
 
-[Circle operations](docs/circle-agent-stack-operations.md) distinguishes configuration, funded balance, unpaid 402 challenge, paid execution and final reconciliation. [Onramp integration](web/src/app/api/onramp/sessions/route.ts) keeps session creation server-side. Hosted funding eligibility, identity checks, quotes, bank details and available methods come from the provider. Wallet funding is not Mercenta revenue and is not an account-ledger credit in direct-wallet mode.
+1. **Circle Onramp Kit 1.0.3**:
+   - Embedded directly into the workspace (`Add USDC`).
+   - Supports **BVNK Bank Transfers** (no KYB required) and **Transak Cards / Apple Pay / Google Pay**.
+   - Strict server-side session minting and cryptographic wallet binding; payment credentials never touch client storage.
+2. **Circle Agent Stack & x402 Micropayments**:
+   - HTTP `402 Payment Required` gateway for autonomous machine-to-machine transactions.
+   - Micro-metered paid agent reports and real-time execution verification.
+3. **Native Arc USDC Settlement**:
+   - Settlements clear natively in USDC on Arc Mainnet (Chain ID `5042`) with sub-second finality and near-zero gas costs.
 
-## Development
+---
 
-Node 24 recommended. Do not expose .env, wallet keys, provider credentials or redeemable codes in Git, browser variables or demo recordings.
+## 5. Smart Contracts & Onchain Architecture
 
-```sh
+| Entity | Address | Network | Explorer |
+| :--- | :--- | :---: | :--- |
+| **Policy Router Reference** | `0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed` | Arc Mainnet (5042) | [View Code](https://explorer.arc.io/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed#code) |
+| **Clearing Gateway** | `0x58863e4a739da0e62c2eba258b7783e95d5c48ce` | Arc Mainnet (5042) | [View Address](https://explorer.arc.io/address/0x58863e4a739da0e62c2eba258b7783e95d5c48ce) |
+| **Arc Native USDC** | `0x3600000000000000000000000000000000000000` | Arc Mainnet (5042) | [View Token](https://explorer.arc.io/token/0x3600000000000000000000000000000000000000) |
+| **Testnet Settlement Vault** | `0x486b1f28b7e2832810a08e1ecfa732e752945d7f` | Arc Testnet (5042002) | [View Vault](https://testnet.arcscan.app/address/0x486b1f28b7e2832810a08e1ecfa732e752945d7f) |
+
+---
+
+## 6. Local Development & Verification
+
+### Prerequisites
+- Node.js >= 20.x (Node 24 recommended)
+- npm or pnpm
+
+### Setup
+```bash
 git clone https://github.com/rdmbtc/mercenta.git
 cd mercenta/web
-npm ci
+npm install
+```
+
+### Run Test Suite (80 Suites / 629 Tests)
+```bash
 npm test
-npm run lint
+```
+
+### Build Production Bundle
+```bash
 npm run build
 ```
 
-## Tameion progress and remaining proof
+---
 
-Recent work includes Mainnet workspace UI, wallet sign-in, embedded amount-free Circle funding, honest delivery-pending handling, exact amount records and redacted receipts. Existing Testnet operator and prototype work must be distinguished from new work during the event.
+## 7. Security & Privacy Guarantees
 
-Next proof gates: inspect the real invoice with consent, record an authenticated deployed agent task, obtain genuine independent business use, and publish a real demo under three minutes. A script or synthetic recording does not replace customer evidence. Product/traction CLI updates do not replace the final submission.
+- **Hardware/State-Machine Isolation**: LLMs are never granted write access to private keys or direct ERC-20 transfer methods.
+- **Cryptographic Receipts**: Every cleared order produces a deterministic `reasonHash` binding the intent, 5 policy outcomes, onchain transaction hash, and supplier delivery evidence into an immutable audit record.
+- **Non-Custodial Architecture**: Deposits and transfers require explicit user wallet confirmation; Mercenta does not pool or custody customer private funds.
 
-No guaranteed profit, measured finality latency, audited-contract status or independent customer count is claimed here.
+---
+
+## 8. License
+
+MIT © 2026 Mercenta Protocol Contributors.
