@@ -14,6 +14,7 @@ export interface MainnetOrder {
   codes: string[];
   network: 'mainnet';
   delivery_source?: 'provider_response' | 'historical_reference' | 'unconfirmed';
+  policy_reason_hash?: string;
 }
 const STORAGE_KEY = 'mercenta-mainnet-orders';
 const addressPattern = /^0x[a-f0-9]{40}$/i;
