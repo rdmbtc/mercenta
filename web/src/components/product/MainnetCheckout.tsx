@@ -39,9 +39,21 @@ export function MainnetCheckout({
   initialAccount?: string | null;
   onLock?: (locked:boolean) => void;
 }) {
-  const isTopup = productType === 'direct_topup' || productName.toLowerCase().includes('telegram');
-  const [recipientAccount, setRecipientAccount] = useState(accountReference);
-  const effectiveAccount = recipientAccount.trim() || accountReference.trim();
+  const isTopup = Boolean(
+    productType === 'direct_topup' ||
+    productName.toLowerCase().includes('telegram') ||
+    productName.toLowerCase().includes('star') ||
+    optionName.toLowerCase().includes('star') ||
+    productName.toLowerCase().includes('topup') ||
+    productName.toLowerCase().includes('top-up')
+  );
+  const [recipientAccount, setRecipientAccount] = useState(accountReference || '');
+  useEffect(() => {
+    if (accountReference && !recipientAccount) {
+      setRecipientAccount(accountReference);
+    }
+  }, [accountReference, recipientAccount]);
+  const effectiveAccount = (recipientAccount || accountReference || '').trim();
   const needsAccountRef = isTopup && !effectiveAccount;
 
   const [account, setAccount] = useState<string | null>(() => {
@@ -74,7 +86,7 @@ export function MainnetCheckout({
   const totalPriceUsdc = mainnetAmountDisplay(amountMicro.toString());
   const nativeValueWei = amountMicro * 1_000_000_000_000n; // 6 decimals -> 18 decimals
 
-  // 5-Step Deterministic Policy Engine (Rubicon Standard)
+  // 5-Step Deterministic Policy Engine (Mercenta Architecture)
   const recentOrders = account ? getMainnetOrders(account) : [];
   const oneDayAgo = Date.now() - 86400000;
   const oneMinuteAgo = Date.now() - 60000;
@@ -231,6 +243,10 @@ export function MainnetCheckout({
 
     if (needsAccountRef) {
       setError(ru ? 'Укажите ваш Telegram @username перед оплатой.' : 'Specify account username (@username) before paying.');
+      if (typeof document !== 'undefined') {
+        const inputEl = document.getElementById('topup-username-input') || document.getElementById('catalogue-account-ref');
+        inputEl?.focus();
+      }
       return;
     }
 
@@ -742,7 +758,7 @@ export function MainnetCheckout({
       <div style={{marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px'}}>
         {!account ? (
           <button
-            className="mp-button full"
+            className="mp-button full cf-pay-usdc-btn"
             onClick={connectWallet}
             disabled={busy}
             style={{
@@ -750,14 +766,18 @@ export function MainnetCheckout({
               background: '#1d4ed8',
               color: '#ffffff',
               fontWeight: 600,
+              fontSize: '15px',
+              padding: '12px 18px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(29, 78, 216, 0.4)',
             }}
           >
             {busy ? <LoaderCircle size={16} className="mn-identity-spinner"/> : <Wallet size={16}/>}
-            <span>{ru ? 'Подключить кошелёк для оплаты' : 'Connect wallet to pay'}</span>
+            <span>{ru ? `Оплатить ${totalPriceUsdc} USDC · Подключить кошелёк` : `Pay with USDC (${totalPriceUsdc} USDC) · Connect Wallet`}</span>
           </button>
         ) : !isArcMainnet ? (
           <button
-            className="mp-button full"
+            className="mp-button full cf-pay-usdc-btn"
             onClick={switchNetwork}
             disabled={busy}
             style={{
@@ -765,23 +785,29 @@ export function MainnetCheckout({
               background: '#b45309',
               color: '#ffffff',
               fontWeight: 600,
+              fontSize: '15px',
+              padding: '12px 18px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(180, 83, 9, 0.4)',
             }}
           >
             {busy ? <LoaderCircle size={16} className="mn-identity-spinner"/> : <ShieldCheck size={16}/>}
-            <span>{ru ? 'Переключить кошелёк на Arc Mainnet' : 'Switch wallet to Arc Mainnet'}</span>
+            <span>{ru ? `Оплатить ${totalPriceUsdc} USDC · Переключить на Arc Mainnet` : `Pay with USDC (${totalPriceUsdc} USDC) · Switch to Arc Mainnet`}</span>
           </button>
         ) : (
           <button
-            className="mp-button full"
+            className="mp-button full cf-pay-usdc-btn"
             onClick={payOnChain}
-            disabled={busy || needsAccountRef || amountMicro <= 0n || !denominationId || !allGatesPassed}
+            disabled={busy || amountMicro <= 0n || !denominationId || !allGatesPassed}
             style={{
               justifyContent: 'center',
-              background: (needsAccountRef || !allGatesPassed) ? 'rgba(255, 255, 255, 0.06)' : '#1d4ed8',
-              color: (needsAccountRef || !allGatesPassed) ? '#64748b' : '#ffffff',
-              cursor: (needsAccountRef || !allGatesPassed) ? 'not-allowed' : 'pointer',
+              background: (!allGatesPassed) ? 'rgba(255, 255, 255, 0.08)' : '#1d4ed8',
+              color: (!allGatesPassed) ? '#94a3b8' : '#ffffff',
+              cursor: (!allGatesPassed) ? 'not-allowed' : 'pointer',
               fontWeight: 600,
-              boxShadow: (needsAccountRef || !allGatesPassed) ? 'none' : '0 4px 14px rgba(29, 78, 216, 0.4)',
+              fontSize: '15px',
+              padding: '12px 18px',
+              boxShadow: (!allGatesPassed) ? 'none' : '0 4px 14px rgba(29, 78, 216, 0.4)',
             }}
           >
             {busy ? <LoaderCircle size={16} className="mn-identity-spinner"/> : <ShieldCheck size={16}/>}
@@ -795,8 +821,8 @@ export function MainnetCheckout({
                 : !allGatesPassed
                 ? (ru ? 'Заблокировано Policy Engine' : 'Blocked by Policy Engine')
                 : needsAccountRef
-                ? (ru ? 'Укажите @username выше' : 'Specify @username above')
-                : (ru ? `Оплатить ${totalPriceUsdc} USDC в Arc Mainnet` : `Pay ${totalPriceUsdc} USDC on Arc Mainnet`)}
+                ? (ru ? `Оплатить ${totalPriceUsdc} USDC (введите @username выше)` : `Pay with USDC (${totalPriceUsdc} USDC - enter @username above)`)
+                : (ru ? `Оплатить ${totalPriceUsdc} USDC (Pay with USDC)` : `Pay ${totalPriceUsdc} USDC (Pay with USDC)`)}
             </span>
           </button>
         )}
