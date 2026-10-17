@@ -167,13 +167,18 @@ export function MainnetCheckout({
         window.dispatchEvent(new Event('mercenta-auth-change'));
       }
       const cId = await eth.request({method: 'eth_chainId'}) as string;
-      setChainId(cId.toLowerCase());
+      const currentLower = typeof cId === 'string' ? cId.toLowerCase() : '';
+      setChainId(currentLower);
+      if (currentLower !== ARC_MAINNET_CHAIN_ID_HEX && currentLower !== '5042') {
+        await switchNetwork();
+      }
     } catch {
       setError(ru ? 'Не удалось подключить кошелёк.' : 'Could not connect wallet.');
     } finally {
       setBusy(false);
     }
   }
+
 
   async function switchNetwork() {
     const eth = (window as unknown as {ethereum?: Provider})?.ethereum;

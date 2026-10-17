@@ -94,3 +94,59 @@ export async function signOut(): Promise<void> {
   // Client-side clear; server cookie expires on its own (24h TTL).
   await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
 }
+
+export const ARC_MAINNET_CONFIG = {
+  chainId: "0x13b2",
+  chainName: "Arc Mainnet",
+  nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
+  rpcUrls: ["https://rpc.mainnet.arc.io"],
+  blockExplorerUrls: ["https://explorer.arc.io"],
+};
+
+export const ARC_TESTNET_CONFIG = {
+  chainId: "0x4cef52",
+  chainName: "Arc Testnet",
+  nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
+  rpcUrls: ["https://rpc.testnet.arc.network"],
+  blockExplorerUrls: ["https://testnet.arcscan.app"],
+};
+
+/**
+ * Ensures the connected wallet is on the correct Arc network (Arc Mainnet by default, or Arc Testnet).
+ * If the user's wallet is currently on Ethereum Mainnet or another chain, prompts an automatic switch.
+ */
+export async function ensureArcChain(isMainnet: boolean = true): Promise<boolean> {
+  if (typeof window === "undefined" || !window.ethereum?.request) return false;
+  const targetChainId = isMainnet ? "0x13b2" : "0x4cef52";
+  const chainConfig = isMainnet ? ARC_MAINNET_CONFIG : ARC_TESTNET_CONFIG;
+
+  try {
+    const current = (await window.ethereum.request({ method: "eth_chainId" })) as string;
+    if (typeof current === "string" && current.toLowerCase() === targetChainId.toLowerCase()) {
+      return true;
+    }
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: targetChainId }],
+    });
+    return true;
+  } catch (switchError) {
+    if ((switchError as { code?: number })?.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [chainConfig],
+        });
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: targetChainId }],
+        });
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  }
+}
+
