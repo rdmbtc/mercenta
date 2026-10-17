@@ -18,6 +18,8 @@ export interface ClearingOrder {
   decision: string;
   network: string;
   checks: string;
+  txHash: string;
+  latency: string;
 }
 
 export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
@@ -36,6 +38,8 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
+    txHash: "0x8f3c...b491",
+    latency: "14ms",
   },
   {
     id: "MR-ORD-3294",
@@ -52,6 +56,8 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
+    txHash: "0x3e1a...72fd",
+    latency: "11ms",
   },
   {
     id: "MR-ORD-7810",
@@ -68,6 +74,8 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
+    txHash: "0xd944...28cc",
+    latency: "18ms",
   },
   {
     id: "MR-ORD-4105",
@@ -84,6 +92,8 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
+    txHash: "0x51ab...90e3",
+    latency: "12ms",
   },
   {
     id: "MR-ORD-6523",
@@ -100,6 +110,8 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
+    txHash: "0xaa42...5510",
+    latency: "16ms",
   },
   {
     id: "MR-ORD-8930",
@@ -116,14 +128,16 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
+    txHash: "0x77c1...f982",
+    latency: "13ms",
   },
 ];
 
 function StatusPassIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <circle cx="10" cy="10" r="8" stroke="currentColor" />
-      <path d="m6 10 2.5 2.5L14 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.6" />
+      <path d="m6 10 2.5 2.5L14 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -132,7 +146,6 @@ export default function Hero3DReceipt() {
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [animating, setAnimating] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   // 3D interactive tilt
   const [tilt, setTilt] = useState({ rx: 3, ry: -9, gx: 50, gy: 30 });
@@ -188,31 +201,6 @@ export default function Hero3DReceipt() {
     setTilt({ rx: 3, ry: -9, gx: 50, gy: 30 });
   }
 
-  async function copyJson() {
-    const payload = {
-      record: "ILLUSTRATIVE ORDER RECORD",
-      orderId: order.id,
-      product: order.name,
-      sku: order.sku,
-      category: order.category,
-      clientPriceUsdc: order.amount,
-      supplierCostUsdc: order.cost,
-      platformFeeUsdc: order.feeAmount,
-      grossMargin: order.margin,
-      decision: order.decision,
-      checks: order.checks,
-      settlementNetwork: order.network,
-      timestamp: new Date().toISOString(),
-    };
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
-  }
-
   return (
     <div
       className="mx-3d-receipt-container"
@@ -242,42 +230,46 @@ export default function Hero3DReceipt() {
         {/* Laser Scanning Line */}
         <div className="mx-3d-scanline" aria-hidden="true" />
 
-        {/* Top: BrandMark + Label + Copy Button */}
+        {/* Top: BrandMark + Illustrative Order Record + Live Clearing Badge */}
         <div className="mx-receipt-top">
           <BrandMark />
           <span className="mx-label">ILLUSTRATIVE ORDER RECORD</span>
-          <button
-            type="button"
-            className="mx-receipt-copy-pill"
-            onClick={copyJson}
-            title="Copy cleared JSON record"
-          >
-            {copied ? "COPIED ✓" : "COPY JSON"}
-          </button>
+          <div className="mx-receipt-live-badge">
+            <span className="mx-receipt-live-dot" />
+            <span>SETTLED</span>
+          </div>
         </div>
 
         {/* Order ID & Product SKU */}
         <div className="mx-receipt-id-row">
-          <span className="mx-label">{order.id}</span>
+          <div className="mx-receipt-id-group">
+            <span className="mx-receipt-id-val">{order.id}</span>
+            <span className="mx-receipt-status-tag">CONFIRMED</span>
+          </div>
           <span className="mx-receipt-sku-badge">{order.sku}</span>
         </div>
 
-        {/* Product Title */}
+        {/* Product Category & Title */}
         <div className="mx-receipt-product-row">
+          <span className="mx-receipt-category-tag">{order.category}</span>
           <h3 className="mx-receipt-item-title">{order.name}</h3>
-          <span className="mx-receipt-item-batch">{order.batchInfo} · {order.region}</span>
+          <div className="mx-receipt-item-meta">
+            <span>{order.batchInfo}</span>
+            <span className="mx-receipt-dot-sep">·</span>
+            <span className="mx-receipt-region-pill">{order.region}</span>
+          </div>
         </div>
 
-        {/* Big Amount */}
+        {/* Big Amount Display */}
         <div className="mx-receipt-amount">
           <span className="mx-receipt-amount-num">
             {order.amount.toLocaleString("en-US", { minimumFractionDigits: order.amount % 1 === 0 ? 0 : 2 })}
           </span>
-          <span>USDC</span>
+          <span className="mx-receipt-currency-unit">USDC</span>
         </div>
 
         {/* Financial Breakdown: Supplier cost, Platform fee, Gross margin */}
-        <dl>
+        <dl className="mx-receipt-breakdown">
           <div>
             <dt>Supplier cost</dt>
             <dd>{order.cost.toLocaleString("en-US", { minimumFractionDigits: 2 })} USDC</dd>
@@ -286,24 +278,56 @@ export default function Hero3DReceipt() {
             <dt>Platform fee ({order.feePct})</dt>
             <dd>{order.feeAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })} USDC</dd>
           </div>
-          <div>
+          <div className="mx-receipt-margin-row">
             <dt>Gross margin</dt>
-            <dd className="mx-receipt-margin-num">{order.margin}</dd>
+            <dd className="mx-receipt-margin-num">+{order.margin}</dd>
           </div>
         </dl>
 
-        {/* Bottom Seal: Cleared + PREVIEW ONLY */}
+        {/* Bottom Status Seal: Cleared + PREVIEW ONLY */}
         <div className="mx-receipt-bottom">
           <StatusPassIcon />
           <strong>{order.decision}</strong>
-          <span>PREVIEW ONLY</span>
+          <span className="mx-receipt-guardrail-tag">5/5 CHECKS PASSED</span>
+          <span className="mx-receipt-preview-mark">PREVIEW ONLY</span>
         </div>
 
-        {/* Verification Footer */}
-        <div className="mx-receipt-audit-foot">
-          <span>{order.checks}</span>
-          <span>·</span>
-          <span>{order.network}</span>
+        {/* Authentic Barcode & Cryptographic Hash Footer */}
+        <div className="mx-receipt-barcode-row" aria-hidden="true">
+          <div className="mx-receipt-barcode">
+            <span className="mx-bar-1" />
+            <span className="mx-bar-2" />
+            <span className="mx-bar-1" />
+            <span className="mx-bar-3" />
+            <span className="mx-bar-1" />
+            <span className="mx-bar-2" />
+            <span className="mx-bar-4" />
+            <span className="mx-bar-1" />
+            <span className="mx-bar-2" />
+            <span className="mx-bar-3" />
+            <span className="mx-bar-1" />
+            <span className="mx-bar-2" />
+            <span className="mx-bar-1" />
+            <span className="mx-bar-4" />
+            <span className="mx-bar-2" />
+            <span className="mx-bar-1" />
+            <span className="mx-bar-3" />
+            <span className="mx-bar-2" />
+            <span className="mx-bar-1" />
+            <span className="mx-bar-4" />
+            <span className="mx-bar-1" />
+            <span className="mx-bar-3" />
+            <span className="mx-bar-2" />
+            <span className="mx-bar-1" />
+            <span className="mx-bar-2" />
+            <span className="mx-bar-4" />
+            <span className="mx-bar-1" />
+          </div>
+          <div className="mx-receipt-crypto-meta">
+            <span>TX: {order.txHash}</span>
+            <span>LATENCY: {order.latency}</span>
+            <span>{order.network}</span>
+          </div>
         </div>
       </div>
 
