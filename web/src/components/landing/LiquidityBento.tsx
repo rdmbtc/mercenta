@@ -6,7 +6,6 @@ import {
   Bot,
   ArrowUpRight,
   ArrowRight,
-  ShieldCheck,
 } from "lucide-react";
 export function LiquidityBento() {
   return (
@@ -134,11 +133,6 @@ export function LiquidityBento() {
             </footer>
           </button>
         </div>
-        <p className="mx-liquidity-disclaimer">
-          <ShieldCheck size={16} />
-          Interactive models, not live financial offers. No real deposit, loan
-          or card payment is executed by this preview.
-        </p>
       </div>
     </section>
   );

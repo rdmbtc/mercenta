@@ -63,7 +63,7 @@ function SellersSection() {
 
 export default function FlagshipLanding() {
   const [menu, setMenu] = useState(false);
-  const [motion, setMotion] = useState(true);
+  const [motion] = useState(true);
   const [activeCase, setActiveCase] = useState<string>("order");
   const [amount, setAmount] = useState<number>(CASES.order.amount);
   const [cost, setCost] = useState<number>(CASES.order.cost);
@@ -167,7 +167,6 @@ export default function FlagshipLanding() {
             <p className="mx-hero-description">You run the business. Mercenta brings the goods.<br className="mx-desktop-break" /> Give agents the power to buy — inside your rules.</p>
             <div className="mx-actions"><a href="/app" className="mx-button mx-button-primary">Launch console <Arrow diagonal /></a><a href="#playground" className="mx-button mx-button-quiet">Test the guardrails <Arrow /></a></div>
             <a className="mx-hero-seller" href="#sellers">Running a shop? Wholesale supply <Arrow /></a>
-            <p className="mx-disclaimer">Illustrative environment. No live orders or funds.</p><button className="mx-motion-toggle" type="button" aria-pressed={!motion} onClick={() => setMotion(!motion)}>{motion ? "Ⅱ" : "▷"}<span>{motion ? "Pause hero motion" : "Resume hero motion"}</span></button>
           </div>
           <div className="mx-art-caption"><span className="mx-cross">+</span><div><span className="mx-label">THE POLICY GATE / 001</span><p>Intelligence moves fast.<br />Control moves with it.</p></div></div>
           <div className="mx-art-status"><span className="mx-beacon" /> DETERMINISTIC BY DESIGN</div>
