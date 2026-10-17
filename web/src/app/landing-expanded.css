@@ -62,335 +62,462 @@
 .mx-hero-seller{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:13.5px;font-weight:500;color:#8ba2b7;transition:color .2s}
 .mx-hero-seller:hover{color:var(--mx-blue,#a6daff)}
 @media(max-width:960px){.mx-sellers-layout{grid-template-columns:1fr;gap:44px}.mx-seller-points{grid-template-columns:1fr}}
-
-
 /* =========================================================================
-   Hero Animated Dynamic Receipt (Voucher / Clearing Record)
+   3D Animated Order Docket (Autonomous Clearing Terminal)
    ========================================================================= */
 
-.mx-hero-receipt-stage {
-  position: relative;
-  z-index: 5;
+.mx-hero-headline-pair {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  margin-top: 8px;
   width: 100%;
-  max-width: 390px;
-  margin-left: auto;
-  perspective: 1000px;
-  animation: mx-receipt-float 7s ease-in-out infinite;
+}
+
+.mx-hero-headline-col {
+  flex: 1 1 520px;
+  min-width: 0;
+}
+
+.mx-hero-receipt-col {
+  flex: 0 0 350px;
+  max-width: 360px;
+  perspective: 1200px;
+  position: relative;
+  z-index: 6;
+  margin-top: 24px;
+}
+
+.mx-3d-receipt-container {
+  position: relative;
+  width: 100%;
+  perspective: 1200px;
+  cursor: grab;
+  user-select: none;
+}
+
+/* 3D Floating Levitation on Card Shell */
+.mx-3d-receipt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  background: linear-gradient(165deg, rgba(16, 24, 34, 0.95) 0%, rgba(9, 13, 19, 0.98) 100%);
+  border: 1px solid rgba(82, 119, 150, 0.35);
+  border-radius: 6px;
+  padding: 24px 22px 20px;
+  color: #e4edf5;
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.25s ease;
+  box-shadow: 
+    0 30px 60px -12px rgba(0, 0, 0, 0.9),
+    0 0 35px -8px rgba(24, 104, 242, 0.3),
+    0 1px 0 rgba(178, 229, 255, 0.25) inset,
+    -1px -1px 0 rgba(0, 0, 0, 0.8) inset;
+  animation: mx-3d-levitate 8s ease-in-out infinite;
   will-change: transform;
 }
 
-@keyframes mx-receipt-float {
+@keyframes mx-3d-levitate {
   0%, 100% {
-    transform: translateY(0px) rotate(1.4deg);
+    transform: rotateY(-8deg) rotateX(4deg) translateY(0px);
   }
   50% {
-    transform: translateY(-9px) rotate(2deg);
+    transform: rotateY(-4deg) rotateX(7deg) translateY(-8px);
   }
 }
 
-.mx-hero-receipt-glow {
-  position: absolute;
-  inset: -15px -20px;
-  background: radial-gradient(circle at 60% 40%, rgba(56, 189, 248, 0.22) 0%, rgba(24, 104, 242, 0.12) 45%, transparent 72%);
-  filter: blur(28px);
-  pointer-events: none;
-  z-index: 1;
+.mx-3d-receipt-card:hover {
+  animation-play-state: paused;
+  box-shadow: 
+    0 35px 75px -12px rgba(0, 0, 0, 0.95),
+    0 0 50px -5px rgba(56, 189, 248, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.4) inset;
 }
 
-.mx-receipt.mx-hero-receipt {
-  position: relative;
-  z-index: 2;
-  background: #fcfdff;
-  color: #0b1118;
-  border: 1px solid #c7d5e2;
-  border-radius: 3px;
-  padding: 26px 28px 24px;
-  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.85), 0 0 40px -10px rgba(178, 229, 255, 0.25), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
-  transform: none;
-  margin: 0;
-  overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s ease;
-}
-
-.mx-receipt.mx-hero-receipt:hover {
-  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.95), 0 0 55px -10px rgba(178, 229, 255, 0.4), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
-}
-
-/* Jagged perforated receipt bottom */
-.mx-receipt.mx-hero-receipt:after {
+/* 3D Extrusion Side Wall Effect */
+.mx-3d-receipt-card::before {
   content: "";
   position: absolute;
-  left: -1px;
-  right: -1px;
-  bottom: -10px;
-  height: 11px;
-  background: linear-gradient(135deg, #fcfdff 5px, transparent 0) 0 0/10px 10px,
-              linear-gradient(225deg, #fcfdff 5px, transparent 0) 0 0/10px 10px;
+  inset: -1px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, rgba(178, 229, 255, 0.4) 0%, transparent 40%, rgba(24, 104, 242, 0.3) 100%);
+  z-index: -1;
+  transform: translateZ(-6px);
+  filter: blur(1px);
 }
 
-/* Hologram laser scanner line across receipt */
-.mx-hero-receipt-scan {
+/* 3D Glare Lighting */
+.mx-3d-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  z-index: 2;
+  transition: opacity 0.2s ease;
+}
+
+/* Hologram Laser Scanning Beam */
+.mx-3d-scanline {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.4) 15%, #b2e5ff 50%, rgba(56, 189, 248, 0.4) 85%, transparent 100%);
-  box-shadow: 0 0 16px #38bdf8, 0 0 6px #ffffff;
-  pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, #38bdf8 30%, #ffffff 50%, #38bdf8 70%, transparent 100%);
+  box-shadow: 0 0 12px #38bdf8, 0 0 4px #ffffff;
   opacity: 0;
-  z-index: 10;
+  pointer-events: none;
+  z-index: 15;
 }
 
-.mx-hero-receipt.is-transitioning .mx-hero-receipt-scan {
-  animation: mx-receipt-laser 0.45s ease-out forwards;
+.mx-3d-receipt-card.is-flipping .mx-3d-scanline {
+  animation: mx-3d-laser-pass 0.45s ease-out forwards;
 }
 
-@keyframes mx-receipt-laser {
-  0% {
-    top: 0%;
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.95;
-  }
-  85% {
-    opacity: 0.95;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
+@keyframes mx-3d-laser-pass {
+  0% { top: 0%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
 }
 
-.mx-receipt-brand-row {
+/* Top Kicker Layer (translateZ: 24px) */
+.mx-3d-layer-top {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
+  transform: translateZ(24px);
+  padding-bottom: 14px;
+  border-bottom: 1px dashed rgba(82, 119, 150, 0.4);
 }
 
-.mx-receipt-meta-kicker {
+.mx-3d-kicker-group {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 10px;
 }
 
-.mx-receipt-live-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.mx-3d-kicker-icon {
+  font-size: 18px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(178, 229, 255, 0.4));
+}
+
+.mx-3d-kicker-label {
+  display: block;
   font-family: var(--font-mono), monospace;
-  font-size: 8.5px;
-  font-weight: 600;
+  font-size: 9px;
+  font-weight: 700;
   letter-spacing: 0.08em;
-  color: #007a50;
-  text-transform: uppercase;
+  color: #b2e5ff;
 }
 
-.mx-receipt-live-tag .mx-beacon {
-  width: 6px;
-  height: 6px;
-  background: #00ca8e;
-  box-shadow: 0 0 8px #00ca8e;
+.mx-3d-kicker-sub {
+  display: block;
+  font-family: var(--font-mono), monospace;
+  font-size: 8px;
+  color: #6c8ea8;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
 }
 
-.mx-receipt-copy-btn {
+.mx-3d-copy-chip {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 9px;
-  border-radius: 4px;
-  border: 1px solid #c7d5e2;
-  background: #f0f4f8;
-  color: #3b5062;
+  padding: 4px 8px;
+  border-radius: 3px;
+  border: 1px solid rgba(82, 119, 150, 0.5);
+  background: rgba(18, 30, 44, 0.7);
+  color: #a4c6df;
   font-family: var(--font-mono), monospace;
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.mx-receipt-copy-btn:hover {
-  background: #e2ebf2;
-  color: #11202e;
-  border-color: #9cb5c9;
+.mx-3d-copy-chip:hover {
+  background: rgba(24, 104, 242, 0.35);
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
-.mx-receipt-sku-row {
+/* Order ID & SKU Row (translateZ: 26px) */
+.mx-3d-order-meta {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-top: 14px;
+  transform: translateZ(26px);
 }
 
-.mx-order-code {
+.mx-3d-order-id-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-family: var(--font-mono), monospace;
   font-size: 11px;
-  font-weight: 600;
-  color: #3b5062;
-  letter-spacing: 0.05em;
+  color: #e2f1fc;
 }
 
-.mx-receipt-sku-badge {
+.mx-3d-dot-beacon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00ca8e;
+  box-shadow: 0 0 8px #00ca8e;
+  animation: mx-3d-pulse 2s infinite;
+}
+
+@keyframes mx-3d-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.mx-3d-sku-tag {
   font-family: var(--font-mono), monospace;
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 600;
-  color: #106699;
-  background: #e4f4ff;
-  border: 1px solid #b7e0fc;
+  color: #8bbce0;
+  background: rgba(24, 104, 242, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
   padding: 2px 7px;
   border-radius: 3px;
   letter-spacing: 0.04em;
 }
 
-.mx-receipt-product {
+/* Product Title (translateZ: 32px) */
+.mx-3d-product-block {
   margin-top: 10px;
-  padding-bottom: 12px;
-  border-bottom: 1px dashed #cdd9e3;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform: translateZ(32px);
+  transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
-.is-transitioning .mx-receipt-product,
-.is-transitioning .mx-receipt-amount,
-.is-transitioning .mx-receipt-breakdown {
-  opacity: 0.45;
-  transform: translateY(3px);
+.is-flipping .mx-3d-product-block,
+.is-flipping .mx-3d-amount-block,
+.is-flipping .mx-3d-breakdown-grid {
+  opacity: 0.35;
+  transform: translateZ(10px) translateY(3px);
 }
 
-.mx-receipt-product-name {
-  font-size: 18px;
+.mx-3d-product-title {
+  font-size: 17px;
   font-weight: 600;
-  color: #0b141e;
-  letter-spacing: -0.025em;
+  color: #ffffff;
+  letter-spacing: -0.02em;
   line-height: 1.25;
+  margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 }
 
-.mx-receipt-batch-desc {
-  display: block;
+.mx-3d-product-batch {
   font-family: var(--font-mono), monospace;
-  font-size: 10.5px;
-  color: #5d7486;
+  font-size: 10px;
+  color: #7d9cb3;
   margin-top: 4px;
 }
 
-.mx-receipt.mx-hero-receipt .mx-receipt-amount {
+/* Massive 3D Amount (translateZ: 44px) */
+.mx-3d-amount-block {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  font-size: clamp(48px, 5vw, 58px);
-  font-weight: 550;
-  line-height: 1.05;
-  letter-spacing: -0.05em;
-  color: #080c11;
-  margin-top: 16px;
-  margin-bottom: 4px;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.mx-receipt.mx-hero-receipt .mx-receipt-amount span:last-child {
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: #5d7486;
-}
-
-.mx-receipt-breakdown {
+  gap: 8px;
   margin-top: 14px;
-  border-top: 1px solid #e1e9f0;
+  transform: translateZ(44px);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.8));
 }
 
-.mx-receipt-breakdown>div {
+.mx-3d-amount-value {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  color: #ffffff;
+  font-size: 44px;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  text-shadow: 0 0 24px rgba(178, 229, 255, 0.35);
+}
+
+.mx-3d-currency-symbol {
+  font-size: 24px;
+  color: #72a9cf;
+  font-weight: 400;
+}
+
+.mx-3d-number {
+  font-variant-numeric: tabular-nums;
+}
+
+.mx-3d-usdc-badge {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #b2e5ff;
+  letter-spacing: 0.06em;
+  background: rgba(18, 42, 63, 0.6);
+  border: 1px solid rgba(82, 142, 185, 0.4);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* Financial Breakdown Rows (translateZ: 20px) */
+.mx-3d-breakdown-grid {
+  margin-top: 14px;
+  border-top: 1px solid rgba(82, 119, 150, 0.3);
+  padding-top: 6px;
+  transform: translateZ(20px);
+}
+
+.mx-3d-breakdown-item {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 16px;
-  padding: 9px 0;
-  font-size: 12px;
-  border-bottom: 1px solid #eef3f7;
-}
-
-.mx-receipt-breakdown dt {
-  color: #556979;
-  font-size: 12px;
-}
-
-.mx-receipt-breakdown dd {
-  font-family: var(--font-mono), monospace;
+  padding: 6px 0;
   font-size: 11.5px;
-  color: #172430;
+  border-bottom: 1px solid rgba(82, 119, 150, 0.15);
+}
+
+.mx-3d-breakdown-dt {
+  color: #7e9cb1;
+}
+
+.mx-3d-breakdown-dd {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: #c9ddec;
   font-weight: 500;
 }
 
-.mx-receipt-margin-tag {
-  color: #007a50 !important;
-  font-weight: 600 !important;
+.mx-3d-margin-highlight {
+  border-bottom-color: rgba(0, 202, 142, 0.3);
 }
 
-.mx-receipt.mx-hero-receipt .mx-receipt-bottom {
+.mx-3d-margin-val {
+  color: #00ca8e !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 10px rgba(0, 202, 142, 0.4);
+}
+
+/* Bottom Status Seal (translateZ: 26px) */
+.mx-3d-footer-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px dashed #b9cddc;
-  margin-top: 14px;
-  padding-top: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(82, 119, 150, 0.35);
+  transform: translateZ(26px);
 }
 
-.mx-receipt-status-pill {
+.mx-3d-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 4px 10px;
+  gap: 6px;
+  padding: 3px 9px;
   border-radius: 4px;
-  background: #e8f9f2;
-  border: 1px solid #9cdec8;
-  color: #0b6044;
-  font-size: 12px;
+  background: rgba(0, 202, 142, 0.12);
+  border: 1px solid rgba(0, 202, 142, 0.35);
+  color: #00ca8e;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
-.mx-receipt-preview-badge {
+.mx-3d-preview-label {
   font-family: var(--font-mono), monospace;
-  font-size: 8.5px;
+  font-size: 8px;
+  color: #65839b;
   letter-spacing: 0.08em;
-  color: #71889a;
   text-transform: uppercase;
 }
 
-.mx-receipt-foot-network {
+/* Policy Verification Ribbon (translateZ: 16px) */
+.mx-3d-checks-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid #edf2f6;
+  gap: 7px;
+  margin-top: 10px;
+  padding-top: 8px;
   font-family: var(--font-mono), monospace;
-  font-size: 9.5px;
-  color: #62798c;
+  font-size: 8.5px;
+  color: #7193ab;
+  transform: translateZ(16px);
 }
 
-.mx-receipt-foot-dot {
-  color: #a4b6c5;
+.mx-3d-shield-icon {
+  font-size: 11px;
 }
 
-/* Switcher / Navigation Dots under receipt */
-.mx-receipt-nav-bar {
+.mx-3d-checks-sep {
+  color: #3b586e;
+}
+
+/* 3D Jagged Bottom Perforation */
+.mx-3d-teeth {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -9px;
+  height: 9px;
+  background: 
+    linear-gradient(135deg, rgba(9, 13, 19, 0.98) 4px, transparent 0) 0 0/8px 8px,
+    linear-gradient(225deg, rgba(9, 13, 19, 0.98) 4px, transparent 0) 0 0/8px 8px;
+  filter: drop-shadow(0 2px 1px rgba(82, 119, 150, 0.3));
+}
+
+/* Floating 3D Satellite Badge (translateZ: 50px) */
+.mx-3d-satellite-badge {
+  position: absolute;
+  top: -14px;
+  right: -10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #102a42, #0c1824);
+  border: 1px solid rgba(178, 229, 255, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 16px rgba(56, 189, 248, 0.35);
+  color: #b2e5ff;
+  font-family: var(--font-mono), monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transform: translateZ(50px);
+  pointer-events: none;
+}
+
+.mx-3d-beacon-pulse {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8;
+  animation: mx-3d-pulse 1.8s infinite;
+}
+
+/* Bottom Switcher Navigation */
+.mx-3d-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 18px;
+  margin-top: 14px;
   padding: 0 4px;
 }
 
-.mx-receipt-dots {
+.mx-3d-dots {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
-.mx-receipt-dot {
-  width: 22px;
-  height: 20px;
+.mx-3d-dot-btn {
+  width: 20px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -400,91 +527,73 @@
   padding: 0;
 }
 
-.mx-receipt-dot-inner {
+.mx-3d-dot-bar {
   display: block;
-  width: 14px;
-  height: 3px;
+  width: 12px;
+  height: 2.5px;
   border-radius: 2px;
-  background: #2a3c4e;
+  background: #25394a;
   transition: all 0.25s ease;
 }
 
-.mx-receipt-dot:hover .mx-receipt-dot-inner {
-  background: #6a8ba6;
+.mx-3d-dot-btn:hover .mx-3d-dot-bar {
+  background: #507898;
 }
 
-.mx-receipt-dot.is-active .mx-receipt-dot-inner {
-  width: 22px;
+.mx-3d-dot-btn.is-active .mx-3d-dot-bar {
+  width: 20px;
   background: #b2e5ff;
-  box-shadow: 0 0 10px #70c7ff;
+  box-shadow: 0 0 8px #38bdf8;
 }
 
-.mx-receipt-pause-indicator {
+.mx-3d-counter {
   font-family: var(--font-mono), monospace;
-  font-size: 10px;
-  color: #8da4b8;
-  letter-spacing: 0.04em;
+  font-size: 9.5px;
+  color: #688aa3;
+  letter-spacing: 0.05em;
 }
 
-/* Desktop and Tablet layout placement */
-@media (min-width: 1080px) {
-  .mx-hero-layout {
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: space-between !important;
-    gap: 40px !important;
-  }
+/* Desktop and Tablet layout placement: kept within copy, never covering hero art */
+@media (min-width: 1200px) {
   .mx-hero-copy {
-    flex: 1 1 540px !important;
-    max-width: 600px !important;
-  }
-  .mx-hero-receipt-stage {
-    flex: 0 0 380px !important;
-    max-width: 390px !important;
-    margin-top: 50px !important;
+    width: min(1060px, 80vw) !important;
+    max-width: 1060px !important;
   }
 }
 
-@media (max-width: 1079px) and (min-width: 768px) {
-  .mx-hero-layout {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 36px !important;
+@media (max-width: 1100px) {
+  .mx-hero-headline-pair {
+    flex-direction: column;
+    gap: 28px;
   }
-  .mx-hero-receipt-stage {
-    margin: 24px auto 0 !important;
-    max-width: 380px !important;
+  .mx-hero-receipt-col {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 360px;
+    margin-top: 12px;
   }
 }
 
-@media (max-width: 767px) {
-  .mx-hero-receipt-stage {
-    margin: 32px auto 0 !important;
-    max-width: 350px !important;
+@media (max-width: 480px) {
+  .mx-3d-receipt-card {
+    padding: 20px 16px 18px;
+  }
+  .mx-3d-amount-value {
+    font-size: 36px;
+  }
+  .mx-3d-receipt-card {
     animation: none !important;
     transform: none !important;
-  }
-  .mx-receipt.mx-hero-receipt {
-    padding: 22px 20px 20px !important;
-  }
-  .mx-receipt.mx-hero-receipt .mx-receipt-amount {
-    font-size: 46px !important;
-  }
-  .mx-receipt-product-name {
-    font-size: 16px !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mx-hero-receipt-stage {
+  .mx-3d-receipt-card {
     animation: none !important;
     transform: none !important;
   }
-  .mx-hero-receipt-scan {
+  .mx-3d-scanline {
     display: none !important;
   }
-  .mx-receipt.mx-hero-receipt {
-    transition: none !important;
-  }
 }
+
