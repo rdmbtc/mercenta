@@ -61,4 +61,4 @@
 :is(.ma.ma-ux,.mp) .pd-navigator h2{font-size:24px;line-height:1.2;font-weight:500;letter-spacing:-.035em;margin:10px 0 0}
 :is(.ma.ma-ux,.mp) .pd-catalog-guide{margin-top:12px;padding-bottom:10px}
 :is(.ma.ma-ux,.mp) .pd-collection .cf-toolbar{margin-top:18px;margin-bottom:14px}
-@media(max-width:700px){.ma.ma-ux:not(.nw-mainnet) .ux-header-actions>.pd-nav-trigger{grid-column:2;grid-row:2;justify-self:end;width:36px;height:36px;min-width:36px;padding:0;margin-right:40px;order:0;display:grid;place-items:center}}
+@media(max-width:700px){:is(.ma.ma-ux,.mp) .pd-nav-trigger{width:36px;height:36px;min-width:36px;padding:0;margin:0;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;flex-shrink:0}:is(.ma.ma-ux,.mp) .pd-nav-trigger>span,:is(.ma.ma-ux,.mp) .pd-nav-trigger>kbd{display:none!important}}

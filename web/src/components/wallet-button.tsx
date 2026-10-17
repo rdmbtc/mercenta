@@ -70,7 +70,7 @@ export default function WalletButton() {
             setChainId(currentLower);
             const onMainnet = typeof window !== "undefined" && (window.location.hostname.includes("mainnet") || window.location.search.includes("mainnet"));
             const targetHex = onMainnet ? "0x13b2" : "0x4cef52";
-            if (ethAddr && currentLower !== targetHex && (currentLower === "0x1" || currentLower === "1")) {
+            if (ethAddr && currentLower !== targetHex) {
               void ensureArcChain(onMainnet);
             }
           }
@@ -113,6 +113,8 @@ export default function WalletButton() {
         setAddress(next);
         setPhase("authed");
         try { localStorage.setItem("mercenta_wallet_address", next); } catch {}
+        const onMainnet = typeof window !== "undefined" && (window.location.hostname.includes("mainnet") || window.location.search.includes("mainnet"));
+        void ensureArcChain(onMainnet);
         window.dispatchEvent(new Event("mercenta-auth-change"));
       } else {
         void signOut().catch(() => {}).finally(() => {
