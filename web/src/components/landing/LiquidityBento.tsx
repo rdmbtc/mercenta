@@ -12,7 +12,7 @@ export function LiquidityBento() {
     <section className="mx-liquidity" id="liquidity">
       <div className="mx-wrap">
         <div className="mx-section-meta">
-          <span className="mx-label">THE CAPITAL LAYER / CIRCLE + ARC</span>
+          <span className="mx-label">THE CAPITAL LAYER / BUILT ON ARC NETWORK</span>
           <a className="mx-text-link" href="/app?section=liquidity">
             Open liquidity <ArrowUpRight size={17} />
           </a>
@@ -101,10 +101,9 @@ export function LiquidityBento() {
               <CreditCard size={24} />
               <span className="mx-label">FIAT ONRAMP</span>
             </div>
-            <h3>Card → USDC → Arc.</h3>
+            <h3>Card → USDC on Arc.</h3>
             <p>
-              Preview card and Apple Pay funding. Hosted checkout needs Circle
-              configuration.
+              Preview card and Apple Pay funding into USDC on Arc Network. Hosted checkout powered by Circle Onramp.
             </p>
             <footer>
               Explore the sandbox <ArrowUpRight size={18} />

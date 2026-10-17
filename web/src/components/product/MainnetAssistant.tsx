@@ -191,7 +191,7 @@ export function MainnetAssistant({
         <article>
           <span>{ru ? '03 · Policy Engine' : '03 · Policy Engine'}</span>
           <strong>5 / 5<small> Passed</small></strong>
-          <p>{ru ? 'Мгновенный расчёт на Arc (< 1с) · 100% SLA' : 'Instant Arc settlement (< 1s) · 100% SLA'}</p>
+          <p>{ru ? 'Мгновенный расчёт на Arc (< 1с) · 100% SLA' : 'Instant settlement on Arc (< 1s) · 100% SLA'}</p>
         </article>
       </div>
 
@@ -224,7 +224,7 @@ export function MainnetAssistant({
             <p>
               {mode === 'source'
                 ? (ru ? 'Поиск вариантов в каталоге в пределах лимита. Перед оплатой checkout проверит финальную цену.' : 'Search live catalogue options within your limit. Checkout verifies final onchain price before payment.')
-                : (ru ? 'Интеллектуальный оператор по закупкам, бюджету и сети Arc.' : 'Conversational operator for sourcing, budgets, and Arc settlement.')}
+                : (ru ? 'Интеллектуальный оператор по закупкам, бюджету и сети Arc.' : 'Conversational operator for sourcing, budgets, and settlement on Arc.')}
             </p>
           </div>
           <div role="tablist" aria-label={ru ? 'Режим ассистента' : 'Assistant mode'} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>

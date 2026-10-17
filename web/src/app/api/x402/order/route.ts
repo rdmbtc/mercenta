@@ -78,7 +78,7 @@ export async function POST(req: Request) {
       return NextResponse.json(challenge, {
         status: 402,
         headers: {
-          'WWW-Authenticate': `X402 realm="Mercenta Arc Mainnet", token="${ARC_MAINNET_USDC}", amount="${totalAmountUnits}", recipient="${ARC_MAINNET_ROUTER}"`,
+          'WWW-Authenticate': `X402 realm="Mercenta on Arc Mainnet", token="${ARC_MAINNET_USDC}", amount="${totalAmountUnits}", recipient="${ARC_MAINNET_ROUTER}"`,
           'X-Payment-Protocol': 'x402',
           'X-Payment-Recipient': ARC_MAINNET_ROUTER,
           'X-Payment-Chain': '5042',

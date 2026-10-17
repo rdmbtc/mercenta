@@ -21,7 +21,7 @@ const display = DM_Serif_Display({ variable: "--font-display", subsets: ["latin"
 
 const TITLE = "Mercenta | Agentic Commerce with Spend Control";
 const DESCRIPTION =
- "Buy gaming, streaming and cloud gift cards with USDC on Base, Solana and Arc. Agent checkout with spend limits. Mainnet closed; refunds via Support.";
+ "Buy gaming, streaming and cloud gift cards with USDC. Built on Arc Network, with multi-chain settlement. Agent checkout with spend limits. Mainnet closed; refunds via Support.";
 
 export const metadata: Metadata = {
   icons: { icon: [{url:'/favicon.ico?v=mercenta-2',sizes:'any'}, {url:'/favicon-32.png',type:'image/png',sizes:'32x32'}], apple: [{url:'/apple-touch-icon.png',sizes:'180x180'}] },

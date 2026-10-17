@@ -46,7 +46,7 @@ export function MainnetWorkspace({catalog,initialSection='dashboard'}:{catalog:B
    </section>
    {activeFamily&&<CatalogFamilyDialog family={activeFamily} lang={lang} isMainnet={true} onClose={()=>setActiveFamily(null)}/>}
    <div className="nw-journey"><div><span className="rf-context">{ru?'ХОТИТЕ ПРОЙТИ ВЕСЬ ПУТЬ СЕЙЧАС?':'WANT TO TRY THE FULL JOURNEY NOW?'}</span><h2>{ru?'Отдельная среда. Без настоящих денег.':'A separate environment. Without real money.'}</h2><p>{ru?'В Testnet работают агент, лимиты и тестовые заказы. Балансы между сетями не переносятся.':'Testnet has the agent, limits and test orders. Balances do not carry between networks.'}</p></div><a className="ma-button secondary" href="https://testnet.mercenta.xyz/app">{ru?'Открыть Testnet':'Open Testnet'}<ArrowUpRight size={17}/></a></div>
-   <footer className="ma-footer"><span>Mercenta · Arc Mainnet · {ru?'Шлюз активен':'Gateway Live'}</span><a href="/api-docs">OpenAPI / Swagger</a><OfficialContacts ru={ru}/></footer>
+   <footer className="ma-footer"><span>Mercenta · Built on Arc Mainnet · {ru?'Шлюз активен':'Gateway Live'}</span><a href="/api-docs">OpenAPI / Swagger</a><OfficialContacts ru={ru}/></footer>
   </main></div>
  </div>;
 }
