@@ -8,7 +8,9 @@ import {
   signInWithWallet,
   signOut,
   truncateAddress,
+  ensureArcChain,
 } from "@/lib/wallet";
+
 import "./wallet-button.css";
 
 type Phase = "idle" | "connecting" | "signing" | "authed" | "error";
@@ -63,9 +65,18 @@ export default function WalletButton() {
             ethAddr = accounts[0].toLowerCase();
           }
           const cId = (await window.ethereum.request({ method: "eth_chainId" })) as string;
-          if (typeof cId === "string") setChainId(cId.toLowerCase());
+          if (typeof cId === "string") {
+            const currentLower = cId.toLowerCase();
+            setChainId(currentLower);
+            const onMainnet = typeof window !== "undefined" && (window.location.hostname.includes("mainnet") || window.location.search.includes("mainnet"));
+            const targetHex = onMainnet ? "0x13b2" : "0x4cef52";
+            if (ethAddr && currentLower !== targetHex && (currentLower === "0x1" || currentLower === "1")) {
+              void ensureArcChain(onMainnet);
+            }
+          }
         } catch {}
       }
+
 
       const cachedAddr = typeof window !== "undefined" ? localStorage.getItem("mercenta_wallet_address") : null;
 
@@ -174,6 +185,12 @@ export default function WalletButton() {
       const addr = await connectWallet();
       setPhase("signing");
 
+      const onMainnet = typeof window !== "undefined" && (
+        window.location.hostname.includes("mainnet") ||
+        window.location.search.includes("mainnet")
+      );
+      await ensureArcChain(onMainnet);
+
       try {
         await signInWithWallet(addr);
       } catch (signErr) {
@@ -182,6 +199,7 @@ export default function WalletButton() {
         // On restricted host networks (e.g. Mainnet without open auth routes),
         // Web3 wallet connectivity is preserved for on-chain purchases!
       }
+
 
       const normalized = addr.toLowerCase();
       setAddress(normalized);
@@ -271,6 +289,29 @@ export default function WalletButton() {
               <span className="wallet-pop-dot" aria-hidden="true" />
               <span>{isMainnet ? "Arc Mainnet (5042)" : "Arc Testnet (5042002)"}</span>
             </div>
+            {chainId && chainId.toLowerCase() !== (isMainnet ? "0x13b2" : "0x4cef52") && (
+              <button
+                type="button"
+                className="wallet-pop-switch-btn"
+                style={{
+                  background: "rgba(245, 158, 11, 0.15)",
+                  border: "1px solid rgba(245, 158, 11, 0.4)",
+                  color: "#fbbf24",
+                  borderRadius: "6px",
+                  padding: "4px 8px",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  marginTop: "6px",
+                  display: "block",
+                  width: "100%",
+                  textAlign: "center",
+                }}
+                onClick={() => void ensureArcChain(isMainnet)}
+              >
+                ⚠ Switch to {isMainnet ? "Arc Mainnet (5042)" : "Arc Testnet"}
+              </button>
+            )}
             <button
               type="button"
               className="wallet-pop-close"
@@ -280,6 +321,7 @@ export default function WalletButton() {
               ✕
             </button>
           </div>
+
 
           <div className="wallet-pop-meta">
             <span className="wallet-pop-label">Connected Wallet</span>
