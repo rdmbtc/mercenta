@@ -4,6 +4,7 @@ import {signInWithWallet,fetchSession} from '@/lib/wallet';
 import './mainnet-record.css';
 import {ShieldCheck, CheckCircle2, ExternalLink, Wallet, LoaderCircle, AlertCircle, Copy, Check, KeyRound} from 'lucide-react';
 import {saveMainnetOrder, getMainnetOrders, syncRemoteOrders, mainnetAmountUnits, mainnetAmountDisplay, providerDeliveryCodes} from '@/lib/mainnet-orders';
+import {getTopupConfig} from '@/lib/topup-fields';
 
 const ROUTER_ADDRESS = '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed';
 const MERCHANT_ADDRESS = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
@@ -24,7 +25,7 @@ export function MainnetCheckout({
   ru,
   denominationId,
   productType = 'voucher',
-  accountReference = '',
+  accountReference,
   initialAccount = null,
   onLock,
 }: {
@@ -39,21 +40,16 @@ export function MainnetCheckout({
   initialAccount?: string | null;
   onLock?: (locked:boolean) => void;
 }) {
-  const isTopup = Boolean(
-    productType === 'direct_topup' ||
-    productName.toLowerCase().includes('telegram') ||
-    productName.toLowerCase().includes('star') ||
-    optionName.toLowerCase().includes('star') ||
-    productName.toLowerCase().includes('topup') ||
-    productName.toLowerCase().includes('top-up')
-  );
+  const topupConfig = getTopupConfig(productName, productType, ru);
+  const isTopup = topupConfig.isTopup;
+  const hasParentInput = accountReference !== undefined;
   const [recipientAccount, setRecipientAccount] = useState(accountReference || '');
   useEffect(() => {
-    if (accountReference && !recipientAccount) {
+    if (accountReference !== undefined) {
       setRecipientAccount(accountReference);
     }
-  }, [accountReference, recipientAccount]);
-  const effectiveAccount = (recipientAccount || accountReference || '').trim();
+  }, [accountReference]);
+  const effectiveAccount = (accountReference ?? recipientAccount ?? '').trim();
   const needsAccountRef = isTopup && !effectiveAccount;
 
   const [account, setAccount] = useState<string | null>(() => {
@@ -120,10 +116,10 @@ export function MainnetCheckout({
   }, [account, denominationId, quantity, amountMicro]);
 
   useEffect(() => {
-    if (accountReference && !recipientAccount) {
+    if (accountReference !== undefined) {
       setRecipientAccount(accountReference);
     }
-  }, [accountReference, recipientAccount]);
+  }, [accountReference]);
 
   useEffect(() => {
     const eth = (window as unknown as {ethereum?: Provider})?.ethereum;
@@ -242,9 +238,9 @@ export function MainnetCheckout({
     }
 
     if (needsAccountRef) {
-      setError(ru ? 'Укажите ваш Telegram @username перед оплатой.' : 'Specify account username (@username) before paying.');
+      setError(topupConfig.error);
       if (typeof document !== 'undefined') {
-        const inputEl = document.getElementById('topup-username-input') || document.getElementById('catalogue-account-ref');
+        const inputEl = document.getElementById('catalogue-account-ref') || document.getElementById('topup-username-input');
         inputEl?.focus();
       }
       return;
@@ -690,22 +686,18 @@ export function MainnetCheckout({
         </div>
       </div>
 
-      {isTopup && (
+      {!hasParentInput && isTopup && (
         <div style={{margin: '14px 0'}}>
           <label htmlFor="topup-username-input" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', fontWeight: 600, color: '#e2e8f0', marginBottom: '6px'}}>
             <span>
-              {ru
-                ? (productName.toLowerCase().includes('telegram')
-                    ? 'Telegram username для начисления Stars:'
-                    : 'Имя аккаунта получателя (@username или ID):')
-                : 'Recipient account / Telegram username (@username):'}
+              {topupConfig.label}
               <span style={{color: '#f87171', marginLeft: '4px'}}>*</span>
             </span>
           </label>
           <input
             id="topup-username-input"
             type="text"
-            placeholder="@username (например @durov)"
+            placeholder={topupConfig.placeholder}
             value={recipientAccount}
             onChange={(e) => {
               setRecipientAccount(e.target.value);
@@ -726,11 +718,7 @@ export function MainnetCheckout({
             }}
           />
           <p style={{margin: '6px 0 0', fontSize: '11px', color: '#94a3b8'}}>
-            {ru
-              ? (productName.toLowerCase().includes('telegram')
-                  ? 'Этот аккаунт будет передан провайдеру. Зачисление требует отдельного подтверждения.'
-                  : 'Пополнение будет зачислено напрямую на указанный аккаунт.')
-              : 'This recipient is sent to the provider. Delivery requires separate confirmation.'}
+            {topupConfig.hint}
           </p>
         </div>
       )}
@@ -739,11 +727,7 @@ export function MainnetCheckout({
         <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#fbbf24', background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '8px', padding: '10px 12px', margin: '10px 0', fontSize: '12px'}}>
           <AlertCircle size={16}/>
           <span>
-            {ru
-              ? (productName.toLowerCase().includes('telegram')
-                  ? 'Укажите ваш Telegram username (@username) для зачисления Stars.'
-                  : 'Укажите аккаунт получателя перед оплатой.')
-              : 'Please enter recipient account username (@username) before paying.'}
+            {topupConfig.error}
           </span>
         </div>
       )}
@@ -819,9 +803,11 @@ export function MainnetCheckout({
                 : busy
                 ? (ru ? 'Обработка…' : 'Processing…')
                 : !allGatesPassed
-                ? (ru ? 'Заблокировано Policy Engine' : 'Blocked by Policy Engine')
+                ? (needsHumanApproval && !humanApproved
+                    ? (ru ? 'Требуется подтверждение Human Gate (отметьте чекбокс выше)' : 'Human Gate approval required (check box above)')
+                    : (ru ? 'Заблокировано Policy Engine' : 'Blocked by Policy Engine'))
                 : needsAccountRef
-                ? (ru ? `Оплатить ${totalPriceUsdc} USDC (введите @username выше)` : `Pay with USDC (${totalPriceUsdc} USDC - enter @username above)`)
+                ? (ru ? `Оплатить ${totalPriceUsdc} USDC (${topupConfig.buttonPrompt})` : `Pay with USDC (${totalPriceUsdc} USDC - ${topupConfig.buttonPrompt})`)
                 : (ru ? `Оплатить ${totalPriceUsdc} USDC (Pay with USDC)` : `Pay ${totalPriceUsdc} USDC (Pay with USDC)`)}
             </span>
           </button>
