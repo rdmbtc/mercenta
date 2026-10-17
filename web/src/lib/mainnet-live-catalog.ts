@@ -1,7 +1,6 @@
 import {refreshPublicCatalog,unpackBrowse,loadPublicProduct} from './public-catalog-client';
 import {mainnetAmountUnits,mainnetAmountDisplay,type MainnetOrder} from './mainnet-orders';
 import type {QuickSelectProduct} from './mainnet-quick-select';
-const supportedTopups=new Set(['7295df4e-6fb0-4dfb-b962-ded3d073bc03','03b360c1-02e0-495b-ba2a-146e5116aa74']);
 export const normalizedRegion=(r:string)=>['GLOB','GLOBAL','WW'].includes(r.toUpperCase())?'GLOBAL':r.toUpperCase();
 /** Public read-only sourcing. Never substitutes demonstration SKUs for missing live data. */
 export async function sourceLiveMainnetProducts(goal:string,budget:string,region:string):Promise<QuickSelectProduct[]>{
@@ -18,7 +17,7 @@ export async function sourceLiveMainnetProducts(goal:string,budget:string,region
  if(candidates.length&&!successes)throw Error('DETAIL_UNAVAILABLE');
  const rows:QuickSelectProduct[]=[];
  for(const p of details){if(!p)continue;for(const d of p.denominations){
-  if(!d.available||d.isLongOrder||d.currency!=='USD'||(d.stock!==undefined&&d.stock<1)||!/^[-a-zA-Z0-9]{1,200}$/.test(d.id)||d.id.startsWith('mainnet:')||p.type==='direct_topup'&&!supportedTopups.has(d.id))continue;
+  if(!d.available||d.isLongOrder||d.currency!=='USD'||(d.stock!==undefined&&d.stock<1)||!/^[-a-zA-Z0-9]{1,200}$/.test(d.id)||d.id.startsWith('mainnet:'))continue;
   try{const units=mainnetAmountUnits(String(d.price));if(BigInt(units)>cap)continue;rows.push({id:d.id,denomination_id:d.id,name:d.id==='7295df4e-6fb0-4dfb-b962-ded3d073bc03'?p.name+' · 50 Stars':p.name.includes(d.name)?p.name:p.name+' · '+d.name,category:p.category,country:normalizedRegion(p.countryCode??'GLOBAL'),price:mainnetAmountDisplay(units),kind:p.type==='direct_topup'?'Direct Top-Up':'Shop'});}catch{/* invalid price is not purchasable */}
  }}
  return rows.sort((a,b)=>{const x=BigInt(mainnetAmountUnits(a.price)),y=BigInt(mainnetAmountUnits(b.price));return x<y?-1:x>y?1:a.name.localeCompare(b.name);}).slice(0,6);

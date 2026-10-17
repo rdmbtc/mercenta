@@ -31,8 +31,7 @@ export async function makeQuote(req:Request){
   const product=catalog.products.find(p=>p.denominations.some(d=>d.id===input.denominationId));
   const option=product?.denominations.find(d=>d.id===input.denominationId);
   if(!product||!option||!option.available||option.isLongOrder||option.currency!=='USD'||(option.stock!==undefined&&option.stock<input.quantity))return retailResponse({error:'OPTION_UNAVAILABLE'},409);
-  // The legacy direct-top-up adapter only implements the fixed 50-Star option.
-  if(product.type==='direct_topup'&&(!['7295df4e-6fb0-4dfb-b962-ded3d073bc03','03b360c1-02e0-495b-ba2a-146e5116aa74'].includes(option.id)||!/^@?[a-zA-Z0-9_]{5,32}$/.test(input.accountReference)))return retailResponse({error:'TOPUP_OPTION_UNSUPPORTED'},409);
+  if(product.type==='direct_topup'&&!/^@?[a-zA-Z0-9_.]{3,64}$/.test(input.accountReference.trim()))return retailResponse({error:'ACCOUNT_REFERENCE_REQUIRED'},400);
   const amountUnits=mainnetAmountUnits(String(option.price),input.quantity);
   const q:Quote={wallet,denominationId:option.id,quantity:input.quantity,accountReference:input.accountReference,amountUnits,productName:product.name,optionName:option.name,productType:product.type,expires:Date.now()+600000};
   return retailResponse({quote:sealQuote(q,key),amountUnits,expires:q.expires});

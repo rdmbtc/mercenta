@@ -48,7 +48,7 @@ async function api<T>(path:string,body?:unknown):Promise<T>{const r=await fetch(
 const short=(s:unknown)=>typeof s==='string'&&s.length>22?s.slice(0,10)+'…'+s.slice(-6):String(s??'—');
 const stamp=(s:unknown)=>s?new Date(Number(s)).toISOString().replace('T',' ').slice(0,19)+' UTC':'—';
 export function AccountConsole({initialSection='Dashboard',initialCatalog,network='testnet'}:{initialSection?:Section;initialCatalog?:import('@/lib/catalog-browse').BrowseCatalog;network?:'testnet'|'mainnet'}={}){
- const isMainnet=network==='mainnet';
+ const isMainnet=network==='mainnet'||(typeof window!=='undefined'&&(window.location.hostname.includes('mainnet')||window.location.search.includes('mainnet')));
  const [fundingOpen,setFundingOpen]=useState(false);
  const [deliveryId,setDeliveryId]=useState<string|null>(null);
  const [mainnetDelivery,setMainnetDelivery]=useState<MainnetOrder|null>(null);
