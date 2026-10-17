@@ -6,7 +6,8 @@ export async function GET() {
   return NextResponse.json({
     protocol: 'x402',
     version: '2.0',
-    title: 'Mercenta Circle Agent Stack x402 Micropayment Gateway',
+    title: 'Mercenta x402 Micropayment Gateway',
+    description: 'Autonomous digital goods gateway built on Arc Network, integrated with Circle Agent Stack.',
     network: 'Arc Mainnet',
     chainId: 5042,
     settlementToken: 'USDC',
