@@ -9,6 +9,7 @@ import ScrollStory from "./ScrollStory";
 import { MorphHeadline, SupplySection, BusinessPlaybooks, LandingFAQ } from "./LandingExperience";
 import { CASES, ORDER, POLICY, evaluatePolicy, percent, usdc, type SupplierState } from "@/lib/policy";
 import {LiquidityBento} from './LiquidityBento';
+import HeroAnimatedReceipt from "./HeroAnimatedReceipt";
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d={diagonal ? "M6 18 18 6M6 6h12v12" : "M4 12h16m-6-6 6 6-6 6"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -168,6 +169,7 @@ export default function FlagshipLanding() {
             <div className="mx-actions"><a href="/app" className="mx-button mx-button-primary">Launch console <Arrow diagonal /></a><a href="#playground" className="mx-button mx-button-quiet">Test the guardrails <Arrow /></a></div>
             <a className="mx-hero-seller" href="#sellers">Running a shop? Wholesale supply <Arrow /></a>
           </div>
+          <HeroAnimatedReceipt />
           <div className="mx-art-caption"><span className="mx-cross">+</span><div><span className="mx-label">THE POLICY GATE / 001</span><p>Intelligence moves fast.<br />Control moves with it.</p></div></div>
           <div className="mx-art-status"><span className="mx-beacon" /> DETERMINISTIC BY DESIGN</div>
         </div>
