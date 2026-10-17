@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { Bot, Search, ArrowUpRight, ShieldCheck, Send, Wallet, Zap, CheckCircle2 } from 'lucide-react';
+import { Bot, Search, ArrowUpRight, ShieldCheck, Send, Wallet, CheckCircle2 } from 'lucide-react';
 import { mainnetGuidance, checkoutDetail } from '@/lib/mainnet-assistant';
 import { sourceLiveMainnetProducts } from '@/lib/mainnet-live-catalog';
 import { mainnetQuickSelect, type QuickSelectProduct } from '@/lib/mainnet-quick-select';
@@ -175,174 +175,131 @@ export function MainnetAssistant({
   };
 
   return (
-    <section className="mn-assistant" aria-labelledby="mainnet-assistant-title">
-      {/* Institutional Top Header */}
-      <header className="mn-as-header">
-        <div className="mn-as-header-copy">
-          <div className="mn-as-meta">
-            <span className="mn-as-kicker">
-              <Zap size={13} strokeWidth={2.2} />
-              {ru ? 'MERCENTA / АВТОНОМНЫЙ ОПЕРАТОР ЗАКУПОК' : 'MERCENTA / AUTONOMOUS BUSINESS OPERATOR'}
-            </span>
-          </div>
-          <h2 id="mainnet-assistant-title">
-            {ru ? 'От запроса — к проверенной закупке на Arc.' : 'From intent to policy-checked purchase on Arc.'}
-          </h2>
+    <>
+      {/* Top Metric Cards matching Funds layout */}
+      <div className="ma-stats">
+        <article>
+          <span>{ru ? '01 · Лимит расходов' : '01 · 24h Spend Cap'}</span>
+          <strong>≤ 100.00<small> USDC</small></strong>
+          <p>{ru ? 'Детерминированный 24h лимит расходов' : 'Deterministic 24h spending limit'}</p>
+        </article>
+        <article>
+          <span>{ru ? '02 · Минимальная маржа' : '02 · Margin Floor'}</span>
+          <strong>≥ 15.0%<small> Gross</small></strong>
+          <p>{ru ? 'Защита валовой маржи мерчанта' : 'Guaranteed gross margin protection'}</p>
+        </article>
+        <article>
+          <span>{ru ? '03 · Policy Engine' : '03 · Policy Engine'}</span>
+          <strong>5 / 5<small> Passed</small></strong>
+          <p>{ru ? 'Мгновенный расчёт на Arc (< 1с) · 100% SLA' : 'Instant Arc settlement (< 1s) · 100% SLA'}</p>
+        </article>
+      </div>
+
+      {/* Safety Info Bar matching Funds layout */}
+      <div className="ux-funding-info">
+        <ShieldCheck size={18} />
+        <div>
+          <b>{ru ? 'Детерминированная безопасность на Arc Mainnet' : 'Deterministic Safety on Arc Mainnet'}</b>
           <p>
             {ru
-              ? 'Задайте товар и бюджет. Агент проверит каталог и 5 правил безопасности. Подтвердите заказ в 1 клик.'
-              : 'Set product and budget. The operator checks live catalog and 5 policy gates. Confirm checkout in 1 click.'}
+              ? 'Подключение кошелька не разрешает автоматические списания. Все покупки требуют явной подписи в кошельке и проводятся в USDC.'
+              : 'Connecting a wallet never authorizes automatic debits. Sourced items settle in USDC on Arc Mainnet with your explicit wallet signature.'}
           </p>
         </div>
-        <div className="mn-as-badge">
-          <span className="mn-beacon" />
-          <span>Arc Mainnet · 5042</span>
-        </div>
-      </header>
-
-      {/* 5-Step Policy Engine Strip (Matching .mx-policy-envelope / .mx-path) */}
-      <div className="mn-policy-strip" aria-label="Active Policy Envelope">
-        <div className="mn-policy-item">
-          <div className="mn-policy-meta">
-            <span className="mn-policy-beacon" />
-            <span className="mn-policy-num">01 Spend Cap</span>
-          </div>
-          <div className="mn-policy-value">≤ 100.00 USDC / 24h</div>
-        </div>
-        <div className="mn-policy-item">
-          <div className="mn-policy-meta">
-            <span className="mn-policy-beacon" />
-            <span className="mn-policy-num">02 Margin Floor</span>
-          </div>
-          <div className="mn-policy-value">≥ 15.0% Gross Margin</div>
-        </div>
-        <div className="mn-policy-item">
-          <div className="mn-policy-meta">
-            <span className="mn-policy-beacon" />
-            <span className="mn-policy-num">03 Counterparty</span>
-          </div>
-          <div className="mn-policy-value">100% Verified SLAs</div>
-        </div>
-        <div className="mn-policy-item">
-          <div className="mn-policy-meta">
-            <span className="mn-policy-beacon" />
-            <span className="mn-policy-num">04 Velocity Cap</span>
-          </div>
-          <div className="mn-policy-value">≤ 3 orders / min</div>
-        </div>
-        <div className="mn-policy-item">
-          <div className="mn-policy-meta">
-            <span className="mn-policy-beacon" />
-            <span className="mn-policy-num">05 Human Gate</span>
-          </div>
-          <div className="mn-policy-value">&gt; Auto-limit Escalation</div>
-        </div>
+        <details>
+          <summary>{ru ? 'Параметры безопасности' : 'Safety boundaries'}</summary>
+          <p>
+            {ru
+              ? '5-уровневый Policy Engine: лимит скорости ≤ 3 заказов/мин, 100% SLA поставщиков, ручная эскалация для крупных заказов.'
+              : '5-step Policy Engine: velocity cap ≤ 3 orders/min, 100% verified SLA, human gate escalation above limits.'}
+          </p>
+        </details>
       </div>
 
-      {/* Navigation Segmented Bar */}
-      <div className="mn-as-navigation">
-        <div
-          className="mn-as-tabs"
-          role="tablist"
-          onKeyDown={e => {
-            if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
-            e.preventDefault();
-            const next = e.key === 'Home' ? 'source' : e.key === 'End' ? 'chat' : mode === 'source' ? 'chat' : 'source';
-            setMode(next);
-            document.getElementById(next + '-tab')?.focus();
-          }}
-          aria-label={ru ? 'Режим помощника' : 'Assistant mode'}
-        >
-          <button
-            id="source-tab"
-            type="button"
-            role="tab"
-            className={mode === 'source' ? 'is-active' : ''}
-            aria-selected={mode === 'source'}
-            aria-controls="source-panel"
-            onClick={() => setMode('source')}
-          >
-            <Search size={15} />
-            <span>{ru ? 'Подбор товаров' : 'Sourcing'}</span>
-          </button>
-          <button
-            id="chat-tab"
-            type="button"
-            role="tab"
-            className={mode === 'chat' ? 'is-active' : ''}
-            aria-selected={mode === 'chat'}
-            aria-controls="chat-panel"
-            onClick={() => setMode('chat')}
-          >
-            <Bot size={15} />
-            <span>{ru ? 'Консультант' : 'Commerce Copilot'}</span>
-          </button>
-        </div>
-        <span className="mn-as-subnote">
-          {ru ? 'Каждая покупка требует вашего подтверждения' : 'You approve every purchase with explicit wallet signature'}
-        </span>
-      </div>
-
-      {/* Hardware-Grade Deterministic Safety Notice */}
-      <div className="mn-as-safety">
-        <ShieldCheck size={16} />
-        <p>
-          {ru
-            ? 'Детерминированная безопасность: подключение кошелька не разрешает автоматическое списание. Оплата производится в USDC на Arc Mainnet.'
-            : 'Deterministic safety: connecting a wallet never authorizes automatic debits. Sourced items settle in USDC on Arc Mainnet.'}
-        </p>
-      </div>
-
-      {mode === 'source' ? (
-        <div id="source-panel" role="tabpanel" aria-labelledby="source-tab" className="mn-as-source">
-          <form
-            className="mn-as-form"
-            onSubmit={e => {
-              e.preventDefault();
-              void source();
-            }}
-          >
-            <h3>{ru ? 'Что найти для вас?' : 'What can we source for you?'}</h3>
+      {/* Main Panel matching Funds / Orders panel */}
+      <section className="ma-panel">
+        <div className="ma-panel-title">
+          <div>
+            <h2>{mode === 'source' ? (ru ? 'Подбор товаров' : 'Sourcing') : (ru ? 'Консультант' : 'Commerce Copilot')}</h2>
             <p>
-              {ru
-                ? 'Актуальные варианты в пределах лимита. Перед оплатой checkout проверит итоговую цену.'
-                : 'Search live catalogue options within your limit. Checkout verifies final onchain price before payment.'}
+              {mode === 'source'
+                ? (ru ? 'Поиск вариантов в каталоге в пределах лимита. Перед оплатой checkout проверит финальную цену.' : 'Search live catalogue options within your limit. Checkout verifies final onchain price before payment.')
+                : (ru ? 'Интеллектуальный оператор по закупкам, бюджету и сети Arc.' : 'Conversational operator for sourcing, budgets, and Arc settlement.')}
             </p>
+          </div>
+          <div role="tablist" aria-label={ru ? 'Режим ассистента' : 'Assistant mode'} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <button
+              id="source-tab"
+              type="button"
+              role="tab"
+              className={mode === 'source' ? 'ma-button' : 'ma-button secondary'}
+              aria-selected={mode === 'source'}
+              onClick={() => setMode('source')}
+            >
+              <Search size={15} />
+              <span>{ru ? 'Подбор товаров' : 'Sourcing'}</span>
+            </button>
+            <button
+              id="chat-tab"
+              type="button"
+              role="tab"
+              className={mode === 'chat' ? 'ma-button' : 'ma-button secondary'}
+              aria-selected={mode === 'chat'}
+              onClick={() => setMode('chat')}
+            >
+              <Bot size={15} />
+              <span>{ru ? 'Консультант' : 'Commerce Copilot'}</span>
+            </button>
+          </div>
+        </div>
 
-            <label className="mn-field-label">
-              <span>{ru ? 'Товар или сервис' : 'Product or service'}</span>
-              <input
-                disabled={searching}
-                value={goal}
-                maxLength={200}
-                onChange={e => {
-                  setGoal(e.target.value);
-                  setProducts(null);
-                }}
-                placeholder={ru ? 'Например, Steam, Telegram Stars или Spotify' : 'e.g. Steam, Telegram Stars, Roblox, Spotify'}
-                required
-              />
-            </label>
+        {mode === 'source' ? (
+          <div>
+            <form
+              className="ma-filters"
+              onSubmit={e => {
+                e.preventDefault();
+                void source();
+              }}
+            >
+              <div style={{ width: '100%', display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px', alignItems: 'center' }}>
+                <span style={{ fontSize: '11px', color: 'var(--a-muted)', marginRight: '4px' }}>
+                  {ru ? 'Быстрый выбор:' : 'Quick select:'}
+                </span>
+                {['Steam', 'Telegram Stars', 'Roblox', 'Spotify', 'Apple'].map(item => (
+                  <button
+                    type="button"
+                    key={item}
+                    className="ma-pill"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      setGoal(item);
+                      setProducts(null);
+                      void source(item);
+                    }}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
 
-            <div className="mn-as-examples">
-              {['Steam', 'Telegram Stars', 'Roblox', 'Spotify', 'Apple'].map(item => (
-                <button
-                  type="button"
-                  key={item}
-                  onClick={() => {
-                    setGoal(item);
+              <label>
+                <span>{ru ? 'Товар или сервис' : 'Product or service'}</span>
+                <input
+                  disabled={searching}
+                  value={goal}
+                  maxLength={200}
+                  onChange={e => {
+                    setGoal(e.target.value);
                     setProducts(null);
-                    void source(item);
                   }}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
+                  placeholder={ru ? 'Например, Steam, Telegram Stars или Spotify' : 'e.g. Steam, Telegram Stars, Roblox, Spotify'}
+                  required
+                />
+              </label>
 
-            <div className="mn-as-fields">
-              <label className="mn-field-label">
-                <span>{ru ? 'Лимит, USDC' : 'Spending limit · USDC'}</span>
+              <label>
+                <span>{ru ? 'Лимит расходов (USDC)' : 'Spending limit · USDC'}</span>
                 <input
                   disabled={searching}
                   inputMode="decimal"
@@ -355,7 +312,8 @@ export function MainnetAssistant({
                   required
                 />
               </label>
-              <label className="mn-field-label">
+
+              <label>
                 <span>{ru ? 'Регион' : 'Region'}</span>
                 <select
                   disabled={searching}
@@ -367,205 +325,208 @@ export function MainnetAssistant({
                 >
                   <option value="ANY">{ru ? 'Все регионы' : 'Any region'}</option>
                   {['GLOBAL', 'US', 'EU', 'GB', 'TR', 'AE', 'KZ', 'IN', 'NG'].map(r => (
-                    <option key={r}>{r}</option>
+                    <option key={r} value={r}>{r}</option>
                   ))}
                 </select>
               </label>
-            </div>
 
-            <button className="mn-as-primary" type="submit" disabled={searching}>
-              <Search size={16} />
-              <span>{searching ? (ru ? 'Проверяем каталог…' : 'Checking catalogue…') : (ru ? 'Найти варианты' : 'Find options')}</span>
-            </button>
-            {error && <p role="alert" className="mn-as-error">{error}</p>}
-          </form>
+              <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                <button className="ma-button" type="submit" disabled={searching}>
+                  <Search size={15} />
+                  <span>{searching ? (ru ? 'Проверяем каталог…' : 'Checking catalogue…') : (ru ? 'Найти варианты' : 'Find options')}</span>
+                </button>
+              </div>
 
-          {/* Sourcing Shortlist Results */}
-          <div className="mn-as-results" aria-live="polite">
+              {error && <p role="alert" className="ma-error" style={{ width: '100%' }}>{error}</p>}
+            </form>
+
             {products === null ? (
-              <div className="mn-as-empty">
+              <div className="ma-empty">
                 <Search size={28} />
                 <h3>{ru ? 'Точные варианты, без лишнего.' : 'A focused shortlist. No guesswork.'}</h3>
                 <p>{ru ? 'Задайте товар, бюджет и регион. Ничего не списывается.' : 'Set a product, budget and region. Searching never moves funds.'}</p>
-                <span className="mn-as-empty-tag">{ru ? 'Актуальный каталог · котировка перед оплатой' : 'Live catalogue · final quote at checkout'}</span>
               </div>
             ) : products.length ? (
-              <div className="mn-as-card-list">
-                <div className="mn-as-result-title">
-                  <span className="mn-as-res-kicker">{ru ? 'НАЙДЕННЫЕ ВАРИАНТЫ' : 'SOURCING SHORTLIST'}</span>
-                  <span className="mn-as-res-count">{products.length} {ru ? 'вариантов' : products.length === 1 ? 'option' : 'options'}</span>
+              <>
+                <div className="ma-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>{ru ? 'Товар' : 'Product'}</th>
+                        <th>{ru ? 'Регион / Тип' : 'Region / Type'}</th>
+                        <th>{ru ? 'Policy Gate' : 'Policy Gate'}</th>
+                        <th>{ru ? 'Цена (USDC)' : 'Price (USDC)'}</th>
+                        <th style={{ textAlign: 'right' }}>{ru ? 'Действия' : 'Actions'}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {products.map(p => (
+                        <tr key={p.id}>
+                          <td>
+                            <b>{p.name}</b>
+                          </td>
+                          <td>
+                            <span className="ma-pill">{p.country} · {p.kind === 'Direct Top-Up' ? 'TOP-UP' : 'VOUCHER'}</span>
+                          </td>
+                          <td>
+                            <span className="ma-pill" style={{ color: 'var(--a-accent)', background: 'var(--a-subtle)' }}>
+                              <CheckCircle2 size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                              5/5 Policy Passed
+                            </span>
+                          </td>
+                          <td>
+                            <strong style={{ fontSize: '13px' }}>{p.price}</strong> <small style={{ color: 'var(--a-muted)' }}>USDC</small>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                              <button
+                                type="button"
+                                className="ma-link"
+                                onClick={() => handleCheckoutOpen(p)}
+                              >
+                                {ru ? 'Проверить' : 'Review'}
+                                <ArrowUpRight size={13} />
+                              </button>
+                              <button
+                                type="button"
+                                className="ma-button"
+                                style={{ padding: '7px 12px', fontSize: '11px' }}
+                                onClick={() => handleCheckoutOpen(p)}
+                              >
+                                {ru ? 'Купить (USDC)' : 'Buy (USDC)'}
+                                <ArrowUpRight size={13} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-                {products.map(p => (
-                  <article key={p.id} className="mn-item-card">
-                    <div className="mn-item-info">
-                      <div className="mn-item-meta">
-                        <span className="mn-item-tag">{p.country} · {p.kind === 'Direct Top-Up' ? 'TOP-UP' : 'VOUCHER'}</span>
-                        <span className="mn-item-policy-badge">
-                          <CheckCircle2 size={11} />
-                          <span>5/5 Policy Passed</span>
-                        </span>
-                      </div>
-                      <h4 className="mn-item-title">{p.name}</h4>
-                      <div className="mn-item-price">
-                        <strong>{p.price}</strong>
-                        <small>USDC</small>
-                      </div>
-                    </div>
-                    <div className="mn-item-actions">
-                      <button
-                        type="button"
-                        className="mn-btn-review"
-                        onClick={() => handleCheckoutOpen(p)}
-                      >
-                        <span>{ru ? 'Проверить' : 'Review'}</span>
-                        <ArrowUpRight size={14} />
-                      </button>
-                      <button
-                        type="button"
-                        className="mn-btn-buy"
-                        onClick={() => handleCheckoutOpen(p)}
-                      >
-                        <span>{ru ? 'Купить (USDC)' : 'Buy (USDC)'}</span>
-                        <ArrowUpRight size={14} />
-                      </button>
-                    </div>
-                  </article>
-                ))}
-                <p className="mn-as-footnote">
+                <p style={{ fontSize: '11px', color: 'var(--a-muted)', marginTop: '16px' }}>
                   {ru
                     ? 'Лимит относится к одному товару без комиссии. Покупка требует отдельного подтверждения в кошельке.'
                     : 'Limit applies to one item, excluding gas. Purchase requires separate wallet signature.'}
                 </p>
-              </div>
+              </>
             ) : (
-              <div className="mn-as-empty">
+              <div className="ma-empty">
                 <h3>{ru ? 'Пока нет совпадений' : 'No matching options'}</h3>
                 <p>{ru ? 'Попробуйте другой товар, регион или лимит.' : 'Try another product, region or spending limit.'}</p>
-                <a href="/app?section=shop" className="mn-as-empty-link">
-                  <span>{ru ? 'Открыть каталог' : 'Browse the full catalogue'}</span>
-                  <ArrowUpRight size={14} />
-                </a>
               </div>
             )}
           </div>
-        </div>
-      ) : (
-        /* Commerce Copilot (Intelligent Conversational Operator) */
-        <div id="chat-panel" role="tabpanel" aria-labelledby="chat-tab" className="mn-as-chat">
-          <div className="mn-as-chat-header">
-            <Bot size={16} />
-            <span>{ru ? 'MERCENTA COMMERCE COPILOT · 5-STEP POLICY ENGINE' : 'MERCENTA COMMERCE COPILOT · 5-STEP POLICY ENGINE'}</span>
-          </div>
-
-          <div className="mn-as-messages" ref={output} aria-live="polite">
-            {!turns.length ? (
-              <div className="mn-as-chat-welcome">
-                <span className="mn-as-kicker">{ru ? 'СИСТЕМА ГОТОВА' : 'READY TO SOURCE'}</span>
-                <h3>{profitOnly ? (ru ? 'Контроль бюджета на Mainnet' : 'Mainnet budget controls') : (ru ? 'Уверенность перед покупкой.' : 'Clarity before you commit.')}</h3>
-                <p>
-                  {ru
-                    ? 'Спросите о покупке, бюджете или сети Arc. Чат консультирует и помогает подготовить закупку.'
-                    : 'Ask about checkout, budgets, or Arc network finality. Chat guides your procurement flow and surfaces 1-click checkouts.'}
-                </p>
-              </div>
-            ) : (
-              turns.map((t, i) => (
-                <div key={i} className="mn-as-turn">
-                  <div className="mn-as-question-box">
-                    <p className="mn-as-question">{t.q}</p>
-                  </div>
-                  <div className="mn-as-answer-box">
-                    <span className="mn-as-agent-label">MERCENTA · {ru ? 'КОНСУЛЬТАЦИЯ И ПОДБОР' : 'GUIDANCE & SOURCING'}</span>
-                    <p className="mn-as-answer-text">{t.a}</p>
-
-                    {/* Sourced items directly in Copilot */}
-                    {t.items && t.items.length > 0 && (
-                      <div className="mn-copilot-items">
-                        <span className="mn-copilot-items-label">{ru ? 'ПРЯМОЙ ЗАКАЗ НА ARC MAINNET' : 'MATCHED ITEMS ON ARC MAINNET'}</span>
-                        {t.items.map(item => (
-                          <div key={item.id} className="mn-item-card mn-item-card-mini">
-                            <div className="mn-item-info">
-                              <span className="mn-item-tag">{item.country} · {item.kind === 'Direct Top-Up' ? 'TOP-UP' : 'VOUCHER'}</span>
-                              <h4 className="mn-item-title">{item.name}</h4>
-                              <div className="mn-item-price">
-                                <strong>{item.price}</strong>
-                                <small>USDC</small>
+        ) : (
+          <div className="ag-chat" style={{ padding: 0, background: 'transparent', border: 'none' }}>
+            <div className="ag-messages" ref={output} aria-live="polite">
+              {!turns.length ? (
+                <div className="ag-welcome">
+                  <h2>{profitOnly ? (ru ? 'Контроль бюджета на Mainnet' : 'Mainnet budget controls') : (ru ? 'Уверенность перед покупкой.' : 'Clarity before you commit.')}</h2>
+                  <p>
+                    {ru
+                      ? 'Спросите о покупке, бюджете или сети Arc. Чат консультирует и помогает подготовить закупку.'
+                      : 'Ask about checkout, budgets, or Arc network finality. Chat guides your procurement flow and surfaces 1-click checkouts.'}
+                  </p>
+                </div>
+              ) : (
+                turns.map((t, i) => (
+                  <div key={i} className="ag-turn">
+                    <div className="ag-user">{t.q}</div>
+                    <div className="ag-answer">
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                        <Bot size={15} style={{ color: 'var(--a-accent)' }} />
+                        <b style={{ color: 'var(--a-accent)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          MERCENTA · {ru ? 'КОНСУЛЬТАЦИЯ И ПОДБОР' : 'GUIDANCE & SOURCING'}
+                        </b>
+                      </span>
+                      <p>{t.a}</p>
+                      {t.items && t.items.length > 0 && (
+                        <div style={{ margin: '14px 0', display: 'grid', gap: '8px' }}>
+                          <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--a-muted)', fontWeight: 600 }}>
+                            {ru ? 'ПРЯМОЙ ЗАКАЗ НА ARC MAINNET' : 'MATCHED ITEMS ON ARC MAINNET'}
+                          </span>
+                          {t.items.map(item => (
+                            <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--a-bg)', border: '1px solid var(--a-line)', borderRadius: '8px' }}>
+                              <div>
+                                <span className="ma-pill" style={{ marginRight: '8px' }}>{item.country} · {item.kind === 'Direct Top-Up' ? 'TOP-UP' : 'VOUCHER'}</span>
+                                <b style={{ color: 'var(--a-ink)', fontSize: '12px' }}>{item.name}</b>
+                                <span style={{ marginLeft: '12px', color: 'var(--a-accent)', fontWeight: 600 }}>{item.price} USDC</span>
                               </div>
-                            </div>
-                            <div className="mn-item-actions">
                               <button
                                 type="button"
-                                className="mn-btn-buy"
+                                className="ma-button"
+                                style={{ padding: '6px 12px', fontSize: '11px' }}
                                 onClick={() => handleCheckoutOpen(item)}
                               >
                                 <span>{ru ? 'Купить (USDC)' : 'Buy (USDC)'}</span>
-                                <ArrowUpRight size={14} />
+                                <ArrowUpRight size={13} />
                               </button>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
+                ))
+              )}
+            </div>
 
-          {/* Quick Prompts Bar */}
-          <div className="mn-as-prompts">
-            {prompts.map(q => (
-              <button key={q} type="button" onClick={() => send(q)}>
-                <span>{q}</span>
-                <ArrowUpRight size={12} />
-              </button>
-            ))}
-          </div>
+            <div className="ag-chips">
+              {prompts.map(q => (
+                <button key={q} type="button" onClick={() => send(q)}>
+                  <span>{q}</span>
+                </button>
+              ))}
+            </div>
 
-          {/* Compose Form */}
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-              send();
-            }}
-            className="mn-as-compose"
-          >
-            <textarea
-              aria-label={ru ? 'Сообщение консультанту' : 'Message Commerce Copilot'}
-              value={input}
-              maxLength={2000}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={ru ? 'Что хотите узнать или подготовить? (Enter для отправки)' : 'What would you like to source or know? (Enter to send)'}
-              rows={2}
-            />
-            <button
-              type="submit"
-              className="mn-as-primary mn-btn-send"
-              disabled={!input.trim()}
-              aria-label={ru ? 'Отправить сообщение' : 'Send message'}
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                send();
+              }}
+              className="ag-compose"
             >
-              <Send size={16} />
-            </button>
-          </form>
-        </div>
-      )}
+              <textarea
+                aria-label={ru ? 'Сообщение консультанту' : 'Message Commerce Copilot'}
+                value={input}
+                maxLength={2000}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={ru ? 'Что хотите узнать или подготовить? (Enter для отправки)' : 'What would you like to source or know? (Enter to send)'}
+                rows={2}
+              />
+              <button
+                type="submit"
+                className="ma-button"
+                disabled={!input.trim()}
+                aria-label={ru ? 'Отправить сообщение' : 'Send message'}
+              >
+                <Send size={15} />
+              </button>
+            </form>
+            <small style={{ display: 'block', marginTop: '10px', fontSize: '10px', color: 'var(--a-muted)' }}>
+              {ru ? 'Автономный консультант · Расчёты в USDC на Arc Mainnet (5042) · Подтверждение квитанцией' : 'Autonomous Copilot · USDC settlement on Arc Mainnet (5042) · Verified receipt execution'}
+            </small>
+          </div>
+        )}
+      </section>
 
-      {/* Footer Wallet Notice */}
       {!wallet && (
-        <footer className="mn-as-connect">
-          <Wallet size={16} />
-          <span>
-            {ru
-              ? 'Просматривайте без входа. Подключите кошелёк для прямого расчёта в USDC на Arc Mainnet.'
-              : 'Explore without signing in. Connect a wallet for direct USDC settlement on Arc Mainnet.'}
-          </span>
-          <button type="button" className="mn-btn-connect" onClick={onConnect}>
+        <div className="ma-notice" style={{ marginTop: '20px', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Wallet size={16} />
+            <span>
+              {ru
+                ? 'Просматривайте без входа. Подключите кошелёк для прямого расчёта в USDC на Arc Mainnet.'
+                : 'Explore without signing in. Connect a wallet for direct USDC settlement on Arc Mainnet.'}
+            </span>
+          </div>
+          <button type="button" className="ma-link" onClick={onConnect}>
             <span>{ru ? 'Подключить кошелёк' : 'Connect wallet'}</span>
             <ArrowUpRight size={14} />
           </button>
-        </footer>
+        </div>
       )}
-    </section>
+    </>
   );
 }
