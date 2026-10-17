@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import BrandMark from "./BrandMark";
 
 export interface ClearingOrder {
   id: string;
@@ -17,7 +18,6 @@ export interface ClearingOrder {
   decision: string;
   network: string;
   checks: string;
-  icon: string;
 }
 
 export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
@@ -36,7 +36,6 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
-    icon: "🎮",
   },
   {
     id: "MR-ORD-3294",
@@ -53,7 +52,6 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
-    icon: "⭐",
   },
   {
     id: "MR-ORD-7810",
@@ -70,7 +68,6 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
-    icon: "⚡",
   },
   {
     id: "MR-ORD-4105",
@@ -87,11 +84,10 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
-    icon: "▲",
   },
   {
     id: "MR-ORD-6523",
-    name: "Developer API Credits",
+    name: "Developer API Token Pool",
     category: "Developer API & Token Bundles",
     sku: "DEV-TOKENS-500M",
     region: "GLOBAL",
@@ -104,7 +100,6 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
-    icon: "</>",
   },
   {
     id: "MR-ORD-8930",
@@ -121,9 +116,17 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
-    icon: "🍎",
   },
 ];
+
+function StatusPassIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <circle cx="10" cy="10" r="8" stroke="currentColor" />
+      <path d="m6 10 2.5 2.5L14 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export default function Hero3DReceipt() {
   const [index, setIndex] = useState(0);
@@ -131,14 +134,13 @@ export default function Hero3DReceipt() {
   const [animating, setAnimating] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // 3D Interactive tilt tracking
-  const [tilt, setTilt] = useState({ rx: 4, ry: -10, gx: 50, gy: 30 });
+  // 3D interactive tilt
+  const [tilt, setTilt] = useState({ rx: 3, ry: -9, gx: 50, gy: 30 });
   const cardRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const order = HERO_CLEARING_ORDERS[index];
 
-  // Auto-cycle orders
   useEffect(() => {
     if (isPaused) return;
 
@@ -147,7 +149,7 @@ export default function Hero3DReceipt() {
       setTimeout(() => {
         setIndex((prev) => (prev + 1) % HERO_CLEARING_ORDERS.length);
         setAnimating(false);
-      }, 260);
+      }, 250);
     }, 4000);
 
     return () => {
@@ -173,8 +175,8 @@ export default function Hero3DReceipt() {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const ry = ((x - centerX) / centerX) * 12; // tilt left/right
-    const rx = -((y - centerY) / centerY) * 10; // tilt up/down
+    const ry = ((x - centerX) / centerX) * 11;
+    const rx = -((y - centerY) / centerY) * 9;
     const gx = (x / rect.width) * 100;
     const gy = (y / rect.height) * 100;
 
@@ -183,8 +185,7 @@ export default function Hero3DReceipt() {
 
   function handleMouseLeave() {
     setIsPaused(false);
-    // Smoothly return to resting 3D angle
-    setTilt({ rx: 4, ry: -10, gx: 50, gy: 30 });
+    setTilt({ rx: 3, ry: -9, gx: 50, gy: 30 });
   }
 
   async function copyJson() {
@@ -198,7 +199,7 @@ export default function Hero3DReceipt() {
       supplierCostUsdc: order.cost,
       platformFeeUsdc: order.feeAmount,
       grossMargin: order.margin,
-      status: order.decision,
+      decision: order.decision,
       checks: order.checks,
       settlementNetwork: order.network,
       timestamp: new Date().toISOString(),
@@ -219,124 +220,95 @@ export default function Hero3DReceipt() {
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
       role="region"
-      aria-label="3D Animated Order Docket"
+      aria-label="3D Live Animated Order Receipt"
     >
-      {/* Dynamic 3D Card Shell with Preserve-3D */}
+      {/* 3D Physical Paper Card Shell */}
       <div
         ref={cardRef}
-        className={`mx-3d-receipt-card ${animating ? "is-flipping" : ""}`}
+        className={`mx-receipt mx-3d-paper-receipt ${animating ? "is-flipping" : ""}`}
         style={{
           transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
         }}
       >
-        {/* Holographic Specular Glare Layer */}
+        {/* Holographic Specular Glare */}
         <div
           className="mx-3d-glare"
           style={{
-            background: `radial-gradient(circle at ${tilt.gx}% ${tilt.gy}%, rgba(178, 229, 255, 0.22) 0%, rgba(24, 104, 242, 0.08) 40%, transparent 70%)`,
+            background: `radial-gradient(circle at ${tilt.gx}% ${tilt.gy}%, rgba(255, 255, 255, 0.45) 0%, rgba(178, 229, 255, 0.15) 35%, transparent 65%)`,
           }}
           aria-hidden="true"
         />
 
-        {/* Holographic Quantum Laser Scanning Line */}
+        {/* Laser Scanning Line */}
         <div className="mx-3d-scanline" aria-hidden="true" />
 
-        {/* 3D Floating Top Badges (Z: 28px) */}
-        <div className="mx-3d-layer-top">
-          <div className="mx-3d-kicker-group">
-            <span className="mx-3d-kicker-icon">{order.icon}</span>
-            <div>
-              <span className="mx-3d-kicker-label">ILLUSTRATIVE ORDER RECORD</span>
-              <span className="mx-3d-kicker-sub">ARC CLEARING PROTOCOL · 5042</span>
-            </div>
-          </div>
+        {/* Top: BrandMark + Label + Copy Button */}
+        <div className="mx-receipt-top">
+          <BrandMark />
+          <span className="mx-label">ILLUSTRATIVE ORDER RECORD</span>
           <button
             type="button"
-            className="mx-3d-copy-chip"
+            className="mx-receipt-copy-pill"
             onClick={copyJson}
-            title="Copy cleared JSON receipt"
+            title="Copy cleared JSON record"
           >
-            <span>{copied ? "COPIED ✓" : "COPY JSON"}</span>
+            {copied ? "COPIED ✓" : "COPY JSON"}
           </button>
         </div>
 
-        {/* Order Identifier & Category SKU (Z: 24px) */}
-        <div className="mx-3d-order-meta">
-          <div className="mx-3d-order-id-badge">
-            <span className="mx-3d-dot-beacon" />
-            <strong>{order.id}</strong>
-          </div>
-          <span className="mx-3d-sku-tag">{order.sku}</span>
+        {/* Order ID & Product SKU */}
+        <div className="mx-receipt-id-row">
+          <span className="mx-label">{order.id}</span>
+          <span className="mx-receipt-sku-badge">{order.sku}</span>
         </div>
 
-        {/* Product Title Banner (Z: 32px) */}
-        <div className="mx-3d-product-block">
-          <h3 className="mx-3d-product-title">{order.name}</h3>
-          <p className="mx-3d-product-batch">{order.batchInfo} · {order.region}</p>
+        {/* Product Title */}
+        <div className="mx-receipt-product-row">
+          <h3 className="mx-receipt-item-title">{order.name}</h3>
+          <span className="mx-receipt-item-batch">{order.batchInfo} · {order.region}</span>
         </div>
 
-        {/* Massive 3D Amount Display (Z: 44px) */}
-        <div className="mx-3d-amount-block">
-          <div className="mx-3d-amount-value">
-            <span className="mx-3d-currency-symbol">$</span>
-            <span className="mx-3d-number">
-              {order.amount.toLocaleString("en-US", { minimumFractionDigits: order.amount % 1 === 0 ? 0 : 2 })}
-            </span>
-          </div>
-          <span className="mx-3d-usdc-badge">USDC</span>
+        {/* Big Amount */}
+        <div className="mx-receipt-amount">
+          <span className="mx-receipt-amount-num">
+            {order.amount.toLocaleString("en-US", { minimumFractionDigits: order.amount % 1 === 0 ? 0 : 2 })}
+          </span>
+          <span>USDC</span>
         </div>
 
-        {/* Financial Breakdown Grid (Z: 20px) */}
-        <div className="mx-3d-breakdown-grid">
-          <div className="mx-3d-breakdown-item">
-            <span className="mx-3d-breakdown-dt">Supplier cost</span>
-            <strong className="mx-3d-breakdown-dd">
-              {order.cost.toLocaleString("en-US", { minimumFractionDigits: 2 })} USDC
-            </strong>
+        {/* Financial Breakdown: Supplier cost, Platform fee, Gross margin */}
+        <dl>
+          <div>
+            <dt>Supplier cost</dt>
+            <dd>{order.cost.toLocaleString("en-US", { minimumFractionDigits: 2 })} USDC</dd>
           </div>
-          <div className="mx-3d-breakdown-item">
-            <span className="mx-3d-breakdown-dt">Platform fee ({order.feePct})</span>
-            <strong className="mx-3d-breakdown-dd">
-              {order.feeAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })} USDC
-            </strong>
+          <div>
+            <dt>Platform fee ({order.feePct})</dt>
+            <dd>{order.feeAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })} USDC</dd>
           </div>
-          <div className="mx-3d-breakdown-item mx-3d-margin-highlight">
-            <span className="mx-3d-breakdown-dt">Gross margin</span>
-            <strong className="mx-3d-breakdown-dd mx-3d-margin-val">{order.margin}</strong>
+          <div>
+            <dt>Gross margin</dt>
+            <dd className="mx-receipt-margin-num">{order.margin}</dd>
           </div>
+        </dl>
+
+        {/* Bottom Seal: Cleared + PREVIEW ONLY */}
+        <div className="mx-receipt-bottom">
+          <StatusPassIcon />
+          <strong>{order.decision}</strong>
+          <span>PREVIEW ONLY</span>
         </div>
 
-        {/* Bottom Decision Status Bar (Z: 26px) */}
-        <div className="mx-3d-footer-bar">
-          <div className="mx-3d-status-pill">
-            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M10 2a8 8 0 1 0 8 8 8 8 0 0 0-8-8Zm-1 11.5-3.5-3.5 1.4-1.4 2.1 2.1 4.6-4.6 1.4 1.4Z" fill="#00ca8e" />
-            </svg>
-            <span>{order.decision}</span>
-          </div>
-          <span className="mx-3d-preview-label">PREVIEW ONLY</span>
-        </div>
-
-        {/* Policy Verification Ribbon (Z: 16px) */}
-        <div className="mx-3d-checks-bar">
-          <span className="mx-3d-shield-icon">🛡️</span>
+        {/* Verification Footer */}
+        <div className="mx-receipt-audit-foot">
           <span>{order.checks}</span>
-          <span className="mx-3d-checks-sep">·</span>
+          <span>·</span>
           <span>{order.network}</span>
         </div>
-
-        {/* Perforated 3D Ticket Jagged Bottom Edge */}
-        <div className="mx-3d-teeth" aria-hidden="true" />
       </div>
 
-      {/* Floating 3D Satellite Chip (Z: 50px) */}
-      <div className="mx-3d-satellite-badge" aria-hidden="true">
-        <span className="mx-3d-beacon-pulse" />
-        <span>INSTANT KEY CLEARING</span>
-      </div>
-
-      {/* Bottom Switcher Dots & Status */}
-      <div className="mx-3d-nav">
+      {/* Switcher Navigation */}
+      <div className="mx-3d-receipt-dots-nav">
         <div className="mx-3d-dots" role="tablist">
           {HERO_CLEARING_ORDERS.map((item, i) => (
             <button
