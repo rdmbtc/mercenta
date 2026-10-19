@@ -57,6 +57,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "validation_failed", issues: parsed.error.issues }, { status: 400 });
   }
   const b = parsed.data;
+  // The payer is the signed-in wallet; never let a caller name someone else's wallet.
+  if (b.payerAddress.toLowerCase() !== claims.address.toLowerCase()) {
+    return NextResponse.json({ error: "PAYER_MISMATCH" }, { status: 403 });
+  }
   const trigger: AgentTrigger = {
     id: b.id ?? `trg-${nowMs}-${Math.random().toString(36).slice(2, 8)}`,
     kind: b.kind as TriggerKind,

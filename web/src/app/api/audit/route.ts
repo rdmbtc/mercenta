@@ -1,9 +1,10 @@
 // Audit Trail API — Euthyna continuous audit viewer
 // GET /api/audit?state=FULFILLED&decision=AUTO_APPROVED&from=1700000000000&to=1700000100000&limit=100
-// Exposes append-only decisions + orders log. BigInt serialized as strings.
+// Append-only decisions + orders log, scoped to the signed-in wallet. BigInt serialized as strings.
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
+import { requireSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -13,19 +14,31 @@ function serializeBigInt(obj: unknown): unknown {
   );
 }
 
-export async function GET(req: NextRequest) {
+function boundInt(raw: string | null, fallback: number, max: number): number {
+  const n = Number.parseInt(raw ?? "", 10);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(Math.max(n, 0), max);
+}
+
+export async function GET(req: Request) {
+  // Order/decision history is per-wallet data: never serve it anonymous.
+  const claims = requireSession(req, Date.now());
+  if (!claims) return NextResponse.json({ error: "SIGN_IN_REQUIRED" }, { status: 401 });
+  const wallet = claims.address;
+
   const db = getDb();
-  const sp = req.nextUrl.searchParams;
+  const sp = new URL(req.url).searchParams;
 
   const state = sp.get("state");
   const decision = sp.get("decision");
   const from = sp.get("from");
   const to = sp.get("to");
-  const limit = Math.min(parseInt(sp.get("limit") ?? "100", 10), 1000);
+  const limit = boundInt(sp.get("limit"), 100, 1000);
 
-  // Build filtered queries
-  const orderConds: string[] = [];
-  const orderParams: (string | number)[] = [];
+  const owned = "SELECT id FROM orders WHERE customer_wallet = ?";
+
+  const orderConds: string[] = ["customer_wallet = ?"];
+  const orderParams: (string | number)[] = [wallet];
   if (state) {
     orderConds.push("status = ?");
     orderParams.push(state);
@@ -38,13 +51,13 @@ export async function GET(req: NextRequest) {
     orderConds.push("created_at <= ?");
     orderParams.push(Number(to));
   }
-  const orderWhere = orderConds.length > 0 ? `WHERE ${orderConds.join(" AND ")}` : "";
+  const orderWhere = "WHERE " + orderConds.join(" AND ");
   const orders = db
     .prepare(`SELECT * FROM orders ${orderWhere} ORDER BY created_at DESC LIMIT ?`)
     .all(...orderParams, limit);
 
-  const decConds: string[] = [];
-  const decParams: (string | number)[] = [];
+  const decConds: string[] = ["order_id IN (" + owned + ")"];
+  const decParams: (string | number)[] = [wallet];
   if (decision) {
     decConds.push("decision = ?");
     decParams.push(decision);
@@ -57,14 +70,16 @@ export async function GET(req: NextRequest) {
     decConds.push("created_at <= ?");
     decParams.push(Number(to));
   }
-  const decWhere = decConds.length > 0 ? `WHERE ${decConds.join(" AND ")}` : "";
+  const decWhere = "WHERE " + decConds.join(" AND ");
   const decisions = db
     .prepare(`SELECT * FROM decisions ${decWhere} ORDER BY created_at DESC LIMIT ?`)
     .all(...decParams, limit);
 
   const approvals = db
-    .prepare("SELECT * FROM approvals ORDER BY created_at DESC LIMIT ?")
-    .all(limit);
+    .prepare(
+      "SELECT * FROM approvals WHERE order_id IN (" + owned + ") ORDER BY created_at DESC LIMIT ?",
+    )
+    .all(wallet, limit);
 
   return NextResponse.json(
     serializeBigInt({

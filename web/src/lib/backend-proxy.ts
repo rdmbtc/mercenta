@@ -30,7 +30,9 @@ function validCookie(v: string, key: string) {
 export async function proxyBackend(req: Request, path: string) {
   if (!allowed.test(path))
     return NextResponse.json({ code: "NOT_FOUND" }, { status: 404 });
-  const secret = process.env.BACKEND_PROXY_SECRET || "f4f1c57d7e71b082987e6328d99ab8ac4efaa2a8ac427c0e7caa1a87e26cc7d5";
+  const secret = process.env.BACKEND_PROXY_SECRET;
+  if (!secret || secret.length < 32)
+    return NextResponse.json({ code: "PROXY_NOT_CONFIGURED" }, { status: 503 });
   const requestUrl = new URL(req.url);
   if (req.method !== "GET") {
     const origin = req.headers.get("origin");
