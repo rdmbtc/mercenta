@@ -531,9 +531,9 @@ export function MainnetCheckout({
         </p>
 
         {isTopup ? (
-          <div style={{background: '#04070e', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '10px', padding: '14px 16px', marginBottom: '16px'}}>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px'}}>
-              <span style={{fontSize: '12px', fontWeight: 600, color: '#7dd3fc', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.04em'}}>
+          <div className="mainnet-activation-box" style={{marginBottom: '16px'}}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap', gap: '8px'}}>
+              <span className="mainnet-activation-title" style={{color: '#7dd3fc'}}>
                 <ShieldCheck size={14} style={{color: '#38bdf8'}}/>
                 {ru ? 'АККАУНТ ЗАЧИСЛЕНИЯ' : 'RECIPIENT ACCOUNT'}
               </span>
@@ -541,26 +541,26 @@ export function MainnetCheckout({
                 {ru ? 'Зачислено' : 'Credited'}
               </span>
             </div>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '8px'}}>
-              <span style={{fontSize: '16px', fontWeight: 700, color: '#f8fafc', fontFamily: 'monospace', letterSpacing: '0.04em'}}>
+            <div className="mainnet-topup-recipient-row" style={{marginTop: 0}}>
+              <span className="mainnet-topup-recipient-text" style={{fontSize: '16px', color: '#f8fafc'}}>
                 {effectiveAccount ? `@${effectiveAccount.replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '')}` : (codes[0]?.replace('TOPUP_CREDITED:', '') || '@username')}
               </span>
-              <span style={{fontSize: '12px', color: '#94a3b8'}}>
+              <span style={{fontSize: '12px', color: '#94a3b8', flexShrink: 0}}>
                 {productName}
               </span>
             </div>
           </div>
         ) : (
-          <div style={{background: '#04070e', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '10px', padding: '14px 16px', marginBottom: '16px'}}>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px'}}>
-              <span style={{fontSize: '12px', fontWeight: 600, color: '#7dd3fc', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.04em'}}>
+          <div className="mainnet-activation-box" style={{marginBottom: '16px'}}>
+            <div className="mainnet-activation-header">
+              <span className="mainnet-activation-title" style={{color: '#7dd3fc'}}>
                 <KeyRound size={14} style={{color: '#38bdf8'}}/>
                 {ru ? (codes.length > 1 ? 'КЛЮЧИ АКТИВАЦИИ' : 'КЛЮЧ АКТИВАЦИИ') : (codes.length > 1 ? 'ACTIVATION KEYS' : 'ACTIVATION KEY')}
               </span>
               {codes.length > 1 && (
                 <button
-                  className="ma-link"
-                  style={{fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#38bdf8'}}
+                  type="button"
+                  className="mainnet-copy-all-btn"
                   onClick={() => copyAllKeys(codes)}
                 >
                   {allCopied ? <Check size={13}/> : <Copy size={13}/>}
@@ -569,26 +569,16 @@ export function MainnetCheckout({
               )}
             </div>
 
-            <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+            <div className="mainnet-activation-list">
               {codes.map((code, idx) => (
-                <div
-                  key={code + idx}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '10px 14px',
-                    background: 'rgba(15, 23, 42, 0.6)',
-                    border: '1px solid rgba(56, 189, 248, 0.2)',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <code style={{fontFamily: 'monospace', fontSize: '15px', fontWeight: 700, color: '#b2e5ff', letterSpacing: '0.08em'}}>
+                <div key={code + idx} className="mainnet-activation-row">
+                  <code className="mainnet-activation-code" style={{color: '#b2e5ff'}}>
                     {code}
                   </code>
                   <button
-                    className="mp-button outline"
-                    style={{padding: '6px 12px', fontSize: '12px', minHeight: '32px', gap: '6px', background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.15)'}}
+                    type="button"
+                    className="mp-button outline mainnet-activation-copy-btn"
+                    style={{background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.15)'}}
                     onClick={() => copyKey(code, idx)}
                   >
                     {copiedIndex === idx ? (
@@ -609,24 +599,34 @@ export function MainnetCheckout({
           </div>
         )}
 
-        <dl style={{display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 16px', fontSize: '13px', margin: '14px 0', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)'}}>
-          <dt style={{color: '#64748b'}}>{ru ? 'Товар:' : 'Item:'}</dt>
-          <dd style={{fontWeight: 600, color: '#e2e8f0'}}>{productName} · {optionName}</dd>
-          <dt style={{color: '#64748b'}}>{ru ? 'Сумма:' : 'Amount:'}</dt>
-          <dd style={{fontWeight: 700, color: '#b2e5ff'}}>{totalPriceUsdc} USDC</dd>
-          <dt style={{color: '#64748b'}}>Tx Hash:</dt>
-          <dd style={{wordBreak: 'break-all'}}>
-            <a href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none'}}>
-              {txHash.slice(0, 10)}…{txHash.slice(-8)} <ExternalLink size={12}/>
-            </a>
-          </dd>
-          <dt style={{color: '#64748b'}}>{ru ? 'Клиринг:' : 'Settlement:'}</dt>
-          <dd>
-            <a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>
-              0x5886…48ce
-            </a>
-          </dd>
-        </dl>
+        <div className="mainnet-receipt-details" style={{margin: '14px 0'}}>
+          <dl className="mainnet-receipt-dl">
+            <div className="mainnet-receipt-row">
+              <dt>{ru ? 'Товар:' : 'Item:'}</dt>
+              <dd style={{fontWeight: 600, color: '#e2e8f0'}}>{productName} · {optionName}</dd>
+            </div>
+            <div className="mainnet-receipt-row">
+              <dt>{ru ? 'Сумма:' : 'Amount:'}</dt>
+              <dd className="mainnet-receipt-amount" style={{color: '#b2e5ff'}}>{totalPriceUsdc} USDC</dd>
+            </div>
+            <div className="mainnet-receipt-row">
+              <dt>Tx Hash:</dt>
+              <dd className="mainnet-receipt-tx">
+                <a href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8'}}>
+                  {txHash.slice(0, 10)}…{txHash.slice(-8)} <ExternalLink size={12}/>
+                </a>
+              </dd>
+            </div>
+            <div className="mainnet-receipt-row">
+              <dt>{ru ? 'Клиринг:' : 'Settlement:'}</dt>
+              <dd>
+                <a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>
+                  0x5886…48ce
+                </a>
+              </dd>
+            </div>
+          </dl>
+        </div>
 
         <div style={{fontSize: '11px', color: '#94a3b8', lineHeight: 1.5, padding: '10px 12px', background: 'rgba(56, 189, 248, 0.04)', border: '1px solid rgba(56, 189, 248, 0.16)', borderRadius: '8px', margin: '14px 0'}}>
           {ru
@@ -634,14 +634,11 @@ export function MainnetCheckout({
             : (isTopup ? 'Credit: Telegram Stars are credited directly to the specified account. Your order is listed under Purchases.' : 'Activation: redeem this code on the designated platform. Your order is listed under Purchases.')}
         </div>
 
-        <div style={{marginTop: '16px', display: 'flex', gap: '10px'}}>
+        <div className="mainnet-modal-actions" style={{marginTop: '16px'}}>
           <a
-            className="mp-button full"
+            className="mp-button full mainnet-modal-action-btn"
             href="/app?section=orders"
             style={{
-              textAlign: 'center',
-              justifyContent: 'center',
-              textDecoration: 'none',
               background: '#1d4ed8',
               color: '#ffffff',
               fontWeight: 600,
@@ -650,14 +647,11 @@ export function MainnetCheckout({
             {ru ? 'Открыть «Мои покупки»' : 'View in Purchases'}
           </a>
           <a
-            className="mp-button outline"
+            className="mp-button outline mainnet-modal-action-btn"
             href={`https://explorer.arc.io/tx/${txHash}`}
             target="_blank"
             rel="noreferrer"
             style={{
-              textAlign: 'center',
-              justifyContent: 'center',
-              textDecoration: 'none',
               background: 'rgba(255, 255, 255, 0.04)',
               borderColor: 'rgba(255, 255, 255, 0.15)',
               color: '#e2e8f0',
@@ -696,18 +690,30 @@ export function MainnetCheckout({
         </a>
       </div>
 
-      <dl style={{display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '6px 14px', fontSize: '13px', margin: '12px 0', padding: '12px 14px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)'}}>
-        <dt style={{color: '#64748b'}}>{ru ? 'Товар:' : 'Item:'}</dt>
-        <dd style={{fontWeight: 600, color: '#e2e8f0'}}>{productName}{optionName&&optionName!==productName?' ('+optionName+')':''}</dd>
-        <dt style={{color: '#64748b'}}>{ru ? 'Количество:' : 'Qty:'}</dt>
-        <dd style={{color: '#f8fafc'}}>{quantity}</dd>
-        <dt style={{color: '#64748b'}}>{ru ? 'К оплате:' : 'Amount:'}</dt>
-        <dd style={{fontWeight: 700, color: '#b2e5ff', fontSize: '15px'}}>{totalPriceUsdc} USDC</dd>
-        <dt style={{color: '#64748b'}}>{ru ? 'Стандарт роутера:' : 'Protocol Router:'}</dt>
-        <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>0x06b6...f3ed (Arc Engine v2)</a></dd>
-        <dt style={{color: '#64748b'}}>{ru ? 'Клиринговый шлюз:' : 'Settlement Gateway:'}</dt>
-        <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>0x5886...48ce (Mercenta Node)</a></dd>
-      </dl>
+      <div className="mainnet-receipt-details" style={{margin: '12px 0'}}>
+        <dl className="mainnet-receipt-dl">
+          <div className="mainnet-receipt-row">
+            <dt>{ru ? 'Товар:' : 'Item:'}</dt>
+            <dd style={{fontWeight: 600, color: '#e2e8f0'}}>{productName}{optionName&&optionName!==productName?' ('+optionName+')':''}</dd>
+          </div>
+          <div className="mainnet-receipt-row">
+            <dt>{ru ? 'Количество:' : 'Qty:'}</dt>
+            <dd style={{color: '#f8fafc'}}>{quantity}</dd>
+          </div>
+          <div className="mainnet-receipt-row">
+            <dt>{ru ? 'К оплате:' : 'Amount:'}</dt>
+            <dd className="mainnet-receipt-amount" style={{fontSize: '15px', color: '#b2e5ff'}}>{totalPriceUsdc} USDC</dd>
+          </div>
+          <div className="mainnet-receipt-row">
+            <dt>{ru ? 'Стандарт роутера:' : 'Protocol Router:'}</dt>
+            <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>0x06b6...f3ed (Arc Engine v2)</a></dd>
+          </div>
+          <div className="mainnet-receipt-row">
+            <dt>{ru ? 'Клиринговый шлюз:' : 'Settlement Gateway:'}</dt>
+            <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#38bdf8', textDecoration: 'none'}}>0x5886...48ce (Mercenta Node)</a></dd>
+          </div>
+        </dl>
+      </div>
 
       {/* Mercenta 5-Step Policy Engine Clearance */}
       <div style={{margin: '12px 0', padding: '12px 14px', background: 'rgba(2, 6, 23, 0.6)', borderRadius: '8px', border: allGatesPassed ? '1px solid rgba(56, 189, 248, 0.2)' : '1px solid rgba(239, 68, 68, 0.3)'}}>

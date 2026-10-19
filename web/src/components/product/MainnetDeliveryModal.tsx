@@ -16,6 +16,7 @@ export function MainnetDeliveryModal({
 }) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [allCopied, setAllCopied] = useState(false);
+  const [copiedOrderId, setCopiedOrderId] = useState(false);
 
   async function copyKey(code: string, idx: number) {
     try {
@@ -33,10 +34,67 @@ export function MainnetDeliveryModal({
     } catch {}
   }
 
+  async function copyOrderId(id: string) {
+    try {
+      await navigator.clipboard.writeText(id);
+      setCopiedOrderId(true);
+      setTimeout(() => setCopiedOrderId(false), 2500);
+    } catch {}
+  }
+
   const amountUsdc = mainnetAmountDisplay(order.amount_units);
   const downloadReceipt = () => {const blob=new Blob([JSON.stringify(mainnetReceiptExport(order),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mercenta-receipt-'+order.tx_hash.slice(2,10)+'.json';a.click();URL.revokeObjectURL(url);};
   const exportAction = <button type="button" className="mp-button outline full" onClick={downloadReceipt}>{ru ? 'Скачать квитанцию без секретных кодов' : 'Download redacted receipt'}</button>;
-  if (order.status !== 'FULFILLED' || order.delivery_source !== 'provider_response') return <Modal title={ru ? 'Квитанция заказа' : 'Order record'} onClose={onClose}><section className="mc-receipt mainnet-record-receipt"><span className="mc-kicker">ARC MAINNET / {order.status}</span><h3>{order.name}</h3><p>{ru ? 'Этот сохранённый перевод не доказывает выдачу товара. Проверьте подтверждение провайдера и историю покупки; не оплачивайте повторно.' : 'This saved transfer reference does not prove delivery. Check the provider confirmation and purchase history before sending another payment.'}</p><p className="mainnet-record-amount">{amountUsdc} <span>USDC</span></p><a className="mp-button outline full" href={`https://explorer.arc.io/tx/${order.tx_hash}`} target="_blank" rel="noreferrer">Arc Explorer <ExternalLink size={14}/></a>{exportAction}<a href="/support">{ru ? 'Связаться с поддержкой' : 'Contact support'}</a></section></Modal>;
+  if (order.status !== 'FULFILLED' || order.delivery_source !== 'provider_response') {
+    const fallbackDate = new Date(order.created_at).toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+    return (
+      <Modal title={ru ? 'Квитанция заказа' : 'Order record'} onClose={onClose}>
+        <section className="mc-receipt mainnet-record-receipt">
+          <span className="mc-kicker">ARC MAINNET / {order.status}</span>
+          <h3>{order.name}</h3>
+          <p>{ru ? 'Этот сохранённый перевод не доказывает выдачу товара. Проверьте подтверждение провайдера и историю покупки; не оплачивайте повторно.' : 'This saved transfer reference does not prove delivery. Check the provider confirmation and purchase history before sending another payment.'}</p>
+          <p className="mainnet-record-amount">{amountUsdc} <span>USDC</span></p>
+
+          <div className="mainnet-receipt-details" style={{margin: '10px 0'}}>
+            <span className="mainnet-receipt-details-title">{ru ? 'Детали заказа' : 'Order Details'}</span>
+            <dl className="mainnet-receipt-dl">
+              <div className="mainnet-receipt-row">
+                <dt>{ru ? 'Дата:' : 'Date:'}</dt>
+                <dd className="mainnet-receipt-date">{fallbackDate}</dd>
+              </div>
+              <div className="mainnet-receipt-row">
+                <dt>{ru ? 'ID заказа:' : 'Order ID:'}</dt>
+                <dd className="mainnet-receipt-order-id">
+                  <span className="mainnet-receipt-id-text">{order.id}</span>
+                  <button
+                    type="button"
+                    className="mainnet-id-copy-btn"
+                    onClick={() => copyOrderId(order.id)}
+                    title={ru ? 'Скопировать ID заказа' : 'Copy Order ID'}
+                    aria-label={ru ? 'Скопировать ID заказа' : 'Copy Order ID'}
+                  >
+                    {copiedOrderId ? <Check size={12} style={{color: '#68d391'}}/> : <Copy size={12}/>}
+                  </button>
+                </dd>
+              </div>
+              <div className="mainnet-receipt-row">
+                <dt>Arc Tx:</dt>
+                <dd className="mainnet-receipt-tx">
+                  <a href={`https://explorer.arc.io/tx/${order.tx_hash}`} target="_blank" rel="noreferrer">
+                    {order.tx_hash.slice(0, 10)}…{order.tx_hash.slice(-8)} <ExternalLink size={11}/>
+                  </a>
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <a className="mp-button outline full" href={`https://explorer.arc.io/tx/${order.tx_hash}`} target="_blank" rel="noreferrer">Arc Explorer <ExternalLink size={14}/></a>
+          {exportAction}
+          <a href="/support">{ru ? 'Связаться с поддержкой' : 'Contact support'}</a>
+        </section>
+      </Modal>
+    );
+  }
   const dateStr = new Date(order.created_at).toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
 
   const isTopup = order.codes.some(c => c.startsWith('TOPUP_CREDITED:')) || order.name.toLowerCase().includes('telegram');
@@ -47,15 +105,15 @@ export function MainnetDeliveryModal({
       title={isTopup ? (ru ? 'Прямое зачисление цифрового товара' : 'Direct Top-Up Delivery') : (ru ? 'Ключ активации цифрового товара' : 'Digital Goods Activation Key')}
       onClose={onClose}
     >
-      <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'rgba(72, 187, 120, 0.1)', border: '1px solid rgba(72, 187, 120, 0.3)', borderRadius: '10px'}}>
-          <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#68d391'}}>
+      <div className="mainnet-delivery-container">
+        <div className="mainnet-status-banner">
+          <div className="mainnet-status-banner-left">
             <CheckCircle2 size={20}/>
-            <span style={{fontWeight: 700, fontSize: '14px'}}>
+            <span className="mainnet-status-banner-title">
               {ru ? (isTopup ? 'Заказ исполнен · Товар зачислен' : 'Заказ исполнен · Товар выдан') : (isTopup ? 'Order Fulfilled · Top-Up Credited' : 'Order Fulfilled · Delivered')}
             </span>
           </div>
-          <span style={{fontSize: '11px', background: '#22543d', color: '#9ae6b4', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
+          <span className="mainnet-status-banner-badge">
             ARC MAINNET · 5042
           </span>
         </div>
@@ -72,31 +130,31 @@ export function MainnetDeliveryModal({
         </div>
 
         {isTopup ? (
-          <div style={{background: 'rgba(15, 23, 42, 0.75)', border: '1px solid #334155', borderRadius: '10px', padding: '14px'}}>
-            <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
+          <div className="mainnet-activation-box">
+            <span className="mainnet-activation-title">
               <ShieldCheck size={14}/>
               {ru ? 'Получатель пополнения:' : 'Top-Up Recipient:'}
             </span>
-            <div style={{marginTop: '10px', padding: '12px 14px', background: '#090d16', border: '1px solid #2d3748', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <span style={{fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#68d391'}}>
-                {recipient || 'Аккаунт получателя'}
+            <div className="mainnet-topup-recipient-row">
+              <span className="mainnet-topup-recipient-text">
+                {recipient || (ru ? 'Аккаунт получателя' : 'Recipient account')}
               </span>
-              <span style={{fontSize: '12px', color: '#9ae6b4', background: '#22543d', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
+              <span className="mainnet-topup-status-badge">
                 {ru ? 'Зачислено' : 'Credited'}
               </span>
             </div>
           </div>
         ) : (
-          <div style={{background: 'rgba(15, 23, 42, 0.75)', border: '1px solid #334155', borderRadius: '10px', padding: '14px'}}>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px'}}>
-              <span style={{fontSize: '12px', fontWeight: 600, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px'}}>
+          <div className="mainnet-activation-box">
+            <div className="mainnet-activation-header">
+              <span className="mainnet-activation-title">
                 <KeyRound size={14}/>
                 {ru ? (order.codes.length > 1 ? 'Ключи активации:' : 'Ключ активации:') : (order.codes.length > 1 ? 'Activation keys:' : 'Activation key:')}
               </span>
               {order.codes.length > 1 && (
                 <button
-                  className="ma-link"
-                  style={{fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px'}}
+                  type="button"
+                  className="mainnet-copy-all-btn"
                   onClick={copyAll}
                 >
                   {allCopied ? <Check size={13}/> : <Copy size={13}/>}
@@ -105,72 +163,79 @@ export function MainnetDeliveryModal({
               )}
             </div>
 
-          <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-            {order.codes.map((code, idx) => (
-              <div
-                key={code + idx}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '10px 14px',
-                  background: '#090d16',
-                  border: '1px solid #2d3748',
-                  borderRadius: '8px',
-                }}
-              >
-                <code style={{fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#63b3ed', letterSpacing: '0.08em'}}>
-                  {code}
-                </code>
-                <button
-                  className="mp-button outline"
-                  style={{padding: '6px 12px', fontSize: '12px', minHeight: '32px', gap: '6px'}}
-                  onClick={() => copyKey(code, idx)}
-                >
-                  {copiedIndex === idx ? (
-                    <>
-                      <Check size={14} style={{color: '#68d391'}}/>
-                      <span style={{color: '#68d391'}}>{ru ? 'Скопировано!' : 'Copied!'}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={14}/>
-                      <span>{ru ? 'Скопировать' : 'Copy'}</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            ))}
+            <div className="mainnet-activation-list">
+              {order.codes.map((code, idx) => (
+                <div key={code + idx} className="mainnet-activation-row">
+                  <code className="mainnet-activation-code">
+                    {code}
+                  </code>
+                  <button
+                    type="button"
+                    className="mp-button outline mainnet-activation-copy-btn"
+                    onClick={() => copyKey(code, idx)}
+                  >
+                    {copiedIndex === idx ? (
+                      <>
+                        <Check size={14} style={{color: '#68d391'}}/>
+                        <span style={{color: '#68d391'}}>{ru ? 'Скопировано!' : 'Copied!'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={14}/>
+                        <span>{ru ? 'Скопировать' : 'Copy'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
         )}
 
-        <div style={{background: 'rgba(26, 32, 44, 0.4)', borderRadius: '8px', padding: '12px', border: '1px solid #2d3748'}}>
-          <span style={{fontSize: '11px', fontWeight: 600, color: '#a0aec0', textTransform: 'uppercase', letterSpacing: '0.05em'}}>
+        <div className="mainnet-receipt-details">
+          <span className="mainnet-receipt-details-title">
             {ru ? 'Детали квитанции' : 'Receipt Details'}
           </span>
-          <dl style={{display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '6px 14px', fontSize: '12px', margin: '8px 0 0'}}>
-            <dt style={{color: '#718096'}}>{ru ? 'Сумма:' : 'Amount:'}</dt>
-            <dd style={{fontWeight: 600, color: '#68d391'}}>{amountUsdc} USDC</dd>
-            <dt style={{color: '#718096'}}>{ru ? 'Дата:' : 'Date:'}</dt>
-            <dd style={{color: '#e2e8f0'}}>{dateStr}</dd>
-            <dt style={{color: '#718096'}}>{ru ? 'ID заказа:' : 'Order ID:'}</dt>
-            <dd style={{fontFamily: 'monospace', fontSize: '11px', color: '#cbd5e0'}}>{order.id}</dd>
-            <dt style={{color: '#718096'}}>Arc Tx:</dt>
-            <dd style={{wordBreak: 'break-all'}}>
-              <a
-                href={`https://explorer.arc.io/tx/${order.tx_hash}`}
-                target="_blank"
-                rel="noreferrer"
-                style={{color: '#63b3ed', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none'}}
-              >
-                {order.tx_hash.slice(0, 10)}…{order.tx_hash.slice(-8)} <ExternalLink size={11}/>
-              </a>
-            </dd>
+          <dl className="mainnet-receipt-dl">
+            <div className="mainnet-receipt-row">
+              <dt>{ru ? 'Сумма:' : 'Amount:'}</dt>
+              <dd className="mainnet-receipt-amount">{amountUsdc} USDC</dd>
+            </div>
+            <div className="mainnet-receipt-row">
+              <dt>{ru ? 'Дата:' : 'Date:'}</dt>
+              <dd className="mainnet-receipt-date">{dateStr}</dd>
+            </div>
+            <div className="mainnet-receipt-row">
+              <dt>{ru ? 'ID заказа:' : 'Order ID:'}</dt>
+              <dd className="mainnet-receipt-order-id">
+                <span className="mainnet-receipt-id-text">{order.id}</span>
+                <button
+                  type="button"
+                  className="mainnet-id-copy-btn"
+                  onClick={() => copyOrderId(order.id)}
+                  title={ru ? 'Скопировать ID заказа' : 'Copy Order ID'}
+                  aria-label={ru ? 'Скопировать ID заказа' : 'Copy Order ID'}
+                >
+                  {copiedOrderId ? <Check size={12} style={{color: '#68d391'}}/> : <Copy size={12}/>}
+                </button>
+              </dd>
+            </div>
+            <div className="mainnet-receipt-row">
+              <dt>Arc Tx:</dt>
+              <dd className="mainnet-receipt-tx">
+                <a
+                  href={`https://explorer.arc.io/tx/${order.tx_hash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {order.tx_hash.slice(0, 10)}…{order.tx_hash.slice(-8)} <ExternalLink size={11}/>
+                </a>
+              </dd>
+            </div>
           </dl>
         </div>
 
-        <div style={{fontSize: '12px', color: '#a0aec0', lineHeight: 1.6, padding: '10px 12px', background: 'rgba(49, 130, 206, 0.08)', border: '1px solid rgba(49, 130, 206, 0.25)', borderRadius: '8px'}}>
+        <div className="mainnet-receipt-instructions">
           <ShieldCheck size={14} style={{display: 'inline', verticalAlign: 'middle', marginRight: '6px', color: '#63b3ed'}}/>
           <span>
             {ru
@@ -180,17 +245,16 @@ export function MainnetDeliveryModal({
         </div>
 
         {exportAction}
-        <div style={{display: 'flex', gap: '10px', marginTop: '4px'}}>
+        <div className="mainnet-modal-actions">
           <a
-            className="mp-button outline full"
+            className="mp-button outline full mainnet-modal-action-btn"
             href={`https://explorer.arc.io/tx/${order.tx_hash}`}
             target="_blank"
             rel="noreferrer"
-            style={{textAlign: 'center', justifyContent: 'center', textDecoration: 'none'}}
           >
             {ru ? 'Проверить в Arc Explorer' : 'View on Arc Explorer'} <ExternalLink size={14}/>
           </a>
-          <button className="mp-button full" onClick={onClose} style={{justifyContent: 'center'}}>
+          <button type="button" className="mp-button full mainnet-modal-action-btn" onClick={onClose}>
             {ru ? 'Закрыть' : 'Close'}
           </button>
         </div>
