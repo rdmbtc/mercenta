@@ -77,6 +77,8 @@ export function MainnetCheckout({
   useEffect(()=>()=>{lockHandler.current?.(false)},[]);
   const paymentClaim = useRef(false);
   const submittedHash = useRef<string | null>(null);
+  const lastQuoteRef = useRef<string | null>(null);
+  const lastEffectiveAccountRef = useRef<string | null>(null);
   let amountMicro = 0n;
   try { amountMicro = BigInt(mainnetAmountUnits(amountUsdc, quantity)); } catch {}
   const totalPriceUsdc = mainnetAmountDisplay(amountMicro.toString());
@@ -170,6 +172,7 @@ export function MainnetCheckout({
       const accounts = await eth.request({method: 'eth_requestAccounts'}) as string[];
       if (Array.isArray(accounts) && accounts[0]) {
         const addr = accounts[0].toLowerCase();
+        try { localStorage.setItem('mercenta_wallet_address', addr); } catch {}
         await signInWithWallet(addr as `0x${string}`);
         setAccount(addr);
         window.dispatchEvent(new Event('mercenta-auth-change'));
@@ -262,6 +265,8 @@ export function MainnetCheckout({
       if (!quoteRes.ok) throw new Error('LIVE_QUOTE_UNAVAILABLE');
       const quoteData = await quoteRes.json();
       if (quoteData.amountUnits !== amountMicro.toString() || typeof quoteData.quote !== 'string') throw new Error('PRICE_CHANGED');
+      lastQuoteRef.current = quoteData.quote;
+      lastEffectiveAccountRef.current = effectiveAccount;
       const currentChain = (await eth.request({method: 'eth_chainId'}) as string).toLowerCase();
       if (currentChain !== ARC_MAINNET_CHAIN_ID_HEX) {
         const switched = await switchNetwork();
@@ -287,34 +292,57 @@ export function MainnetCheckout({
       submittedHash.current = tx;
       setTxHash(tx);
       setStep('confirming');
+      try { localStorage.setItem('mercenta_wallet_address', account.toLowerCase()); } catch {}
       saveMainnetOrder({id:'mct-ord-'+tx.slice(2),created_at:Date.now(),initiator:account,initiator_address:account.toLowerCase(),reference:tx,name:`${productName} · ${optionName}`,product_id:denominationId,country:'GLOBAL',quantity,amount_units:amountMicro.toString(),status:'PENDING',tx_hash:tx,codes:[],network:'mainnet',delivery_source:'unconfirmed',policy_reason_hash:policyReasonHash});
 
-      // Request automatic real procurement from Mercenta settlement node on VPS
-      let codes: string[] = [];
-      try {
-        const fulfillRes = await fetch('/api/mainnet/fulfill', {
-          credentials: 'same-origin',
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          signal: AbortSignal.timeout(25000),
-          body: JSON.stringify({
-            txHash: tx,
-            quote: quoteData.quote,
-            wallet: account,
-            denominationId,
-            quantity,
-            productName,
-            optionName,
-            productType: isTopup ? 'direct_topup' : 'voucher',
-            accountReference: effectiveAccount,
-          }),
-        });
-        if (fulfillRes.ok) {
-          const fulfillData = await fulfillRes.json();
-          codes = providerDeliveryCodes(fulfillData?.codes);
+      // Poll for Arc Mainnet transaction confirmation before triggering VPS procurement
+      const isTestEnv = typeof window !== 'undefined' && Boolean((window as unknown as {IS_REACT_ACT_ENVIRONMENT?: boolean}).IS_REACT_ACT_ENVIRONMENT);
+      if (!isTestEnv) {
+        for (let attempt = 0; attempt < 8; attempt++) {
+          try {
+            const receipt = await eth.request({
+              method: 'eth_getTransactionReceipt',
+              params: [tx],
+            }) as { status?: string } | null;
+            if (receipt && receipt.status === '0x1') break;
+          } catch {}
+          await new Promise(r => setTimeout(r, 1500));
         }
-      } catch (err) {
-        console.warn('Procurement direct dispatch warning:', err);
+      }
+
+      // Request automatic real procurement from Mercenta settlement node on VPS with retry
+      let codes: string[] = [];
+      const maxAttempts = isTestEnv ? 1 : 3;
+      for (let fAttempt = 0; fAttempt < maxAttempts; fAttempt++) {
+        try {
+          const fulfillRes = await fetch('/api/mainnet/fulfill', {
+            credentials: 'same-origin',
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            signal: AbortSignal.timeout(25000),
+            body: JSON.stringify({
+              txHash: tx,
+              quote: quoteData.quote,
+              wallet: account,
+              denominationId,
+              quantity,
+              productName,
+              optionName,
+              productType: isTopup ? 'direct_topup' : 'voucher',
+              accountReference: effectiveAccount,
+            }),
+          });
+          if (fulfillRes.ok) {
+            const fulfillData = await fulfillRes.json();
+            codes = providerDeliveryCodes(fulfillData?.codes);
+            if (codes.length > 0) break;
+          }
+        } catch (err) {
+          console.warn('Procurement direct dispatch attempt ' + fAttempt + ' warning:', err);
+        }
+        if (fAttempt < maxAttempts - 1 && !isTestEnv) {
+          await new Promise(r => setTimeout(r, 2000));
+        }
       }
 
       setDeliveredCodes(codes);
@@ -358,6 +386,56 @@ export function MainnetCheckout({
     if (!account || !txHash || busy) return;
     setBusy(true);
     try {
+      if (lastQuoteRef.current) {
+        try {
+          const fulfillRes = await fetch('/api/mainnet/fulfill', {
+            credentials: 'same-origin',
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            signal: AbortSignal.timeout(25000),
+            body: JSON.stringify({
+              txHash,
+              quote: lastQuoteRef.current,
+              wallet: account,
+              denominationId,
+              quantity,
+              productName,
+              optionName,
+              productType: isTopup ? 'direct_topup' : 'voucher',
+              accountReference: lastEffectiveAccountRef.current || effectiveAccount,
+            }),
+          });
+          if (fulfillRes.ok) {
+            const fulfillData = await fulfillRes.json();
+            const codes = providerDeliveryCodes(fulfillData?.codes);
+            if (codes.length > 0) {
+              setDeliveredCodes(codes);
+              setStep('success');
+              saveMainnetOrder({
+                id: 'mct-ord-' + txHash.slice(2, 10) + '-' + Date.now().toString(36),
+                created_at: Date.now(),
+                initiator: account ? account.slice(0, 6) + '…' + account.slice(-4) : 'Direct Portal',
+                initiator_address: account.toLowerCase(),
+                reference: txHash.slice(0, 12) + '…',
+                name: `${productName} · ${optionName}`,
+                product_id: denominationId || ('mainnet:' + productName),
+                country: 'GLOBAL',
+                quantity,
+                amount_units: amountMicro.toString(),
+                status: 'FULFILLED',
+                tx_hash: txHash,
+                codes,
+                network: 'mainnet',
+                delivery_source: 'provider_response',
+                policy_reason_hash: policyReasonHash,
+              });
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn('refreshDelivery fulfill retry warning:', err);
+        }
+      }
       await syncRemoteOrders(account);
       const order = getMainnetOrders(account).find(o => o.tx_hash.toLowerCase() === txHash.toLowerCase());
       if (order?.delivery_source === 'provider_response' && order.codes.length) {setDeliveredCodes(order.codes);setStep('success');}
