@@ -106,8 +106,14 @@ async function executeProcurement(referenceId, denominationId, quantity = 1, pro
   let cleanRef = '';
   if (isDtu && accountReference) {
     cleanRef = accountReference.replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '').trim();
-    fields.push({ key: 'account_reference', value: cleanRef });
-    if (denominationId === '7295df4e-6fb0-4dfb-b962-ded3d073bc03' || (productName && productName.toLowerCase().includes('custom'))) {
+    const isTelegramOrCustom = (productName && productName.toLowerCase().includes('telegram'))
+      || denominationId === '7295df4e-6fb0-4dfb-b962-ded3d073bc03'
+      || denominationId === '03b360c1-02e0-495b-ba2a-146e5116aa74'
+      || (productName && productName.toLowerCase().includes('custom'));
+
+    const fieldKey = isTelegramOrCustom ? 'account_reference' : 'account_number';
+    fields.push({ key: fieldKey, value: cleanRef });
+    if (isTelegramOrCustom && (denominationId === '7295df4e-6fb0-4dfb-b962-ded3d073bc03' || (productName && productName.toLowerCase().includes('custom')))) {
       fields.push({ key: 'amount', value: '50' });
     }
   }
