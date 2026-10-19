@@ -9,7 +9,8 @@ const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h
 const NONCE_TTL_MS = 10 * 60 * 1000; // 10 min
 
 function sessionSecret(): string {
-  const s = process.env.ARC_SESSION_SECRET || process.env.BACKEND_PROXY_SECRET || "f4f1c57d7e71b082987e6328d99ab8ac4efaa2a8ac427c0e7caa1a87e26cc7d5";
+  const s = process.env.ARC_SESSION_SECRET || process.env.BACKEND_PROXY_SECRET;
+  if (!s || s.length < 32) throw new Error("SESSION_SECRET_NOT_CONFIGURED");
   return s;
 }
 
