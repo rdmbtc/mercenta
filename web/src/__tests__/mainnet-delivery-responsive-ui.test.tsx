@@ -91,3 +91,40 @@ it('renders responsive fallback receipt when order is not fulfilled', async () =
   expect(orderIdEl).toBeTruthy();
   expect(orderIdEl?.textContent).toBe(pendingOrder.id);
 });
+
+it('renders topup delivery layout for PUBG mobile order', async () => {
+  const pubgOrder: MainnetOrder = {
+    id: 'mct-ord-3d94ee8904cb8aaf19879a050e47c6b13926bb1ce464',
+    created_at: 1792446961000,
+    initiator: '0x18fabc7d2bfef8947740d68ef5f6083ddc8ceac3',
+    initiator_address: '0x18fabc7d2bfef8947740d68ef5f6083ddc8ceac3',
+    reference: '0x3d94ee8904cb...',
+    name: 'PUBG Mobile Top Up CIS · PUBG Mobile: 60 UC',
+    product_id: 'b40be16c-9cbb-4722-82ab-32db669e9801',
+    country: 'CIS',
+    quantity: 1,
+    amount_units: '978384',
+    status: 'FULFILLED',
+    tx_hash: '0x3d94ee8904cb8aaf19879a050e47c6b13926bb1ce4647d946b1a3ac847366643',
+    codes: ['TOPUP_RECORDED: 0x3d94ee8904cb8aaf19879a050e47c6b13926bb1ce4647d946b1a3ac847366643'],
+    network: 'mainnet',
+    delivery_source: 'provider_response',
+  };
+
+  const onClose = vi.fn();
+  await act(async () => {
+    root.render(<MainnetDeliveryModal order={pubgOrder} ru={true} onClose={onClose} />);
+  });
+
+  // Verify modal title is top-up delivery, not activation key
+  const modalTitle = host.querySelector('dialog h2');
+  expect(modalTitle?.textContent).toBe('Прямое зачисление цифрового товара');
+
+  // Verify recipient is displayed
+  const recipientEl = host.querySelector('.mainnet-topup-recipient-text');
+  expect(recipientEl).toBeTruthy();
+
+  // Verify order ID has responsive class
+  const orderIdEl = host.querySelector('.mainnet-receipt-id-text');
+  expect(orderIdEl?.textContent).toBe(pubgOrder.id);
+});

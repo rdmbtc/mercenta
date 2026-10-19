@@ -178,7 +178,7 @@ export async function POST(req: Request) {
       },
       confirmedAt: new Date().toISOString()
     });
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       { error: 'INTERNAL_ERROR', message: 'Payment verification failed.' },
       { status: 500 }
