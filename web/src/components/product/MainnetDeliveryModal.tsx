@@ -97,8 +97,32 @@ export function MainnetDeliveryModal({
   }
   const dateStr = new Date(order.created_at).toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
 
-  const isTopup = order.codes.some(c => c.startsWith('TOPUP_CREDITED:')) || order.name.toLowerCase().includes('telegram');
-  const recipient = order.codes.find(c => c.startsWith('TOPUP_CREDITED:'))?.replace('TOPUP_CREDITED:', '') || '';
+  const nameLower = (order.name || '').toLowerCase();
+  const isTopup = order.codes.some(c => c.startsWith('TOPUP_') || c.startsWith('DIRECT_TOPUP'))
+    || nameLower.includes('telegram')
+    || nameLower.includes('pubg')
+    || nameLower.includes('free fire')
+    || nameLower.includes('freefire')
+    || nameLower.includes('mobile legends')
+    || nameLower.includes('mlbb')
+    || nameLower.includes('top-up')
+    || nameLower.includes('topup')
+    || (order.product_id ? order.product_id.includes('topup') : false);
+  const topupCode = order.codes.find(c => c.startsWith('TOPUP_') || c.startsWith('DIRECT_TOPUP'));
+  let recipient = '';
+  if (topupCode) {
+    if (topupCode.startsWith('TOPUP_CREDITED:')) {
+      recipient = topupCode.replace('TOPUP_CREDITED:', '').trim();
+    } else if (topupCode.startsWith('TOPUP_RECORDED:')) {
+      const raw = topupCode.replace('TOPUP_RECORDED:', '').trim();
+      recipient = raw.startsWith('0x') && raw.length > 20 ? `${raw.slice(0, 8)}…${raw.slice(-6)}` : raw;
+    } else {
+      recipient = topupCode.replace(/^[^:]+:\s*/, '').trim();
+    }
+  }
+  if (!recipient) {
+    recipient = order.initiator ? (order.initiator.length > 20 ? `${order.initiator.slice(0, 8)}…${order.initiator.slice(-6)}` : order.initiator) : '';
+  }
 
   return (
     <Modal

@@ -35,7 +35,7 @@ function receipt(to: string, value: bigint) {
 
 async function post(body: Record<string, unknown>) {
   const res = await POST(new Request('http://localhost/api/x402/order', {method: 'POST', body: JSON.stringify(body)}));
-  return {status: res.status, json: await res.json() as Record<string, any>};
+  return {status: res.status, json: await res.json() as Record<string, unknown> & { challenge?: { recipient?: string; amount?: string }; error?: string; itemCode?: string; orderId?: string }};
 }
 
 describe('x402 order delivery requires a verified payment', () => {

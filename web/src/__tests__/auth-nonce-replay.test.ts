@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 // The backend is unreachable; the local nonce/verify fallback is what is under test.
 vi.mock("@/lib/backend-proxy", () => ({
