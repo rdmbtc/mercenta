@@ -7,7 +7,7 @@ const PORT = 3016;
 const DB_PATH = '/var/lib/mercenta/mainnet_fulfillment.sqlite';
 const ARC_RPC = 'https://rpc.mainnet.arc.io';
 const SETTLEMENT_VAULT = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
-const SUPPLIER_API_URL = 'https://approute.io/api/v1';
+const SUPPLIER_API_URL = process.env.SUPPLIER_API_URL || 'https://api.settlement-provider.internal/v1';
 const SUPPLIER_API_KEY = readFileSync('/etc/mercenta/retail-supplier-key','utf8').trim();
 const PROXY_KEY = readFileSync('/etc/mercenta/retail-proxy-key','utf8').trim();
 if(PROXY_KEY.length < 32) throw new Error('RETAIL_PROXY_NOT_CONFIGURED');

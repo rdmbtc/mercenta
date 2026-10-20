@@ -6,7 +6,7 @@ Gift cards + Seller API beats API-tokens wedge for 14-day GMV:
 - Resellers reorder DAILY (recurring GMV from ~20 accounts, not 60 one-shot buyers)
 - Sellers already pay suppliers in crypto (USDT P2P) — USDC is a step sideways, not a leap
 - Supply cost is THE competitive variable in reselling (thin margins, 1-3pp) — a 1-2pp price edge flips accounts
-- Seller API keeps downstream invisible = cleanest APPROUTE protection
+- Seller API keeps downstream invisible = cleanest supplier confidentiality protection
 
 ## Product frame
 B2C catalog (proof of product) + Seller API (the real engine):

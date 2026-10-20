@@ -5903,5 +5903,6 @@
   },
   "x-schema-notes": "Input constraints are generated from Zod definitions. Runtime business rules (budget sums, reserves, stock, idempotency and ownership) are enforced by the server. Generic response schemas are not a typed SDK guarantee.",
   "x-release-state": "guarded-wallet-retail",
-  "x-retail-status-endpoint": "/api/mainnet/status"
+  "x-retail-status-endpoint": "/api/mainnet/status",
+  "x-real-purchases-enabled": false
 }
