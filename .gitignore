@@ -100,9 +100,7 @@ TESTNET_LAUNCH.md
 .vercel
 work/
 .claude/
-scripts/*.py
-scripts/*.png
-scripts/*.mjs*
-scripts/*.vps_bak
+scripts/
+storyboard/
 submission/
 
