@@ -89,7 +89,11 @@
     align-items:center!important;
     gap:6px!important;
     margin-left:auto!important;
-    flex-shrink:0!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
+    max-width:calc(100% - 30px)!important;
+    justify-content:flex-end!important;
+    flex-shrink:1!important;
   }
   .ma.ma-ux .ux-header-actions>.ma-icon{
     display:none!important;
@@ -160,16 +164,18 @@
   .ma.ma-ux .wallet-control{
     display:inline-flex!important;
     align-items:center!important;
-    flex-shrink:0!important;
+    min-width:0!important;
+    flex-shrink:1!important;
   }
   .ma.ma-ux .wallet-btn{
-    height:36px!important;
-    min-height:36px!important;
-    padding:0 10px!important;
+    height:34px!important;
+    min-height:34px!important;
+    padding:0 8px!important;
     font-size:11px!important;
     border-radius:8px!important;
-    flex-shrink:0!important;
-    max-width:125px!important;
+    flex-shrink:1!important;
+    max-width:120px!important;
+    min-width:0!important;
     white-space:nowrap!important;
     overflow:hidden!important;
     text-overflow:ellipsis!important;
@@ -199,17 +205,19 @@
   }
 }
 
-@media(max-width:480px){
+@media(max-width:640px){
   .ma.ma-ux .ma-header{
-    height:52px!important;
-    min-height:52px!important;
+    height:50px!important;
+    min-height:50px!important;
     padding:0 8px!important;
-    gap:4px!important;
+    gap:6px!important;
   }
-  .ma.ma-ux .ux-mobile-brand .mp-brand,
+  .ma.ma-ux .ux-mobile-brand,
   .ma.ma-ux .ma-header>.mp-brand{
-    font-size:16px!important;
-    gap:4px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    flex-shrink:0!important;
+    margin:0!important;
   }
   .ma.ma-ux .ux-mobile-brand .mp-brand span,
   .ma.ma-ux .ma-header>.mp-brand span{
@@ -217,73 +225,138 @@
   }
   .ma.ma-ux .ux-mobile-brand .mp-brand img,
   .ma.ma-ux .ma-header>.mp-brand img{
-    width:20px!important;
-    height:20px!important;
+    width:22px!important;
+    height:22px!important;
+    flex-shrink:0!important;
   }
   .ma.ma-ux .ux-header-actions{
     gap:4px!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
+    max-width:calc(100% - 28px)!important;
+    justify-content:flex-end!important;
+    flex-shrink:1!important;
+  }
+  .ma.ma-ux .pd-nav-trigger{
+    display:none!important;
+  }
+  .ma.ma-ux .ux-options{
+    display:none!important;
   }
   .ma.ma-ux .ux-header-actions>.mg-language{
-    height:34px!important;
-    min-height:34px!important;
-    padding:2px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    height:30px!important;
+    min-height:30px!important;
+    padding:1px 2px!important;
     gap:1px!important;
+    border:1px solid var(--a-line,#2b3947)!important;
+    background:var(--a-surface,#101821)!important;
+    border-radius:6px!important;
+    flex-shrink:0!important;
   }
   .ma.ma-ux .ux-header-actions>.mg-language button{
-    min-width:24px!important;
-    height:28px!important;
-    padding:0 5px!important;
+    min-width:20px!important;
+    height:26px!important;
+    padding:0 4px!important;
     font-size:10px!important;
+    font-weight:600!important;
+    border-radius:4px!important;
   }
   .ma.ma-ux .nw-network-label{
     display:none!important;
   }
   .ma.ma-ux .nw-selector summary{
-    padding:5px 7px!important;
+    padding:0 6px!important;
     font-size:10px!important;
-    height:34px!important;
-    min-height:34px!important;
+    height:30px!important;
+    min-height:30px!important;
+    border-radius:6px!important;
+    gap:4px!important;
+    flex-shrink:0!important;
   }
-  .ma.ma-ux .pd-nav-trigger{
-    width:34px!important;
-    height:34px!important;
-    min-width:34px!important;
-    min-height:34px!important;
+  .ma.ma-ux .nw-selector .nw-dot{
+    width:5px!important;
+    height:5px!important;
+    flex-shrink:0!important;
   }
-  .ma.ma-ux .workspace-add-usdc{
-    padding:0 7px!important;
-    font-size:10px!important;
-    height:34px!important;
-    min-height:34px!important;
+  .ma.ma-ux .nw-selector summary svg{
+    width:12px!important;
+    height:12px!important;
+    flex-shrink:0!important;
   }
-  .ma.ma-ux .wallet-btn{
-    padding:0 8px!important;
-    font-size:10px!important;
-    height:34px!important;
-    min-height:34px!important;
-    max-width:100px!important;
-  }
-  .ma.ma-ux .ux-options>summary{
-    width:34px!important;
-    height:34px!important;
-    min-width:34px!important;
-    min-height:34px!important;
-  }
-}
-
-@media(max-width:360px){
   .ma.ma-ux .workspace-add-usdc span{
     display:none!important;
   }
   .ma.ma-ux .workspace-add-usdc{
-    width:34px!important;
-    min-width:34px!important;
+    width:30px!important;
+    min-width:30px!important;
+    height:30px!important;
+    min-height:30px!important;
     padding:0!important;
     justify-content:center!important;
+    border-radius:6px!important;
+    flex-shrink:0!important;
+    gap:0!important;
+  }
+  .ma.ma-ux .workspace-add-usdc svg{
+    width:15px!important;
+    height:15px!important;
+  }
+  .ma.ma-ux .wallet-control{
+    display:inline-flex!important;
+    align-items:center!important;
+    min-width:0!important;
+    flex-shrink:1!important;
   }
   .ma.ma-ux .wallet-btn{
-    max-width:82px!important;
+    height:30px!important;
+    min-height:30px!important;
+    padding:0 7px!important;
+    font-size:10px!important;
+    border-radius:6px!important;
+    flex-shrink:1!important;
+    max-width:110px!important;
+    min-width:0!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    gap:4px!important;
+  }
+  .ma.ma-ux .wallet-btn .wallet-dot{
+    width:5px!important;
+    height:5px!important;
+    flex-shrink:0!important;
+  }
+  .ma.ma-ux .wallet-popover{
+    right:0!important;
+    left:auto!important;
+    width:min(320px,calc(100vw - 16px))!important;
+    max-width:calc(100vw - 16px)!important;
+    padding:16px!important;
+    border-radius:12px!important;
+  }
+}
+
+@media(max-width:360px){
+  .ma.ma-ux .ma-header{
     padding:0 5px!important;
+    gap:3px!important;
+  }
+  .ma.ma-ux .ux-header-actions{
+    gap:3px!important;
+  }
+  .ma.ma-ux .ux-header-actions>.mg-language{
+    display:none!important;
+  }
+  .ma.ma-ux .wallet-btn{
+    max-width:92px!important;
+    padding:0 5px!important;
+    font-size:9.5px!important;
+  }
+  .ma.ma-ux .nw-selector summary{
+    padding:0 4px!important;
+    font-size:9.5px!important;
   }
 }
 

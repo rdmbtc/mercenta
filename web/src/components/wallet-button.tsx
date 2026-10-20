@@ -277,10 +277,16 @@ export default function WalletButton() {
           : phase === "signing"
           ? "Confirm sign-in…"
           : phase === "authed" && address
-          ? `${truncateAddress(address)} ▾`
+          ? (
+            <>
+              <span className="wallet-addr-full">{truncateAddress(address)}</span>
+              <span className="wallet-addr-compact">{truncateAddress(address, true)}</span>
+              <span className="wallet-caret" aria-hidden="true"> ▾</span>
+            </>
+          )
           : phase === "error"
           ? "Retry connection"
-          : "Connect wallet"}
+          : <>Connect<span className="wallet-btn-extra"> wallet</span></>}
       </button>
 
       {/* Wallet Profile Popover */}
