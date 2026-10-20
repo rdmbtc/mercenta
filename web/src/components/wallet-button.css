@@ -311,3 +311,48 @@
   font-size: 16px;
   line-height: 1;
 }
+
+.wallet-addr-compact {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .wallet-control {
+    min-width: 0;
+    max-width: 100%;
+    flex-shrink: 1;
+  }
+  .wallet-addr-full {
+    display: none;
+  }
+  .wallet-addr-compact {
+    display: inline;
+  }
+  .wallet-btn-extra {
+    display: none;
+  }
+  .wallet-btn {
+    height: 32px;
+    padding: 0 8px;
+    font-size: 11px;
+    gap: 5px;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 7px;
+    flex-shrink: 1;
+  }
+  .wallet-btn .wallet-dot {
+    width: 5px;
+    height: 5px;
+  }
+  .wallet-popover {
+    right: 0;
+    left: auto;
+    width: min(320px, calc(100vw - 16px));
+    max-width: calc(100vw - 16px);
+    padding: 16px;
+    border-radius: 12px;
+  }
+}

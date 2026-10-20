@@ -32,8 +32,9 @@ export async function connectWallet(): Promise<`0x${string}`> {
   return accounts[0] as `0x${string}`;
 }
 
-export function truncateAddress(addr: string): string {
-  return addr.length <= 11 ? addr : `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+export function truncateAddress(addr: string, compact = false): string {
+  if (addr.length <= 11) return addr;
+  return compact ? `${addr.slice(0, 4)}…${addr.slice(-3)}` : `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
 
 export interface SignInResult {
