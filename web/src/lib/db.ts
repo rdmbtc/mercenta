@@ -122,10 +122,15 @@ let _db: Database.Database | null = null;
  */
 export function getDb(path?: string): Database.Database {
   if (_db) return _db;
-  const dbPath = path ?? (process.env.NODE_ENV === "test" ? ":memory:" : process.env.WEB_AUTH_DATABASE_PATH ?? "data/auth.sqlite");
-  if(dbPath !== ":memory:") mkdirSync(dirname(dbPath),{recursive:true});
-  const db = new Database(dbPath);
-  db.pragma("journal_mode = WAL");
+  const dbPath = path ?? (process.env.NODE_ENV === "test" ? ":memory:" : process.env.WEB_AUTH_DATABASE_PATH ?? (process.env.VERCEL ? "/tmp/auth.sqlite" : "data/auth.sqlite"));
+  try { if(dbPath !== ":memory:") mkdirSync(dirname(dbPath),{recursive:true}); } catch {}
+  let db: Database.Database;
+  try {
+    db = new Database(dbPath);
+  } catch {
+    db = new Database(":memory:");
+  }
+  try { db.pragma("journal_mode = WAL"); } catch {}
   db.pragma("foreign_keys = ON");
   db.exec(SCHEMA_SQL);
   _db = db;
