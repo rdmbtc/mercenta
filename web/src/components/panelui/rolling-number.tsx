@@ -100,7 +100,7 @@ export function RollingNumber({
   }, [formatter, value]);
 
   return (
-    <span className={slots.root({ className })} {...props}>
+    <span data-slot="rolling-number" className={slots.root({ className })} {...props}>
       {/* What a screen reader gets: the number, once, as it is written. */}
       <span className="sr-only">{label}</span>
       {pieces.map((piece) =>
