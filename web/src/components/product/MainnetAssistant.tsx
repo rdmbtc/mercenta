@@ -4,6 +4,10 @@ import { Bot, Search, ArrowUpRight, ShieldCheck, Send, Wallet, CheckCircle2 } fr
 import { mainnetGuidance, checkoutDetail } from '@/lib/mainnet-assistant';
 import { sourceLiveMainnetProducts } from '@/lib/mainnet-live-catalog';
 import { mainnetQuickSelect, type QuickSelectProduct } from '@/lib/mainnet-quick-select';
+import { Stat } from '@/components/panelui/stat';
+import { Frame } from '@/components/panelui/frame';
+import { ThinkingOrb } from '@/components/panelui/thinking-orb';
+import { RollingNumber } from '@/components/panelui/rolling-number';
 import './mainnet-assistant.css';
 
 interface ChatTurn {
@@ -178,21 +182,42 @@ export function MainnetAssistant({
     <>
       {/* Top Metric Cards matching Funds layout */}
       <div className="ma-stats">
-        <article>
-          <span>{ru ? '01 · Лимит расходов' : '01 · 24h Spend Cap'}</span>
-          <strong>≤ 100.00<small> USDC</small></strong>
-          <p>{ru ? 'Детерминированный 24h лимит расходов' : 'Deterministic 24h spending limit'}</p>
-        </article>
-        <article>
-          <span>{ru ? '02 · Минимальная маржа' : '02 · Margin Floor'}</span>
-          <strong>≥ 15.0%<small> Gross</small></strong>
-          <p>{ru ? 'Защита валовой маржи мерчанта' : 'Guaranteed gross margin protection'}</p>
-        </article>
-        <article>
-          <span>{ru ? '03 · Policy Engine' : '03 · Policy Engine'}</span>
-          <strong>5 / 5<small> Passed</small></strong>
-          <p>{ru ? 'Мгновенный расчёт на Arc (< 1с) · 100% SLA' : 'Instant settlement on Arc (< 1s) · 100% SLA'}</p>
-        </article>
+        <Stat className="bg-[#10161d] border border-[#29323d] rounded-xl p-4">
+          <Stat.Content>
+            <Stat.Label className="text-xs text-sky-400 font-mono tracking-wider">{ru ? '01 · Лимит расходов' : '01 · 24h Spend Cap'}</Stat.Label>
+            <Stat.Value size="sm" className="font-mono tabular-nums text-foreground flex items-baseline gap-1 my-1">
+              <span>≤</span>
+              <RollingNumber value={100} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} />
+              <small className="text-muted-foreground text-xs">USDC</small>
+            </Stat.Value>
+            <Stat.Description className="text-xs text-slate-400">{ru ? 'Детерминированный 24h лимит расходов' : 'Deterministic 24h spending limit'}</Stat.Description>
+          </Stat.Content>
+          <Stat.Badge className="text-sky-400 bg-sky-950/40 border border-sky-800/50">DETERMINISTIC</Stat.Badge>
+        </Stat>
+        <Stat className="bg-[#10161d] border border-[#29323d] rounded-xl p-4">
+          <Stat.Content>
+            <Stat.Label className="text-xs text-sky-400 font-mono tracking-wider">{ru ? '02 · Минимальная маржа' : '02 · Margin Floor'}</Stat.Label>
+            <Stat.Value size="sm" className="font-mono tabular-nums text-foreground flex items-baseline gap-1 my-1">
+              <span>≥</span>
+              <RollingNumber value={15} format={{ minimumFractionDigits: 1, maximumFractionDigits: 1 }} />
+              <small className="text-muted-foreground text-xs">% Gross</small>
+            </Stat.Value>
+            <Stat.Description className="text-xs text-slate-400">{ru ? 'Защита валовой маржи мерчанта' : 'Guaranteed gross margin protection'}</Stat.Description>
+          </Stat.Content>
+          <Stat.Badge className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/50">PROTECTED</Stat.Badge>
+        </Stat>
+        <Stat className="bg-[#10161d] border border-[#29323d] rounded-xl p-4">
+          <Stat.Content>
+            <Stat.Label className="text-xs text-sky-400 font-mono tracking-wider">{ru ? '03 · Policy Engine' : '03 · Policy Engine'}</Stat.Label>
+            <Stat.Value size="sm" className="font-mono tabular-nums text-foreground flex items-baseline gap-1 my-1">
+              <RollingNumber value={5} />
+              <span>/ 5</span>
+              <small className="text-muted-foreground text-xs">Passed</small>
+            </Stat.Value>
+            <Stat.Description className="text-xs text-slate-400">{ru ? 'Мгновенный расчёт на Arc (< 1с) · 100% SLA' : 'Instant settlement on Arc (< 1s) · 100% SLA'}</Stat.Description>
+          </Stat.Content>
+          <Stat.Badge className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/50">100% SLA</Stat.Badge>
+        </Stat>
       </div>
 
       {/* Safety Info Bar matching Funds layout */}
@@ -332,7 +357,7 @@ export function MainnetAssistant({
 
               <div style={{ display: 'flex', alignItems: 'flex-end' }}>
                 <button className="ma-button" type="submit" disabled={searching}>
-                  <Search size={15} />
+                  {searching ? <ThinkingOrb state="searching" size={16} /> : <Search size={15} />}
                   <span>{searching ? (ru ? 'Проверяем каталог…' : 'Checking catalogue…') : (ru ? 'Найти варианты' : 'Find options')}</span>
                 </button>
               </div>
@@ -434,36 +459,42 @@ export function MainnetAssistant({
                     <div className="ag-user">{t.q}</div>
                     <div className="ag-answer">
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                        <Bot size={15} style={{ color: 'var(--a-accent)' }} />
+                        <ThinkingOrb state="cleared" size={16} />
                         <b style={{ color: 'var(--a-accent)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           MERCENTA · {ru ? 'КОНСУЛЬТАЦИЯ И ПОДБОР' : 'GUIDANCE & SOURCING'}
                         </b>
                       </span>
                       <p>{t.a}</p>
                       {t.items && t.items.length > 0 && (
-                        <div style={{ margin: '14px 0', display: 'grid', gap: '8px' }}>
-                          <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--a-muted)', fontWeight: 600 }}>
-                            {ru ? 'ПРЯМОЙ ЗАКАЗ НА ARC MAINNET' : 'MATCHED ITEMS ON ARC MAINNET'}
-                          </span>
-                          {t.items.map(item => (
-                            <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--a-bg)', border: '1px solid var(--a-line)', borderRadius: '8px' }}>
-                              <div>
-                                <span className="ma-pill" style={{ marginRight: '8px' }}>{item.country} · {item.kind === 'Direct Top-Up' ? 'TOP-UP' : 'VOUCHER'}</span>
-                                <b style={{ color: 'var(--a-ink)', fontSize: '12px' }}>{item.name}</b>
-                                <span style={{ marginLeft: '12px', color: 'var(--a-accent)', fontWeight: 600 }}>{item.price} USDC</span>
-                              </div>
-                              <button
-                                type="button"
-                                className="ma-button"
-                                style={{ padding: '6px 12px', fontSize: '11px' }}
-                                onClick={() => handleCheckoutOpen(item)}
-                              >
-                                <span>{ru ? 'Купить (USDC)' : 'Buy (USDC)'}</span>
-                                <ArrowUpRight size={13} />
-                              </button>
+                        <Frame variant="band" className="my-3 text-xs">
+                          <Frame.Header>
+                            <div className="flex items-center gap-2">
+                              <ThinkingOrb state="cleared" size={14} />
+                              <Frame.Title className="text-sky-300 font-semibold">{ru ? 'ПРЯМОЙ ЗАКАЗ НА ARC MAINNET' : 'MATCHED ITEMS ON ARC MAINNET'}</Frame.Title>
                             </div>
-                          ))}
-                        </div>
+                            <Frame.Action className="text-emerald-400 font-mono text-[11px]">5/5 POLICY PASSED</Frame.Action>
+                          </Frame.Header>
+                          <Frame.Panel className="p-2 space-y-2 bg-black/30">
+                            {t.items.map(item => (
+                              <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--a-bg)', border: '1px solid var(--a-line)', borderRadius: '8px' }}>
+                                <div>
+                                  <span className="ma-pill" style={{ marginRight: '8px' }}>{item.country} · {item.kind === 'Direct Top-Up' ? 'TOP-UP' : 'VOUCHER'}</span>
+                                  <b style={{ color: 'var(--a-ink)', fontSize: '12px' }}>{item.name}</b>
+                                  <span style={{ marginLeft: '12px', color: 'var(--a-accent)', fontWeight: 600 }}>{item.price} USDC</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  className="ma-button"
+                                  style={{ padding: '6px 12px', fontSize: '11px' }}
+                                  onClick={() => handleCheckoutOpen(item)}
+                                >
+                                  <span>{ru ? 'Купить (USDC)' : 'Buy (USDC)'}</span>
+                                  <ArrowUpRight size={13} />
+                                </button>
+                              </div>
+                            ))}
+                          </Frame.Panel>
+                        </Frame>
                       )}
                     </div>
                   </div>

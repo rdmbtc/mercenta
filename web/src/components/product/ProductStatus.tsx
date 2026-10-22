@@ -5,6 +5,7 @@ import { EXAMPLE_INCIDENT } from '@/lib/status-snapshot';
 import { useEffect,useRef,useState } from 'react';
 import { RollingNumber } from '@/components/panelui/rolling-number';
 import { Stat } from '@/components/panelui/stat';
+import { ThinkingOrb } from '@/components/panelui/thinking-orb';
 import { Activity,AlertTriangle,ArrowRight,ArrowUpRight,Badge,CategoryIcon,Check,Clock,Download,DownloadJson,Eyebrow,FileText,Globe,Modal,ProductFooter,ProductHeader,RefreshCw,ShieldCheck,Terminal,Wallet } from './ProductShell';
 
 type Probe={state:'unchecked'|'checking'|'ok'|'error';checkedAt?:string;elapsed?:number};
@@ -65,7 +66,10 @@ export function ProductStatus(){
               <img src="/mercenta-mark.webp" alt=""/>
               {probe.state==='ok'&&<span><Check size={16}/></span>}
             </div>
-            <h2 aria-live="polite">{label}</h2>
+            <div className="flex items-center gap-2.5 my-2">
+              <ThinkingOrb state={probe.state==='ok'?'cleared':probe.state==='checking'?'evaluating':'idle'} size={22} />
+              <h2 aria-live="polite" style={{margin:0}}>{label}</h2>
+            </div>
             <p>{probe.state==='ok'?'The health endpoint reports API liveness and database access.':probe.state==='error'?'The request did not return a healthy response. Try again or inspect the service.':'Run a read-only check of the API and database on this site.'}</p>
             <button className="mp-button full" disabled={probe.state==='checking'} onClick={check}>
               <RefreshCw size={17} className={probe.state==='checking'?'mp-spin':''}/>
