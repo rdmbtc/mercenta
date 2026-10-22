@@ -8,6 +8,7 @@ import { Kpi } from '@/components/panelui/kpi';
 import { Stat } from '@/components/panelui/stat';
 import { Planet } from '@/components/panelui/planet';
 import { Frame } from '@/components/panelui/frame';
+import { ThinkingOrb } from '@/components/panelui/thinking-orb';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -149,5 +150,17 @@ describe('PanelUI Components Integration', () => {
     expect(host.textContent).toContain('Agent Execution Trace');
     expect(host.textContent).toContain('LIVE');
     expect(host.textContent).toContain('Step 1: Check policy');
+  });
+
+  it('ThinkingOrb renders states and animations', async () => {
+    await act(async () => {
+      root.render(
+        <ThinkingOrb state="evaluating" label="Policy validation in progress" />
+      );
+    });
+
+    expect(host.textContent).toContain('Policy validation in progress');
+    expect(host.querySelector('[data-slot="thinking-orb"]')).toBeTruthy();
+    expect(host.querySelector('[data-state="evaluating"]')).toBeTruthy();
   });
 });
