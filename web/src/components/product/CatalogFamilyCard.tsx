@@ -3,18 +3,13 @@ import {ArrowUpRight,Globe} from 'lucide-react';
 import type {ProductFamily} from '@/lib/catalog-families';
 import {familyOptions,familyPrice,regionLabel} from '@/lib/catalog-families';
 import {ProductImage} from './ProductImage';
-import {TiltCard} from '@/components/panelui/tilt-card';
 
 export function CatalogFamilyCard({family:f,ru,region='all',priority=false,onOpen}:{family:ProductFamily;ru:boolean;region?:string;priority?:boolean;onOpen:()=>void}){
   const price=familyPrice(f,region),art=f.products.find(p=>p.imageSource==='supplier'&&p.imageUrl)??f.products[0];
   return (
     <article className="cf-card">
       <button className="cf-card-image" onClick={onOpen} aria-label={(ru?'Купить: ':'Buy: ')+f.name}>
-        <TiltCard tilt={8} color="info" glare className="w-full h-full overflow-hidden">
-          <TiltCard.Layer depth={10}>
-            <ProductImage name={f.name} category={f.category} imageUrl={art.imageSource==='supplier'?art.imageUrl:undefined} priority={priority}/>
-          </TiltCard.Layer>
-        </TiltCard>
+        <ProductImage name={f.name} category={f.category} imageUrl={art.imageSource==='supplier'?art.imageUrl:undefined} priority={priority}/>
       </button>
       <div className="cf-card-body">
         <span className="cf-card-meta">{f.type==='voucher'?(ru?'Коды и карты':'Vouchers & cards'):f.type==='direct_topup'?(ru?'Пополнение':'Top-up'):'eSIM'}<span><Globe size={13}/>{region==='all'?f.regions.length+' '+(ru?'рег.':'regions'):regionLabel(region,ru)}</span></span>
