@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import BrandMark from "./BrandMark";
 import { RollingNumber } from "@/components/panelui/rolling-number";
+import { ArcSettlementGlobe } from "@/components/panelui/ArcSettlementGlobe";
 
 export interface ClearingOrder {
   id: string;
@@ -147,6 +148,7 @@ export default function Hero3DReceipt() {
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [animating, setAnimating] = useState(false);
+  const [viewMode, setViewMode] = useState<'receipt' | 'mesh'>('receipt');
 
   // 3D interactive tilt
   const [tilt, setTilt] = useState({ rx: 3, ry: -9, gx: 50, gy: 30 });
@@ -209,16 +211,51 @@ export default function Hero3DReceipt() {
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
       role="region"
-      aria-label="3D Live Animated Order Receipt"
+      aria-label="3D Live Animated Order Receipt & Settlement Mesh"
     >
-      {/* 3D Physical Paper Card Shell */}
-      <div
-        ref={cardRef}
-        className={`mx-receipt mx-3d-paper-receipt ${animating ? "is-flipping" : ""}`}
-        style={{
-          transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
-        }}
-      >
+      {/* Mode Switcher: 3D Live Receipt vs Arc Mesh Vector Globe */}
+      <div className="flex items-center justify-between mb-3 w-full px-1 text-xs" style={{ minHeight: '34px' }}>
+        <span className="font-mono text-[11px] text-muted-foreground tracking-wider uppercase">
+          Arc Mainnet Node · 5042
+        </span>
+        <div className="inline-flex items-center gap-1 rounded-xl border border-white/10 bg-black/40 p-1">
+          <button
+            type="button"
+            onClick={() => setViewMode('receipt')}
+            className={`px-2.5 py-0.5 rounded-lg text-xs transition-colors ${
+              viewMode === 'receipt'
+                ? 'bg-sky-500/20 text-sky-400 font-semibold border border-sky-500/30'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            3D Receipt
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('mesh')}
+            className={`px-2.5 py-0.5 rounded-lg text-xs transition-colors ${
+              viewMode === 'mesh'
+                ? 'bg-sky-500/20 text-sky-400 font-semibold border border-sky-500/30'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Arc Mesh Globe
+          </button>
+        </div>
+      </div>
+
+      {viewMode === 'mesh' ? (
+        <ArcSettlementGlobe className="w-full" interactive />
+      ) : (
+        <>
+          {/* 3D Physical Paper Card Shell */}
+          <div
+            ref={cardRef}
+            className={`mx-receipt mx-3d-paper-receipt ${animating ? "is-flipping" : ""}`}
+            style={{
+              transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+            }}
+          >
         {/* Holographic Specular Glare */}
         <div
           className="mx-3d-glare"
@@ -360,6 +397,8 @@ export default function Hero3DReceipt() {
           {isPaused ? "PAUSED" : `0${index + 1} / 0${HERO_CLEARING_ORDERS.length}`}
         </span>
       </div>
-    </div>
+    </>
+  )}
+</div>
   );
 }
