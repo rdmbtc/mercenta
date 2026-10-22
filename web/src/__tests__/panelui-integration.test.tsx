@@ -7,6 +7,7 @@ import { TiltCard } from '@/components/panelui/tilt-card';
 import { Kpi } from '@/components/panelui/kpi';
 import { Stat } from '@/components/panelui/stat';
 import { Planet } from '@/components/panelui/planet';
+import { Frame } from '@/components/panelui/frame';
 
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -128,5 +129,25 @@ describe('PanelUI Components Integration', () => {
     expect(host.querySelector('canvas')).toBeTruthy();
     expect(host.textContent).toContain('US Territory');
     expect(host.textContent).toContain('EU Territory');
+  });
+
+  it('Frame renders structured tray with header, action and panel rows', async () => {
+    await act(async () => {
+      root.render(
+        <Frame variant="band">
+          <Frame.Header>
+            <Frame.Title>Agent Execution Trace</Frame.Title>
+            <Frame.Action>LIVE</Frame.Action>
+          </Frame.Header>
+          <Frame.Panel>
+            <span>Step 1: Check policy</span>
+          </Frame.Panel>
+        </Frame>
+      );
+    });
+
+    expect(host.textContent).toContain('Agent Execution Trace');
+    expect(host.textContent).toContain('LIVE');
+    expect(host.textContent).toContain('Step 1: Check policy');
   });
 });

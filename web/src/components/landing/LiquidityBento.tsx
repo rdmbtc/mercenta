@@ -7,6 +7,7 @@ import {
   ArrowUpRight,
   ArrowRight,
 } from "lucide-react";
+import { RollingNumber } from "@/components/panelui/rolling-number";
 export function LiquidityBento() {
   return (
     <section className="mx-liquidity" id="liquidity">
@@ -49,7 +50,7 @@ export function LiquidityBento() {
             </p>
             <div className="mx-liquidity-rate">
               <strong>
-                5.4<span>%</span>
+                <RollingNumber value={5.4} format={{ minimumFractionDigits: 1, maximumFractionDigits: 1 }} /><span>%</span>
               </strong>
               <span>
                 APY assumption
@@ -81,7 +82,7 @@ export function LiquidityBento() {
             </p>
             <div className="mx-liquidity-rate">
               <strong>
-                75<span>%</span>
+                <RollingNumber value={75} /><span>%</span>
               </strong>
               <span>
                 Maximum model LTV

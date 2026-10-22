@@ -10,6 +10,7 @@ import { MorphHeadline, SupplySection, BusinessPlaybooks, LandingFAQ } from "./L
 import { CASES, ORDER, POLICY, evaluatePolicy, percent, usdc, type SupplierState } from "@/lib/policy";
 import {LiquidityBento} from './LiquidityBento';
 import Hero3DReceipt from "./Hero3DReceipt";
+import { RollingNumber } from "@/components/panelui/rolling-number";
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d={diagonal ? "M6 18 18 6M6 6h12v12" : "M4 12h16m-6-6 6 6-6 6"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -179,7 +180,7 @@ export default function FlagshipLanding() {
           <div className="mx-art-caption"><span className="mx-cross">+</span><div><span className="mx-label">THE POLICY GATE / 001</span><p>Intelligence moves fast.<br />Control moves with it.</p></div></div>
           <div className="mx-art-status"><span className="mx-beacon" /> DETERMINISTIC BY DESIGN</div>
         </div>
-        <div className="mx-wrap"><div className="mx-hero-bottom"><span className="mx-bottom-intro">Built for the<br /><strong>agent economy.</strong></span><div><span className="mx-label">VALIDATE</span><p>5 policy checks</p></div><div><span className="mx-label">PROTECT</span><p>{percent(POLICY.grossMarginFloor).replace(".0", "")} margin floor</p></div><div><span className="mx-label">AUTHORIZE</span><p>{POLICY.autoApprovalLimit.toLocaleString("en-US")} USDC limit</p></div><a href="#control" className="mx-scroll-cue" aria-label="Explore spend controls">Explore <span>↓</span></a></div></div>
+        <div className="mx-wrap"><div className="mx-hero-bottom"><span className="mx-bottom-intro">Built for the<br /><strong>agent economy.</strong></span><div><span className="mx-label">VALIDATE</span><p>5 policy checks</p></div><div><span className="mx-label">PROTECT</span><p>{percent(POLICY.grossMarginFloor).replace(".0", "")} margin floor</p></div><div><span className="mx-label">AUTHORIZE</span><p><RollingNumber value={POLICY.autoApprovalLimit} /> USDC limit</p></div><a href="#control" className="mx-scroll-cue" aria-label="Explore spend controls">Explore <span>↓</span></a></div></div>
       </section>
 
       <LiquidityBento />
