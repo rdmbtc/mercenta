@@ -1,5 +1,6 @@
 'use client';
 import {useState, useEffect, useRef} from 'react';
+import {RollingNumber} from '@/components/panelui/rolling-number';
 import {signInWithWallet,fetchSession} from '@/lib/wallet';
 import './mainnet-record.css';
 import {ShieldCheck, CheckCircle2, ExternalLink, Wallet, LoaderCircle, AlertCircle, Copy, Check, KeyRound} from 'lucide-react';
@@ -447,7 +448,7 @@ export function MainnetCheckout({
       <span className="mc-kicker">ARC MAINNET / DELIVERY PENDING</span>
       <h3>{ru ? 'Перевод отправлен. Проверяем выдачу.' : 'Transfer submitted. Delivery pending.'}</h3>
       <p>{ru ? 'Подтверждение оплаты и выдачи пока не получено. Не платите повторно. Хеш сохранён в покупках; обновление статуса не отправляет деньги.' : 'Payment and delivery confirmation are not yet available. Do not pay again. The hash is saved in Purchases; checking status never sends another payment.'}</p>
-      <dl><div><dt>USDC</dt><dd>{totalPriceUsdc}</dd></div><div><dt>Transaction</dt><dd style={{overflowWrap:'anywhere'}}>{txHash}</dd></div></dl>
+      <dl><div><dt>USDC</dt><dd className="flex items-center gap-1"><RollingNumber value={orderAmountUsdc} format={{ minimumFractionDigits: 2, maximumFractionDigits: 6 }} /><span>USDC</span></dd></div><div><dt>Transaction</dt><dd style={{overflowWrap:'anywhere'}}>{txHash}</dd></div></dl>
       <button type="button" className="mp-button outline full" onClick={refreshDelivery} disabled={busy}>{busy ? <LoaderCircle size={16}/> : null}{ru ? 'Проверить выдачу' : 'Check delivery'}</button>
       <a className="mp-button outline full" href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer">Arc Explorer <ExternalLink size={14}/></a>
       <a className="mp-button outline full" href="/app?section=orders">{ru ? 'Открыть покупки' : 'Open Purchases'}</a>
@@ -607,7 +608,7 @@ export function MainnetCheckout({
             </div>
             <div className="mainnet-receipt-row">
               <dt>{ru ? 'Сумма:' : 'Amount:'}</dt>
-              <dd className="mainnet-receipt-amount" style={{color: '#b2e5ff'}}>{totalPriceUsdc} USDC</dd>
+              <dd className="mainnet-receipt-amount inline-flex items-center gap-1.5" style={{color: '#b2e5ff'}}><RollingNumber value={orderAmountUsdc} format={{ minimumFractionDigits: 2, maximumFractionDigits: 6 }} /><span>USDC</span></dd>
             </div>
             <div className="mainnet-receipt-row">
               <dt>Tx Hash:</dt>
@@ -702,7 +703,7 @@ export function MainnetCheckout({
           </div>
           <div className="mainnet-receipt-row">
             <dt>{ru ? 'К оплате:' : 'Amount:'}</dt>
-            <dd className="mainnet-receipt-amount" style={{fontSize: '15px', color: '#b2e5ff'}}>{totalPriceUsdc} USDC</dd>
+            <dd className="mainnet-receipt-amount inline-flex items-center gap-1.5" style={{fontSize: '15px', color: '#b2e5ff'}}><RollingNumber value={orderAmountUsdc} format={{ minimumFractionDigits: 2, maximumFractionDigits: 6 }} /><span>USDC</span></dd>
           </div>
           <div className="mainnet-receipt-row">
             <dt>{ru ? 'Стандарт роутера:' : 'Protocol Router:'}</dt>

@@ -1,15 +1,23 @@
 'use client';
-import {accountMoney} from '@/lib/account-format';
 import {EmptyState,ListSkeleton} from './Primitives';
 import {ArrowUpRight,ShieldCheck,Layers,Ticket,CircleDollarSign,Wallet} from 'lucide-react';
+import {RollingNumber} from '@/components/panelui/rolling-number';
 import './account-overview.css';
+
 type Stats={totalOrders:number;shopOrders:number;directTopUpOrders:number;totalSpentUnits:string};
+
 export function AccountOverview({stats,loading,period,onPeriod,ru=false,isMainnet=false}:{stats:Stats|null;loading:boolean;period:string;onPeriod:(s:string)=>void;ru?:boolean;isMainnet?:boolean}){
- const metrics=[{name:ru?'Заказы':'Orders',value:String(stats?.totalOrders??0),icon:Layers,note:ru?'Все покупки':'All purchases'},{name:ru?'Ваучеры':'Vouchers',value:String(stats?.shopOrders??0),icon:Ticket,note:ru?'Цифровые коды':'Digital codes'},{name:ru?'Пополнения':'Top-ups',value:String(stats?.directTopUpOrders??0),icon:Wallet,note:ru?'Прямые пополнения':'Direct top-ups'},{name:ru?'Потрачено':'Total spent',value:accountMoney(stats?.totalSpentUnits??'0'),icon:CircleDollarSign,note:'USDC · 6 decimals'}];
+ const metrics=[
+   {name:ru?'Заказы':'Orders',num:stats?.totalOrders??0,digits:0,icon:Layers,note:ru?'Все покупки':'All purchases'},
+   {name:ru?'Ваучеры':'Vouchers',num:stats?.shopOrders??0,digits:0,icon:Ticket,note:ru?'Цифровые коды':'Digital codes'},
+   {name:ru?'Пополнения':'Top-ups',num:stats?.directTopUpOrders??0,digits:0,icon:Wallet,note:ru?'Прямые пополнения':'Direct top-ups'},
+   {name:ru?'Потрачено':'Total spent',num:Number(stats?.totalSpentUnits??'0')/1_000_000,digits:6,icon:CircleDollarSign,note:'USDC · 6 decimals'}
+ ];
+
  return <section className="me-card me-account-overview ao-panel" aria-busy={loading} aria-labelledby="activity-title">
   <header className="ao-header"><div><div className="ao-eyebrow"><span className="ao-network"><span aria-hidden="true"/>{isMainnet?'Arc Mainnet · 5042':'Arc Testnet · 5042002'}</span><span>{ru?'Счёт':'Account overview'}</span></div><h2 id="activity-title">{ru?'Ваша активность, в деталях.':'Your activity, at a glance.'}</h2><p>{isMainnet?(ru?'Покупки и расходы выбранного кошелька в USDC.':'Purchases and USDC spending for your selected wallet.'):(ru?'Активность тестового счёта. Не реальные продажи.':'Test account activity. Not business sales or Mainnet revenue.')}</p></div><a className="ao-history" href="/app?section=orders">{ru?'История и экспорт':'History & export'}<ArrowUpRight size={16}/></a></header>
   <div className="ao-range"><div role="group" aria-label={ru?'Период активности':'Activity range'} className="ao-periods">{['24h','7d','30d','90d'].map(p=><button type="button" key={p} aria-pressed={period===p} onClick={()=>onPeriod(p)}>{p}</button>)}</div><span>{ru?'Выбранный период':'Selected range'}: <b>{period}</b></span></div>
-  {loading?<ListSkeleton/>:stats?<div className="ao-metrics">{metrics.map(({name,value,icon:Icon,note})=><div className="ao-metric" key={name}><div><span>{name}</span><Icon size={18} aria-hidden="true"/></div><strong>{value}</strong><small>{note}</small></div>)}</div>:<EmptyState title={ru?'Подключите кошелёк':'Connect your wallet'} text={ru?'Войдите, чтобы увидеть свою активность.':'Sign in to see your activity. We never substitute demo sales for your data.'} href="/app?section=orders" action={ru?'Мои покупки':'View purchases'}/>}
+  {loading?<ListSkeleton/>:stats?<div className="ao-metrics">{metrics.map(({name,num,digits,icon:Icon,note})=><div className="ao-metric" key={name}><div><span>{name}</span><Icon size={18} aria-hidden="true"/></div><strong><RollingNumber value={num} format={{minimumFractionDigits:digits,maximumFractionDigits:digits}}/></strong><small>{note}</small></div>)}</div>:<EmptyState title={ru?'Подключите кошелёк':'Connect your wallet'} text={ru?'Войдите, чтобы увидеть свою активность.':'Sign in to see your activity. We never substitute demo sales for your data.'} href="/app?section=orders" action={ru?'Мои покупки':'View purchases'}/>}
   <footer className="ao-footer"><ShieldCheck size={20} aria-hidden="true"/><div><b>{ru?'Вы контролируете каждую покупку':'You stay in control of every purchase'}</b><p>{ru?'Вход — не оплата. Проверяйте сумму и сеть перед подтверждением.':'Signing in is not payment. Review the amount and network before confirming.'}</p></div><span className="ao-source">{isMainnet?(ru?'История кошелька · локальные записи':'Wallet history · local records'):(ru?'Данные сервера':'Backend account data')}</span></footer>
   <p className="ao-note">{ru?'Сравнение с прошлым периодом, споры и скорость финализации не измеряются здесь.':'Previous-period comparison, disputes and finality are not measured in this view.'}</p>
  </section>;
