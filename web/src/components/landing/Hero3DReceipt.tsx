@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import BrandMark from "./BrandMark";
+import { RollingNumber } from "@/components/panelui/rolling-number";
 
 export interface ClearingOrder {
   id: string;
@@ -263,7 +264,10 @@ export default function Hero3DReceipt() {
         {/* Big Amount Display */}
         <div className="mx-receipt-amount">
           <span className="mx-receipt-amount-num">
-            {order.amount.toLocaleString("en-US", { minimumFractionDigits: order.amount % 1 === 0 ? 0 : 2 })}
+            <RollingNumber
+              value={order.amount}
+              format={{ minimumFractionDigits: order.amount % 1 === 0 ? 0 : 2, maximumFractionDigits: 2 }}
+            />
           </span>
           <span className="mx-receipt-currency-unit">USDC</span>
         </div>
@@ -272,11 +276,15 @@ export default function Hero3DReceipt() {
         <dl className="mx-receipt-breakdown">
           <div>
             <dt>Supplier cost</dt>
-            <dd>{order.cost.toLocaleString("en-US", { minimumFractionDigits: 2 })} USDC</dd>
+            <dd>
+              <RollingNumber value={order.cost} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} /> USDC
+            </dd>
           </div>
           <div>
             <dt>Platform fee ({order.feePct})</dt>
-            <dd>{order.feeAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })} USDC</dd>
+            <dd>
+              <RollingNumber value={order.feeAmount} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} /> USDC
+            </dd>
           </div>
           <div className="mx-receipt-margin-row">
             <dt>Gross margin</dt>

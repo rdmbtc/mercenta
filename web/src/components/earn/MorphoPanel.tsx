@@ -2,7 +2,10 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {ArrowUpRight,RefreshCw,ShieldCheck,TriangleAlert,ExternalLink} from 'lucide-react';
 import {MORPHO_ARC,MORPHO_VAULTS,morphoSnapshotSchema,unavailableMorpho,canExploreMorpho,formatMorphoUsdc,type MorphoSnapshot} from '@/lib/morpho-market';
+import {Kpi} from '@/components/panelui/kpi';
+import {Stat} from '@/components/panelui/stat';
 import styles from './earn.module.css';
+
 export function MorphoPanel({ru}:{ru:boolean}){
  const t=(en:string,russian:string)=>ru?russian:en;
  const [snapshot,setSnapshot]=useState<MorphoSnapshot|null>(null),[selected,setSelected]=useState('galaxy'),[accepted,setAccepted]=useState(false),[loading,setLoading]=useState(true),[now,setNow]=useState(0);
@@ -19,7 +22,43 @@ export function MorphoPanel({ru}:{ru:boolean}){
  return <section aria-label={t('Morpho Arc exploration','Обзор Morpho Arc')}>
  <div className={styles.vaultPicker} role="group" aria-label={t('Choose a vault to inspect','Выберите vault для проверки')}>{MORPHO_VAULTS.map(v=><button key={v.id} aria-pressed={selected===v.id} onClick={()=>{setSelected(v.id);setAccepted(false)}}>{v.name}<small>Arc · USDC</small></button>)}</div>
  <div className={styles.grid}><article className={styles.market}><div className={styles.marketTop}><div><span className={styles.overline}>MORPHO / ARC · 5042</span><h2>{spec.name}</h2></div><button className={styles.refresh} onClick={()=>void refresh()} disabled={loading} aria-label={t('Refresh Morpho observations','Обновить данные Morpho')}><RefreshCw size={17} className={loading?styles.spinning:''}/></button></div>
- <div className={styles.rate} aria-live="polite"><strong>{show&&vault?.netApyPercent?vault.netApyPercent+'%':'—'}</strong><span>{t('API-reported variable net APY','Переменная net APY по данным API')}</span><p>{t('Reported by the Morpho indexer, not independently calculated on-chain. Indexer freshness is not verified. Not a guaranteed return; not directly comparable to Aave APR.','Данные индексатора Morpho, не независимый on-chain расчёт. Свежесть индексатора не подтверждена. Это не гарантия дохода; напрямую с APR Aave не сравнивается.')}</p></div>
+ <div className={styles.rate} aria-live="polite">
+  <Kpi surface color="success" className="mb-4 bg-black/20 p-3 rounded-xl border border-white/10">
+   <Kpi.Header>
+    <Kpi.Title>{t('API-reported variable net APY','Переменная net APY по данным API')}</Kpi.Title>
+   </Kpi.Header>
+   <Kpi.Content>
+    <Kpi.Value>
+     <strong>{show&&vault?.netApyPercent?vault.netApyPercent+'%':'—'}</strong>
+    </Kpi.Value>
+    {show && vault?.netApyPercent ? (
+     <Kpi.Trend value={parseFloat(vault.netApyPercent)} />
+    ) : null}
+   </Kpi.Content>
+  </Kpi>
+  <span>{t('API-reported variable net APY','Переменная net APY по данным API')}</span>
+  <p>{t('Reported by the Morpho indexer, not independently calculated on-chain. Indexer freshness is not verified. Not a guaranteed return; not directly comparable to Aave APR.','Данные индексатора Morpho, не независимый on-chain расчёт. Свежесть индексатора не подтверждена. Это не гарантия дохода; напрямую с APR Aave не сравнивается.')}</p>
+ </div>
+ <div className="grid grid-cols-2 gap-3 my-4">
+  <Stat className="bg-black/25 border border-white/5 rounded-xl p-3">
+   <Stat.Content>
+    <Stat.Label>{t('On-chain Assets','Активы vault')}</Stat.Label>
+    <Stat.Value size="sm">
+     {fresh?formatMorphoUsdc(vault?.totalAssetsMicro??null,ru?'ru-RU':'en-US'):'—'}
+    </Stat.Value>
+   </Stat.Content>
+   <Stat.Badge>Arc · 5042</Stat.Badge>
+  </Stat>
+  <Stat className="bg-black/25 border border-white/5 rounded-xl p-3">
+   <Stat.Content>
+    <Stat.Label>{t('Withdrawal Liquidity','Ликвидность')}</Stat.Label>
+    <Stat.Value size="sm">
+     {fresh?formatMorphoUsdc(vault?.reportedLiquidityMicro??null,ru?'ru-RU':'en-US'):'—'}
+    </Stat.Value>
+   </Stat.Content>
+   <Stat.Badge>{t('Reported','По API')}</Stat.Badge>
+  </Stat>
+ </div>
  <div className={styles.status} role="status"><span/>{loading?t('Checking API and two Arc RPCs…','Проверяем API и два Arc RPC…'):show?t('Contract observations agree · allocation review pending','Данные контрактов согласованы · аллокации ещё проверяются'):t('Observations unavailable or vault restricted','Данные недоступны или vault ограничен')}</div>
  <dl className={styles.details}>{[[t('Network','Сеть'),'Arc Mainnet · 5042'],[t('Assets in vault · on-chain','Активы vault · on-chain'),fresh?formatMorphoUsdc(vault?.totalAssetsMicro??null,ru?'ru-RU':'en-US'):'—'],[t('Withdrawal liquidity · API reported','Ликвидность вывода · по API'),fresh?formatMorphoUsdc(vault?.reportedLiquidityMicro??null,ru?'ru-RU':'en-US'):'—'],[t('Performance fee · share of yield','Performance fee · доля дохода'),fresh&&vault?.performanceFeePercent!==null&&vault?.performanceFeePercent!==undefined?vault.performanceFeePercent+'%':'—'],[t('Management fee · annual','Management fee · в год'),fresh&&vault?.managementFeePercent!==null&&vault?.managementFeePercent!==undefined?vault.managementFeePercent+'%':'—'],[t('Execution / custody','Исполнение / хранение'),t('External protocol / no Mercenta custody','Внешний протокол / не в Mercenta')]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
  {fresh&&snapshot?.blockNumber&&<a className={styles.proof} href={'https://arc.etherscan.io/block/'+snapshot.blockNumber} target="_blank" rel="noopener noreferrer">{t('Observed block','Проверенный блок')} {snapshot.blockNumber} <ExternalLink size={14}/></a>}
