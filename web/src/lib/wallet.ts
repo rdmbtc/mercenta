@@ -100,7 +100,7 @@ export const ARC_MAINNET_CONFIG = {
   chainId: "0x13b2",
   chainName: "Arc Mainnet",
   nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
-  rpcUrls: ["https://rpc.mainnet.arc.io"],
+  rpcUrls: [process.env.NEXT_PUBLIC_ARC_MAINNET_RPC_URL || "https://arc-mainnet.g.alchemy.com/v2/alch_JFExlOHrYxkOY-BqxIJJm", "https://rpc.mainnet.arc.io"],
   blockExplorerUrls: ["https://explorer.arc.io"],
 };
 
@@ -108,7 +108,7 @@ export const ARC_TESTNET_CONFIG = {
   chainId: "0x4cef52",
   chainName: "Arc Testnet",
   nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
-  rpcUrls: ["https://rpc.testnet.arc.network"],
+  rpcUrls: [process.env.NEXT_PUBLIC_ARC_TESTNET_RPC_URL || "https://arc-testnet.g.alchemy.com/v2/alch_JFExlOHrYxkOY-BqxIJJm", "https://rpc.testnet.arc.network"],
   blockExplorerUrls: ["https://testnet.arcscan.app"],
 };
 

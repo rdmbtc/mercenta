@@ -20,7 +20,7 @@ export const ARC_TESTNET = defineChain({
   nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
   rpcUrls: {
     default: {
-      http: ["https://rpc.testnet.arc.network"],
+      http: [process.env.NEXT_PUBLIC_ARC_TESTNET_RPC_URL || "https://arc-testnet.g.alchemy.com/v2/alch_JFExlOHrYxkOY-BqxIJJm", "https://rpc.testnet.arc.network"],
     },
   },
   blockExplorers: {

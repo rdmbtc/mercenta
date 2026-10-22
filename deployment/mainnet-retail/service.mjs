@@ -5,7 +5,7 @@ import { readFileSync, existsSync, mkdirSync } from 'node:fs';
 
 const PORT = 3016;
 const DB_PATH = '/var/lib/mercenta/mainnet_fulfillment.sqlite';
-const ARC_RPC = 'https://rpc.mainnet.arc.io';
+const ARC_RPC = process.env.ARC_RPC || 'https://arc-mainnet.g.alchemy.com/v2/alch_JFExlOHrYxkOY-BqxIJJm';
 const SETTLEMENT_VAULT = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
 const SUPPLIER_API_URL = process.env.SUPPLIER_API_URL || 'https://api.settlement-provider.internal/v1';
 const SUPPLIER_API_KEY = readFileSync('/etc/mercenta/retail-supplier-key','utf8').trim();
