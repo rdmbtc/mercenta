@@ -1,6 +1,7 @@
 'use client';
 import {useState, useEffect, useRef} from 'react';
 import {RollingNumber} from '@/components/panelui/rolling-number';
+import {Frame} from '@/components/panelui/frame';
 import {signInWithWallet,fetchSession} from '@/lib/wallet';
 import './mainnet-record.css';
 import {ShieldCheck, CheckCircle2, ExternalLink, Wallet, LoaderCircle, AlertCircle, Copy, Check, KeyRound} from 'lucide-react';
@@ -487,43 +488,28 @@ export function MainnetCheckout({
           padding: '20px',
         }}
       >
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px'}}>
-          <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-            <span style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              background: 'rgba(56, 189, 248, 0.1)',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
-              color: '#38bdf8'
-            }}>
-              <CheckCircle2 size={18} />
-            </span>
-            <div>
-              <h4 style={{margin: 0, fontSize: '15px', fontWeight: 700, color: '#f8fafc', letterSpacing: '0.02em'}}>
-                {ru ? 'Выдача получена от провайдера' : 'Delivery received from provider'}
-              </h4>
-              <span style={{fontSize: '11px', color: '#64748b'}}>
-                {ru ? 'Оплата и выдача проверяются отдельно' : 'Payment and delivery are separate records'}
+        <Frame variant="band" className="w-full">
+          <Frame.Header className="px-0 pt-0 pb-3 flex items-center justify-between">
+            <Frame.Title as="h4" className="flex items-center gap-2 m-0 text-[15px] font-bold text-[#f8fafc] tracking-[0.02em]">
+              <span className="size-2 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_#34d399]" />
+              <span>{ru ? 'Выдача получена от провайдера' : 'Delivery received from provider'}</span>
+            </Frame.Title>
+            <Frame.Action>
+              <span style={{
+                fontSize: '11px',
+                background: 'rgba(56, 189, 248, 0.08)',
+                color: '#7dd3fc',
+                border: '1px solid rgba(56, 189, 248, 0.25)',
+                padding: '3px 10px',
+                borderRadius: '6px',
+                fontWeight: 600,
+                letterSpacing: '0.06em'
+              }}>
+                ARC MAINNET · FULFILLED
               </span>
-            </div>
-          </div>
-          <span style={{
-            fontSize: '11px',
-            background: 'rgba(56, 189, 248, 0.08)',
-            color: '#7dd3fc',
-            border: '1px solid rgba(56, 189, 248, 0.25)',
-            padding: '3px 10px',
-            borderRadius: '6px',
-            fontWeight: 600,
-            letterSpacing: '0.06em'
-          }}>
-            ARC MAINNET · FULFILLED
-          </span>
-        </div>
+            </Frame.Action>
+          </Frame.Header>
+          <Frame.Panel className="bg-transparent border-0 divide-y-0 p-0">
 
         <p style={{fontSize: '13px', color: '#94a3b8', lineHeight: 1.5, margin: '0 0 16px'}}>
           {ru
@@ -661,6 +647,8 @@ export function MainnetCheckout({
             Arc Explorer <ExternalLink size={14}/>
           </a>
         </div>
+        </Frame.Panel>
+        </Frame>
       </section>
     );
   }
@@ -679,17 +667,19 @@ export function MainnetCheckout({
         padding: '18px',
       }}
     >
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px'}}>
-        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-          <span style={{width: '8px', height: '8px', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8', display: 'inline-block'}}/>
-          <h4 style={{margin: 0, fontSize: '13px', fontWeight: 700, letterSpacing: '0.06em', color: '#f8fafc'}}>
-            ARC MAINNET · DIRECT MERCHANT PAYMENT
-          </h4>
-        </div>
-        <a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{fontSize: '11px', color: '#7dd3fc', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none'}}>
-          {ru ? 'Код роутера · справочно' : 'Router code · reference'} <ExternalLink size={11}/>
-        </a>
-      </div>
+      <Frame variant="band" className="w-full">
+        <Frame.Header className="px-0 pt-0 pb-3 flex items-center justify-between">
+          <Frame.Title as="h4" className="flex items-center gap-2 m-0 text-[13px] font-bold tracking-[0.06em] text-[#f8fafc]">
+            <span style={{width: '8px', height: '8px', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8', display: 'inline-block'}}/>
+            <span>ARC MAINNET · DIRECT MERCHANT PAYMENT</span>
+          </Frame.Title>
+          <Frame.Action>
+            <a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{fontSize: '11px', color: '#7dd3fc', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none'}}>
+              {ru ? 'Код роутера · справочно' : 'Router code · reference'} <ExternalLink size={11}/>
+            </a>
+          </Frame.Action>
+        </Frame.Header>
+        <Frame.Panel className="bg-transparent border-0 divide-y-0 p-0">
 
       <div className="mainnet-receipt-details" style={{margin: '12px 0'}}>
         <dl className="mainnet-receipt-dl">
@@ -904,6 +894,8 @@ export function MainnetCheckout({
           ? 'Прямой клиринг USDC на Arc Mainnet (5042) с детерминированной валидацией 5 политик. Автоматический релиз ключа при получении подтверждения.'
           : 'Direct USDC clearing on Arc Mainnet (5042) enforced by 5 Policy Gates. Automatic digital code issuance upon transaction confirmation.'}
       </p>
+        </Frame.Panel>
+      </Frame>
     </section>
   );
 }
