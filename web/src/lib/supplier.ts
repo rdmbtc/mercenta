@@ -145,6 +145,39 @@ interface RawProduct {
 
 const STOP_WORDS = /(gift\s*card|voucher|digital\s*code|top.?up|recharge|prepaid|e-?sim|code|card|bundle|subscription|sub|wallet)/gi;
 
+const snapshotCountryMap = new Map(
+  ((snapshot as { products?: Array<{ id: string; countryCode?: string }> }).products ?? []).map((p) => [p.id, p.countryCode])
+);
+
+export function inferCountryCode(name?: string): string | undefined {
+  if (!name) return undefined;
+  const n = name.trim();
+  const m = n.match(/(?:\||\s[-–—]\s|\(|\[)\s*([A-Za-z0-9/ ]{2,12})\s*[)\]]?\s*$/);
+  if (m) {
+    const raw = m[1].trim().toUpperCase();
+    if (raw === 'GL' || raw === 'GLOBAL' || raw === 'WW' || raw === 'ROW') return 'GLOB';
+    if (raw.startsWith('CIS')) return 'CIS';
+    if (raw.startsWith('LATAM')) return 'LATAM';
+    if (raw.startsWith('EU') || raw === 'EUROPE') return 'EU';
+    if (raw.startsWith('NA') || raw === 'USA') return 'US';
+    if (raw.startsWith('UK')) return 'GB';
+    if (raw.startsWith('TR') || raw === 'TURKEY') return 'TR';
+    if (raw.length === 2) return raw;
+  }
+  if (/amazon\.(?:com(?:\.(?:au|br|mx|tr))?|co\.uk|[a-z]{2})\b/i.test(n)) {
+    if (/amazon\.com\b/i.test(n)) return 'US';
+    if (/amazon\.co\.uk\b/i.test(n)) return 'GB';
+    if (/amazon\.de\b/i.test(n)) return 'DE';
+    if (/amazon\.fr\b/i.test(n)) return 'FR';
+    if (/amazon\.it\b/i.test(n)) return 'IT';
+    if (/amazon\.es\b/i.test(n)) return 'ES';
+    if (/amazon\.ae\b/i.test(n)) return 'AE';
+    if (/amazon\.com\.tr\b/i.test(n)) return 'TR';
+    if (/amazon\.com\.au\b/i.test(n)) return 'AU';
+  }
+  return undefined;
+}
+
 function brandOf(name: string): string {
   const head = name.split("|")[0] ?? name;
   const clean = head.replace(STOP_WORDS, "").replace(/[\u2122\u00ae\u00a9]/g, "").trim();
@@ -183,7 +216,10 @@ export function normalizeCatalog(raw: RawProduct[], pricingPolicy?: string): Cat
       imageSource:image?"supplier":brandArtwork(name)?"brand":"illustration",
       category: categorize(p.categoryName, `${name} ${p.subcategoryName ?? ""} ${p.type ?? ""}`),
       type,
-      countryCode: p.countryCode,
+      countryCode:
+        (p.countryCode !== undefined && p.countryCode !== null && p.countryCode !== '')
+          ? p.countryCode
+          : (p.countryCode === '' ? undefined : (snapshotCountryMap.get(p.id) ?? inferCountryCode(name) ?? 'GLOB')),
       denominations,
       minPrice: prices.length?Math.min(...prices):0,
       maxPrice: prices.length?Math.max(...prices):0,
