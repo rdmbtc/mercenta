@@ -1,36 +1,31 @@
-.mc-receipt.mainnet-record-receipt{display:grid;gap:18px;padding:24px;border:1px solid var(--mx-line,#354757);border-radius:8px;text-align:left;min-width:0}
+.mc-receipt.mainnet-record-receipt{display:grid;gap:18px;padding:24px;border:1px solid rgba(255,255,255,0.08);background:#0a0c10;border-radius:14px;text-align:left;min-width:0}
 .mainnet-record-receipt h3,.mainnet-record-receipt p,.mainnet-record-receipt dl{margin:0}
-.mainnet-record-receipt h3{font-size:24px;line-height:1.25;letter-spacing:-.035em}
-.mainnet-record-receipt p{font-size:14px;line-height:1.65;color:var(--mx-muted,#a1afbf)}
-.mainnet-record-receipt .mainnet-record-amount{font-family:var(--font-mono,monospace);font-size:26px;color:inherit;font-variant-numeric:tabular-nums}
-.mainnet-record-amount span{font-size:12px;color:var(--mx-muted,#a1afbf);letter-spacing:.06em}
-.mainnet-record-receipt .mp-button{min-height:44px;margin:0;outline:none;border:1px solid var(--mx-line,#354757);display:flex;justify-content:center;align-items:center;gap:10px;padding:12px 16px;line-height:1.4;text-decoration:none;white-space:normal}
-.mainnet-record-receipt .mp-button:hover{border-color:var(--mx-blue,#b2e5ff)}
-.mainnet-record-receipt a:focus-visible,.mainnet-record-receipt button:focus-visible{outline:2px solid var(--mx-blue,#b2e5ff);outline-offset:3px}
-.mainnet-record-receipt dl{display:grid;gap:12px}
-.mainnet-record-receipt dd{margin:4px 0 0;overflow-wrap:anywhere;font-family:var(--font-mono,monospace);font-size:13px}
-.mainnet-record-receipt dt{font-size:12px;color:var(--mx-muted,#a1afbf)}
-.mainnet-record-receipt>a:not(.mp-button){font-size:14px;text-underline-offset:4px}
-@media(max-width:600px){.mc-receipt.mainnet-record-receipt{padding:20px;gap:18px}.mainnet-record-receipt h3{font-size:22px}}
+.mainnet-record-receipt h3{font-size:20px;line-height:1.25;letter-spacing:-.02em;color:#f8fafc;font-weight:700}
+.mainnet-record-receipt p{font-size:13px;line-height:1.6;color:#94a3b8}
+.mainnet-record-receipt .mainnet-record-amount{font-family:var(--font-mono,monospace);font-size:24px;color:#00ca8e;font-variant-numeric:tabular-nums;font-weight:700}
+.mainnet-record-amount span{font-size:12px;color:#94a3b8;letter-spacing:.06em}
+.mainnet-record-receipt .mp-button{min-height:42px;margin:0;outline:none;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:#f1f5f9;border-radius:10px;display:flex;justify-content:center;align-items:center;gap:8px;padding:10px 16px;line-height:1.4;text-decoration:none;font-weight:600;font-size:13px;cursor:pointer;transition:all .15s}
+.mainnet-record-receipt .mp-button:hover{border-color:rgba(0,202,142,0.4);background:rgba(0,202,142,0.06);color:#00ca8e}
+.mainnet-record-receipt a:focus-visible,.mainnet-record-receipt button:focus-visible{outline:2px solid #00ca8e;outline-offset:3px}
+.mainnet-record-receipt dl{display:grid;gap:10px;background:#07090e;border:1px solid #1f242e;border-radius:10px;padding:14px}
+.mainnet-record-receipt dd{margin:4px 0 0;overflow-wrap:anywhere;font-family:var(--font-mono,monospace);font-size:13px;color:#f1f5f9}
+.mainnet-record-receipt dt{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em}
+.mainnet-record-receipt>a:not(.mp-button){font-size:13px;color:#94a3b8;text-underline-offset:4px}
+.mainnet-record-receipt>a:not(.mp-button):hover{color:#00ca8e}
+@media(max-width:600px){.mc-receipt.mainnet-record-receipt{padding:16px;gap:14px}.mainnet-record-receipt h3{font-size:18px}}
 
-/* Exact-payment review: contain long identifiers and retain brand/readability at 390px. */
-.mainnet-retail-checkout{min-width:0;background:var(--mx-surface,#10151d)!important;border:1px solid var(--mx-line,#354757)!important;box-shadow:none!important;border-radius:8px!important;color:var(--mx-ink,#f3f6fa)}
-.mainnet-retail-checkout>div:first-child{flex-wrap:wrap;gap:12px;align-items:flex-start!important}
-.mainnet-retail-checkout>div:first-child>div{min-width:0;flex:1 1 200px}
-.mainnet-retail-checkout>div:first-child>div>span{flex-shrink:0;background:var(--mx-blue,#b2e5ff)!important;box-shadow:none!important}
-.mainnet-retail-checkout h4{line-height:1.5;color:inherit!important}
-.mainnet-retail-checkout a{color:var(--mx-blue,#b2e5ff)!important;overflow-wrap:anywhere;min-width:0}
-.mainnet-retail-checkout>div:first-child>a{font-size:14px!important}
-.mainnet-retail-checkout dl{grid-template-columns:minmax(100px,.6fr) minmax(0,1.4fr)!important;gap:12px 16px!important;background:var(--mx-bg,#080b10)!important;border-color:var(--mx-line,#354757)!important}
-.mainnet-retail-checkout dt{font-size:14px!important;line-height:1.5;color:var(--mx-muted,#a1afbf)!important}
-.mainnet-retail-checkout dd{margin:0;min-width:0;overflow-wrap:anywhere;word-break:normal;color:var(--mx-ink,#f3f6fa)!important;line-height:1.55;font-size:14px!important}
-.mainnet-retail-checkout dd a{font-family:var(--font-mono,monospace);font-size:13px}
-.mainnet-retail-checkout p,.mainnet-retail-checkout label{font-size:14px!important;line-height:1.6}
-.mainnet-retail-checkout p{color:var(--mx-muted,#a1afbf)!important}
-.mainnet-retail-checkout .mp-button{background:var(--mx-blue,#b2e5ff)!important;color:#10202d!important;min-height:48px;border-radius:4px!important;white-space:normal;line-height:1.5}
-.mainnet-retail-checkout .mp-button:disabled{opacity:.5;cursor:not-allowed}
-.mainnet-retail-checkout input:focus-visible,.mainnet-retail-checkout button:focus-visible,.mainnet-retail-checkout a:focus-visible{outline:2px solid var(--mx-blue,#b2e5ff)!important;outline-offset:3px}
-@media(max-width:600px){.mainnet-retail-checkout{padding:16px!important}.mainnet-retail-checkout dl{grid-template-columns:minmax(0,1fr)!important;gap:6px!important;padding:16px!important}.mainnet-retail-checkout dd{margin-bottom:10px}.mainnet-retail-checkout dd:last-child{margin-bottom:0}}
+/* Exact-payment review: Mercenta dark institutional anti-slop standard */
+.mainnet-retail-checkout{min-width:0;background:#0a0c10;border:1px solid #202532;border-radius:16px;color:#f8fafc;box-shadow:0 12px 36px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04)}
+.mainnet-retail-checkout h4{line-height:1.5;color:inherit}
+.mainnet-retail-checkout a{color:#14c6cb;overflow-wrap:anywhere;min-width:0;transition:color .15s}
+.mainnet-retail-checkout a:hover{color:#00ca8e}
+.mainnet-retail-checkout dt{font-size:12px;line-height:1.5;color:#64748b}
+.mainnet-retail-checkout dd{margin:0;min-width:0;overflow-wrap:anywhere;word-break:normal;color:#f1f5f9;line-height:1.55;font-size:13px}
+.mainnet-retail-checkout dd a{font-family:var(--font-mono,monospace);font-size:12px}
+.mainnet-retail-checkout p,.mainnet-retail-checkout label{font-size:13px;line-height:1.55}
+.mainnet-retail-checkout p{color:#94a3b8}
+.mainnet-retail-checkout input:focus-visible,.mainnet-retail-checkout button:focus-visible,.mainnet-retail-checkout a:focus-visible{outline:2px solid #00ca8e;outline-offset:3px}
+@media(max-width:600px){.mainnet-retail-checkout{padding:14px}.mainnet-retail-checkout dd{margin-bottom:8px}.mainnet-retail-checkout dd:last-child{margin-bottom:0}}
 
 /* Mainnet Delivery Modal & Receipt Details Responsive System */
 .mainnet-delivery-container {
@@ -83,9 +78,9 @@
 }
 
 .mainnet-activation-box {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid #334155;
-  border-radius: 10px;
+  background: #07090e;
+  border: 1px solid #1f242e;
+  border-radius: 12px;
   padding: 14px;
   min-width: 0;
   box-sizing: border-box;
@@ -116,11 +111,18 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #63b3ed;
+  color: #14c6cb;
   cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
+  background: rgba(20, 198, 203, 0.08);
+  border: 1px solid rgba(20, 198, 203, 0.2);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-weight: 500;
+  transition: all .15s;
+}
+.mainnet-copy-all-btn:hover {
+  background: rgba(20, 198, 203, 0.15);
+  color: #22d3ee;
 }
 
 .mainnet-activation-list {
@@ -135,8 +137,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: #090d16;
-  border: 1px solid #2d3748;
+  background: #0d1017;
+  border: 1px solid #232936;
   border-radius: 8px;
   flex-wrap: wrap;
   gap: 10px;
@@ -146,9 +148,9 @@
 
 .mainnet-activation-code {
   font-family: var(--font-mono, monospace);
-  font-size: clamp(12px, 3.5vw, 15px);
+  font-size: clamp(12px, 3.5vw, 14px);
   font-weight: 700;
-  color: #63b3ed;
+  color: #00ca8e;
   letter-spacing: 0.04em;
   word-break: break-all !important;
   overflow-wrap: anywhere !important;
@@ -166,13 +168,14 @@
   gap: 6px !important;
   flex-shrink: 0;
   margin-left: auto;
+  border-radius: 6px !important;
 }
 
 .mainnet-topup-recipient-row {
   margin-top: 10px;
   padding: 12px 14px;
-  background: #090d16;
-  border: 1px solid #2d3748;
+  background: #0d1017;
+  border: 1px solid #232936;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
@@ -186,7 +189,7 @@
   font-family: var(--font-mono, monospace);
   font-size: 15px;
   font-weight: 700;
-  color: #68d391;
+  color: #00ca8e;
   word-break: break-all;
   overflow-wrap: anywhere;
   min-width: 0;
@@ -194,9 +197,10 @@
 }
 
 .mainnet-topup-status-badge {
-  font-size: 12px;
-  color: #9ae6b4;
-  background: #22543d;
+  font-size: 11px;
+  color: #00ca8e;
+  background: rgba(0, 202, 142, 0.12);
+  border: 1px solid rgba(0, 202, 142, 0.25);
   padding: 2px 8px;
   border-radius: 4px;
   font-weight: 600;
@@ -205,10 +209,10 @@
 
 /* Receipt Details */
 .mainnet-receipt-details {
-  background: rgba(26, 32, 44, 0.4);
-  border-radius: 8px;
-  padding: 12px 14px;
-  border: 1px solid #2d3748;
+  background: #07090e;
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid #1f242e;
   min-width: 0;
   box-sizing: border-box;
 }
@@ -217,7 +221,7 @@
   display: block;
   font-size: 11px;
   font-weight: 600;
-  color: #a0aec0;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 8px;
@@ -244,7 +248,7 @@
 }
 
 .mainnet-receipt-row dt {
-  color: #718096;
+  color: #64748b;
   flex-shrink: 0;
   line-height: 1.5;
   font-size: 12px;
@@ -301,27 +305,31 @@
   transition: color 0.15s, background-color 0.15s;
 }
 .mainnet-id-copy-btn:hover {
-  color: #63b3ed;
-  background: rgba(99, 179, 237, 0.1);
+  color: #14c6cb;
+  background: rgba(20, 198, 203, 0.1);
 }
 
 .mainnet-receipt-tx a {
-  color: #63b3ed;
+  color: #14c6cb;
   display: inline-flex;
   align-items: center;
   gap: 4px;
   text-decoration: none;
   word-break: break-all;
   overflow-wrap: anywhere;
+  transition: color .15s;
+}
+.mainnet-receipt-tx a:hover {
+  color: #00ca8e;
 }
 
 .mainnet-receipt-instructions {
   font-size: 12px;
-  color: #a0aec0;
+  color: #94a3b8;
   line-height: 1.6;
   padding: 10px 12px;
-  background: rgba(49, 130, 206, 0.08);
-  border: 1px solid rgba(49, 130, 206, 0.25);
+  background: rgba(20, 198, 203, 0.05);
+  border: 1px solid rgba(20, 198, 203, 0.2);
   border-radius: 8px;
   min-width: 0;
   box-sizing: border-box;
