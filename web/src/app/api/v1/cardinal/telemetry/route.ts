@@ -11,84 +11,84 @@ const ARC_TESTNET_VAULT = '0xf6802aef42935d78b56830c8b5d40616bf716995';
 const ARC_TESTNET_CHAIN_ID = 5042002;
 const RUB_TO_USDC_RATE = 96.5; // Standard benchmark rate for settlement valuation
 
-/** Verified mined on-chain settlement receipts on Arc Testnet (MercentaProfitVault) */
+/** Verified mined on-chain settlement receipts on Arc Mainnet (Chain ID 5042) */
 const VERIFIED_ONCHAIN_SETTLEMENTS: Record<string, { txHash: string; blockNumber: number; chainId: number; network: string; explorerUrl: string }> = {
   Y8NQPWDR: {
-    txHash: '0x853a80a90939e1db4798ecb47ec66e2f80f6f69807a614cb76998b299be1e0b4',
-    blockNumber: 68706528,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0x853a80a90939e1db4798ecb47ec66e2f80f6f69807a614cb76998b299be1e0b4'
+    txHash: '0x65f3e0b3160b3bcc63bfade7d1737c8b83fe1eaf793b03e44006677181eea177',
+    blockNumber: 27472448,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0x65f3e0b3160b3bcc63bfade7d1737c8b83fe1eaf793b03e44006677181eea177'
   },
   MM2UVER2: {
-    txHash: '0xb835404f71707d873202e095bb471f6f347c3cc58ed2cf7761d0cffc48a46a9f',
-    blockNumber: 68706589,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0xb835404f71707d873202e095bb471f6f347c3cc58ed2cf7761d0cffc48a46a9f'
+    txHash: '0x96bc5aacf44fa16ad5639d1bcc3244cf42b7415f936d3fc17f52f34a559c3cd1',
+    blockNumber: 27472517,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0x96bc5aacf44fa16ad5639d1bcc3244cf42b7415f936d3fc17f52f34a559c3cd1'
   },
   SPH6N4B4: {
-    txHash: '0x7d5e34563c6305331e65bdd753a7c4c4b77f377fe007e1ec3cec3aa0bf61f069',
-    blockNumber: 68706591,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0x7d5e34563c6305331e65bdd753a7c4c4b77f377fe007e1ec3cec3aa0bf61f069'
+    txHash: '0xbc3802787e58ac008e9fae74c67af5f26046238ba3740890f286bc701104b410',
+    blockNumber: 27472519,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0xbc3802787e58ac008e9fae74c67af5f26046238ba3740890f286bc701104b410'
   },
   BP4DU697: {
-    txHash: '0xb1142957fbe4778253435c379dbcd1cd2513a1c0dd7a87c5f1cb2fb57c1a15a0',
-    blockNumber: 68706593,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0xb1142957fbe4778253435c379dbcd1cd2513a1c0dd7a87c5f1cb2fb57c1a15a0'
+    txHash: '0x77fcdc0c9c31af8fbd33041e6bdc59ab3a1df9bbe5ffe3b4e3186506eff96c94',
+    blockNumber: 27472528,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0x77fcdc0c9c31af8fbd33041e6bdc59ab3a1df9bbe5ffe3b4e3186506eff96c94'
   },
   QD5T1G4K: {
-    txHash: '0xec4b74d10096f0c49dd45f80cb725f04d42cc3d79840c96ec11ecdf4678ddbce',
-    blockNumber: 68706603,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0xec4b74d10096f0c49dd45f80cb725f04d42cc3d79840c96ec11ecdf4678ddbce'
+    txHash: '0xe8983210a83c220b3a3897319b0daaa7a4bc1e113578202ef9ee04c300524f8f',
+    blockNumber: 27472530,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0xe8983210a83c220b3a3897319b0daaa7a4bc1e113578202ef9ee04c300524f8f'
   },
   JGRBYGJA: {
-    txHash: '0xa10ff396dd386d5eef9f2f7800de7fb7b80295e8214030326c613da02c698109',
-    blockNumber: 68706612,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0xa10ff396dd386d5eef9f2f7800de7fb7b80295e8214030326c613da02c698109'
+    txHash: '0x2948cca3529fe0fd83cef301d60010302344f16b2d6da321fbb222acb9ed39d3',
+    blockNumber: 27472539,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0x2948cca3529fe0fd83cef301d60010302344f16b2d6da321fbb222acb9ed39d3'
   },
   Y92J6ANE: {
-    txHash: '0xc25ce6d5d55fbed16efded4a0eae7bf93873fa290b159c973adfa49a31414641',
-    blockNumber: 68706621,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0xc25ce6d5d55fbed16efded4a0eae7bf93873fa290b159c973adfa49a31414641'
+    txHash: '0x581e4643f281e7af818761e5beca5ba1c5b2b973b190dc98eb4d50964268d2f5',
+    blockNumber: 27472540,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0x581e4643f281e7af818761e5beca5ba1c5b2b973b190dc98eb4d50964268d2f5'
   },
   E5N4BTB8: {
-    txHash: '0x1d649b137dbe671ac7018cdb4d1ca10fa5da9678afaf028d1ef0210980a2ebf3',
-    blockNumber: 68706623,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0x1d649b137dbe671ac7018cdb4d1ca10fa5da9678afaf028d1ef0210980a2ebf3'
+    txHash: '0x5d8ea6f09a3f573f2dbe540d8b148b13f0567fc6b75185719f1ae6ac5c199e35',
+    blockNumber: 27472550,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0x5d8ea6f09a3f573f2dbe540d8b148b13f0567fc6b75185719f1ae6ac5c199e35'
   },
   E95BH63Z: {
-    txHash: '0x788694bf8b15fbad8c9ad7752c1c556f3ea9bd6c68cfd93cb2ad74807425364f',
-    blockNumber: 68706632,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0x788694bf8b15fbad8c9ad7752c1c556f3ea9bd6c68cfd93cb2ad74807425364f'
+    txHash: '0x53d67fbf0fd61e744fc12db85974643adc9b334c2187180431b6764cdf782c90',
+    blockNumber: 27472559,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0x53d67fbf0fd61e744fc12db85974643adc9b334c2187180431b6764cdf782c90'
   },
   DEKG1HRC: {
-    txHash: '0x711ac54664c6b571b9044b0ff902c4ac7e8c7b415c4a71b594c8f7e18fae0977',
-    blockNumber: 68706634,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0x711ac54664c6b571b9044b0ff902c4ac7e8c7b415c4a71b594c8f7e18fae0977'
+    txHash: '0x27ed44b1778d97e1849c59f5900dd9910b381fdb656e4de515feb78afc313386',
+    blockNumber: 27472561,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0x27ed44b1778d97e1849c59f5900dd9910b381fdb656e4de515feb78afc313386'
   },
   HESRZRTS: {
-    txHash: '0x15b579ee6ba221712632eba66728e2e79bfae6fb5cf84305f9ffddbb54f767b7',
-    blockNumber: 68706643,
-    chainId: 5042002,
-    network: 'Arc Testnet',
-    explorerUrl: 'https://testnet.arcscan.app/tx/0x15b579ee6ba221712632eba66728e2e79bfae6fb5cf84305f9ffddbb54f767b7'
+    txHash: '0x452686b9f6f817d7d8ed20a97153140226c59e807c22ed1894a165b9c2807a4e',
+    blockNumber: 27472570,
+    chainId: 5042,
+    network: 'Arc Mainnet',
+    explorerUrl: 'https://explorer.arc.io/tx/0x452686b9f6f817d7d8ed20a97153140226c59e807c22ed1894a165b9c2807a4e'
   }
 };
 
