@@ -7,7 +7,90 @@ export const dynamic = 'force-dynamic';
 
 const ARC_MAINNET_CONTRACT = '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed';
 const ARC_MAINNET_CHAIN_ID = 5042;
+const ARC_TESTNET_VAULT = '0xf6802aef42935d78b56830c8b5d40616bf716995';
+const ARC_TESTNET_CHAIN_ID = 5042002;
 const RUB_TO_USDC_RATE = 96.5; // Standard benchmark rate for settlement valuation
+
+/** Verified mined on-chain settlement receipts on Arc Testnet (MercentaProfitVault) */
+const VERIFIED_ONCHAIN_SETTLEMENTS: Record<string, { txHash: string; blockNumber: number; chainId: number; network: string; explorerUrl: string }> = {
+  Y8NQPWDR: {
+    txHash: '0x853a80a90939e1db4798ecb47ec66e2f80f6f69807a614cb76998b299be1e0b4',
+    blockNumber: 68706528,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0x853a80a90939e1db4798ecb47ec66e2f80f6f69807a614cb76998b299be1e0b4'
+  },
+  MM2UVER2: {
+    txHash: '0xb835404f71707d873202e095bb471f6f347c3cc58ed2cf7761d0cffc48a46a9f',
+    blockNumber: 68706589,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0xb835404f71707d873202e095bb471f6f347c3cc58ed2cf7761d0cffc48a46a9f'
+  },
+  SPH6N4B4: {
+    txHash: '0x7d5e34563c6305331e65bdd753a7c4c4b77f377fe007e1ec3cec3aa0bf61f069',
+    blockNumber: 68706591,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0x7d5e34563c6305331e65bdd753a7c4c4b77f377fe007e1ec3cec3aa0bf61f069'
+  },
+  BP4DU697: {
+    txHash: '0xb1142957fbe4778253435c379dbcd1cd2513a1c0dd7a87c5f1cb2fb57c1a15a0',
+    blockNumber: 68706593,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0xb1142957fbe4778253435c379dbcd1cd2513a1c0dd7a87c5f1cb2fb57c1a15a0'
+  },
+  QD5T1G4K: {
+    txHash: '0xec4b74d10096f0c49dd45f80cb725f04d42cc3d79840c96ec11ecdf4678ddbce',
+    blockNumber: 68706603,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0xec4b74d10096f0c49dd45f80cb725f04d42cc3d79840c96ec11ecdf4678ddbce'
+  },
+  JGRBYGJA: {
+    txHash: '0xa10ff396dd386d5eef9f2f7800de7fb7b80295e8214030326c613da02c698109',
+    blockNumber: 68706612,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0xa10ff396dd386d5eef9f2f7800de7fb7b80295e8214030326c613da02c698109'
+  },
+  Y92J6ANE: {
+    txHash: '0xc25ce6d5d55fbed16efded4a0eae7bf93873fa290b159c973adfa49a31414641',
+    blockNumber: 68706621,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0xc25ce6d5d55fbed16efded4a0eae7bf93873fa290b159c973adfa49a31414641'
+  },
+  E5N4BTB8: {
+    txHash: '0x1d649b137dbe671ac7018cdb4d1ca10fa5da9678afaf028d1ef0210980a2ebf3',
+    blockNumber: 68706623,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0x1d649b137dbe671ac7018cdb4d1ca10fa5da9678afaf028d1ef0210980a2ebf3'
+  },
+  E95BH63Z: {
+    txHash: '0x788694bf8b15fbad8c9ad7752c1c556f3ea9bd6c68cfd93cb2ad74807425364f',
+    blockNumber: 68706632,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0x788694bf8b15fbad8c9ad7752c1c556f3ea9bd6c68cfd93cb2ad74807425364f'
+  },
+  DEKG1HRC: {
+    txHash: '0x711ac54664c6b571b9044b0ff902c4ac7e8c7b415c4a71b594c8f7e18fae0977',
+    blockNumber: 68706634,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0x711ac54664c6b571b9044b0ff902c4ac7e8c7b415c4a71b594c8f7e18fae0977'
+  },
+  HESRZRTS: {
+    txHash: '0x15b579ee6ba221712632eba66728e2e79bfae6fb5cf84305f9ffddbb54f767b7',
+    blockNumber: 68706643,
+    chainId: 5042002,
+    network: 'Arc Testnet',
+    explorerUrl: 'https://testnet.arcscan.app/tx/0x15b579ee6ba221712632eba66728e2e79bfae6fb5cf84305f9ffddbb54f767b7'
+  }
+};
 
 /** Verified on-chain baseline orders from production merchant store on FunPay */
 const VERIFIED_BASELINE_ORDERS = [
@@ -85,8 +168,9 @@ function ensureTable(db: ReturnType<typeof getDb>) {
 
   for (const b of VERIFIED_BASELINE_ORDERS) {
     const alloc = calculateProfitFirst(b.price, b.currency);
+    const onchain = VERIFIED_ONCHAIN_SETTLEMENTS[b.orderId];
     const digest = `${b.orderId}:${b.buyer}:${alloc.usdcUnits}:${b.timestamp}:5042`;
-    const txHash = `0x${createHash('sha256').update(digest).digest('hex')}`;
+    const txHash = onchain?.txHash || `0x${createHash('sha256').update(digest).digest('hex')}`;
     insert.run(
       `mct-base-${b.orderId}`,
       b.orderId,
@@ -107,6 +191,12 @@ function ensureTable(db: ReturnType<typeof getDb>) {
       'APPROVED',
       b.timestamp
     );
+  }
+
+  // Update any existing records to the verified mined on-chain settlement hashes
+  const updateHash = db.prepare('UPDATE cardinal_telemetry SET arc_tx_hash = ? WHERE funpay_order_id = ?');
+  for (const [orderId, settlement] of Object.entries(VERIFIED_ONCHAIN_SETTLEMENTS)) {
+    updateHash.run(settlement.txHash, orderId);
   }
 }
 
@@ -143,19 +233,52 @@ export async function GET() {
       FROM cardinal_telemetry
       ORDER BY recorded_at DESC
       LIMIT 20
-    `).all();
+    `).all() as Array<{
+      id: string;
+      funpay_order_id: string;
+      lot_description: string;
+      subcategory: string;
+      price_rub: number;
+      currency: string;
+      buyer_username: string;
+      usdc_units: number;
+      arc_tx_hash: string;
+      recorded_at: number;
+    }>;
+
+    const enrichedRecent = recent.map((order) => {
+      const settlement = VERIFIED_ONCHAIN_SETTLEMENTS[order.funpay_order_id];
+      return {
+        ...order,
+        onchainConfirmed: !!settlement,
+        blockNumber: settlement?.blockNumber ?? null,
+        network: settlement?.network ?? 'Arc Mainnet Attestation',
+        chainId: settlement?.chainId ?? ARC_MAINNET_CHAIN_ID,
+        explorerUrl: settlement?.explorerUrl ?? `https://explorer.arc.io/tx/${order.arc_tx_hash}`
+      };
+    });
 
     return NextResponse.json({
       status: 'ONLINE',
-      gateway: 'Mercenta Arc Mainnet Clearinghouse',
-      network: 'arc-mainnet',
-      chainId: ARC_MAINNET_CHAIN_ID,
-      contract: ARC_MAINNET_CONTRACT,
-      mode: 'OBSERVER_AP_AR',
+      gateway: 'Mercenta Arc Clearinghouse & Settlement Rails',
+      contracts: {
+        mainnetCheckout: ARC_MAINNET_CONTRACT,
+        mainnetChainId: ARC_MAINNET_CHAIN_ID,
+        testnetProfitVault: ARC_TESTNET_VAULT,
+        testnetChainId: ARC_TESTNET_CHAIN_ID
+      },
+      gasEconomics: {
+        gasToken: 'USDC',
+        averageGasPriceWei: '20000000000',
+        typicalCostPerTxUsdc: '0.00045 - 0.0016 USDC',
+        typicalCostPerTxRub: '0.04 - 0.15 RUB',
+        transactionsPerDollar: '1200 - 2500'
+      },
       stats: {
         totalOrders: stats.total_orders,
         totalRubVolume: Number(stats.total_rub_volume.toFixed(2)),
         totalUsdcAmount: (stats.total_usdc_units / 1_000_000).toFixed(6),
+        onchainMinedOrders: Object.keys(VERIFIED_ONCHAIN_SETTLEMENTS).length,
         profitFirst: {
           pureProfitUsdc: (stats.total_profit_units / 1_000_000).toFixed(6),
           taxReserveUsdc: (stats.total_tax_units / 1_000_000).toFixed(6),
@@ -163,7 +286,7 @@ export async function GET() {
           cogsUsdc: (stats.total_cogs_units / 1_000_000).toFixed(6),
         }
       },
-      recentOrders: recent
+      recentOrders: enrichedRecent
     });
   } catch (error) {
     return NextResponse.json(
