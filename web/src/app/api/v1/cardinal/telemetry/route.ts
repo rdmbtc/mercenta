@@ -271,6 +271,10 @@ export async function GET() {
 
     return NextResponse.json({
       status: 'ONLINE',
+      network: 'arc-mainnet',
+      chainId: ARC_MAINNET_CHAIN_ID,
+      contract: ARC_MAINNET_CONTRACT,
+      mode: 'OBSERVER_AP_AR',
       gateway: 'Mercenta Arc Clearinghouse & Settlement Rails',
       contracts: {
         mainnetCheckout: ARC_MAINNET_CONTRACT,

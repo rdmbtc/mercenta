@@ -16,12 +16,12 @@ const rollingNumberVariants = tv({
   slots: {
     // `tabular-nums` so a 1 is as wide as an 8 and the number does not change
     // width, and shove whatever is beside it, while it rolls.
-    root: 'inline-flex items-baseline tabular-nums',
-    column: 'relative inline-block',
-    window: 'absolute inset-0 overflow-hidden',
+    root: 'inline-flex items-baseline tabular-nums select-text',
+    column: 'relative inline-block overflow-hidden select-none',
+    window: 'absolute inset-0 overflow-hidden select-none pointer-events-none',
     strip:
-      'absolute inset-x-0 top-0 block h-[1000%] transition-transform ease-[cubic-bezier(0.2,0,0,1)] will-change-transform motion-reduce:transition-none',
-    digit: 'block h-[10%] text-center',
+      'absolute inset-x-0 top-0 block h-[1000%] transition-transform ease-[cubic-bezier(0.2,0,0,1)] will-change-transform motion-reduce:transition-none select-none pointer-events-none',
+    digit: 'block h-[10%] text-center select-none',
   },
 });
 
@@ -101,34 +101,49 @@ export function RollingNumber({
 
   return (
     <span data-slot="rolling-number" className={slots.root({ className })} {...props}>
-      {/* What a screen reader gets: the number, once, as it is written. */}
-      <span className="sr-only">{label}</span>
-      {pieces.map((piece) =>
-        piece.digit === null ? (
-          <span key={piece.key} aria-hidden="true">
-            {piece.text}
-          </span>
-        ) : (
-          <span key={piece.key} aria-hidden="true" className={slots.column()}>
-            <span className="invisible">0</span>
-            <span className={slots.window()}>
+      {/* What a screen reader and clipboard gets: the number, once, as formatted. */}
+      <span className="sr-only select-text">{label}</span>
+      <span
+        aria-hidden="true"
+        className="inline-flex items-baseline select-none pointer-events-none"
+        style={{ userSelect: 'none' }}
+      >
+        {pieces.map((piece) =>
+          piece.digit === null ? (
+            <span key={piece.key} className="select-none" style={{ userSelect: 'none' }}>
+              {piece.text}
+            </span>
+          ) : (
+            <span
+              key={piece.key}
+              className={slots.column()}
+              style={{ overflow: 'hidden', userSelect: 'none' }}
+            >
+              <span className="invisible select-none" style={{ userSelect: 'none' }}>0</span>
               <span
-                className={slots.strip()}
-                style={{
-                  transform: `translateY(${-piece.digit * 10}%)`,
-                  transitionDuration: `${duration}ms`,
-                }}
+                className={slots.window()}
+                style={{ position: 'absolute', inset: 0, overflow: 'hidden', userSelect: 'none', pointerEvents: 'none' }}
               >
-                {DIGITS.map((digit) => (
-                  <span key={digit} className={slots.digit()}>
-                    {digit}
-                  </span>
-                ))}
+                <span
+                  className={slots.strip()}
+                  style={{
+                    transform: `translateY(${-piece.digit * 10}%)`,
+                    transitionDuration: `${duration}ms`,
+                    userSelect: 'none',
+                    pointerEvents: 'none',
+                  }}
+                >
+                  {DIGITS.map((digit) => (
+                    <span key={digit} className={slots.digit()} style={{ userSelect: 'none' }}>
+                      {digit}
+                    </span>
+                  ))}
+                </span>
               </span>
             </span>
-          </span>
-        )
-      )}
+          )
+        )}
+      </span>
     </span>
   );
 }
