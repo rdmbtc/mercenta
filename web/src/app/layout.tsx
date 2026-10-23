@@ -13,6 +13,7 @@ import Atmosphere from "@/components/Atmosphere";
 import "@/components/experience/experience.css";
 import '@/components/experience/mercenta-ledger-polish.css';
 import {ToastStack,PrivacyConsent} from "@/components/experience/Primitives";
+import { Analytics } from "@vercel/analytics/next";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
 const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"], display: "swap" });
@@ -122,6 +123,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {/* One non-interactive atmosphere plane for the whole document. */}
         <Atmosphere />
         {children}
+        <Analytics />
         <ToastStack/>
         <PrivacyConsent/>
       </body>
