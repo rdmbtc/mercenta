@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Planet } from './planet';
-import { Globe, ShieldCheck, Zap } from 'lucide-react';
+import { Globe, ShieldCheck } from 'lucide-react';
 
 interface ArcSettlementGlobeProps {
   className?: string;
