@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { HelpCircle, ExternalLink, Send, ShieldCheck, Activity } from 'lucide-react';
+import {
+  HelpCircle,
+  ExternalLink,
+  Send,
+  Activity,
+  ChevronDown,
+  MessageSquare,
+  Check,
+} from 'lucide-react';
 
 interface TgHelpProps {
   triggerHaptic?: (type?: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error') => void;
@@ -11,6 +19,7 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
   const [ticketSubject, setTicketSubject] = useState('');
   const [ticketMsg, setTicketMsg] = useState('');
   const [ticketSent, setTicketSent] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   function handleSendTicket(e: React.FormEvent) {
     e.preventDefault();
@@ -43,116 +52,146 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
   ];
 
   return (
-    <div className="space-y-5 pb-24 text-white">
+    <div className="space-y-4 pb-24 text-white">
       {/* Header Banner */}
-      <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-500/10 via-purple-500/10 to-emerald-500/10 border border-white/10 space-y-2">
-        <div className="flex items-center gap-2 text-sky-400">
-          <HelpCircle className="size-5" />
-          <h3 className="font-semibold text-sm text-white">Support &amp; Developer Hub</h3>
+      <div className="p-4 rounded-2xl bg-gradient-to-br from-[#141b2d] via-[#101524] to-[#0c0f1a] border border-sky-500/30 shadow-xl space-y-3">
+        <div className="flex items-center gap-2.5">
+          <div className="size-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/40 shadow-sm shadow-sky-500/30">
+            <HelpCircle className="size-5" />
+          </div>
+          <div>
+            <h3 className="font-bold text-sm text-white tracking-tight">Support &amp; Developer Hub</h3>
+            <span className="text-[11px] font-mono text-slate-300 font-medium">
+              Institutional SLA · 24/7 Monitoring
+            </span>
+          </div>
         </div>
-        <p className="text-xs text-white/60 leading-relaxed">
+
+        <p className="text-slate-200 text-xs leading-relaxed font-normal">
           Need assistance with order fulfillment, API integration, or multi-chain deposits? Our team and automated status bots are here 24/7.
         </p>
 
-        <div className="grid grid-cols-2 gap-2 pt-2">
+        <div className="grid grid-cols-2 gap-2.5 pt-1">
           <a
             href="https://docs.mercenta.xyz"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => triggerHaptic?.('light')}
-            className="p-2.5 rounded-xl bg-black/40 border border-white/10 hover:border-sky-500/40 text-xs flex items-center justify-between transition-colors"
+            className="p-3 rounded-xl bg-[#0a0d16] border border-slate-700 hover:border-sky-400 text-xs flex items-center justify-between transition-colors shadow-sm"
           >
-            <span>Developer Docs</span>
-            <ExternalLink className="size-3.5 text-sky-400" />
+            <span className="font-bold text-white">Developer Docs</span>
+            <ExternalLink className="size-4 text-sky-400" />
           </a>
           <a
             href="https://status.mercenta.xyz"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => triggerHaptic?.('light')}
-            className="p-2.5 rounded-xl bg-black/40 border border-white/10 hover:border-emerald-500/40 text-xs flex items-center justify-between transition-colors"
+            className="p-3 rounded-xl bg-[#0a0d16] border border-slate-700 hover:border-emerald-400 text-xs flex items-center justify-between transition-colors shadow-sm"
           >
             <div className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Status (99.9%)</span>
+              <span className="size-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#34d399]" />
+              <span className="font-bold text-white">Status (99.9%)</span>
             </div>
-            <Activity className="size-3.5 text-emerald-400" />
+            <Activity className="size-4 text-emerald-400" />
           </a>
         </div>
       </div>
 
-      {/* FAQ Section */}
-      <div className="space-y-2">
-        <h4 className="text-xs font-semibold uppercase tracking-wider text-white/80 px-1">
-          Frequently Asked Questions
-        </h4>
+      {/* Frequently Asked Questions */}
+      <div className="bg-[#121626] border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-3">
+        <div className="flex items-center gap-2 pb-2 border-b border-slate-700/60">
+          <MessageSquare className="size-4 text-sky-400" />
+          <h4 className="text-xs font-bold uppercase tracking-wider text-white">
+            Frequently Asked Questions
+          </h4>
+        </div>
+
         <div className="space-y-2">
-          {faqs.map((faq, i) => (
-            <details
-              key={i}
-              className="group p-3 rounded-2xl bg-[#0e111a] border border-white/10 open:border-sky-500/30 transition-colors"
-            >
-              <summary className="text-xs font-medium text-white/90 cursor-pointer list-none flex items-center justify-between">
-                <span>{faq.q}</span>
-                <span className="text-sky-400 transition-transform group-open:rotate-180">↓</span>
-              </summary>
-              <p className="text-[11px] text-white/60 mt-2 pt-2 border-t border-white/5 leading-relaxed">
-                {faq.a}
-              </p>
-            </details>
-          ))}
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaqIndex === idx;
+            return (
+              <div
+                key={idx}
+                className="rounded-xl border border-slate-700/70 overflow-hidden bg-[#0a0d16] transition-all"
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic?.('light');
+                    setOpenFaqIndex(isOpen ? null : idx);
+                  }}
+                  className="w-full p-3.5 text-left flex items-center justify-between gap-3 text-xs font-bold text-white hover:text-sky-300 transition-colors"
+                >
+                  <span className="leading-snug">{faq.q}</span>
+                  <ChevronDown
+                    className={`size-4 shrink-0 text-sky-400 transition-transform duration-200 ${
+                      isOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {isOpen && (
+                  <div className="px-3.5 pb-3.5 pt-1 text-xs text-slate-200 leading-relaxed border-t border-slate-800 bg-[#0f1424] font-normal">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Support Ticket Form */}
-      <div className="p-4 rounded-2xl bg-[#0e111a] border border-white/10 space-y-3">
-        <div className="flex items-center gap-2 pb-2 border-b border-white/5">
+      {/* Submit Support Ticket Form */}
+      <div className="bg-[#121626] border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-3">
+        <div className="flex items-center gap-2 pb-2 border-b border-slate-700/60">
           <Send className="size-4 text-sky-400" />
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-white/80">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-white">
             Submit Support Ticket
           </h4>
         </div>
 
         {ticketSent ? (
-          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-1">
-            <ShieldCheck className="size-6 text-emerald-400 mx-auto" />
-            <h5 className="font-semibold text-xs text-white">Ticket Submitted Successfully</h5>
-            <p className="text-[10px] text-white/60">
-              Our operator team will respond directly to your Telegram chat shortly.
+          <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-center space-y-1.5 animate-in fade-in">
+            <div className="size-8 rounded-full bg-emerald-400 text-black flex items-center justify-center mx-auto">
+              <Check className="size-4 stroke-[3]" />
+            </div>
+            <p className="font-bold text-xs text-white">Ticket Submitted Successfully</p>
+            <p className="text-[11px] text-slate-200">
+              Our support engineer will contact you directly in this Telegram chat within 15 minutes.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSendTicket} className="space-y-3">
-            <div className="space-y-1">
-              <label className="text-[10px] text-white/50 block">Subject / Order ID</label>
+            <div>
+              <label className="text-xs text-slate-300 font-semibold block mb-1">Subject</label>
               <input
                 type="text"
-                required
                 value={ticketSubject}
                 onChange={(e) => setTicketSubject(e.target.value)}
-                placeholder="e.g. Issue with Steam code or deposit question"
-                className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-sky-500/50"
+                placeholder="e.g. Need assistance with Steam voucher activation"
+                className="w-full bg-[#0a0d16] border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-400 transition-colors"
+                required
               />
             </div>
 
-            <div className="space-y-1">
-              <label className="text-[10px] text-white/50 block">Message Details</label>
+            <div>
+              <label className="text-xs text-slate-300 font-semibold block mb-1">Message</label>
               <textarea
-                required
-                rows={3}
                 value={ticketMsg}
                 onChange={(e) => setTicketMsg(e.target.value)}
-                placeholder="Describe what happened and include transaction hash if applicable..."
-                className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-sky-500/50 resize-none"
+                placeholder="Describe your issue or question in detail..."
+                rows={3}
+                className="w-full bg-[#0a0d16] border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-400 transition-colors resize-none"
+                required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-black font-semibold text-xs transition-colors flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs uppercase tracking-wider transition-all shadow-md shadow-sky-500/20 flex items-center justify-center gap-2 active:scale-[0.99]"
             >
-              <Send className="size-3.5" />
-              <span>Send Ticket to Operator</span>
+              <Send className="size-3.5 fill-current" />
+              <span>Send Support Ticket</span>
             </button>
           </form>
         )}
