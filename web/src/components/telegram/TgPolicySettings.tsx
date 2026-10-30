@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Key, Copy, Check, Sliders, RefreshCw, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, Key, Copy, Check, Sliders, RefreshCw, Zap } from 'lucide-react';
 
 interface TgPolicySettingsProps {
   triggerHaptic?: (type?: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error') => void;
@@ -29,6 +29,16 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
         setApiKey(initial);
         localStorage.setItem('mercenta_merchant_api_key_v1', initial);
       }
+
+      const savedPolicy = localStorage.getItem('mercenta_policy_guardrails_v1');
+      if (savedPolicy) {
+        const parsed = JSON.parse(savedPolicy);
+        if (parsed.marginFloor) setMarginFloor(parsed.marginFloor);
+        if (parsed.autoApprovalLimit) setAutoApprovalLimit(parsed.autoApprovalLimit);
+        if (parsed.velocityCap) setVelocityCap(parsed.velocityCap);
+        if (parsed.reserveRatio) setReserveRatio(parsed.reserveRatio);
+        if (typeof parsed.strictVendorCheck === 'boolean') setStrictVendorCheck(parsed.strictVendorCheck);
+      }
     } catch {}
   }, []);
 
@@ -51,34 +61,68 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
   function handleSavePolicy() {
     triggerHaptic?.('success');
     setSavedStatus(true);
-    setTimeout(() => setSavedStatus(false), 2000);
+    try {
+      localStorage.setItem(
+        'mercenta_policy_guardrails_v1',
+        JSON.stringify({
+          marginFloor,
+          autoApprovalLimit,
+          velocityCap,
+          reserveRatio,
+          strictVendorCheck,
+        })
+      );
+    } catch {}
+    setTimeout(() => setSavedStatus(false), 2500);
   }
 
   return (
-    <div className="space-y-5 pb-24 text-white">
-      {/* Header Info */}
-      <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-start gap-3">
-        <ShieldCheck className="size-5 text-sky-400 shrink-0 mt-0.5" />
-        <div className="space-y-1 text-xs">
-          <h4 className="font-semibold text-white">5-Gate Policy Engine</h4>
-          <p className="text-white/60 leading-relaxed text-[11px]">
-            Hardware-enforced spending boundaries. An autonomous AI agent or connected client bot cannot exceed these rules.
-          </p>
+    <div className="space-y-4 pb-24 text-white">
+      {/* 5-Gate Engine Status Banner */}
+      <div className="p-4 rounded-2xl bg-gradient-to-br from-[#141b2d] via-[#101524] to-[#0c0f1a] border border-sky-500/30 shadow-xl space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="size-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/40 shadow-sm shadow-sky-500/30">
+              <ShieldCheck className="size-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-white tracking-tight">5-Gate Policy Engine</h3>
+              <span className="text-[11px] font-mono text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#34d399]" />
+                HARDWARE ENFORCED ON ARC
+              </span>
+            </div>
+          </div>
+          <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-[10px] font-mono font-bold text-emerald-300">
+            ACTIVE
+          </span>
         </div>
+        <p className="text-slate-200 text-xs leading-relaxed font-normal">
+          Hardware-enforced spending boundaries. Autonomous AI agents and connected client bots cannot exceed these parameters without manual multisig approval.
+        </p>
       </div>
 
-      {/* Policy Engine Controls */}
-      <div className="space-y-4 bg-[#0e111a] border border-white/10 rounded-2xl p-4">
-        <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-          <Sliders className="size-4 text-sky-400" />
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-white/80">Guardrail Parameters</h3>
+      {/* Guardrail Controls Frame */}
+      <div className="bg-[#121626] border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-700/60">
+          <div className="flex items-center gap-2">
+            <Sliders className="size-4 text-sky-400" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white">
+              Guardrail Parameters
+            </h4>
+          </div>
+          <span className="text-[10px] font-mono text-slate-300 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">
+            Deterministic v2.1
+          </span>
         </div>
 
-        {/* 1. Margin Floor */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-xs">
-            <span className="text-white/70">Gross Margin Floor</span>
-            <span className="font-mono font-bold text-emerald-400">+{marginFloor.toFixed(1)}%</span>
+        {/* 1. Gross Margin Floor */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-white font-semibold">1. Gross Margin Floor</span>
+            <span className="font-mono font-bold text-emerald-400 text-xs px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30">
+              +{marginFloor.toFixed(1)}%
+            </span>
           </div>
           <input
             type="range"
@@ -90,145 +134,173 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
               triggerHaptic?.('light');
               setMarginFloor(parseFloat(e.target.value));
             }}
-            className="w-full accent-emerald-400 cursor-pointer"
+            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400"
           />
-          <span className="text-[10px] text-white/40 block">Orders with profit spread below this rate will be auto-aborted.</span>
+          <p className="text-[11px] text-slate-300 leading-snug">
+            Orders with profit spread below this rate are automatically aborted at the consensus level.
+          </p>
         </div>
 
         {/* 2. Auto-Approval Limit */}
-        <div className="space-y-1.5 pt-2 border-t border-white/5">
-          <div className="flex justify-between text-xs">
-            <span className="text-white/70">Auto-Approval Cap</span>
-            <span className="font-mono font-bold text-sky-400">${autoApprovalLimit} USDC</span>
+        <div className="space-y-2 pt-3 border-t border-slate-700/60">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-white font-semibold">2. Auto-Approval Cap</span>
+            <span className="font-mono font-bold text-sky-300 text-xs px-2 py-0.5 rounded-md bg-sky-500/15 border border-sky-500/30">
+              ${autoApprovalLimit} USDC
+            </span>
           </div>
           <input
             type="range"
             min="10"
-            max="500"
-            step="10"
+            max="1000"
+            step="25"
             value={autoApprovalLimit}
             onChange={(e) => {
               triggerHaptic?.('light');
-              setAutoApprovalLimit(parseInt(e.target.value));
+              setAutoApprovalLimit(parseInt(e.target.value, 10));
             }}
-            className="w-full accent-sky-400 cursor-pointer"
+            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-400"
           />
-          <span className="text-[10px] text-white/40 block">Max single transaction size allowed without manual owner sign-off.</span>
+          <p className="text-[11px] text-slate-300 leading-snug">
+            Maximum single purchase allowed autonomously without interactive owner sign-off.
+          </p>
         </div>
 
-        {/* 3. Velocity Limit */}
-        <div className="space-y-1.5 pt-2 border-t border-white/5">
-          <div className="flex justify-between text-xs">
-            <span className="text-white/70">Spend Velocity Cap</span>
-            <span className="font-mono font-bold text-purple-400">{velocityCap} tx / minute</span>
+        {/* 3. Spend Velocity Cap */}
+        <div className="space-y-2 pt-3 border-t border-slate-700/60">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-white font-semibold">3. Spend Velocity Cap</span>
+            <span className="font-mono font-bold text-purple-300 text-xs px-2 py-0.5 rounded-md bg-purple-500/15 border border-purple-500/30">
+              {velocityCap} tx / minute
+            </span>
           </div>
           <input
             type="range"
             min="1"
-            max="20"
+            max="30"
             step="1"
             value={velocityCap}
             onChange={(e) => {
               triggerHaptic?.('light');
-              setVelocityCap(parseInt(e.target.value));
+              setVelocityCap(parseInt(e.target.value, 10));
             }}
-            className="w-full accent-purple-400 cursor-pointer"
+            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-400"
           />
-          <span className="text-[10px] text-white/40 block">Protects your treasury against loop drain attacks and compromised API keys.</span>
+          <p className="text-[11px] text-slate-300 leading-snug">
+            Protects your treasury against loop drain attacks and rogue agent execution.
+          </p>
         </div>
 
-        {/* 4. Dispute Reserve Ratio */}
-        <div className="space-y-1.5 pt-2 border-t border-white/5">
-          <div className="flex justify-between text-xs">
-            <span className="text-white/70">Dispute &amp; Tax Reserve</span>
-            <span className="font-mono font-bold text-amber-400">{reserveRatio}% of revenue</span>
+        {/* 4. Treasury Reserve Ratio */}
+        <div className="space-y-2 pt-3 border-t border-slate-700/60">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-white font-semibold">4. Treasury Reserve Ratio</span>
+            <span className="font-mono font-bold text-amber-300 text-xs px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30">
+              {reserveRatio}% minimum
+            </span>
           </div>
           <input
             type="range"
             min="5"
-            max="25"
-            step="1"
+            max="50"
+            step="5"
             value={reserveRatio}
             onChange={(e) => {
               triggerHaptic?.('light');
-              setReserveRatio(parseInt(e.target.value));
+              setReserveRatio(parseInt(e.target.value, 10));
             }}
-            className="w-full accent-amber-400 cursor-pointer"
+            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
           />
-          <span className="text-[10px] text-white/40 block">Automatically segregated in vault for chargeback &amp; tax buffer.</span>
+          <p className="text-[11px] text-slate-300 leading-snug">
+            Safe buffer locked to prevent zero-balance gas locks on active wholesale orders.
+          </p>
         </div>
 
-        {/* 5. Zero-Trust Supplier Strictness */}
-        <div className="flex items-center justify-between pt-3 border-t border-white/5">
-          <div>
-            <span className="text-xs font-medium text-white/90 block">Zero-Trust Supplier Verification</span>
-            <span className="text-[10px] text-white/40">Only execute orders through cryptographically vetted supplier feeds.</span>
+        {/* 5. Institutional Primary Feeds */}
+        <div className="pt-3 border-t border-slate-700/60 flex items-center justify-between gap-3">
+          <div className="space-y-0.5">
+            <span className="text-xs text-white font-semibold block">
+              5. Strict Institutional Routing
+            </span>
+            <p className="text-[11px] text-slate-300 leading-snug">
+              Route exclusively through tier-1 institutional feeds with guaranteed warranty.
+            </p>
           </div>
+          <label className="relative inline-flex items-center cursor-pointer shrink-0">
+            <input
+              type="checkbox"
+              checked={strictVendorCheck}
+              onChange={(e) => {
+                triggerHaptic?.('light');
+                setStrictVendorCheck(e.target.checked);
+              }}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 border border-slate-700" />
+          </label>
+        </div>
+
+        {/* Save Policy Button */}
+        <div className="pt-2">
           <button
             type="button"
-            onClick={() => {
-              triggerHaptic?.('light');
-              setStrictVendorCheck(!strictVendorCheck);
-            }}
-            className={`w-11 h-6 rounded-full transition-colors relative ${
-              strictVendorCheck ? 'bg-emerald-500' : 'bg-white/20'
+            onClick={handleSavePolicy}
+            className={`w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 ${
+              savedStatus
+                ? 'bg-emerald-500 text-black shadow-emerald-500/30'
+                : 'bg-emerald-400 hover:bg-emerald-300 text-slate-950 shadow-emerald-500/20 active:scale-[0.99]'
             }`}
           >
-            <span
-              className={`size-4 bg-white rounded-full absolute top-1 transition-transform ${
-                strictVendorCheck ? 'left-6' : 'left-1'
-              }`}
-            />
+            {savedStatus ? (
+              <>
+                <Check className="size-4 stroke-[3]" />
+                <span>Guardrails Saved &amp; Enforced</span>
+              </>
+            ) : (
+              <>
+                <Zap className="size-4 fill-current" />
+                <span>Update &amp; Apply Guardrails</span>
+              </>
+            )}
           </button>
         </div>
-
-        <button
-          type="button"
-          onClick={handleSavePolicy}
-          className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 mt-2"
-        >
-          {savedStatus ? <Check className="size-4 text-emerald-400" /> : null}
-          <span>{savedStatus ? 'Policy Guardrails Saved!' : 'Apply Policy Rules'}</span>
-        </button>
       </div>
 
-      {/* Developer API Key Generator */}
-      <div className="space-y-3 bg-[#0e111a] border border-white/10 rounded-2xl p-4">
-        <div className="flex items-center justify-between pb-2 border-b border-white/5">
+      {/* API Key Management Frame */}
+      <div className="bg-[#121626] border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-slate-700/60">
           <div className="flex items-center gap-2">
-            <Key className="size-4 text-emerald-400" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-white/80">Agent &amp; Bot API Key</h3>
+            <Key className="size-4 text-sky-400" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white">
+              Merchant &amp; Agent API Key
+            </h4>
           </div>
           <button
             type="button"
             onClick={handleGenerateNewKey}
-            className="text-[10px] text-sky-400 hover:text-sky-300 flex items-center gap-1 font-mono"
+            className="text-[11px] font-medium text-sky-400 hover:text-sky-300 flex items-center gap-1 transition-colors"
           >
             <RefreshCw className="size-3" />
             <span>Regenerate</span>
           </button>
         </div>
 
-        <div className="space-y-1.5">
-          <label className="text-[10px] text-white/50 block">Your Secret Bearer Token</label>
-          <div className="p-3 bg-black/60 border border-white/10 rounded-xl flex items-center justify-between gap-2">
-            <span className="font-mono text-xs text-emerald-300 truncate select-all">{apiKey}</span>
-            <button
-              type="button"
-              onClick={handleCopyKey}
-              className="shrink-0 size-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/80 transition-colors"
-            >
-              {copiedKey ? <Check className="size-3.5 text-emerald-400" /> : <Copy className="size-3.5" />}
-            </button>
-          </div>
-          <p className="text-[10px] text-white/40 leading-relaxed">
-            Use this token to connect your <strong>Client Bot Template</strong> or AI agent SDK directly to Mercenta.
-          </p>
-        </div>
+        <p className="text-[11px] text-slate-300 leading-snug">
+          Use this key in your client Telegram store, Python SDK, or agent backend to purchase at wholesale rates.
+        </p>
 
-        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-200/80 flex items-start gap-2">
-          <AlertTriangle className="size-4 text-amber-400 shrink-0 mt-0.5" />
-          <span>Keep your key secure. Anyone with this key can purchase wholesale items up to your set auto-approval limit.</span>
+        <div className="flex items-center justify-between p-2.5 bg-[#0a0d16] border border-slate-700 rounded-xl">
+          <span className="font-mono text-xs text-emerald-400 font-bold truncate select-all pr-2">
+            {apiKey}
+          </span>
+          <button
+            type="button"
+            onClick={handleCopyKey}
+            className="size-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center shrink-0 transition-colors border border-slate-600"
+            title="Copy API Key"
+          >
+            {copiedKey ? <Check className="size-4 text-emerald-400" /> : <Copy className="size-4" />}
+          </button>
         </div>
       </div>
     </div>

@@ -1,8 +1,22 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Wallet, Copy, Check, QrCode, Key, Eye, EyeOff, Download, ExternalLink, ShieldCheck, RefreshCw } from 'lucide-react';
+import {
+  Wallet,
+  Copy,
+  Check,
+  QrCode,
+  Key,
+  Eye,
+  EyeOff,
+  ExternalLink,
+  RefreshCw,
+  ShoppingBag,
+  Download,
+  AlertTriangle,
+} from 'lucide-react';
 import type { ArcWalletState } from './useArcWallet';
+import { RollingNumber } from '@/components/panelui/rolling-number';
 
 interface TgProfileProps {
   wallet: ArcWalletState;
@@ -11,41 +25,41 @@ interface TgProfileProps {
   triggerHaptic?: (type?: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error') => void;
 }
 
-interface PurchaseItem {
+interface OrderHistoryItem {
   id: string;
   productName: string;
   denomLabel: string;
-  code: string;
   amountUsdc: number;
-  txHash: string;
+  code: string;
   date: string;
-  brand: string;
+  txHash: string;
 }
 
-export function TgProfile({ wallet, onOpenTopUp, onResetWallet, triggerHaptic }: TgProfileProps) {
-  const [history, setHistory] = useState<PurchaseItem[]>([]);
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+export function TgProfile({
+  wallet,
+  onOpenTopUp,
+  onResetWallet,
+  triggerHaptic,
+}: TgProfileProps) {
   const [copiedAddress, setCopiedAddress] = useState(false);
+  const [copiedKey, setCopiedKey] = useState(false);
   const [showPrivateKey, setShowPrivateKey] = useState(false);
   const [showQr, setShowQr] = useState(false);
+  const [history, setHistory] = useState<OrderHistoryItem[]>([]);
+  const [copiedOrderItem, setCopiedOrderItem] = useState<string | null>(null);
 
+  // Load history from local storage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('mercenta_tg_purchase_history_v1');
-      if (stored) {
-        setHistory(JSON.parse(stored));
+      const historyKey = `mercenta_orders_${wallet.address || 'demo'}`;
+      const raw = localStorage.getItem(historyKey);
+      if (raw) {
+        setHistory(JSON.parse(raw));
       }
-    } catch {}
-  }, []);
-
-  function handleCopy(text: string, id: string) {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(text);
-      setCopiedKey(id);
-      triggerHaptic?.('success');
-      setTimeout(() => setCopiedKey(null), 2000);
+    } catch (e) {
+      console.error('History load error:', e);
     }
-  }
+  }, [wallet.address]);
 
   function handleCopyAddress() {
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
@@ -56,12 +70,33 @@ export function TgProfile({ wallet, onOpenTopUp, onResetWallet, triggerHaptic }:
     }
   }
 
+  function handleCopyPrivateKey() {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(wallet.privateKey);
+      setCopiedKey(true);
+      triggerHaptic?.('success');
+      setTimeout(() => setCopiedKey(false), 2000);
+    }
+  }
+
+  function handleCopyOrderCode(code: string, id: string) {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(code);
+      setCopiedOrderItem(id);
+      triggerHaptic?.('success');
+      setTimeout(() => setCopiedOrderItem(null), 2000);
+    }
+  }
+
   function handleExportCsv() {
     triggerHaptic?.('medium');
     if (history.length === 0) return;
     const headers = 'Order ID,Product,Denomination,USDC Amount,Key,TxHash,Date\n';
     const rows = history
-      .map((h) => `"${h.id}","${h.productName}","${h.denomLabel}",${h.amountUsdc},"${h.code}","${h.txHash}","${h.date}"`)
+      .map(
+        (h) =>
+          `"${h.id}","${h.productName}","${h.denomLabel}",${h.amountUsdc},"${h.code}","${h.txHash}","${h.date}"`
+      )
       .join('\n');
     const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -74,55 +109,58 @@ export function TgProfile({ wallet, onOpenTopUp, onResetWallet, triggerHaptic }:
   }
 
   return (
-    <div className="space-y-5 pb-24 text-white">
+    <div className="space-y-4 pb-24 text-white">
       {/* Wallet Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#121624] via-[#0b0e17] to-[#07090e] border border-sky-500/30 p-5 shadow-2xl space-y-4">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#161c2e] via-[#101524] to-[#0a0d16] border border-sky-500/40 p-5 shadow-2xl space-y-4">
         {/* Subtle decorative glow */}
-        <div className="absolute -top-12 -right-12 size-36 bg-sky-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 size-36 bg-sky-500/15 rounded-full blur-2xl pointer-events-none" />
 
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="size-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/30">
-              <Wallet className="size-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="size-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/40 shadow-sm shadow-sky-500/30">
+              <Wallet className="size-5" />
             </div>
             <div>
-              <span className="text-[10px] font-mono text-sky-400 uppercase tracking-wider block">
-                Arc Mainnet (5042)
+              <span className="text-[10px] font-mono text-sky-300 font-bold uppercase tracking-wider block">
+                Arc Mainnet · 5042
               </span>
-              <h3 className="text-sm font-semibold text-white">Non-Custodial Balance</h3>
+              <h3 className="text-sm font-bold text-white tracking-tight">Non-Custodial Balance</h3>
             </div>
           </div>
-          <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[9px] font-mono font-bold text-emerald-400">
+          <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-[10px] font-mono font-bold text-emerald-300">
             EVM SECURED
           </span>
         </div>
 
-        {/* Big Balance Display */}
+        {/* Balance Display with RollingNumber */}
         <div>
-          <span className="text-[11px] text-white/50 block">Available Liquidity</span>
+          <span className="text-xs text-slate-300 font-medium block">Available Liquidity</span>
           <div className="flex items-baseline gap-1.5 mt-0.5">
-            <span className="text-3xl font-bold font-mono text-white tracking-tight">
-              ${wallet.balanceUsdc.toFixed(2)}
+            <span className="text-3xl font-extrabold font-mono text-white tracking-tight flex items-baseline">
+              <span>$</span>
+              <RollingNumber value={wallet.balanceUsdc} />
             </span>
-            <span className="text-xs font-mono font-medium text-emerald-400">USDC</span>
+            <span className="text-xs font-mono font-bold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
+              USDC
+            </span>
           </div>
         </div>
 
         {/* Address Bar */}
-        <div className="space-y-1">
-          <span className="text-[10px] text-white/40 block">Personal Arc Address</span>
-          <div className="flex items-center justify-between p-2.5 bg-black/50 border border-white/10 rounded-xl">
-            <span className="font-mono text-xs text-white/80 truncate select-all pr-2">
+        <div className="space-y-1.5">
+          <span className="text-xs text-slate-300 font-semibold block">Personal Arc Address</span>
+          <div className="flex items-center justify-between p-2.5 bg-[#080b12] border border-slate-700 rounded-xl">
+            <span className="font-mono text-xs text-slate-100 font-medium truncate select-all pr-2">
               {wallet.address}
             </span>
-            <div className="flex items-center gap-1 shrink-0">
+            <div className="flex items-center gap-1.5 shrink-0">
               <button
                 type="button"
                 onClick={handleCopyAddress}
-                className="size-7 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white flex items-center justify-center transition-colors"
+                className="size-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition-colors border border-slate-600"
                 title="Copy Address"
               >
-                {copiedAddress ? <Check className="size-3.5 text-emerald-400" /> : <Copy className="size-3.5" />}
+                {copiedAddress ? <Check className="size-4 text-emerald-400" /> : <Copy className="size-4" />}
               </button>
               <button
                 type="button"
@@ -130,10 +168,14 @@ export function TgProfile({ wallet, onOpenTopUp, onResetWallet, triggerHaptic }:
                   triggerHaptic?.('light');
                   setShowQr(!showQr);
                 }}
-                className="size-7 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white flex items-center justify-center transition-colors"
+                className={`size-8 rounded-lg flex items-center justify-center transition-colors border ${
+                  showQr
+                    ? 'bg-sky-500 text-black border-sky-400 font-bold'
+                    : 'bg-slate-800 hover:bg-slate-700 text-white border-slate-600'
+                }`}
                 title="QR Code"
               >
-                <QrCode className="size-3.5" />
+                <QrCode className="size-4" />
               </button>
             </div>
           </div>
@@ -142,25 +184,24 @@ export function TgProfile({ wallet, onOpenTopUp, onResetWallet, triggerHaptic }:
         {/* QR Code Container */}
         {showQr && (
           <div className="p-4 bg-white rounded-2xl flex flex-col items-center justify-center space-y-2 animate-in fade-in duration-150">
-            {/* SVG QR Code generation placeholder */}
-            <div className="size-36 bg-neutral-900 rounded-lg flex items-center justify-center p-2 text-center text-white text-[10px] font-mono break-all select-all">
+            <div className="size-40 bg-neutral-900 rounded-xl flex items-center justify-center p-3 text-center text-white text-[10px] font-mono break-all select-all">
               {wallet.address}
             </div>
-            <span className="text-black text-[10px] font-sans font-medium text-center">
+            <span className="text-slate-900 text-xs font-semibold text-center">
               Scan with mobile crypto wallet to deposit USDC
             </span>
           </div>
         )}
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-2 pt-1">
+        <div className="grid grid-cols-2 gap-2.5 pt-1">
           <button
             type="button"
             onClick={() => {
               triggerHaptic?.('medium');
               onOpenTopUp();
             }}
-            className="py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-emerald-500/20 text-center"
+            className="py-3 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-extrabold text-xs uppercase tracking-wider transition-all shadow-md shadow-emerald-500/20 text-center active:scale-[0.99]"
           >
             + Top Up USDC
           </button>
@@ -169,20 +210,20 @@ export function TgProfile({ wallet, onOpenTopUp, onResetWallet, triggerHaptic }:
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => triggerHaptic?.('light')}
-            className="py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
+            className="py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
           >
             <span>Arc Explorer</span>
-            <ExternalLink className="size-3 text-white/50" />
+            <ExternalLink className="size-3.5 text-slate-300" />
           </a>
         </div>
       </div>
 
-      {/* Private Key & Security Section */}
-      <div className="p-4 rounded-2xl bg-[#0e111a] border border-white/10 space-y-3">
-        <div className="flex items-center justify-between pb-2 border-b border-white/5">
+      {/* Private Key & Security Section (CRISP HIGH CONTRAST) */}
+      <div className="bg-[#121626] border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-slate-700/60">
           <div className="flex items-center gap-2">
             <Key className="size-4 text-sky-400" />
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white/80">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white">
               Non-Custodial Keys
             </h4>
           </div>
@@ -192,108 +233,122 @@ export function TgProfile({ wallet, onOpenTopUp, onResetWallet, triggerHaptic }:
               triggerHaptic?.('medium');
               setShowPrivateKey(!showPrivateKey);
             }}
-            className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1"
+            className="text-xs font-semibold text-sky-400 hover:text-sky-300 flex items-center gap-1 transition-colors px-2 py-1 rounded-md bg-sky-500/10 border border-sky-500/20"
           >
             {showPrivateKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
-            <span>{showPrivateKey ? 'Hide' : 'Reveal Key'}</span>
+            <span>{showPrivateKey ? 'Hide Key' : 'Reveal Key'}</span>
           </button>
         </div>
 
-        {showPrivateKey ? (
-          <div className="space-y-2 p-3 bg-red-500/10 border border-red-500/30 rounded-xl">
-            <div className="flex items-center gap-1.5 text-red-300 text-[11px] font-semibold">
-              <ShieldCheck className="size-3.5" />
-              <span>Private Key (Never share this with anyone)</span>
+        <p className="text-slate-200 text-xs leading-relaxed font-normal">
+          Your key is stored securely in your client. You have full non-custodial ownership of your funds and can export to MetaMask, Rabby, or Frame at any time.
+        </p>
+
+        {showPrivateKey && (
+          <div className="space-y-3 pt-2">
+            <div className="p-3 rounded-xl bg-amber-500/15 border border-amber-500/40 flex items-start gap-2.5">
+              <AlertTriangle className="size-4 text-amber-400 shrink-0 mt-0.5" />
+              <p className="text-xs text-amber-200 leading-snug font-medium">
+                Never share this private key with anyone. Anyone with this key can withdraw your USDC.
+              </p>
             </div>
-            <div className="flex items-center justify-between gap-2 bg-black/60 p-2.5 rounded-lg border border-red-500/20">
-              <span className="font-mono text-[11px] text-red-200 truncate select-all">
+
+            <div className="flex items-center justify-between p-3 bg-black/90 border border-slate-700 rounded-xl">
+              <span className="font-mono text-xs text-amber-300 font-bold truncate select-all pr-2">
                 {wallet.privateKey}
               </span>
               <button
                 type="button"
-                onClick={() => handleCopy(wallet.privateKey, 'pk')}
-                className="size-6 shrink-0 rounded bg-white/10 flex items-center justify-center text-white"
+                onClick={handleCopyPrivateKey}
+                className="size-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center shrink-0 border border-slate-600"
+                title="Copy Private Key"
               >
-                {copiedKey === 'pk' ? <Check className="size-3 text-emerald-400" /> : <Copy className="size-3" />}
+                {copiedKey ? <Check className="size-4 text-emerald-400" /> : <Copy className="size-4" />}
               </button>
             </div>
           </div>
-        ) : (
-          <p className="text-[11px] text-white/50 leading-relaxed">
-            Your key is stored locally in your Telegram client. You have full ownership of your funds and can export to MetaMask, Rabby, or Frame at any time.
-          </p>
         )}
 
-        <button
-          type="button"
-          onClick={() => {
-            if (confirm('Generate a brand new Arc wallet? Make sure you exported your current key first!')) {
-              onResetWallet();
-            }
-          }}
-          className="text-[10px] text-white/40 hover:text-red-400 flex items-center gap-1 transition-colors pt-1"
-        >
-          <RefreshCw className="size-3" />
-          <span>Reset &amp; Generate New Wallet</span>
-        </button>
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={() => {
+              if (confirm('Are you sure you want to generate a new wallet? Make sure you backed up your current key!')) {
+                triggerHaptic?.('warning');
+                onResetWallet();
+              }
+            }}
+            className="text-xs text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors font-medium"
+          >
+            <RefreshCw className="size-3.5" />
+            <span>Reset &amp; Generate New Wallet</span>
+          </button>
+        </div>
       </div>
 
-      {/* Purchase History & Digital Key Vault */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-white/80">
-            Order Vault ({history.length})
-          </h4>
+      {/* Cryptographic Receipts & Purchase History */}
+      <div className="bg-[#121626] border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-slate-700/60">
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="size-4 text-sky-400" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white">
+              Voucher Receipts ({history.length})
+            </h4>
+          </div>
           {history.length > 0 && (
             <button
               type="button"
               onClick={handleExportCsv}
-              className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1"
+              className="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-semibold"
             >
-              <Download className="size-3" />
+              <Download className="size-3.5" />
               <span>Export CSV</span>
             </button>
           )}
         </div>
 
-        {history.length > 0 ? (
-          <div className="space-y-2">
+        {history.length === 0 ? (
+          <div className="py-8 text-center space-y-2">
+            <div className="size-10 rounded-full bg-slate-800/80 text-slate-400 flex items-center justify-center mx-auto border border-slate-700">
+              <ShoppingBag className="size-5" />
+            </div>
+            <p className="text-xs text-slate-200 font-semibold">No purchases yet</p>
+            <p className="text-[11px] text-slate-400">
+              Your purchased activation keys and on-chain Arc receipts will appear here.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2.5 max-h-72 overflow-y-auto no-scrollbar">
             {history.map((order) => (
               <div
                 key={order.id}
-                className="p-3.5 bg-[#0e111a] border border-white/10 rounded-2xl space-y-2"
+                className="p-3 rounded-xl bg-[#0a0d16] border border-slate-700/70 space-y-2"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-[9px] font-mono text-sky-400 uppercase tracking-wider block">
-                      {order.brand}
-                    </span>
-                    <h5 className="font-semibold text-xs text-white leading-tight">
+                    <h5 className="font-bold text-xs text-white leading-tight">
                       {order.productName}
                     </h5>
-                    <span className="text-[10px] text-white/50">{order.denomLabel}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs font-mono font-bold text-emerald-400 block">
-                      ${order.amountUsdc.toFixed(2)} USDC
-                    </span>
-                    <span className="text-[9px] font-mono text-white/40">
-                      {new Date(order.date).toLocaleDateString()}
+                    <span className="text-[11px] font-mono text-emerald-400 font-semibold block">
+                      {order.denomLabel} · ${order.amountUsdc.toFixed(2)} USDC
                     </span>
                   </div>
+                  <span className="text-[10px] text-slate-300 font-mono">
+                    {order.date}
+                  </span>
                 </div>
 
-                {/* Key box */}
-                <div className="flex items-center justify-between p-2 bg-black/60 border border-white/10 rounded-xl">
-                  <span className="font-mono text-xs text-emerald-300 font-bold select-all truncate pr-2">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-black/80 border border-slate-800">
+                  <span className="font-mono text-xs text-amber-300 font-bold select-all truncate pr-2">
                     {order.code}
                   </span>
                   <button
                     type="button"
-                    onClick={() => handleCopy(order.code, order.id)}
-                    className="shrink-0 size-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/80 transition-colors"
+                    onClick={() => handleCopyOrderCode(order.code, order.id)}
+                    className="size-7 rounded-md bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center shrink-0 border border-slate-600"
+                    title="Copy Key"
                   >
-                    {copiedKey === order.id ? (
+                    {copiedOrderItem === order.id ? (
                       <Check className="size-3.5 text-emerald-400" />
                     ) : (
                       <Copy className="size-3.5" />
@@ -302,11 +357,6 @@ export function TgProfile({ wallet, onOpenTopUp, onResetWallet, triggerHaptic }:
                 </div>
               </div>
             ))}
-          </div>
-        ) : (
-          <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/5 text-center space-y-1">
-            <p className="text-xs text-white/60">No purchases yet</p>
-            <p className="text-[11px] text-white/40">Keys and vouchers you acquire will appear here securely.</p>
           </div>
         )}
       </div>
