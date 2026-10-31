@@ -25,7 +25,7 @@ export function TgApp() {
 
   function triggerHaptic(type: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error' = 'light') {
     if (typeof window === 'undefined') return;
-    const tg = (window as any).Telegram?.WebApp;
+    const tg = (window as Window & { Telegram?: { WebApp?: { ready(): void; expand(): void; HapticFeedback?: { impactOccurred(t: string): void; notificationOccurred(t: string): void } } } }).Telegram?.WebApp;
     if (!tg) return;
     try {
       if (['success', 'warning', 'error'].includes(type)) {
