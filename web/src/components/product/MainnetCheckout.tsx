@@ -450,7 +450,7 @@ export function MainnetCheckout({
       aria-live="polite"
       style={{
         marginTop: '16px',
-        background: '#0a0c10',
+        background: 'var(--checkout-surface, #0a0c10)',
         border: '1px solid #202532',
         borderRadius: '16px',
         boxShadow: '0 12px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
@@ -482,21 +482,21 @@ export function MainnetCheckout({
           <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc', margin: '0 0 8px' }}>
             {ru ? 'Перевод отправлен. Проверяем выдачу.' : 'Transfer submitted. Delivery pending.'}
           </h3>
-          <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.55, margin: '0 0 16px' }}>
+          <p style={{ fontSize: '13px', color: 'var(--checkout-muted, #94a3b8)', lineHeight: 1.55, margin: '0 0 16px' }}>
             {ru ? 'Подтверждение оплаты и выдачи пока не получено. Не платите повторно. Хеш сохранён в покупках; обновление статуса не отправляет деньги.' : 'Payment and delivery confirmation are not yet available. Do not pay again. The hash is saved in Purchases; checking status never sends another payment.'}
           </p>
-          <dl className="mainnet-receipt-dl" style={{ background: '#07090e', border: '1px solid #1f242e', borderRadius: '12px', padding: '14px 16px', marginBottom: '16px' }}>
+          <dl className="mainnet-receipt-dl" style={{ background: 'var(--checkout-inset, #07090e)', border: '1px solid #1f242e', borderRadius: '12px', padding: '14px 16px', marginBottom: '16px' }}>
             <div className="mainnet-receipt-row">
-              <dt style={{ color: '#64748b', fontSize: '12px' }}>USDC</dt>
-              <dd className="mainnet-receipt-amount inline-flex items-center gap-1.5" style={{ color: '#00ca8e' }}>
+              <dt style={{ color: 'var(--checkout-muted, #64748b)', fontSize: '12px' }}>USDC</dt>
+              <dd className="mainnet-receipt-amount inline-flex items-center gap-1.5" style={{ color: 'var(--checkout-accent, #00ca8e)' }}>
                 <RollingNumber value={orderAmountUsdc} format={{ minimumFractionDigits: 2, maximumFractionDigits: 6 }} className="text-base font-bold font-mono tracking-tight" />
                 <span className="text-xs font-mono font-semibold text-emerald-400/90 tracking-wider">USDC</span>
               </dd>
             </div>
             <div className="mainnet-receipt-row">
-              <dt style={{ color: '#64748b', fontSize: '12px' }}>Transaction</dt>
+              <dt style={{ color: 'var(--checkout-muted, #64748b)', fontSize: '12px' }}>Transaction</dt>
               <dd className="mainnet-receipt-tx">
-                <a href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{ color: '#14c6cb', fontFamily: 'monospace', fontSize: '12px' }}>
+                <a href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{ color: 'var(--checkout-accent, #14c6cb)', fontFamily: 'monospace', fontSize: '12px' }}>
                   {txHash.slice(0, 10)}…{txHash.slice(-8)} <ExternalLink size={12} />
                 </a>
               </dd>
@@ -566,7 +566,7 @@ export function MainnetCheckout({
               style={{
                 textAlign: 'center',
                 fontSize: '12px',
-                color: '#64748b',
+                color: 'var(--checkout-muted, #64748b)',
                 marginTop: '4px',
                 textDecoration: 'underline',
                 textUnderlineOffset: '3px'
@@ -605,7 +605,7 @@ export function MainnetCheckout({
         style={{
           marginTop: '16px',
           border: '1px solid #202532',
-          background: '#0a0c10',
+          background: 'var(--checkout-surface, #0a0c10)',
           boxShadow: '0 12px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
           borderRadius: '16px',
           padding: '20px',
@@ -621,7 +621,7 @@ export function MainnetCheckout({
               <span style={{
                 fontSize: '11px',
                 background: 'rgba(0, 202, 142, 0.1)',
-                color: '#00ca8e',
+                color: 'var(--checkout-accent, #00ca8e)',
                 border: '1px solid rgba(0, 202, 142, 0.25)',
                 padding: '3px 10px',
                 borderRadius: '6px',
@@ -634,7 +634,7 @@ export function MainnetCheckout({
           </Frame.Header>
           <Frame.Panel className="bg-transparent border-0 divide-y-0 p-0">
 
-        <p style={{fontSize: '13px', color: '#94a3b8', lineHeight: 1.55, margin: '0 0 16px'}}>
+        <p style={{fontSize: '13px', color: 'var(--checkout-muted, #94a3b8)', lineHeight: 1.55, margin: '0 0 16px'}}>
           {ru
             ? (isTopup ? 'Провайдер сообщил о выдаче пополнения. Проверьте баланс аккаунта получателя.' : 'Код получен от провайдера и сохранён в покупках.')
             : (isTopup ? 'Provider reports top-up delivery. Check the recipient account balance.' : 'Your provider-issued activation key is saved to Purchases. A transfer alone does not prove redemption.')}
@@ -643,19 +643,19 @@ export function MainnetCheckout({
         {isTopup ? (
           <div className="mainnet-activation-box" style={{marginBottom: '16px'}}>
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap', gap: '8px'}}>
-              <span className="mainnet-activation-title" style={{color: '#14c6cb'}}>
-                <ShieldCheck size={14} style={{color: '#00ca8e'}}/>
+              <span className="mainnet-activation-title" style={{color: 'var(--checkout-accent, #14c6cb)'}}>
+                <ShieldCheck size={14} style={{color: 'var(--checkout-accent, #00ca8e)'}}/>
                 {ru ? 'АККАУНТ ЗАЧИСЛЕНИЯ' : 'RECIPIENT ACCOUNT'}
               </span>
-              <span style={{fontSize: '11px', color: '#00ca8e', background: 'rgba(0, 202, 142, 0.1)', border: '1px solid rgba(0, 202, 142, 0.25)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
+              <span style={{fontSize: '11px', color: 'var(--checkout-accent, #00ca8e)', background: 'rgba(0, 202, 142, 0.1)', border: '1px solid rgba(0, 202, 142, 0.25)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
                 {ru ? 'Зачислено' : 'Credited'}
               </span>
             </div>
             <div className="mainnet-topup-recipient-row" style={{marginTop: 0}}>
-              <span className="mainnet-topup-recipient-text" style={{fontSize: '15px', color: '#00ca8e'}}>
+              <span className="mainnet-topup-recipient-text" style={{fontSize: '15px', color: 'var(--checkout-accent, #00ca8e)'}}>
                 {effectiveAccount ? `@${effectiveAccount.replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '')}` : (codes[0]?.replace('TOPUP_CREDITED:', '') || '@username')}
               </span>
-              <span style={{fontSize: '12px', color: '#94a3b8', flexShrink: 0}}>
+              <span style={{fontSize: '12px', color: 'var(--checkout-muted, #94a3b8)', flexShrink: 0}}>
                 {productName}
               </span>
             </div>
@@ -664,7 +664,7 @@ export function MainnetCheckout({
           <div className="mainnet-activation-box" style={{marginBottom: '16px'}}>
             <div className="mainnet-activation-header">
               <span className="mainnet-activation-title" style={{color: '#cbd5e1'}}>
-                <KeyRound size={14} style={{color: '#00ca8e'}}/>
+                <KeyRound size={14} style={{color: 'var(--checkout-accent, #00ca8e)'}}/>
                 {ru ? (codes.length > 1 ? 'КЛЮЧИ АКТИВАЦИИ' : 'КЛЮЧ АКТИВАЦИИ') : (codes.length > 1 ? 'ACTIVATION KEYS' : 'ACTIVATION KEY')}
               </span>
               {codes.length > 1 && (
@@ -693,12 +693,12 @@ export function MainnetCheckout({
                   >
                     {copiedIndex === idx ? (
                       <>
-                        <Check size={14} style={{color: '#00ca8e'}}/>
-                        <span style={{color: '#00ca8e'}}>{ru ? 'Скопировано!' : 'Copied!'}</span>
+                        <Check size={14} style={{color: 'var(--checkout-accent, #00ca8e)'}}/>
+                        <span style={{color: 'var(--checkout-accent, #00ca8e)'}}>{ru ? 'Скопировано!' : 'Copied!'}</span>
                       </>
                     ) : (
                       <>
-                        <Copy size={14} style={{color: '#14c6cb'}}/>
+                        <Copy size={14} style={{color: 'var(--checkout-accent, #14c6cb)'}}/>
                         <span style={{color: '#cbd5e1'}}>{ru ? 'Скопировать' : 'Copy'}</span>
                       </>
                     )}
@@ -717,7 +717,7 @@ export function MainnetCheckout({
             </div>
             <div className="mainnet-receipt-row">
               <dt>{ru ? 'Сумма:' : 'Amount:'}</dt>
-              <dd className="mainnet-receipt-amount inline-flex items-center gap-1.5" style={{color: '#00ca8e'}}>
+              <dd className="mainnet-receipt-amount inline-flex items-center gap-1.5" style={{color: 'var(--checkout-accent, #00ca8e)'}}>
                 <RollingNumber value={orderAmountUsdc} format={{ minimumFractionDigits: 2, maximumFractionDigits: 6 }} className="text-base font-bold font-mono tracking-tight" />
                 <span className="text-xs font-mono font-semibold text-emerald-400/90 tracking-wider">USDC</span>
               </dd>
@@ -725,7 +725,7 @@ export function MainnetCheckout({
             <div className="mainnet-receipt-row">
               <dt>Tx Hash:</dt>
               <dd className="mainnet-receipt-tx">
-                <a href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{color: '#14c6cb'}}>
+                <a href={`https://explorer.arc.io/tx/${txHash}`} target="_blank" rel="noreferrer" style={{color: 'var(--checkout-accent, #14c6cb)'}}>
                   {txHash.slice(0, 10)}…{txHash.slice(-8)} <ExternalLink size={12}/>
                 </a>
               </dd>
@@ -733,7 +733,7 @@ export function MainnetCheckout({
             <div className="mainnet-receipt-row">
               <dt>{ru ? 'Клиринг:' : 'Settlement:'}</dt>
               <dd>
-                <a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#64748b', textDecoration: 'none'}}>
+                <a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: 'var(--checkout-muted, #64748b)', textDecoration: 'none'}}>
                   0x5886…48ce
                 </a>
               </dd>
@@ -741,7 +741,7 @@ export function MainnetCheckout({
           </dl>
         </div>
 
-        <div style={{fontSize: '11px', color: '#94a3b8', lineHeight: 1.5, padding: '10px 12px', background: 'rgba(20, 198, 203, 0.04)', border: '1px solid rgba(20, 198, 203, 0.16)', borderRadius: '8px', margin: '14px 0'}}>
+        <div style={{fontSize: '11px', color: 'var(--checkout-muted, #94a3b8)', lineHeight: 1.5, padding: '10px 12px', background: 'rgba(20, 198, 203, 0.04)', border: '1px solid rgba(20, 198, 203, 0.16)', borderRadius: '8px', margin: '14px 0'}}>
           {ru
             ? (isTopup ? 'Начисление: звёзды Telegram зачисляются напрямую на баланс указанного аккаунта. Заказ сохранён в «Моих покупках».' : 'Активация: используйте выданный код в личном кабинете платформы. Заказ сохранён в «Моих покупках».')
             : (isTopup ? 'Credit: Telegram Stars are credited directly to the specified account. Your order is listed under Purchases.' : 'Activation: redeem this code on the designated platform. Your order is listed under Purchases.')}
@@ -752,8 +752,8 @@ export function MainnetCheckout({
             className="mp-button full mainnet-modal-action-btn"
             href="/app?section=orders"
             style={{
-              background: '#00ca8e',
-              color: '#050608',
+              background: 'var(--checkout-accent, #00ca8e)',
+              color: 'var(--checkout-button-ink, #050608)',
               fontWeight: 700,
               borderRadius: '10px',
               boxShadow: '0 0 20px rgba(0, 202, 142, 0.25)',
@@ -792,7 +792,7 @@ export function MainnetCheckout({
       style={{
         marginTop: '16px',
         border: '1px solid #202532',
-        background: '#0a0c10',
+        background: 'var(--checkout-surface, #0a0c10)',
         boxShadow: '0 12px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
         borderRadius: '16px',
         padding: '20px',
@@ -814,7 +814,7 @@ export function MainnetCheckout({
               rel="noreferrer"
               style={{
                 fontSize: '11px',
-                color: '#14c6cb',
+                color: 'var(--checkout-accent, #14c6cb)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -834,19 +834,19 @@ export function MainnetCheckout({
         </Frame.Header>
         <Frame.Panel className="bg-transparent border-0 divide-y-0 p-0">
 
-      <div className="mainnet-receipt-details" style={{margin: '14px 0', background: '#07090e', border: '1px solid #1f242e', borderRadius: '12px', padding: '14px 16px'}}>
+      <div className="mainnet-receipt-details" style={{margin: '14px 0', background: 'var(--checkout-inset, #07090e)', border: '1px solid #1f242e', borderRadius: '12px', padding: '14px 16px'}}>
         <dl className="mainnet-receipt-dl" style={{ gap: '10px' }}>
           <div className="mainnet-receipt-row">
-            <dt style={{ color: '#64748b', fontSize: '12px' }}>{ru ? 'Товар:' : 'Item:'}</dt>
+            <dt style={{ color: 'var(--checkout-muted, #64748b)', fontSize: '12px' }}>{ru ? 'Товар:' : 'Item:'}</dt>
             <dd style={{fontWeight: 600, color: '#f1f5f9', fontSize: '13px'}}>{productName}{optionName&&optionName!==productName?' ('+optionName+')':''}</dd>
           </div>
           <div className="mainnet-receipt-row">
-            <dt style={{ color: '#64748b', fontSize: '12px' }}>{ru ? 'Количество:' : 'Qty:'}</dt>
+            <dt style={{ color: 'var(--checkout-muted, #64748b)', fontSize: '12px' }}>{ru ? 'Количество:' : 'Qty:'}</dt>
             <dd style={{color: '#f8fafc', fontFamily: 'monospace', fontSize: '13px'}}>{quantity}</dd>
           </div>
           <div className="mainnet-receipt-row">
-            <dt style={{ color: '#64748b', fontSize: '12px' }}>{ru ? 'К оплате:' : 'Amount:'}</dt>
-            <dd className="mainnet-receipt-amount inline-flex items-center gap-1.5" style={{fontSize: '15px', color: '#00ca8e'}}>
+            <dt style={{ color: 'var(--checkout-muted, #64748b)', fontSize: '12px' }}>{ru ? 'К оплате:' : 'Amount:'}</dt>
+            <dd className="mainnet-receipt-amount inline-flex items-center gap-1.5" style={{fontSize: '15px', color: 'var(--checkout-accent, #00ca8e)'}}>
               <RollingNumber
                 value={orderAmountUsdc}
                 format={{ minimumFractionDigits: 2, maximumFractionDigits: 6 }}
@@ -856,55 +856,55 @@ export function MainnetCheckout({
             </dd>
           </div>
           <div className="mainnet-receipt-row">
-            <dt style={{ color: '#64748b', fontSize: '12px' }}>{ru ? 'Стандарт роутера:' : 'Protocol Router:'}</dt>
-            <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: '#14c6cb', textDecoration: 'none'}}>0x06b6...f3ed (Arc Engine v2)</a></dd>
+            <dt style={{ color: 'var(--checkout-muted, #64748b)', fontSize: '12px' }}>{ru ? 'Стандарт роутера:' : 'Protocol Router:'}</dt>
+            <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${ROUTER_ADDRESS}#code`} target="_blank" rel="noreferrer" style={{color: 'var(--checkout-accent, #14c6cb)', textDecoration: 'none'}}>0x06b6...f3ed (Arc Engine v2)</a></dd>
           </div>
           <div className="mainnet-receipt-row">
-            <dt style={{ color: '#64748b', fontSize: '12px' }}>{ru ? 'Клиринговый шлюз:' : 'Settlement Gateway:'}</dt>
-            <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: '#64748b', textDecoration: 'none'}}>0x5886...48ce (Mercenta Node)</a></dd>
+            <dt style={{ color: 'var(--checkout-muted, #64748b)', fontSize: '12px' }}>{ru ? 'Клиринговый шлюз:' : 'Settlement Gateway:'}</dt>
+            <dd style={{fontFamily: 'monospace', fontSize: '11px'}}><a href={`https://explorer.arc.io/address/${MERCHANT_ADDRESS}`} target="_blank" rel="noreferrer" style={{color: 'var(--checkout-muted, #64748b)', textDecoration: 'none'}}>0x5886...48ce (Mercenta Node)</a></dd>
           </div>
         </dl>
       </div>
 
       {/* Mercenta 5-Step Policy Engine Clearance */}
-      <div style={{margin: '14px 0', padding: '14px 16px', background: '#07090e', borderRadius: '12px', border: allGatesPassed ? '1px solid rgba(0, 202, 142, 0.25)' : '1px solid rgba(239, 68, 68, 0.35)'}}>
+      <div className={allGatesPassed ? 'mainnet-policy-clearance is-passed' : 'mainnet-policy-clearance is-blocked'} style={{margin: '14px 0', padding: '14px 16px', background: 'var(--checkout-inset, #07090e)', borderRadius: '12px', border: allGatesPassed ? '1px solid rgba(0, 202, 142, 0.25)' : '1px solid rgba(239, 68, 68, 0.35)'}}>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px'}}>
-          <div style={{display: 'flex', alignItems: 'center', gap: '7px', fontSize: '12px', fontWeight: 600, color: allGatesPassed ? '#00ca8e' : '#f87171'}}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '7px', fontSize: '12px', fontWeight: 600, color: allGatesPassed ? 'var(--checkout-accent, #00ca8e)' : '#f87171'}}>
             <ShieldCheck size={15}/>
             <span>{ru ? '5-Уровневый Policy Engine' : '5-Step Policy Engine Clearance'}</span>
           </div>
-          <span style={{fontFamily: 'monospace', fontSize: '10px', color: '#64748b'}}>
+          <span style={{fontFamily: 'monospace', fontSize: '10px', color: 'var(--checkout-muted, #64748b)'}}>
             hash: {policyReasonHash.slice(0, 10)}…
           </span>
         </div>
 
-        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '11px', color: '#94a3b8'}}>
+        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '11px', color: 'var(--checkout-muted, #94a3b8)'}}>
           <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
-            <span style={{color: passSpendCap ? '#00ca8e' : '#f87171', fontWeight: 'bold'}}>{passSpendCap ? '✓' : '✗'}</span>
+            <span style={{color: passSpendCap ? 'var(--checkout-accent, #00ca8e)' : '#f87171', fontWeight: 'bold'}}>{passSpendCap ? '✓' : '✗'}</span>
             <span>01 Spend Cap: {projectedDailyUsdc.toFixed(1)}/100$</span>
           </div>
           <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
-            <span style={{color: passMarginFloor ? '#00ca8e' : '#f87171', fontWeight: 'bold'}}>✓</span>
+            <span style={{color: passMarginFloor ? 'var(--checkout-accent, #00ca8e)' : '#f87171', fontWeight: 'bold'}}>✓</span>
             <span>02 Margin Floor: &ge;15%</span>
           </div>
           <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
-            <span style={{color: passCounterparty ? '#00ca8e' : '#f87171', fontWeight: 'bold'}}>✓</span>
+            <span style={{color: passCounterparty ? 'var(--checkout-accent, #00ca8e)' : '#f87171', fontWeight: 'bold'}}>✓</span>
             <span>03 Counterparty: 100% SLA</span>
           </div>
           <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
-            <span style={{color: passVelocity ? '#00ca8e' : '#f87171', fontWeight: 'bold'}}>{passVelocity ? '✓' : '✗'}</span>
+            <span style={{color: passVelocity ? 'var(--checkout-accent, #00ca8e)' : '#f87171', fontWeight: 'bold'}}>{passVelocity ? '✓' : '✗'}</span>
             <span>04 Velocity: &le;3/min</span>
           </div>
         </div>
 
         <div style={{marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255, 255, 255, 0.06)', fontSize: '11px'}}>
           {needsHumanApproval ? (
-            <label style={{display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: humanApproved ? '#00ca8e' : '#fbbf24'}}>
+            <label style={{display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: humanApproved ? 'var(--checkout-accent, #00ca8e)' : '#fbbf24'}}>
               <input
                 type="checkbox"
                 checked={humanApproved}
                 onChange={(e) => setHumanApproved(e.target.checked)}
-                style={{accentColor: '#00ca8e', cursor: 'pointer'}}
+                style={{accentColor: 'var(--checkout-accent, #00ca8e)', cursor: 'pointer'}}
               />
               <span>
                 {ru
@@ -913,7 +913,7 @@ export function MainnetCheckout({
               </span>
             </label>
           ) : (
-            <div style={{display: 'flex', alignItems: 'center', gap: '6px', color: '#00ca8e'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--checkout-accent, #00ca8e)'}}>
               <span style={{ fontWeight: 'bold' }}>✓</span>
               <span>{ru ? '05 Human Gate: в пределах авто-лимита (≤ $25)' : '05 Human Gate: within auto-limit (≤ $25)'}</span>
             </div>
@@ -952,7 +952,7 @@ export function MainnetCheckout({
               outline: 'none',
             }}
           />
-          <p style={{margin: '6px 0 0', fontSize: '11px', color: '#94a3b8'}}>
+          <p style={{margin: '6px 0 0', fontSize: '11px', color: 'var(--checkout-muted, #94a3b8)'}}>
             {topupConfig.hint}
           </p>
         </div>
@@ -982,8 +982,8 @@ export function MainnetCheckout({
             disabled={busy}
             style={{
               justifyContent: 'center',
-              background: '#00ca8e',
-              color: '#050608',
+              background: 'var(--checkout-accent, #00ca8e)',
+              color: 'var(--checkout-button-ink, #050608)',
               fontWeight: 700,
               fontSize: '14px',
               padding: '12px 18px',
@@ -1005,7 +1005,7 @@ export function MainnetCheckout({
             style={{
               justifyContent: 'center',
               background: '#f59e0b',
-              color: '#050608',
+              color: 'var(--checkout-button-ink, #050608)',
               fontWeight: 700,
               fontSize: '14px',
               padding: '12px 18px',
@@ -1026,8 +1026,8 @@ export function MainnetCheckout({
             disabled={busy || amountMicro <= 0n || !denominationId || !allGatesPassed}
             style={{
               justifyContent: 'center',
-              background: (!allGatesPassed) ? 'rgba(255, 255, 255, 0.06)' : '#00ca8e',
-              color: (!allGatesPassed) ? '#64748b' : '#050608',
+              background: (!allGatesPassed) ? 'rgba(255, 255, 255, 0.06)' : 'var(--checkout-accent, #00ca8e)',
+              color: (!allGatesPassed) ? 'var(--checkout-muted, #64748b)' : 'var(--checkout-button-ink, #050608)',
               cursor: (!allGatesPassed) ? 'not-allowed' : 'pointer',
               fontWeight: 700,
               fontSize: '14px',
@@ -1058,7 +1058,7 @@ export function MainnetCheckout({
         )}
       </div>
 
-      <p style={{fontSize: '11px', color: '#64748b', margin: '14px 0 0', textAlign: 'center'}}>
+      <p style={{fontSize: '11px', color: 'var(--checkout-muted, #64748b)', margin: '14px 0 0', textAlign: 'center'}}>
         {ru
           ? 'Прямой клиринг USDC на Arc Mainnet (5042) с детерминированной валидацией 5 политик. Автоматический релиз ключа при получении подтверждения.'
           : 'Direct USDC clearing on Arc Mainnet (5042) enforced by 5 Policy Gates. Automatic digital code issuance upon transaction confirmation.'}

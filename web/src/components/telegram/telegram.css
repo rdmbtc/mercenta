@@ -9,6 +9,11 @@
   --tg-ink: #f3f6fa;
   --tg-muted: #a1afbf;
   --tg-blue: #b2e5ff;
+  --checkout-accent: #b2e5ff;
+  --checkout-muted: #b3c9dc;
+  --checkout-surface: #101d2b;
+  --checkout-inset: #0c1621;
+  --checkout-button-ink: #102335;
   min-height: 100dvh;
   background: var(--tg-bg);
   color: var(--tg-ink);
@@ -84,6 +89,27 @@
 .tg-funding { display: grid; gap: 16px; }
 .tg-funding input { width: 100%; background: var(--tg-bg); border: 1px solid var(--tg-line); border-radius: 6px; padding: 10px; }
 .tg-funding code { overflow-wrap: anywhere; }
+.tg-app .mainnet-retail-checkout,
+.tg-app .mainnet-record-receipt { border-color: #36516a !important; box-shadow: none !important; color: #f3f6fa; }
+.tg-app .mainnet-retail-checkout [data-slot="frame"],
+.tg-app .mainnet-record-receipt [data-slot="frame"] { background: transparent; border: 0; box-shadow: none; }
+.tg-app .mainnet-retail-checkout [data-slot="frame-panel"],
+.tg-app .mainnet-record-receipt [data-slot="frame-panel"] { background: transparent; color: #f3f6fa; border: 0; box-shadow: none; }
+.tg-app .mainnet-retail-checkout [data-slot="frame-header"] { flex-wrap: wrap; gap: 12px; }
+.tg-app .mainnet-retail-checkout [data-slot="frame-title"] { color: #d5edff; letter-spacing: 0; line-height: 1.5; }
+.tg-app .mainnet-policy-clearance.is-passed { border-color: #36516a !important; }
+.tg-app .mainnet-retail-checkout .mainnet-receipt-details { border-color: #2c455c !important; }
+.tg-app .mainnet-retail-checkout .mainnet-receipt-amount,
+.tg-app .mainnet-record-receipt .mainnet-receipt-amount,
+.tg-app .mainnet-retail-checkout [class*="text-emerald"],
+.tg-app .mainnet-record-receipt [class*="text-emerald"] { color: #b2e5ff !important; }
+.tg-app .mainnet-retail-checkout [class*="bg-emerald"],
+.tg-app .mainnet-retail-checkout [class*="bg-[#00ca8e]"] { background: #b2e5ff; box-shadow: none; }
+.tg-app .mainnet-retail-checkout .animate-ping { display: none; }
+.tg-app .mainnet-retail-checkout .cf-pay-usdc-btn { background: #b2e5ff !important; color: #102335 !important; box-shadow: none !important; border: 1px solid #b2e5ff !important; }
+.tg-app .mainnet-retail-checkout .cf-pay-usdc-btn:hover:not(:disabled) { background: #d9f3ff !important; }
+.tg-app .mainnet-retail-checkout .cf-pay-usdc-btn:disabled { background: #243a4d !important; color: #b3c9dc !important; border-color: #36516a !important; }
+.tg-app .customer-product-detail > .mp-note { color: #b3c9dc; }
 .tg-app .mp-dialog { background: var(--tg-surface); color: var(--tg-ink); }
 .tg-app .mp-dialog .mp-drawer { background: var(--tg-surface); }
 .tg-app .mp-dialog button.mp-button { background: var(--tg-blue); color: #102335; }
