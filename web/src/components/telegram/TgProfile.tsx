@@ -5,7 +5,6 @@ import {
   Wallet,
   Copy,
   Check,
-  QrCode,
   Key,
   Eye,
   EyeOff,

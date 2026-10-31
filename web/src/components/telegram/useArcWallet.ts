@@ -98,9 +98,22 @@ export function useArcWallet() {
     triggerHaptic('success');
   }, [triggerHaptic]);
 
+  const deductBalance = useCallback((amount: number): boolean => {
+    let success = false;
+    setWallet((prev) => {
+      if (prev.balanceUsdc < amount) return prev;
+      success = true;
+      const newBal = prev.balanceUsdc - amount;
+      localStorage.setItem(BALANCE_KEY, newBal.toFixed(2));
+      return { ...prev, balanceUsdc: newBal };
+    });
+    return success;
+  }, []);
+
   return {
     wallet,
     updateBalance,
+    deductBalance,
     setExactBalance,
     resetWallet,
     triggerHaptic,

@@ -14,7 +14,6 @@ import {
   Zap,
   Code,
   Cpu,
-  ArrowRight,
   ExternalLink,
   X,
   Loader2,
