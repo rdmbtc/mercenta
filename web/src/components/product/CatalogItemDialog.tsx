@@ -10,12 +10,12 @@ import {Modal} from './ProductShell';
 import {ProductImage} from './ProductImage';
 import {getTopupConfig} from '@/lib/topup-fields';
 type Selection={product:CatalogProduct;denom:CatalogDenomination;quantity:number};
-function ReadyCatalogItemDialog({product:p,lang='en',onClose,onDraft,wallet=null,readOnly=false,onConnect,titleOverride,regionControl,previewOnly=false,isMainnet=false,onLockChange}:{titleOverride?:string;regionControl?:ReactNode;previewOnly?:boolean;isMainnet?:boolean;onLockChange?:(locked:boolean)=>void;product:CatalogProduct;lang?:Language;onClose:()=>void;onDraft?:(s:Selection)=>void;wallet?:string|null;readOnly?:boolean;onConnect?:()=>void}){
+function ReadyCatalogItemDialog({product:p,lang='en',onClose,onDraft,wallet=null,readOnly=false,onConnect,titleOverride,regionControl,previewOnly=false,isMainnet,onLockChange}:{titleOverride?:string;regionControl?:ReactNode;previewOnly?:boolean;isMainnet?:boolean;onLockChange?:(locked:boolean)=>void;product:CatalogProduct;lang?:Language;onClose:()=>void;onDraft?:(s:Selection)=>void;wallet?:string|null;readOnly?:boolean;onConnect?:()=>void}){
  const [locked,setLocked]=useState(false),ru=lang==='ru',[id,setId]=useState(p.denominations.find(d=>d.available)?.id??p.denominations[0]?.id??''),[quantity,setQuantity]=useState(1),[accountRef,setAccountRef]=useState(''),[telegramRef,setTelegramRef]=useState('');const d=p.denominations.find(x=>x.id===id),total=catalogueTotal(d,quantity),max=catalogueQuantityLimit(d);
   const isOutOfStock=Boolean((p as {outOfStock?:boolean}).outOfStock)||!p.denominations.some(option=>option.available);
   const lockListener=useRef(onLockChange);lockListener.current=onLockChange;
   useEffect(()=>{setLocked(false);lockListener.current?.(false)},[wallet]);
-  const clientIsMainnet=Boolean(isMainnet||(typeof window!=='undefined'&&(window.location.hostname.includes('mainnet')||window.location.search.includes('mainnet'))));
+  const clientIsMainnet=Boolean(isMainnet??(typeof window!=='undefined'&&(window.location.hostname.includes('mainnet')||window.location.search.includes('mainnet'))));
   const mainnetSupported=Boolean(d&&!d.isLongOrder&&Number(d.price)>=0);
   const topupConfig=getTopupConfig(titleOverride??p.name,p.type,ru);
   const cleanTg=telegramRef.trim().replace(/^@+/,'');

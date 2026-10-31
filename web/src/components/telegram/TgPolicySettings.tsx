@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Key, Copy, Check, Sliders, RefreshCw, Zap, Lock } from 'lucide-react';
 
 interface TgPolicySettingsProps {
+  network: 'testnet' | 'mainnet';
   triggerHaptic?: (type?: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error') => void;
 }
 
@@ -32,7 +33,7 @@ function GlowSlider({
   );
 }
 
-export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
+export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsProps) {
   const [marginFloor, setMarginFloor] = useState<number>(2.5);
   const [autoApprovalLimit, setAutoApprovalLimit] = useState<number>(100);
   const [velocityCap, setVelocityCap] = useState<number>(5);
@@ -44,14 +45,14 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('mercenta_merchant_api_key_v1');
+      const stored = localStorage.getItem(`mercenta_merchant_api_key_${network}_v1`);
       if (stored) { setApiKey(stored); }
       else {
-        const initial = `mct_live_${Math.random().toString(36).substring(2, 10)}${Math.random().toString(36).substring(2, 10)}`;
+        const initial = `local_preview_${Math.random().toString(36).substring(2, 10)}${Math.random().toString(36).substring(2, 10)}`;
         setApiKey(initial);
-        localStorage.setItem('mercenta_merchant_api_key_v1', initial);
+        localStorage.setItem(`mercenta_merchant_api_key_${network}_v1`, initial);
       }
-      const savedPolicy = localStorage.getItem('mercenta_policy_guardrails_v1');
+      const savedPolicy = localStorage.getItem(`mercenta_policy_guardrails_${network}_v1`);
       if (savedPolicy) {
         const parsed = JSON.parse(savedPolicy);
         if (parsed.marginFloor)       setMarginFloor(parsed.marginFloor);
@@ -61,13 +62,13 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
         if (typeof parsed.strictVendorCheck === 'boolean') setStrictVendorCheck(parsed.strictVendorCheck);
       }
     } catch {}
-  }, []);
+  }, [network]);
 
   function handleGenerateNewKey() {
     triggerHaptic?.('medium');
-    const newKey = `mct_live_${Math.random().toString(36).substring(2, 10)}${Math.random().toString(36).substring(2, 10)}`;
+    const newKey = `local_preview_${Math.random().toString(36).substring(2, 10)}${Math.random().toString(36).substring(2, 10)}`;
     setApiKey(newKey);
-    localStorage.setItem('mercenta_merchant_api_key_v1', newKey);
+    localStorage.setItem(`mercenta_merchant_api_key_${network}_v1`, newKey);
   }
 
   function handleCopyKey() {
@@ -83,7 +84,7 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
     triggerHaptic?.('success');
     setSavedStatus(true);
     try {
-      localStorage.setItem('mercenta_policy_guardrails_v1', JSON.stringify({ marginFloor, autoApprovalLimit, velocityCap, reserveRatio, strictVendorCheck }));
+      localStorage.setItem(`mercenta_policy_guardrails_${network}_v1`, JSON.stringify({ marginFloor, autoApprovalLimit, velocityCap, reserveRatio, strictVendorCheck }));
     } catch {}
     setTimeout(() => setSavedStatus(false), 2500);
   }
@@ -156,16 +157,16 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
               <h3 className="font-extrabold text-sm text-white tracking-tight">5-Gate Policy Engine</h3>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className="size-1.5 rounded-full bg-[#b2e5ff] animate-pulse shadow-[0_0_6px_#b2e5ff]" />
-                <span className="text-[10px] font-mono font-bold text-[#b2e5ff] uppercase tracking-wider">Hardware Enforced on Arc</span>
+                <span className="text-[10px] font-mono font-bold text-[#b2e5ff] uppercase tracking-wider">Local preferences</span>
               </div>
             </div>
           </div>
           <span className="px-2.5 py-1 rounded-full bg-[#b2e5ff]/15 border border-[#b2e5ff]/30 text-[10px] font-mono font-bold text-[#b2e5ff]">
-            ACTIVE
+            LOCAL
           </span>
         </div>
         <p className="text-[#b2b6bd] text-xs leading-relaxed">
-          Hardware-enforced spending boundaries. Autonomous AI agents cannot exceed these parameters without manual multisig approval.
+          Plan your spending preferences here. Saved on this device only; checkout is governed by server-verified rules.
         </p>
       </div>
 
@@ -243,9 +244,9 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
       <div className="bg-[#0d1117] border border-white/6 rounded-2xl p-4 shadow-xl space-y-3">
         <div className="flex items-center gap-2 pb-2 border-b border-white/5">
           <Key className="size-4 text-[#b2e5ff]" />
-          <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">Merchant API Key</h4>
+          <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">Integration key preview</h4>
           <span className="ml-auto px-2 py-0.5 rounded-full bg-[#b2e5ff]/10 border border-[#b2e5ff]/25 text-[9px] font-mono font-bold text-[#b2e5ff]">
-            LIVE
+            NOT AUTHENTICATED
           </span>
         </div>
 
@@ -268,7 +269,7 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
           className="w-full py-2.5 rounded-xl bg-[#07090e] border border-white/6 hover:border-[#1868f2]/40 text-[#b2b6bd] hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
         >
           <RefreshCw className="size-3.5" />
-          Rotate API Key
+          Regenerate preview key
         </button>
       </div>
     </div>

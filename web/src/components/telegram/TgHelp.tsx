@@ -20,13 +20,13 @@ interface TgHelpProps {
 
 const FAQS = [
   {
-    q: 'How fast is digital voucher delivery?',
-    a: "Instantaneous. Thanks to Arc Network's sub-second Malachite consensus finality and our pre-vetted wholesale integrations, cryptographic keys are decrypted and delivered to your screen in under 2 seconds.",
+    q: 'What changes between Testnet and Mainnet?',
+    a: 'Testnet uses an Arc test account and non-redeemable delivery. Mainnet uses real USDC from your connected wallet and requires a signed server quote. Balances and purchases are separate.',
     icon: <Zap className="size-4 text-[#b2e5ff] shrink-0 mt-0.5" />,
   },
   {
     q: 'Which chains can I use to deposit USDC?',
-    a: 'We natively support Arc Mainnet (5042) for zero-friction gas-free payments. You can also top up via Base USDC, Solana SPL USDC, or credit/debit cards through the integrated Circle Onramp.',
+    a: 'Test deposits must be sent on Arc Testnet (5042002) and verified before account credit. Mainnet purchases use Arc Mainnet (5042). Available funding methods are shown in Add USDC; never send to an address on a different network.',
     icon: <ShieldCheck className="size-4 text-[#6ee9ff] shrink-0 mt-0.5" />,
   },
   {
@@ -35,8 +35,8 @@ const FAQS = [
     icon: <ShieldCheck className="size-4 text-[#b2e5ff] shrink-0 mt-0.5" />,
   },
   {
-    q: 'Can I launch my own Telegram Store using Mercenta?',
-    a: 'Yes! Use our 1-click Client Bot Template. Set your custom shop name and markup % (e.g. +15%), connect your Mercenta API Key, and accept payments via Telegram Stars or crypto while Mercenta fulfills orders wholesale.',
+    q: 'Why can I not connect a wallet in Telegram?',
+    a: 'Signing requires a compatible Ethereum wallet provider. If your Telegram WebView does not expose one, connection and signing are unavailable. The app never substitutes a generated private key or simulated payment.',
     icon: <Bot className="size-4 text-[#a855f7] shrink-0 mt-0.5" />,
   },
 ];

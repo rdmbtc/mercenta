@@ -1,7 +1,9 @@
 import {NextResponse,type NextRequest} from 'next/server';
 import {networkFromHost,allowedMainnetApi,MAINNET_CLOSED} from '@/lib/network-profile';
+function pathIsTelegramTestnet(path:string,method:string){return (method==='GET'||method==='POST')&&path.startsWith('/api/telegram/testnet/')}
 export function middleware(req:NextRequest){
  const network=networkFromHost(req.nextUrl.hostname),headers=new Headers(req.headers);headers.set('x-mercenta-network',network);
+ if(pathIsTelegramTestnet(req.nextUrl.pathname,req.method))return NextResponse.next({request:{headers}});
  if(network==='testnet'&&req.nextUrl.hostname==='testnet.mercenta.xyz'&&req.nextUrl.pathname==='/'){const url=req.nextUrl.clone();url.pathname='/app';url.search='';return NextResponse.rewrite(url,{request:{headers}})}
  if(network==='mainnet'){
   if(req.nextUrl.pathname.startsWith('/api/')&&!allowedMainnetApi(req.nextUrl.pathname,req.method))return NextResponse.json(MAINNET_CLOSED,{status:503,headers:{'Cache-Control':'no-store','X-Mercenta-Network':'mainnet'}});
