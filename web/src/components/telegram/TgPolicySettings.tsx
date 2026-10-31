@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Key, Copy, Check, Sliders, RefreshCw, Zap, Lock } from 'lucide-react';
+import { useTgLocale } from './tg-locale';
 
 interface TgPolicySettingsProps {
   network: 'testnet' | 'mainnet';
@@ -34,6 +35,7 @@ function GlowSlider({
 }
 
 export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsProps) {
+  const { t, ru } = useTgLocale();
   const [marginFloor, setMarginFloor] = useState<number>(2.5);
   const [autoApprovalLimit, setAutoApprovalLimit] = useState<number>(100);
   const [velocityCap, setVelocityCap] = useState<number>(5);
@@ -91,9 +93,9 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
 
   const sliders = [
     {
-      label: '1. Gross Margin Floor',
-      desc: 'Orders below this spread are aborted at the consensus level.',
-      value: marginFloor.toFixed(1) + '%',
+      label: t('1. Gross Margin Floor', '1. Минимальная валовая маржа'),
+      desc: t('Orders below this spread are aborted at the consensus level.', 'Заказы с маржой ниже этого порога отклоняются на уровне консенсуса.'),
+      value: (ru ? marginFloor.toFixed(1).replace('.', ',') : marginFloor.toFixed(1)) + '%',
       accent: '#b2e5ff',
       accentLabel: 'text-[#b2e5ff]',
       accentBg: 'bg-[#b2e5ff]/10 border-[#b2e5ff]/25',
@@ -102,8 +104,8 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
       set: (v: number) => { triggerHaptic?.('light'); setMarginFloor(v); },
     },
     {
-      label: '2. Auto-Approval Cap',
-      desc: 'Maximum single purchase allowed without owner sign-off.',
+      label: t('2. Auto-Approval Cap', '2. Лимит автоподтверждения'),
+      desc: t('Maximum single purchase allowed without owner sign-off.', 'Максимальная сумма одной покупки без подтверждения владельца.'),
       value: '$' + autoApprovalLimit + ' USDC',
       accent: '#1868f2',
       accentLabel: 'text-[#6ee9ff]',
@@ -113,9 +115,9 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
       set: (v: number) => { triggerHaptic?.('light'); setAutoApprovalLimit(v); },
     },
     {
-      label: '3. Spend Velocity Cap',
-      desc: 'Protects treasury against loop drain attacks.',
-      value: velocityCap + ' tx / min',
+      label: t('3. Spend Velocity Cap', '3. Лимит частоты расходов'),
+      desc: t('Protects treasury against loop drain attacks.', 'Защищает казначейство от циклических атак на списание средств.'),
+      value: velocityCap + t(' tx / min', ' транз. / мин'),
       accent: '#a855f7',
       accentLabel: 'text-purple-300',
       accentBg: 'bg-purple-500/10 border-purple-500/25',
@@ -124,9 +126,9 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
       set: (v: number) => { triggerHaptic?.('light'); setVelocityCap(v); },
     },
     {
-      label: '4. Treasury Reserve Ratio',
-      desc: 'Safe buffer to prevent zero-balance gas locks.',
-      value: reserveRatio + '% minimum',
+      label: t('4. Treasury Reserve Ratio', '4. Доля резерва казначейства'),
+      desc: t('Safe buffer to prevent zero-balance gas locks.', 'Резерв, предотвращающий блокировку оплаты комиссии при нулевом балансе.'),
+      value: reserveRatio + t('% minimum', '% минимум'),
       accent: '#f59e0b',
       accentLabel: 'text-amber-300',
       accentBg: 'bg-amber-500/10 border-amber-500/25',
@@ -154,19 +156,19 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
               <ShieldCheck className="size-5 text-[#07090e]" />
             </div>
             <div>
-              <h3 className="font-extrabold text-sm text-white tracking-tight">5-Gate Policy Engine</h3>
+              <h3 className="font-extrabold text-sm text-white tracking-tight">{t('5-Gate Policy Engine', 'Система из 5 проверок')}</h3>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className="size-1.5 rounded-full bg-[#b2e5ff] animate-pulse shadow-[0_0_6px_#b2e5ff]" />
-                <span className="text-[10px] font-mono font-bold text-[#b2e5ff] uppercase tracking-wider">Local preferences</span>
+                <span className="text-[10px] font-mono font-bold text-[#b2e5ff] uppercase tracking-wider">{t('Local preferences', 'Локальные настройки')}</span>
               </div>
             </div>
           </div>
           <span className="px-2.5 py-1 rounded-full bg-[#b2e5ff]/15 border border-[#b2e5ff]/30 text-[10px] font-mono font-bold text-[#b2e5ff]">
-            LOCAL
+            {t('LOCAL', 'ЛОКАЛЬНО')}
           </span>
         </div>
         <p className="text-[#b2b6bd] text-xs leading-relaxed">
-          Plan your spending preferences here. Saved on this device only; checkout is governed by server-verified rules.
+          {t('Plan your spending preferences here. Saved on this device only; checkout is governed by server-verified rules.', 'Настройте предпочтения расходов. Они сохраняются только на этом устройстве; при оплате действуют правила, проверяемые сервером.')}
         </p>
       </div>
 
@@ -175,10 +177,10 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
         <div className="flex items-center justify-between pb-3 border-b border-white/5">
           <div className="flex items-center gap-2">
             <Sliders className="size-4 text-[#b2e5ff]" />
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">Guardrail Parameters</h4>
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">{t('Guardrail Parameters', 'Параметры ограничений')}</h4>
           </div>
           <span className="text-[10px] font-mono text-[#b2b6bd] bg-[#07090e] px-2 py-0.5 rounded-lg border border-white/6">
-            Deterministic v2.1
+            {t('Deterministic v2.1', 'Детерминированные v2.1')}
           </span>
         </div>
 
@@ -204,14 +206,14 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
         {/* Strict Vendor Toggle */}
         <div className="pt-4 border-t border-white/5 flex items-center justify-between gap-3">
           <div className="space-y-0.5">
-            <span className="text-xs text-white font-bold block">5. Strict Institutional Routing</span>
+            <span className="text-xs text-white font-bold block">{t('5. Strict Institutional Routing', '5. Строгая институциональная маршрутизация')}</span>
             <p className="text-[11px] text-[#b2b6bd] leading-snug">
-              Route exclusively through tier-1 institutional feeds with guaranteed warranty.
+              {t('Route exclusively through tier-1 institutional feeds with guaranteed warranty.', 'Направлять заказы только через институциональные каналы первого уровня с гарантией.')}
             </p>
           </div>
           <button
             role="switch"
-            aria-label="Strict institutional routing"
+            aria-label={t('Strict institutional routing', 'Строгая институциональная маршрутизация')}
             aria-checked={strictVendorCheck}
             type="button"
             onClick={() => { triggerHaptic?.('medium'); setStrictVendorCheck(!strictVendorCheck); }}
@@ -233,9 +235,9 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
           style={{ background: savedStatus ? '#b2e5ff' : 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' }}
         >
           {savedStatus ? (
-            <><Check className="size-4 stroke-[3]" /> Saved on this device</>
+            <><Check className="size-4 stroke-[3]" /> {t('Saved on this device', 'Сохранено на этом устройстве')}</>
           ) : (
-            <><Zap className="size-4" /> Save Policy Guardrails</>
+            <><Zap className="size-4" /> {t('Save Policy Guardrails', 'Сохранить ограничения')}</>
           )}
         </button>
       </div>
@@ -244,14 +246,15 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
       <div className="bg-[#0d1117] border border-white/6 rounded-2xl p-4 shadow-xl space-y-3">
         <div className="flex items-center gap-2 pb-2 border-b border-white/5">
           <Key className="size-4 text-[#b2e5ff]" />
-          <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">Integration key preview</h4>
+          <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">{t('Integration key preview', 'Демонстрационный ключ интеграции')}</h4>
           <span className="ml-auto px-2 py-0.5 rounded-full bg-[#b2e5ff]/10 border border-[#b2e5ff]/25 text-[9px] font-mono font-bold text-[#b2e5ff]">
-            NOT AUTHENTICATED
+            {t('NOT AUTHENTICATED', 'БЕЗ АУТЕНТИФИКАЦИИ')}
           </span>
         </div>
 
         <div
           onClick={handleCopyKey}
+          title={copiedKey ? t('Copied', 'Скопировано') : t('Copy preview key', 'Скопировать демонстрационный ключ')}
           className="p-3 bg-[#07090e] border border-white/6 rounded-xl cursor-pointer hover:border-[#b2e5ff]/40 transition-all flex items-center justify-between gap-2 shadow-inner"
         >
           <div className="flex items-center gap-2 overflow-hidden">
@@ -263,13 +266,17 @@ export function TgPolicySettings({ network, triggerHaptic }: TgPolicySettingsPro
           </div>
         </div>
 
+        <p className="text-[11px] text-[#b2b6bd] leading-snug" role="status">
+          {copiedKey ? t('Preview key copied', 'Демонстрационный ключ скопирован') : t('Preview only. This key does not authenticate requests or authorize payments.', 'Только для демонстрации. Этот ключ не аутентифицирует запросы и не разрешает платежи.')}
+        </p>
+
         <button
           type="button"
           onClick={handleGenerateNewKey}
           className="w-full py-2.5 rounded-xl bg-[#07090e] border border-white/6 hover:border-[#1868f2]/40 text-[#b2b6bd] hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
         >
           <RefreshCw className="size-3.5" />
-          Regenerate preview key
+          {t('Regenerate preview key', 'Создать новый демонстрационный ключ')}
         </button>
       </div>
     </div>

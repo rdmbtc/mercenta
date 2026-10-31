@@ -56,6 +56,9 @@
 .tg-nav button[aria-current] { color: var(--tg-blue); }
 .tg-nav button[aria-current]::before { content: ''; position: absolute; top: -1px; width: 32px; height: 2px; background: var(--tg-blue); }
 .tg-live-catalog { scroll-margin-top: 95px; }
+.tg-language-selector { display: flex; justify-content: flex-end; gap: 4px; margin-bottom: 12px; }
+.tg-language-selector button { min-width: 44px; min-height: 44px; background: transparent; border: 1px solid var(--tg-line); color: var(--tg-muted); border-radius: 6px; font-size: 12px; }
+.tg-language-selector button[aria-pressed="true"] { color: #102335; background: var(--tg-blue); }
 .tg-network-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--tg-surface); border: 1px solid var(--tg-line); border-radius: 10px; padding: 4px; }
 .tg-network-selector button { min-height: 44px; border-radius: 6px; color: var(--tg-muted); background: transparent; border: 0; font-size: 14px; font-weight: 550; }
 .tg-network-selector button[aria-pressed="true"] { background: var(--tg-blue); color: #102335; }

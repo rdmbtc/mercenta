@@ -1,0 +1,11 @@
+import { beforeEach, afterEach, expect, it, vi } from 'vitest';
+import { POST } from '@/app/api/telegram/webhook/route';
+const mocks = vi.hoisted(() => ({ claim: vi.fn(async () => true), complete: vi.fn(async () => {}), release: vi.fn(async () => {}), handle: vi.fn(async () => {}) }));
+vi.mock('@/lib/telegram-store', () => ({ claimBotUpdate: mocks.claim, completeBotUpdate: mocks.complete, releaseBotUpdate: mocks.release, getBotLanguage: vi.fn(), setBotLanguage: vi.fn() }));
+vi.mock('@/lib/telegram-bot', () => ({ handleBotUpdate: mocks.handle, telegramRequest: vi.fn() }));
+beforeEach(() => { vi.stubEnv('TELEGRAM_BOT_TOKEN', 'test-token'); vi.stubEnv('TELEGRAM_WEBHOOK_SECRET', 'test-secret'); vi.clearAllMocks(); mocks.claim.mockResolvedValue(true); mocks.handle.mockResolvedValue(undefined); });
+afterEach(() => vi.unstubAllEnvs());
+const request = (secret = 'test-secret') => new Request('https://mercenta.xyz/api/telegram/webhook', { method: 'POST', headers: { 'x-telegram-bot-api-secret-token': secret }, body: JSON.stringify({ update_id: 42 }) });
+it('rejects wrong secret before claiming or sending', async () => { expect((await POST(request('wrong'))).status).toBe(401); expect(mocks.claim).not.toHaveBeenCalled(); });
+it('skips duplicate updates', async () => { mocks.claim.mockResolvedValue(false); expect((await POST(request())).status).toBe(200); expect(mocks.handle).not.toHaveBeenCalled(); });
+it('does not acknowledge failed delivery as successful', async () => { mocks.handle.mockRejectedValueOnce(new Error('failure')); expect((await POST(request())).status).toBe(503); expect(mocks.release).toHaveBeenCalledWith(42); expect(mocks.complete).not.toHaveBeenCalled(); });

@@ -4,7 +4,9 @@
   "description": "Mercenta Official Telegram Bot & Standalone Polling Daemon",
   "main": "index.ts",
   "scripts": {
-    "start": "node index.ts",
+    "start": "tsx index.ts",
+    "setup": "tsx setup.ts",
+    "inspect": "tsx setup.ts --inspect",
     "dev": "tsx index.ts"
   },
   "dependencies": {},
