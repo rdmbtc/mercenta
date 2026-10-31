@@ -66,6 +66,7 @@ function SellersSection() {
 
 export default function FlagshipLanding() {
   const [menu, setMenu] = useState(false);
+  const [motion] = useState(true);
     const [activeCase, setActiveCase] = useState<string>("order");
   const [amount, setAmount] = useState<number>(CASES.order.amount);
   const [cost, setCost] = useState<number>(CASES.order.cost);

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, User, ShieldCheck, HelpCircle, Zap, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShoppingBag, User, ShieldCheck, HelpCircle, Zap } from 'lucide-react';
 import { TgCatalog } from './TgCatalog';
 import { TgProfile } from './TgProfile';
 import { TgPolicySettings } from './TgPolicySettings';
