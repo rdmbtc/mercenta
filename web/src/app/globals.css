@@ -20,7 +20,7 @@
   --ok: #00ca8e;
   --hold: #ffcf25;
   --stop: #e62b1e;
-  --brand-grad: none;
+  --brand-grad: linear-gradient(120deg, #6ee9ff, #10b981 40%, #4c8dff);
   --radius: 8px;
   --radius-sm: 6px;
   --radius-card: 30px;
@@ -31,8 +31,8 @@
   --mono: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
   --display: var(--font-display), "DM Serif Display", Georgia, serif;
   --edge: var(--line);
-  --metal: none;
-  --metal-warm: none;
+  --metal: linear-gradient(135deg, #e2e8f4 0%, #c8d2e2 35%, #d6dded 65%, #e6eef8 100%);
+  --metal-warm: linear-gradient(135deg, #f0ede8 0%, #e0d0bc 35%, #ecdcca 65%, #f4eada 100%);
 }
 
 /* Atmosphere layer (components/Atmosphere.*) */
@@ -62,7 +62,7 @@
 }
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 88px;
+  scroll-padding-top: var(--header-h, 88px);
   -webkit-text-size-adjust: 100%;
   background: var(--bg);
 }
@@ -3975,3 +3975,9 @@ nav.footer-col[aria-label="Where things live"] a {
   .has-js .is-in .methodology-icon { animation: none; }
 }
 .style-black { color: #000000 !important; }
+
+/* ── Eco dropdown – JS-controlled (keyboard accessible) ── */
+.eco-panel { display: none; }
+.eco[data-open] .eco-panel { display: block; }
+.eco-link .eco-role { font-size: 11px; color: var(--muted, #b2b6bd); }
+.eco-link .eco-status { font-family: var(--mono); font-size: 10px; color: var(--ok, #00ca8e); }

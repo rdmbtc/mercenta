@@ -66,8 +66,7 @@ function SellersSection() {
 
 export default function FlagshipLanding() {
   const [menu, setMenu] = useState(false);
-  const [motion] = useState(true);
-  const [activeCase, setActiveCase] = useState<string>("order");
+    const [activeCase, setActiveCase] = useState<string>("order");
   const [amount, setAmount] = useState<number>(CASES.order.amount);
   const [cost, setCost] = useState<number>(CASES.order.cost);
   const [supplier, setSupplier] = useState<SupplierState>("verified");
@@ -168,7 +167,7 @@ export default function FlagshipLanding() {
             <a href="#playground" className="mx-preview"><span className="mx-beacon" /> PRE-LAUNCH PREVIEW <span className="mx-preview-divider" /> Explore the engine <Arrow /></a>
             <div className="mx-hero-headline-pair">
               <div className="mx-hero-headline-col">
-                <MorphHeadline motion={motion} />
+                <MorphHeadline motion={true} />
                 <p className="mx-hero-description">You run the business. Mercenta brings the goods.<br className="mx-desktop-break" /> Give agents the power to buy — inside your rules.</p>
                 <div className="mx-actions"><a href="/app" className="mx-button mx-button-primary">Launch console <Arrow diagonal /></a><a href="#playground" className="mx-button mx-button-quiet">Test the guardrails <Arrow /></a></div>
                 <a className="mx-hero-seller" href="#sellers">Running a shop? Wholesale supply <Arrow /></a>
