@@ -43,7 +43,7 @@ export interface SignInResult {
 }
 
 /** Full sign-in flow: nonce -> personal_sign -> verify -> session cookie set. */
-export async function signInWithWallet(address: `0x${string}`): Promise<SignInResult> {
+export async function signInWithWallet(address: `0x${string}`, provider?: Eip1193Provider): Promise<SignInResult> {
   const nonceRes = await fetch("/api/auth/nonce", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -63,7 +63,7 @@ export async function signInWithWallet(address: `0x${string}`): Promise<SignInRe
     "Signing proves wallet ownership. It does NOT authorize any payment or transfer.",
   ].join("\n");
 
-  const eth = window.ethereum!;
+  const eth = provider ?? window.ethereum!;
   const signature = (await eth.request({
     method: "personal_sign",
     params: [stringToHex(message), address],

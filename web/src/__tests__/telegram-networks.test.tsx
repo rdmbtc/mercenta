@@ -18,6 +18,9 @@ let root: Root, host: HTMLDivElement;
 
 beforeEach(() => {
   host = document.createElement('div'); document.body.append(host); root = createRoot(host);
+  HTMLDialogElement.prototype.showModal = vi.fn();
+  HTMLDialogElement.prototype.close = vi.fn();
+  localStorage.clear();
   vi.stubGlobal('scrollTo', vi.fn());
   mocks.networkState.mockImplementation((network: string) => ({ wallet: '0x1111111111111111111111111111111111111111', balance: network === 'testnet' ? '25000000' : null, summary: null, orders: [], mainnetOrders: [], loading: false, error: '', connecting: false, connect: mocks.connect, refresh: mocks.refresh }));
 });
@@ -65,5 +68,6 @@ it('exposes missing wallet provider feedback without invented balances', async (
   expect(host.querySelector('[role="alert"]')?.textContent).toContain('No wallet provider available');
   expect(host.textContent).not.toContain('25.000000');
   await click('Connect wallet');
-  expect(mocks.connect).toHaveBeenCalledOnce();
+  expect(host.textContent).toContain('Create encrypted wallet');
+  expect(mocks.connect).not.toHaveBeenCalled();
 });

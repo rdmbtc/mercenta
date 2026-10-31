@@ -13,7 +13,8 @@ const categories = [
   ['creator', 'Creators'], ['developer', 'Developer'], ['cloud', 'Compute'],
 ];
 
-export function TgCatalog({ network, wallet, readOnly, onConnect, onLock }: {
+export function TgCatalog({ network, wallet, readOnly, onConnect, onLock, walletProvider }: {
+  walletProvider?: import('@/lib/wallet').Eip1193Provider;
   network: NetworkMode;
   wallet: string | null;
   readOnly: boolean;
@@ -62,6 +63,6 @@ export function TgCatalog({ network, wallet, readOnly, onConnect, onLock }: {
         </button>)}</div>
           : <div className="tg-state"><ShoppingBag size={28} /><h2>No matching products</h2><p>Try another search or category.</p><button className="tg-action" onClick={() => { setSearch(''); setCategory('all'); }}>Reset filters</button></div>}
     {filtered.length > 60 && <p className="tg-network-note">Showing the first 60 matches. Refine your search to find a specific product.</p>}
-    {selected && <CatalogItemDialog key={`${network}:${wallet}:${selected.id}`} product={selected} lang="en" wallet={wallet} readOnly={readOnly} isMainnet={network === 'mainnet'} onLockChange={onLock} onClose={() => setSelected(null)} onConnect={onConnect} />}
+    {selected && <CatalogItemDialog key={`${network}:${wallet}:${selected.id}`} product={selected} lang="en" wallet={wallet} readOnly={readOnly} isMainnet={network === 'mainnet'} walletProvider={walletProvider} onLockChange={onLock} onClose={() => setSelected(null)} onConnect={onConnect} />}
   </section>;
 }

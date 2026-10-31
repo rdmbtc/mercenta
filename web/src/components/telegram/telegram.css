@@ -21,6 +21,14 @@
   font-family: var(--font-geist-sans), sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
+.tg-local-wallet, .tg-local-wallet form { display: grid; gap: 14px; }
+.tg-local-wallet { font-size: 14px; line-height: 1.6; }
+.tg-local-wallet input, .tg-local-wallet textarea { width: 100%; padding: 12px; border: 1px solid #36516a; background: #0c1621; color: #f3f6fa; border-radius: 8px; }
+.tg-local-wallet code, .tg-local-wallet pre, .tg-local-wallet dd { white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; }
+.tg-local-wallet pre, .tg-secret { padding: 16px; background: #0c1621; border: 1px solid #36516a; border-radius: 8px; }
+.tg-local-wallet dt { color: #b3c9dc; margin-top: 12px; }
+.tg-local-wallet summary { cursor: pointer; min-height: 44px; color: #b2e5ff; }
+.tg-local-wallet details > * { margin-top: 12px; }
 .tg-app ::selection { background: var(--tg-blue); color: var(--tg-bg); }
 .tg-app :focus-visible { outline: 2px solid var(--tg-blue); outline-offset: 4px; }
 .tg-app button, .tg-app a, .tg-app input { touch-action: manipulation; }

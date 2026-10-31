@@ -1,6 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useArcWallet } from './useArcWallet';
+import { TgLocalWallet, TgWalletApproval } from './TgLocalWallet';
+import { signOut } from '@/lib/wallet';
 import Image from 'next/image';
 import { ShoppingBag, Wallet, ShieldCheck, HelpCircle, ArrowUpRight } from 'lucide-react';
 import { TgCatalog } from './TgCatalog';
@@ -30,20 +33,36 @@ const TAB_INTROS = {
 export function TgApp() {
   const [network, setNetwork] = useState<NetworkMode>('testnet');
   const [locked, setLocked] = useState(false);
-  return <TelegramNetworkApp key={network} network={network} locked={locked} onLock={setLocked} onNetwork={next => { if (!locked) setNetwork(next); }} />;
+  const localWallet = useArcWallet(network);
+  return <TelegramNetworkApp key={network} localWallet={localWallet} network={network} locked={locked} onLock={setLocked} onNetwork={next => { if (!locked && !localWallet.approval) setNetwork(next); }} />;
 }
 
-function TelegramNetworkApp({ network, locked, onLock, onNetwork }: { network: NetworkMode; locked: boolean; onLock: (value: boolean) => void; onNetwork: (network: NetworkMode) => void }) {
+function TelegramNetworkApp({ localWallet, network, locked, onLock, onNetwork }: { localWallet: ReturnType<typeof useArcWallet>; network: NetworkMode; locked: boolean; onLock: (value: boolean) => void; onNetwork: (network: NetworkMode) => void }) {
   const [activeTab, setActiveTab] = useState<Tab>('store');
   const [topUpOpen, setTopUpOpen] = useState(false);
-  const state = useTelegramNetwork(network);
-  const busy = locked || state.connecting;
+  const [walletOpen, setWalletOpen] = useState(false);
+  const [external, setExternal] = useState(false);
+  const [localSignInPending, setLocalSignInPending] = useState(false);
+  const state = useTelegramNetwork(network, external ? undefined : localWallet.provider);
+  useEffect(() => {
+    if (!localSignInPending || external || !localWallet.provider) return;
+    setLocalSignInPending(false);
+    onLock(true);
+    void signOut().then(() => state.connect()).finally(() => onLock(false));
+  }, [localSignInPending, external, localWallet.provider, onLock, state]);
+  const busy = locked || state.connecting || !!localWallet.approval || localWallet.busy;
+  useEffect(() => {
+    if (!external && localWallet.address && !localWallet.provider) {
+      void signOut().then(() => window.dispatchEvent(new Event('mercenta-auth-change')));
+    }
+  }, [external, localWallet.address, localWallet.provider]);
   const chooseTab = (tab: Tab) => {
     if (busy) return;
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
   async function connect() {
+    if (external || !localWallet.provider) { setWalletOpen(true); return; }
     onLock(true);
     try { await state.connect(); } finally { onLock(false); }
   }
@@ -76,13 +95,15 @@ function TelegramNetworkApp({ network, locked, onLock, onNetwork }: { network: N
       <div className="tg-intro"><h1>{TAB_INTROS[activeTab][0]}</h1><p>{TAB_INTROS[activeTab][1]}</p></div>
       {activeTab === 'store' && <>
         <section className="tg-feature" aria-label={`${NETWORKS[network].name} store`}><div className="tg-feature-copy"><span className="tg-preview-label">{NETWORKS[network].name}</span><h2>Good things.<br />Within your rules.</h2><a href="#tg-products">Browse the catalog <ArrowUpRight size={17} /></a></div><Image src="/policy-gate.webp" alt="" width={1264} height={848} className="tg-feature-art" priority /></section>
-        <TgCatalog network={network} wallet={state.wallet} readOnly={network === 'testnet' && (!state.summary || !!state.summary.readOnly)} onConnect={() => void connect()} onLock={onLock} />
+        <TgCatalog key={external ? 'external' : localWallet.provider ? 'local-unlocked' : 'local-locked'} walletProvider={external ? undefined : localWallet.provider ?? undefined} network={network} wallet={state.wallet} readOnly={network === 'testnet' && (!state.summary || !!state.summary.readOnly)} onConnect={() => void connect()} onLock={onLock} />
       </>}
-      {activeTab === 'profile' && <TgProfile network={network} state={state} onOpenTopUp={() => setTopUpOpen(true)} />}
+      {activeTab === 'profile' && <><button className="tg-action" onClick={() => setWalletOpen(true)} disabled={busy}>{localWallet.address ? 'Manage encrypted wallet' : 'Create wallet'}</button><TgProfile network={network} state={state} onOpenTopUp={() => setTopUpOpen(true)} /></>}
       {activeTab === 'policy' && <><p className="tg-network-note">Preferences on this device only. These controls do not change server-enforced checkout rules.</p><TgPolicySettings key={network} network={network} /></>}
       {activeTab === 'help' && <TgHelp />}
     </main>
     <nav className="tg-nav" aria-label="Main navigation"><div className="tg-nav-inner">{NAV_TABS.map(({ id, label, icon: Icon }) => <button key={id} disabled={busy} onClick={() => chooseTab(id)} aria-current={activeTab === id ? 'page' : undefined}><Icon size={21} strokeWidth={activeTab === id ? 2 : 1.7} /><span>{label}</span></button>)}</div></nav>
+    {walletOpen && <TgLocalWallet wallet={localWallet} onClose={() => setWalletOpen(false)} onSignIn={() => { setExternal(false); setWalletOpen(false); setLocalSignInPending(true); }} onExternal={() => { localWallet.lock(); setExternal(true); setWalletOpen(false); onLock(true); void signOut().then(() => state.connect(true)).finally(() => onLock(false)); }} />}
+    <TgWalletApproval wallet={localWallet} />
     {topUpOpen && <TgTopUpModal network={network} wallet={state.wallet} summary={state.summary} onClose={() => { setTopUpOpen(false); onLock(false); }} onRefresh={() => void state.refresh()} onLock={onLock} onConnect={() => void connect()} />}
   </div>;
 }

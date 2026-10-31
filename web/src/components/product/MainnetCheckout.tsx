@@ -13,7 +13,7 @@ const MERCHANT_ADDRESS = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
 const ARC_MAINNET_CHAIN_ID_HEX = '0x13b2'; // 5042 in hex
 
 type Provider = {
-  request: (args: {method: string; params?: unknown[]}) => Promise<unknown>;
+  request: (args: {method: string; params?: unknown[] | object}) => Promise<unknown>;
   selectedAddress?: string;
   on?: (event: string, handler: (...args: unknown[]) => void) => void;
   removeListener?: (event: string, handler: (...args: unknown[]) => void) => void;
@@ -30,6 +30,7 @@ export function MainnetCheckout({
   accountReference,
   initialAccount = null,
   onLock,
+  walletProvider,
 }: {
   productName: string;
   optionName: string;
@@ -40,6 +41,7 @@ export function MainnetCheckout({
   productType?: 'voucher' | 'direct_topup' | 'esim';
   accountReference?: string;
   initialAccount?: string | null;
+  walletProvider?: Provider;
   onLock?: (locked:boolean) => void;
 }) {
   const topupConfig = getTopupConfig(productName, productType, ru);
@@ -57,7 +59,7 @@ export function MainnetCheckout({
   const [account, setAccount] = useState<string | null>(() => {
     if (initialAccount) return initialAccount.toLowerCase();
     if (typeof window !== 'undefined') {
-      const eth = (window as unknown as {ethereum?: Provider})?.ethereum;
+      const eth = walletProvider ?? (window as unknown as {ethereum?: Provider})?.ethereum;
       if (eth?.selectedAddress) return eth.selectedAddress.toLowerCase();
     }
     return null;
@@ -126,7 +128,7 @@ export function MainnetCheckout({
   }, [accountReference]);
 
   useEffect(() => {
-    const eth = (window as unknown as {ethereum?: Provider})?.ethereum;
+    const eth = walletProvider ?? (window as unknown as {ethereum?: Provider})?.ethereum;
     if (!eth) return;
 
     if (eth.selectedAddress && !account) {
@@ -160,11 +162,11 @@ export function MainnetCheckout({
       eth.removeListener?.('accountsChanged', handleAccounts);
       eth.removeListener?.('chainChanged', handleChain);
     };
-  }, [account]);
+  }, [account, walletProvider]);
 
   async function connectWallet() {
     setError('');
-    const eth = (window as unknown as {ethereum?: Provider})?.ethereum;
+    const eth = walletProvider ?? (window as unknown as {ethereum?: Provider})?.ethereum;
     if (!eth) {
       setError(ru ? 'MetaMask или Rabby кошелёк не обнаружен.' : 'No Web3 wallet (MetaMask / Rabby) detected.');
       return;
@@ -175,7 +177,7 @@ export function MainnetCheckout({
       if (Array.isArray(accounts) && accounts[0]) {
         const addr = accounts[0].toLowerCase();
         try { localStorage.setItem('mercenta_wallet_address', addr); } catch {}
-        await signInWithWallet(addr as `0x${string}`);
+        await signInWithWallet(addr as `0x${string}`, walletProvider);
         setAccount(addr);
         window.dispatchEvent(new Event('mercenta-auth-change'));
       }
@@ -194,7 +196,7 @@ export function MainnetCheckout({
 
 
   async function switchNetwork() {
-    const eth = (window as unknown as {ethereum?: Provider})?.ethereum;
+    const eth = walletProvider ?? (window as unknown as {ethereum?: Provider})?.ethereum;
     if (!eth) return false;
     setStep('switching');
     try {
@@ -236,7 +238,7 @@ export function MainnetCheckout({
       return;
     }
     setError('');
-    const eth = (window as unknown as {ethereum?: Provider})?.ethereum;
+    const eth = walletProvider ?? (window as unknown as {ethereum?: Provider})?.ethereum;
     if (!eth || !account) {
       await connectWallet();
       return;
@@ -261,7 +263,7 @@ export function MainnetCheckout({
     try {
       const session = await fetchSession();
       if (!session.authenticated || session.address?.toLowerCase() !== account.toLowerCase()) {
-        await signInWithWallet(account as `0x${string}`);
+        await signInWithWallet(account as `0x${string}`, walletProvider);
       }
       const quoteRes = await fetch('/api/mainnet/quote', {method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(15000),body:JSON.stringify({denominationId,quantity,accountReference:effectiveAccount})});
       if (!quoteRes.ok) throw new Error('LIVE_QUOTE_UNAVAILABLE');
@@ -287,6 +289,7 @@ export function MainnetCheckout({
           from: account,
           to: MERCHANT_ADDRESS,
           value: '0x' + nativeValueWei.toString(16),
+          ...(walletProvider ? { expiresAt: quoteData.expires } : {}),
         }],
       }) as string;
 

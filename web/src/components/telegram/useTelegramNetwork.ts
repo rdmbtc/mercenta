@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { connectWallet, ensureArcChain, fetchSession, signInWithWallet } from '@/lib/wallet';
+import { connectWallet, ensureArcChain, fetchSession, signInWithWallet, type Eip1193Provider } from '@/lib/wallet';
 import { NETWORKS, type NetworkMode } from '@/lib/network-profile';
 import { checkoutApi } from '@/lib/test-checkout';
 import { getMainnetOrders, syncRemoteOrders, type MainnetOrder } from '@/lib/mainnet-orders';
@@ -9,7 +9,7 @@ import { getMainnetOrders, syncRemoteOrders, type MainnetOrder } from '@/lib/mai
 export type TelegramSummary = { availableUnits: string; wallet: string; depositConfigured: boolean; merchantAddress: string | null; readOnly?: boolean };
 export type TelegramOrder = { id: string; name: string; amount_units: string; status: string; product_id?: string };
 
-export function useTelegramNetwork(network: NetworkMode) {
+export function useTelegramNetwork(network: NetworkMode, localProvider?: Eip1193Provider | null) {
   const [wallet, setWallet] = useState<string | null>(null);
   const [balance, setBalance] = useState<string | null>(null);
   const [summary, setSummary] = useState<TelegramSummary | null>(null);
@@ -35,6 +35,10 @@ export function useTelegramNetwork(network: NetworkMode) {
       const address = session.authenticated ? session.address : null;
       setWallet(address);
       if (!address) return;
+      if (localProvider) {
+        const accounts = await localProvider.request({ method: 'eth_accounts' }) as string[];
+        if (accounts[0]?.toLowerCase() !== address.toLowerCase()) { setWallet(null); return; }
+      }
       if (network === 'testnet') {
         const result = await checkoutApi<TelegramSummary>('summary');
         if (version !== generation.current) return;
@@ -47,7 +51,7 @@ export function useTelegramNetwork(network: NetworkMode) {
         try { await syncRemoteOrders(address); } finally { syncing.current = false; }
         if (version !== generation.current) return;
         setMainnetOrders(getMainnetOrders(address));
-        const provider = window.ethereum;
+        const provider = localProvider ?? window.ethereum;
         if (!provider) throw new Error('Wallet connection is unavailable in this Telegram browser. A compatible wallet provider is required.');
         const accounts = await provider.request({ method: 'eth_accounts' }) as string[];
         if (accounts[0]?.toLowerCase() !== address.toLowerCase()) throw new Error('Select the signed-in wallet to read your Mainnet balance.');
@@ -61,7 +65,7 @@ export function useTelegramNetwork(network: NetworkMode) {
     } finally {
       if (version === generation.current) setLoading(false);
     }
-  }, [network]);
+  }, [network, localProvider]);
 
   useEffect(() => {
     void refresh();
@@ -69,7 +73,7 @@ export function useTelegramNetwork(network: NetworkMode) {
     window.addEventListener('mercenta-auth-change', changed);
     window.addEventListener('mercenta-wallet-balance-refresh', changed);
     window.addEventListener('mercenta-order-completed', changed);
-    const provider = window.ethereum;
+    const provider = localProvider ?? window.ethereum;
     provider?.on?.('accountsChanged', changed);
     provider?.on?.('chainChanged', changed);
     return () => {
@@ -80,17 +84,19 @@ export function useTelegramNetwork(network: NetworkMode) {
       provider?.removeListener?.('accountsChanged', changed);
       provider?.removeListener?.('chainChanged', changed);
     };
-  }, [refresh]);
+  }, [refresh, localProvider]);
 
-  async function connect() {
+  async function connect(externalOnly = false) {
     if (connecting) return;
     setConnecting(true);
     setError('');
     try {
-      if (!window.ethereum) throw new Error('This Telegram browser has no compatible wallet provider. Wallet signing is unavailable; no funds have been moved.');
-      const address = await connectWallet();
-      if (!await ensureArcChain(network === 'mainnet')) throw new Error(`Switch to ${NETWORKS[network].name} in your wallet and retry.`);
-      await signInWithWallet(address);
+      const selectedLocal = externalOnly ? null : localProvider;
+      const provider = selectedLocal ?? window.ethereum;
+      if (!provider) throw new Error('Create or unlock your Mercenta wallet, or connect an external wallet.');
+      const address = selectedLocal ? (await provider.request({ method: 'eth_requestAccounts' }) as `0x${string}`[])[0] : await connectWallet();
+      if (!selectedLocal && !await ensureArcChain(network === 'mainnet')) throw new Error(`Switch to ${NETWORKS[network].name} in your wallet and retry.`);
+      await signInWithWallet(address, provider);
       await refresh();
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Wallet connection failed.');
