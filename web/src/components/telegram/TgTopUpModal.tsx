@@ -76,16 +76,17 @@ export function TgTopUpModal({ isOpen, onClose, arcAddress, triggerHaptic }: TgT
             <div className="flex items-center gap-2.5">
               <div
                 className="size-9 rounded-xl flex items-center justify-center shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #10b981, #00ca8e)' }}
+                style={{ background: 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' }}
               >
                 <Zap className="size-5 text-[#07090e]" />
               </div>
               <div>
                 <h3 className="font-extrabold text-sm text-white">Top Up Balance</h3>
-                <p className="text-[10px] font-mono text-[#00ca8e] font-semibold mt-0.5">Arc \u00b7 Base \u00b7 Solana \u00b7 Bank Card</p>
+                <p className="text-[10px] font-mono text-[#b2e5ff] font-semibold mt-0.5">Arc \u00b7Base \u00b7Solana \u00b7Bank Card</p>
               </div>
             </div>
             <button
+              aria-label="Close top up"
               type="button"
               onClick={() => { triggerHaptic?.('light'); onClose(); }}
               className="size-8 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center transition-all border border-white/6"
@@ -112,7 +113,7 @@ export function TgTopUpModal({ isOpen, onClose, arcAddress, triggerHaptic }: TgT
                   style={isActive ? {
                     background: isCard
                       ? 'linear-gradient(135deg, #1868f2, #6ee9ff)'
-                      : 'linear-gradient(135deg, #10b981, #00ca8e)',
+                      : 'linear-gradient(135deg, #b2e5ff, #b2e5ff)',
                   } : {}}
                 >
                   <span>{tab.label}</span>
@@ -130,29 +131,29 @@ export function TgTopUpModal({ isOpen, onClose, arcAddress, triggerHaptic }: TgT
               {/* Network badge */}
               <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#07090e] border border-white/5 text-xs">
                 <span className="text-[#b2b6bd] font-medium">Network / Asset</span>
-                <span className="font-mono text-[#10b981] font-bold">{current.network} \u00b7 {current.token}</span>
+                <span className="font-mono text-[#b2e5ff] font-bold">{current.network} \u00b7{current.token}</span>
               </div>
 
               {/* Address */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-white flex items-center justify-between">
                   <span>Your Deposit Address</span>
-                  <span className="text-[11px] text-[#10b981] font-semibold">Tap to copy</span>
+                  <span className="text-[11px] text-[#b2e5ff] font-semibold">Tap to copy</span>
                 </label>
                 <div
                   onClick={() => handleCopy(current.address, 'addr')}
-                  className="p-3 bg-[#07090e] border border-white/6 rounded-xl cursor-pointer hover:border-[#10b981]/50 transition-all flex items-center justify-between gap-2 shadow-inner"
+                  className="p-3 bg-[#07090e] border border-white/6 rounded-xl cursor-pointer hover:border-[#b2e5ff]/50 transition-all flex items-center justify-between gap-2 shadow-inner"
                 >
                   <span className="font-mono text-xs text-white font-medium break-all select-all">{current.address}</span>
-                  <div className="shrink-0 size-8 rounded-lg bg-[#10b981]/10 border border-[#10b981]/20 flex items-center justify-center">
-                    {copied === 'addr' ? <Check className="size-4 text-[#10b981] stroke-[3]" /> : <Copy className="size-4 text-[#10b981]" />}
+                  <div className="shrink-0 size-8 rounded-lg bg-[#b2e5ff]/10 border border-[#b2e5ff]/20 flex items-center justify-center">
+                    {copied === 'addr' ? <Check className="size-4 text-[#b2e5ff] stroke-[3]" /> : <Copy className="size-4 text-[#b2e5ff]" />}
                   </div>
                 </div>
               </div>
 
               {/* Note */}
-              <div className="p-3.5 rounded-xl bg-[#07090e] border border-[#10b981]/15 text-xs text-[#b2b6bd] leading-relaxed flex items-start gap-2.5">
-                <ShieldCheck className="size-4 text-[#10b981] shrink-0 mt-0.5" />
+              <div className="p-3.5 rounded-xl bg-[#07090e] border border-[#b2e5ff]/15 text-xs text-[#b2b6bd] leading-relaxed flex items-start gap-2.5">
+                <ShieldCheck className="size-4 text-[#b2e5ff] shrink-0 mt-0.5" />
                 <span>{current.note}</span>
               </div>
             </>
@@ -190,12 +191,12 @@ export function TgTopUpModal({ isOpen, onClose, arcAddress, triggerHaptic }: TgT
             <a
               href="https://bridge.arc.io" target="_blank" rel="noopener noreferrer"
               onClick={() => triggerHaptic?.('light')}
-              className="flex items-center justify-between p-3 rounded-xl bg-[#07090e] hover:bg-[#0a0f18] border border-white/5 hover:border-[#10b981]/30 text-xs text-white transition-all"
+              className="flex items-center justify-between p-3 rounded-xl bg-[#07090e] hover:bg-[#0a0f18] border border-white/5 hover:border-[#b2e5ff]/30 text-xs text-white transition-all"
             >
               <div className="flex items-center gap-2">
                 <div
                   className="size-7 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #10b981, #00ca8e)' }}
+                  style={{ background: 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' }}
                 >
                   <Zap className="size-3.5 text-[#07090e]" />
                 </div>
@@ -204,7 +205,7 @@ export function TgTopUpModal({ isOpen, onClose, arcAddress, triggerHaptic }: TgT
                   <p className="text-[10px] text-[#b2b6bd]">bridge.arc.io</p>
                 </div>
               </div>
-              <ArrowRight className="size-4 text-[#10b981]" />
+              <ArrowRight className="size-4 text-[#b2e5ff]" />
             </a>
           </div>
         </div>

@@ -257,7 +257,7 @@ export const TG_CATALOG_PRODUCTS: TgProduct[] = [
     brand: 'Mercenta Compute Vault',
     category: 'compute',
     categoryLabel: 'Cloud Compute & GPU Vouchers',
-    coverImage: '/products/compute.webp',
+    coverImage: '/products/cloud.webp',
     region: 'GLOBAL DATACENTER',
     shortDesc: 'Instant verifiable reservation for high-performance cluster compute.',
     instantDelivery: true,

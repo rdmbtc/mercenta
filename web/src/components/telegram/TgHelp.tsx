@@ -22,7 +22,7 @@ const FAQS = [
   {
     q: 'How fast is digital voucher delivery?',
     a: "Instantaneous. Thanks to Arc Network's sub-second Malachite consensus finality and our pre-vetted wholesale integrations, cryptographic keys are decrypted and delivered to your screen in under 2 seconds.",
-    icon: <Zap className="size-4 text-[#10b981] shrink-0 mt-0.5" />,
+    icon: <Zap className="size-4 text-[#b2e5ff] shrink-0 mt-0.5" />,
   },
   {
     q: 'Which chains can I use to deposit USDC?',
@@ -32,7 +32,7 @@ const FAQS = [
   {
     q: 'What is the 5-Gate Policy Engine?',
     a: 'A deterministic safety layer protecting businesses and AI agents from unconstrained spending, supplier price slippage, and front-running by enforcing gross margin floors (>=2.5%) and daily velocity limits.',
-    icon: <ShieldCheck className="size-4 text-[#10b981] shrink-0 mt-0.5" />,
+    icon: <ShieldCheck className="size-4 text-[#b2e5ff] shrink-0 mt-0.5" />,
   },
   {
     q: 'Can I launch my own Telegram Store using Mercenta?',
@@ -76,8 +76,8 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
           <div>
             <h3 className="font-extrabold text-sm text-white tracking-tight">Support & Developer Hub</h3>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="size-1.5 rounded-full bg-[#00ca8e] animate-pulse shadow-[0_0_6px_#00ca8e]" />
-              <span className="text-[10px] font-mono text-[#00ca8e] font-semibold">Institutional SLA \u00b7 24/7 Monitoring</span>
+              <span className="size-1.5 rounded-full bg-[#b2e5ff] animate-pulse shadow-[0_0_6px_#b2e5ff]" />
+              <span className="text-[10px] font-mono text-[#b2e5ff] font-semibold">Institutional SLA \u00b724/7 Monitoring</span>
             </div>
           </div>
         </div>
@@ -96,13 +96,13 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
           <a
             href="https://status.mercenta.xyz" target="_blank" rel="noopener noreferrer"
             onClick={() => triggerHaptic?.('light')}
-            className="p-3 rounded-xl bg-black/30 border border-white/8 hover:border-[#10b981]/50 text-xs flex items-center justify-between transition-all"
+            className="p-3 rounded-xl bg-black/30 border border-white/8 hover:border-[#b2e5ff]/50 text-xs flex items-center justify-between transition-all"
           >
             <div className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-[#00ca8e] animate-pulse shadow-[0_0_6px_#00ca8e]" />
+              <span className="size-2 rounded-full bg-[#b2e5ff] animate-pulse shadow-[0_0_6px_#b2e5ff]" />
               <span className="font-bold text-white">Status (99.9%)</span>
             </div>
-            <Activity className="size-4 text-[#10b981]" />
+            <Activity className="size-4 text-[#b2e5ff]" />
           </a>
         </div>
       </div>
@@ -110,7 +110,7 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
       {/* FAQ */}
       <div className="bg-[#0d1117] border border-white/6 rounded-2xl p-4 shadow-xl space-y-3">
         <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-          <MessageSquare className="size-4 text-[#10b981]" />
+          <MessageSquare className="size-4 text-[#b2e5ff]" />
           <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">Frequently Asked Questions</h4>
         </div>
         <div className="space-y-2">
@@ -120,16 +120,17 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
               <div
                 key={idx}
                 className={`rounded-xl border overflow-hidden transition-all ${
-                  isOpen ? 'border-[#10b981]/20 bg-[#051810]' : 'border-white/5 bg-[#07090e]'
+                  isOpen ? 'border-[#b2e5ff]/20 bg-[#051810]' : 'border-white/5 bg-[#07090e]'
                 }`}
               >
                 <button
+                  aria-expanded={isOpen}
                   type="button"
                   onClick={() => { triggerHaptic?.('light'); setOpenFaqIndex(isOpen ? null : idx); }}
-                  className="w-full p-3.5 text-left flex items-center justify-between gap-3 text-xs font-bold text-white hover:text-[#10b981] transition-colors"
+                  className="w-full p-3.5 text-left flex items-center justify-between gap-3 text-xs font-bold text-white hover:text-[#b2e5ff] transition-colors"
                 >
                   <span className="leading-snug">{faq.q}</span>
-                  <ChevronDown className={`size-4 shrink-0 text-[#10b981] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`size-4 shrink-0 text-[#b2e5ff] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {isOpen && (
                   <div className="px-3.5 pb-3.5 pt-1 flex items-start gap-2 border-t border-white/5">
@@ -146,15 +147,15 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
       {/* Support Ticket */}
       <div className="bg-[#0d1117] border border-white/6 rounded-2xl p-4 shadow-xl space-y-3">
         <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-          <Send className="size-4 text-[#10b981]" />
+          <Send className="size-4 text-[#b2e5ff]" />
           <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">Submit Support Ticket</h4>
         </div>
         {ticketSent ? (
-          <div className="p-4 rounded-xl border border-[#10b981]/25 text-center space-y-2"
+          <div className="p-4 rounded-xl border border-[#b2e5ff]/25 text-center space-y-2"
             style={{ background: 'linear-gradient(135deg, #051810, #061a10)' }}>
             <div
               className="size-10 rounded-full flex items-center justify-center mx-auto shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #10b981, #00ca8e)' }}
+              style={{ background: 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' }}
             >
               <Check className="size-5 text-[#07090e] stroke-[3]" />
             </div>
@@ -164,28 +165,30 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
         ) : (
           <form onSubmit={handleSendTicket} className="space-y-3">
             <div>
-              <label className="text-xs text-[#b2b6bd] font-semibold block mb-1">Subject</label>
+              <label htmlFor="tg-ticket-subject" className="text-xs text-[#b2b6bd] font-semibold block mb-1">Subject</label>
               <input
+                id="tg-ticket-subject"
                 type="text" value={ticketSubject} onChange={(e) => setTicketSubject(e.target.value)}
                 placeholder="e.g. Need help with Steam voucher activation"
-                className="w-full bg-[#07090e] border border-white/6 rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-[#4a5568] focus:outline-none focus:border-[#10b981]/50 transition-colors"
+                className="w-full bg-[#07090e] border border-white/6 rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-[#4a5568] focus:outline-none focus:border-[#b2e5ff]/50 transition-colors"
                 required
               />
             </div>
             <div>
-              <label className="text-xs text-[#b2b6bd] font-semibold block mb-1">Message</label>
+              <label htmlFor="tg-ticket-message" className="text-xs text-[#b2b6bd] font-semibold block mb-1">Message</label>
               <textarea
+                id="tg-ticket-message"
                 value={ticketMsg} onChange={(e) => setTicketMsg(e.target.value)}
                 placeholder="Describe your issue or question in detail..."
                 rows={3}
-                className="w-full bg-[#07090e] border border-white/6 rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-[#4a5568] focus:outline-none focus:border-[#10b981]/50 transition-colors resize-none"
+                className="w-full bg-[#07090e] border border-white/6 rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-[#4a5568] focus:outline-none focus:border-[#b2e5ff]/50 transition-colors resize-none"
                 required
               />
             </div>
             <button
               type="submit"
               className="w-full py-3 rounded-xl font-extrabold text-xs text-[#07090e] flex items-center justify-center gap-2 shadow-lg transition-all active:scale-[0.98]"
-              style={{ background: 'linear-gradient(135deg, #10b981, #00ca8e)' }}
+              style={{ background: 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' }}
             >
               <Send className="size-3.5" />
               Send Support Ticket

@@ -8,11 +8,12 @@ interface TgPolicySettingsProps {
 }
 
 function GlowSlider({
-  min, max, step, value, onChange, accent,
+  min, max, step, value, onChange, accent, label,
 }: {
   min: number; max: number; step: number; value: number;
   onChange: (v: number) => void;
   accent: string;
+  label: string;
 }) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
@@ -22,6 +23,7 @@ function GlowSlider({
         style={{ width: `${pct}%`, background: accent }}
       />
       <input
+        aria-label={label}
         type="range" min={min} max={max} step={step} value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
         className="absolute inset-0 w-full opacity-0 cursor-pointer h-full"
@@ -91,9 +93,9 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
       label: '1. Gross Margin Floor',
       desc: 'Orders below this spread are aborted at the consensus level.',
       value: marginFloor.toFixed(1) + '%',
-      accent: '#10b981',
-      accentLabel: 'text-[#10b981]',
-      accentBg: 'bg-[#10b981]/10 border-[#10b981]/25',
+      accent: '#b2e5ff',
+      accentLabel: 'text-[#b2e5ff]',
+      accentBg: 'bg-[#b2e5ff]/10 border-[#b2e5ff]/25',
       min: 1, max: 15, step: 0.5,
       current: marginFloor,
       set: (v: number) => { triggerHaptic?.('light'); setMarginFloor(v); },
@@ -138,27 +140,27 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
 
       {/* Engine Status Banner */}
       <div
-        className="relative overflow-hidden p-4 rounded-3xl border border-[#10b981]/20 shadow-2xl shadow-black/50 space-y-3"
+        className="relative overflow-hidden p-4 rounded-3xl border border-[#b2e5ff]/20 shadow-2xl shadow-black/50 space-y-3"
         style={{ background: 'linear-gradient(135deg, #051810 0%, #061a10 60%, #050f0a 100%)' }}
       >
-        <div className="absolute -top-10 -right-10 size-32 bg-[#10b981]/15 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-10 -right-10 size-32 bg-[#b2e5ff]/15 rounded-full blur-2xl pointer-events-none" />
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div
-              className="size-9 rounded-xl flex items-center justify-center shadow-lg border border-[#10b981]/30"
-              style={{ background: 'linear-gradient(135deg, #10b981, #00ca8e)' }}
+              className="size-9 rounded-xl flex items-center justify-center shadow-lg border border-[#b2e5ff]/30"
+              style={{ background: 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' }}
             >
               <ShieldCheck className="size-5 text-[#07090e]" />
             </div>
             <div>
               <h3 className="font-extrabold text-sm text-white tracking-tight">5-Gate Policy Engine</h3>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="size-1.5 rounded-full bg-[#00ca8e] animate-pulse shadow-[0_0_6px_#00ca8e]" />
-                <span className="text-[10px] font-mono font-bold text-[#00ca8e] uppercase tracking-wider">Hardware Enforced on Arc</span>
+                <span className="size-1.5 rounded-full bg-[#b2e5ff] animate-pulse shadow-[0_0_6px_#b2e5ff]" />
+                <span className="text-[10px] font-mono font-bold text-[#b2e5ff] uppercase tracking-wider">Hardware Enforced on Arc</span>
               </div>
             </div>
           </div>
-          <span className="px-2.5 py-1 rounded-full bg-[#10b981]/15 border border-[#10b981]/30 text-[10px] font-mono font-bold text-[#10b981]">
+          <span className="px-2.5 py-1 rounded-full bg-[#b2e5ff]/15 border border-[#b2e5ff]/30 text-[10px] font-mono font-bold text-[#b2e5ff]">
             ACTIVE
           </span>
         </div>
@@ -171,7 +173,7 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
       <div className="bg-[#0d1117] border border-white/6 rounded-2xl p-4 shadow-xl space-y-5">
         <div className="flex items-center justify-between pb-3 border-b border-white/5">
           <div className="flex items-center gap-2">
-            <Sliders className="size-4 text-[#10b981]" />
+            <Sliders className="size-4 text-[#b2e5ff]" />
             <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">Guardrail Parameters</h4>
           </div>
           <span className="text-[10px] font-mono text-[#b2b6bd] bg-[#07090e] px-2 py-0.5 rounded-lg border border-white/6">
@@ -188,6 +190,7 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
               </span>
             </div>
             <GlowSlider
+              label={s.label}
               min={s.min} max={s.max} step={s.step}
               value={s.current}
               onChange={s.set}
@@ -206,10 +209,13 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
             </p>
           </div>
           <button
+            role="switch"
+            aria-label="Strict institutional routing"
+            aria-checked={strictVendorCheck}
             type="button"
             onClick={() => { triggerHaptic?.('medium'); setStrictVendorCheck(!strictVendorCheck); }}
             className={`relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 transition-all duration-200 ${
-              strictVendorCheck ? 'border-[#10b981] bg-[#10b981]' : 'border-white/20 bg-[#07090e]'
+              strictVendorCheck ? 'border-[#b2e5ff] bg-[#b2e5ff]' : 'border-white/20 bg-[#07090e]'
             }`}
           >
             <span className={`inline-block size-4 rounded-full bg-white shadow-lg transform transition-all duration-200 ${
@@ -223,10 +229,10 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
           type="button"
           onClick={handleSavePolicy}
           className="w-full py-3 rounded-xl font-extrabold text-xs text-[#07090e] flex items-center justify-center gap-2 shadow-lg transition-all active:scale-[0.98] mt-2"
-          style={{ background: savedStatus ? '#00ca8e' : 'linear-gradient(135deg, #10b981, #00ca8e)' }}
+          style={{ background: savedStatus ? '#b2e5ff' : 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' }}
         >
           {savedStatus ? (
-            <><Check className="size-4 stroke-[3]" /> Saved to Chain</>
+            <><Check className="size-4 stroke-[3]" /> Saved on this device</>
           ) : (
             <><Zap className="size-4" /> Save Policy Guardrails</>
           )}
@@ -236,23 +242,23 @@ export function TgPolicySettings({ triggerHaptic }: TgPolicySettingsProps) {
       {/* API Key */}
       <div className="bg-[#0d1117] border border-white/6 rounded-2xl p-4 shadow-xl space-y-3">
         <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-          <Key className="size-4 text-[#10b981]" />
+          <Key className="size-4 text-[#b2e5ff]" />
           <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">Merchant API Key</h4>
-          <span className="ml-auto px-2 py-0.5 rounded-full bg-[#10b981]/10 border border-[#10b981]/25 text-[9px] font-mono font-bold text-[#10b981]">
+          <span className="ml-auto px-2 py-0.5 rounded-full bg-[#b2e5ff]/10 border border-[#b2e5ff]/25 text-[9px] font-mono font-bold text-[#b2e5ff]">
             LIVE
           </span>
         </div>
 
         <div
           onClick={handleCopyKey}
-          className="p-3 bg-[#07090e] border border-white/6 rounded-xl cursor-pointer hover:border-[#10b981]/40 transition-all flex items-center justify-between gap-2 shadow-inner"
+          className="p-3 bg-[#07090e] border border-white/6 rounded-xl cursor-pointer hover:border-[#b2e5ff]/40 transition-all flex items-center justify-between gap-2 shadow-inner"
         >
           <div className="flex items-center gap-2 overflow-hidden">
             <Lock className="size-3.5 text-[#4a5568] shrink-0" />
             <span className="font-mono text-[11px] text-[#b2b6bd] truncate select-all">{apiKey}</span>
           </div>
-          <div className="shrink-0 size-7 rounded-lg bg-[#10b981]/10 border border-[#10b981]/20 flex items-center justify-center">
-            {copiedKey ? <Check className="size-3.5 text-[#10b981] stroke-[3]" /> : <Copy className="size-3.5 text-[#10b981]" />}
+          <div className="shrink-0 size-7 rounded-lg bg-[#b2e5ff]/10 border border-[#b2e5ff]/20 flex items-center justify-center">
+            {copiedKey ? <Check className="size-3.5 text-[#b2e5ff] stroke-[3]" /> : <Copy className="size-3.5 text-[#b2e5ff]" />}
           </div>
         </div>
 

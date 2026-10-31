@@ -136,18 +136,18 @@ export function TgCatalog({
     return (
       <div className="pb-24 space-y-4">
         {/* Success Banner */}
-        <div className="relative overflow-hidden rounded-3xl p-5 space-y-3 border border-[#10b981]/30 shadow-2xl shadow-[#10b981]/10"
+        <div className="relative overflow-hidden rounded-3xl p-5 space-y-3 border border-[#b2e5ff]/30 shadow-2xl shadow-[#b2e5ff]/10"
           style={{ background: 'linear-gradient(135deg, #051810 0%, #061a10 50%, #050f0a 100%)' }}>
-          <div className="absolute -top-8 -right-8 size-28 rounded-full blur-2xl bg-[#10b981]/20 pointer-events-none" />
+          <div className="absolute -top-8 -right-8 size-28 rounded-full blur-2xl bg-[#b2e5ff]/20 pointer-events-none" />
           <div className="flex items-center gap-3">
             <div className="size-12 rounded-2xl flex items-center justify-center shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #10b981, #00ca8e)' }}>
+              style={{ background: 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' }}>
               <Check className="size-6 text-[#050f0a] stroke-[3]" />
             </div>
             <div>
-              <h2 className="font-extrabold text-base text-white tracking-tight">Order Complete!</h2>
-              <p className="text-[11px] font-mono text-[#00ca8e] font-semibold">
-                Settled on Arc Mainnet \u00b7 {purchasedOrder.id}
+              <h2 className="font-extrabold text-base text-white tracking-tight">Demo order created</h2>
+              <p className="text-[11px] font-mono text-[#b2e5ff] font-semibold">
+                Simulated purchase \u00b7{purchasedOrder.id}
               </p>
             </div>
           </div>
@@ -158,27 +158,27 @@ export function TgCatalog({
             </div>
             <div className="bg-black/30 rounded-xl p-2.5 space-y-0.5">
               <span className="text-[#6ee9ff]/60 font-semibold uppercase tracking-wide text-[10px]">Amount</span>
-              <p className="font-mono font-extrabold text-[#00ca8e] text-sm">{purchasedOrder.amountUsdc.toFixed(6)}</p>
+              <p className="font-mono font-extrabold text-[#b2e5ff] text-sm">{purchasedOrder.amountUsdc.toFixed(6)}</p>
               <p className="text-[10px] text-[#b2b6bd]">USDC</p>
             </div>
           </div>
         </div>
 
         {/* Key Reveal */}
-        <div className="bg-[#0d1117] border border-[#10b981]/25 rounded-2xl p-4 space-y-2 shadow-lg">
+        <div className="bg-[#0d1117] border border-[#b2e5ff]/25 rounded-2xl p-4 space-y-2 shadow-lg">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-white">Activation Key</span>
             <span className="text-[10px] font-mono text-[#6ee9ff] font-semibold">Tap to copy</span>
           </div>
           <div
             onClick={() => handleCopyKey(purchasedOrder.code)}
-            className="p-3.5 bg-black/40 rounded-xl border border-white/8 cursor-pointer hover:border-[#10b981]/40 transition-all flex items-center justify-between gap-3 group"
+            className="p-3.5 bg-black/40 rounded-xl border border-white/8 cursor-pointer hover:border-[#b2e5ff]/40 transition-all flex items-center justify-between gap-3 group"
           >
-            <span className="font-mono text-sm font-bold text-[#00ca8e] tracking-widest select-all">
+            <span className="font-mono text-sm font-bold text-[#b2e5ff] tracking-widest select-all">
               {purchasedOrder.code}
             </span>
-            <div className="shrink-0 size-8 rounded-lg bg-[#10b981]/15 border border-[#10b981]/30 flex items-center justify-center">
-              {copiedKey ? <Check className="size-4 text-[#10b981] stroke-[3]" /> : <Copy className="size-4 text-[#10b981]" />}
+            <div className="shrink-0 size-8 rounded-lg bg-[#b2e5ff]/15 border border-[#b2e5ff]/30 flex items-center justify-center">
+              {copiedKey ? <Check className="size-4 text-[#b2e5ff] stroke-[3]" /> : <Copy className="size-4 text-[#b2e5ff]" />}
             </div>
           </div>
         </div>
@@ -213,7 +213,7 @@ export function TgCatalog({
             type="button"
             onClick={() => setPurchasedOrder(null)}
             className="py-3 rounded-xl font-extrabold text-xs text-[#07090e] flex items-center justify-center gap-2 shadow-lg transition-all active:scale-[0.98]"
-            style={{ background: 'linear-gradient(135deg, #10b981, #00ca8e)' }}
+            style={{ background: 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' }}
           >
             <ShoppingBag className="size-4" />
             Shop More
@@ -239,11 +239,11 @@ export function TgCatalog({
           >
             <X className="size-4" /> Close
           </button>
-          <span className="text-[10px] font-mono text-[#10b981] font-bold uppercase tracking-wider">Direct Purchase</span>
+          <span className="text-[10px] font-mono text-[#b2e5ff] font-bold uppercase tracking-wider">Direct Purchase</span>
         </div>
 
         {/* ─── ARC MAINNET PAYMENT CARD ─── */}
-        <div className="rounded-3xl overflow-hidden border border-[#10b981]/20 shadow-2xl shadow-black/60">
+        <div className="rounded-3xl overflow-hidden border border-[#b2e5ff]/20 shadow-2xl shadow-black/60">
 
           {/* Payment Header */}
           <div
@@ -252,12 +252,12 @@ export function TgCatalog({
           >
             <div>
               <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-[#00ca8e] animate-pulse shadow-[0_0_8px_#00ca8e]" />
-                <span className="text-[10px] font-mono font-extrabold text-[#00ca8e] uppercase tracking-[0.15em]">
-                  Arc Mainnet \u00b7 Direct Merchant Payment
+                <span className="size-2 rounded-full bg-[#b2e5ff] animate-pulse shadow-[0_0_8px_#b2e5ff]" />
+                <span className="text-[10px] font-mono font-extrabold text-[#b2e5ff] uppercase tracking-[0.15em]">
+                  Arc Mainnet \u00b7Demo checkout
                 </span>
               </div>
-              <p className="text-[10px] text-[#b2b6bd] font-medium mt-0.5">Chain ID 5042 \u00b7 Real Funds \u00b7 Instant Settlement</p>
+              <p className="text-[10px] text-[#b2b6bd] font-medium mt-0.5">Chain ID 5042 \u00b7Demo Balance \u00b7Instant Settlement</p>
             </div>
             <a
               href="https://explorer.arc.io/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed#code"
@@ -273,7 +273,7 @@ export function TgCatalog({
             <div className="space-y-1">
               <span className="text-[10px] text-[#b2b6bd] font-semibold uppercase tracking-wide">Item</span>
               <p className="text-xs font-bold text-white leading-snug">{selectedProduct.name}</p>
-              <p className="text-[10px] font-mono text-[#6ee9ff]/70">{selectedProduct.brand} \u00b7 {selectedProduct.region}</p>
+              <p className="text-[10px] font-mono text-[#6ee9ff]/70">{selectedProduct.brand} \u00b7{selectedProduct.region}</p>
             </div>
 
             {/* Denomination Selector */}
@@ -288,9 +288,9 @@ export function TgCatalog({
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
                       selectedDenom?.label === d.label
                         ? 'text-[#07090e] border-transparent shadow-md'
-                        : 'bg-[#0d1117] border-white/8 text-[#b2b6bd] hover:border-[#10b981]/40 hover:text-white'
+                        : 'bg-[#0d1117] border-white/8 text-[#b2b6bd] hover:border-[#b2e5ff]/40 hover:text-white'
                     }`}
-                    style={selectedDenom?.label === d.label ? { background: 'linear-gradient(135deg, #10b981, #00ca8e)' } : {}}
+                    style={selectedDenom?.label === d.label ? { background: 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' } : {}}
                   >
                     {d.label}
                   </button>
@@ -306,7 +306,7 @@ export function TgCatalog({
                 </div>
                 <div className="text-right">
                   <span className="text-[10px] text-[#b2b6bd] font-semibold uppercase tracking-wide">Amount</span>
-                  <p className="font-mono font-extrabold text-lg text-[#00ca8e]">
+                  <p className="font-mono font-extrabold text-lg text-[#b2e5ff]">
                     {selectedDenom.priceUsdc.toFixed(6)}
                     <span className="text-xs font-bold text-[#b2b6bd] ml-1">USDC</span>
                   </p>
@@ -343,7 +343,7 @@ export function TgCatalog({
           <div className="bg-[#060910] px-4 py-3 border-t border-white/5 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <ShieldCheck className="size-3.5 text-[#10b981]" />
+                <ShieldCheck className="size-3.5 text-[#b2e5ff]" />
                 <span className="text-[10px] font-extrabold uppercase tracking-wider text-white">5-Gate Policy Engine Clearance</span>
               </div>
               <span className="font-mono text-[9px] text-[#b2b6bd]">{shortHash}</span>
@@ -352,15 +352,15 @@ export function TgCatalog({
               {POLICY_GATES.map((gate, i) => (
                 <div key={i} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="size-4 rounded-full bg-[#10b981]/15 border border-[#10b981]/30 flex items-center justify-center shrink-0">
-                      <Check className="size-2.5 text-[#10b981] stroke-[3]" />
+                    <div className="size-4 rounded-full bg-[#b2e5ff]/15 border border-[#b2e5ff]/30 flex items-center justify-center shrink-0">
+                      <Check className="size-2.5 text-[#b2e5ff] stroke-[3]" />
                     </div>
                     <span className="text-[10px] font-mono text-[#b2b6bd]">
                       <span className="text-[9px] text-[#6ee9ff]/50 mr-1">{String(i + 1).padStart(2, '0')}</span>
                       {gate.label}
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono font-bold text-[#00ca8e]">{gate.value}</span>
+                  <span className="text-[10px] font-mono font-bold text-[#b2e5ff]">{gate.value}</span>
                 </div>
               ))}
             </div>
@@ -389,12 +389,12 @@ export function TgCatalog({
               className="w-full py-3.5 rounded-xl font-extrabold text-sm text-[#07090e] flex items-center justify-center gap-2 shadow-xl transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
               style={{
                 background: selectedDenom && hasBalance
-                  ? 'linear-gradient(135deg, #10b981 0%, #00ca8e 50%, #6ee9ff 100%)'
+                  ? 'linear-gradient(135deg, #b2e5ff 0%, #b2e5ff 50%, #6ee9ff 100%)'
                   : '#1a1f2e',
               }}
             >
               {isPurchasing ? (
-                <><Loader2 className="size-4 animate-spin" /> Settling on Arc Mainnet...</>
+                <><Loader2 className="size-4 animate-spin" /> Creating demo order...</>
               ) : (
                 <>
                   <Zap className="size-4" />
@@ -403,8 +403,8 @@ export function TgCatalog({
               )}
             </button>
             <p className="text-center text-[10px] text-[#6b7280] leading-snug">
-              Direct USDC clearing on Arc Mainnet (5042) enforced by 5 Policy Gates.
-              Automatic digital code issuance upon transaction confirmation.
+              This preview uses a simulated balance. No onchain payment is sent.
+              The generated code and transaction reference are demonstration data.
             </p>
           </div>
         </div>
@@ -414,7 +414,7 @@ export function TgCatalog({
 
   /* ─────────── CATALOG LIST ─────────── */
   return (
-    <div className="space-y-4 pb-24">
+    <div className="tg-catalog space-y-4 pb-24" id="tg-products">
 
       {/* Search */}
       <div className="relative">
@@ -423,8 +423,9 @@ export function TgCatalog({
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search games, gift cards, subscriptions..."
-          className="w-full bg-[#0d1117] border border-white/6 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder:text-[#4a5568] focus:outline-none focus:border-[#10b981]/50 transition-colors shadow-md"
+          aria-label="Search products"
+          placeholder="Search games, subscriptions, tools…"
+          className="w-full bg-[#0d1117] border border-white/6 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder:text-[#4a5568] focus:outline-none focus:border-[#b2e5ff]/50 transition-colors shadow-md"
         />
       </div>
 
@@ -436,13 +437,14 @@ export function TgCatalog({
             <button
               key={cat.id}
               type="button"
+              aria-pressed={isActive}
               onClick={() => { triggerHaptic?.('light'); setSelectedCategory(cat.id); }}
               className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                 isActive
                   ? 'text-[#07090e] border-transparent shadow-md'
                   : 'bg-[#0d1117] text-[#b2b6bd] hover:text-white border-white/6'
               }`}
-              style={isActive ? { background: 'linear-gradient(135deg, #10b981, #00ca8e)' } : {}}
+              style={isActive ? { background: 'linear-gradient(135deg, #b2e5ff, #b2e5ff)' } : {}}
             >
               {categoryIcons[cat.id]}
               <span>{cat.label}</span>
@@ -451,11 +453,11 @@ export function TgCatalog({
         })}
       </div>
 
-      {/* ─── All services live banner ─── */}
-      <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-[#051810] border border-[#10b981]/20">
-        <span className="size-2 rounded-full bg-[#00ca8e] animate-pulse shadow-[0_0_6px_#00ca8e] shrink-0" />
+      {/* ─── Demo catalog banner ─── */}
+      <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-[#051810] border border-[#b2e5ff]/20">
+        <span className="size-2 rounded-full bg-[#b2e5ff] animate-pulse shadow-[0_0_6px_#b2e5ff] shrink-0" />
         <p className="text-[11px] font-semibold text-[#b2b6bd] leading-snug">
-          <span className="text-[#00ca8e] font-bold">All services live</span> \u00b7 Real funds \u00b7 Arc Mainnet (5042) \u00b7 Instant digital delivery
+          <span className="text-[#b2e5ff] font-bold">Demo catalog.</span> Simulated balance. No real codes issued.
         </p>
       </div>
 
@@ -464,10 +466,11 @@ export function TgCatalog({
         {filteredProducts.map((prod) => {
           const minPrice = Math.min(...prod.denominations.map((d) => d.priceUsdc));
           return (
-            <div
+            <button
+              type="button"
               key={prod.id}
               onClick={() => handleSelectProduct(prod)}
-              className="group bg-[#0d1117] border border-white/6 hover:border-[#10b981]/50 rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 active:scale-[0.98] shadow-lg shadow-black/40 flex flex-col justify-between"
+              className="group bg-[#0d1117] border border-white/6 hover:border-[#b2e5ff]/50 rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 active:scale-[0.98] shadow-lg shadow-black/40 flex flex-col justify-between"
             >
               {/* Cover */}
               <div className="relative w-full aspect-[16/10] bg-black/60 overflow-hidden">
@@ -498,24 +501,24 @@ export function TgCatalog({
                 <div className="flex items-center justify-between pt-2 border-t border-white/5">
                   <div>
                     <span className="text-[9px] text-[#4a5568] uppercase font-semibold block">from</span>
-                    <span className="text-sm font-mono font-extrabold text-[#10b981]">
+                    <span className="text-sm font-mono font-extrabold text-[#b2e5ff]">
                       ${minPrice.toFixed(2)}{' '}
                       <span className="text-[9px] text-[#b2b6bd] font-medium">USDC</span>
                     </span>
                   </div>
-                  <span className="size-7 rounded-lg bg-[#10b981]/10 text-[#10b981] border border-[#10b981]/20 group-hover:bg-[#10b981] group-hover:text-[#07090e] flex items-center justify-center text-sm font-extrabold transition-all">
+                  <span className="size-7 rounded-lg bg-[#b2e5ff]/10 text-[#b2e5ff] border border-[#b2e5ff]/20 group-hover:bg-[#b2e5ff] group-hover:text-[#07090e] flex items-center justify-center text-sm font-extrabold transition-all">
                     +
                   </span>
                 </div>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
 
       {filteredProducts.length === 0 && (
         <div className="text-center py-16 space-y-2">
-          <p className="text-2xl">\uD83D\uDD0D</p>
+          <Search className="size-8 mx-auto text-[#b2e5ff]" />
           <p className="text-xs font-semibold text-[#b2b6bd]">No products found for &ldquo;{search}&rdquo;</p>
         </div>
       )}
