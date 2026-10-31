@@ -17,7 +17,9 @@ import {
   ArrowRight,
   ExternalLink,
   X,
-  Loader2,\r\n  ShoppingBag,\r\n} from 'lucide-react';
+  Loader2,
+  ShoppingBag,
+} from 'lucide-react';
 import { TG_CATALOG_PRODUCTS, TG_CATEGORIES, type TgProduct, type TgProductDenomination } from './tg-products';
 import { fireConfetti } from './confetti';
 
