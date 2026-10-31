@@ -9,3 +9,4 @@
 .ma .op-result{scroll-margin-top:112px}.ma .op-result-jump{margin:12px 0 18px}.cf-active-filters button:focus-visible{outline:2px solid var(--ma-accent,#9ddeff);outline-offset:3px}
 
 .ma.ma-ux .hf-route{border-bottom:0}
+.hf-catalog-caution { color: var(--hold, #ffcf25); font-weight: 600; font-size: 13px; }

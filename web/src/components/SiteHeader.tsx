@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { ArrowRight, ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
 
 type Link = { label: string; href: string; id: string };
@@ -16,7 +16,10 @@ export default function SiteHeader({
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
+  const [ecoOpen, setEcoOpen] = useState(false);
+  const ecoRef = useRef<HTMLDivElement>(null);
 
+  // Scroll detection
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
@@ -24,12 +27,12 @@ export default function SiteHeader({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Section active tracking
   useEffect(() => {
     const targets = sections
-      .map((section) => document.getElementById(section.id))
-      .filter((element): element is HTMLElement => element !== null);
+      .map((s) => document.getElementById(s.id))
+      .filter((el): el is HTMLElement => el !== null);
     if (targets.length === 0) return;
-    // Whichever section owns the band just below the header is "current".
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -38,15 +41,14 @@ export default function SiteHeader({
       },
       { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
     );
-    targets.forEach((target) => observer.observe(target));
+    targets.forEach((t) => observer.observe(t));
     return () => observer.disconnect();
   }, [sections]);
 
+  // Mobile menu keyboard + scroll lock
   useEffect(() => {
     if (!open) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     document.addEventListener("keydown", onKey);
     document.documentElement.classList.add("menu-open");
     return () => {
@@ -54,6 +56,27 @@ export default function SiteHeader({
       document.documentElement.classList.remove("menu-open");
     };
   }, [open]);
+
+  // Eco dropdown: close on outside click or Escape
+  useEffect(() => {
+    if (!ecoOpen) return;
+    function handleOutside(e: MouseEvent | TouchEvent) {
+      if (ecoRef.current && !ecoRef.current.contains(e.target as Node)) {
+        setEcoOpen(false);
+      }
+    }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setEcoOpen(false);
+    }
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("touchstart", handleOutside);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("touchstart", handleOutside);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [ecoOpen]);
 
   return (
     <header className={"header" + (scrolled ? " is-scrolled" : "") + (open ? " is-open" : "")}>
@@ -78,11 +101,29 @@ export default function SiteHeader({
               {section.label}
             </a>
           ))}
-          <div className="eco">
-            <button type="button" className="eco-trigger" aria-haspopup="true">
+
+          {/* Eco dropdown — React-controlled */}
+          <div
+            ref={ecoRef}
+            className="eco"
+            data-open={ecoOpen ? "" : undefined}
+          >
+            <button
+              type="button"
+              className="eco-trigger"
+              aria-haspopup="true"
+              aria-expanded={ecoOpen}
+              aria-controls="eco-panel"
+              onClick={() => setEcoOpen((v) => !v)}
+            >
               Ecosystem <ChevronDown size={13} aria-hidden="true" />
             </button>
-            <div className="eco-panel" aria-label="Ecosystem addresses">
+            <div
+              id="eco-panel"
+              className="eco-panel"
+              aria-label="Ecosystem addresses"
+              role="list"
+            >
               <p className="eco-note">Seven dedicated infrastructure nodes across the Mercenta network.</p>
               {ecosystem.map((item) => (
                 <a
@@ -90,7 +131,9 @@ export default function SiteHeader({
                   href={"https://" + item.host}
                   target="_blank"
                   rel="noopener noreferrer"
+                  role="listitem"
                   className="eco-link hover:bg-white/5 transition-colors p-1.5 rounded"
+                  onClick={() => setEcoOpen(false)}
                 >
                   <span className="eco-host font-mono font-semibold text-white">{item.host}</span>
                   <span className="eco-role text-[11px] text-[#b2b6bd]">{item.role}</span>
@@ -114,7 +157,7 @@ export default function SiteHeader({
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close navigation" : "Open navigation"}
-            onClick={() => setOpen((value) => !value)}
+            onClick={() => setOpen((v) => !v)}
           >
             {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
           </button>
@@ -124,7 +167,12 @@ export default function SiteHeader({
       <div id="mobile-menu" className="mobile-menu" hidden={!open}>
         <nav aria-label="Sections">
           {sections.map((section, index) => (
-            <a key={section.href} href={section.href} onClick={() => setOpen(false)} style={{ animationDelay: index * 40 + "ms" }}>
+            <a
+              key={section.href}
+              href={section.href}
+              onClick={() => setOpen(false)}
+              style={{ animationDelay: index * 40 + "ms" }}
+            >
               <span className="mobile-index">0{index + 1}</span>
               {section.label}
               <ArrowRight size={16} aria-hidden="true" />
