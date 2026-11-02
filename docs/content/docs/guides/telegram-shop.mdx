@@ -1,0 +1,154 @@
+---
+title: "Telegram shop starter"
+description: "Launch a branded RU/EN Telegram storefront on your VPS, using long polling and SQLite."
+---
+
+Build a Telegram storefront with your own bot name, bilingual welcome messages, support contact and Mini App destination. The starter uses the same message structure as the official Mercenta bot: one primary action, compact secondary buttons and a separate language screen.
+
+[Download the standalone ZIP](https://www.mercenta.xyz/downloads/mercenta-shop-template.zip) · [Browse the source](https://github.com/rdmbtc/mercenta/tree/main/packages/mercenta-shop-template)
+
+## What is included
+
+- Commands: `/start`, `/shop`, `/wallet`, `/orders`, `/network`, `/language` and `/help`.
+- Russian and English messages, with a saved language preference.
+- HTML-safe branding and compact inline keyboards. Navigation updates the current message when Telegram permits it.
+- Links to the catalogue, wallet and purchases in the configured Mini App.
+- Python long polling, SQLite persistence and an example hardened systemd service.
+- Configuration validation, tests and an optional Node.js setup wizard.
+
+The bot needs Python 3.10+ with SQLite. There are no third-party Python dependencies. A webhook, public inbound port, Redis and paid bot platform are not required. Your server costs, server capacity and Telegram API limits still apply.
+
+## Payment boundaries
+
+**This is a storefront starter, not an independent merchant checkout.** The default destination is the official Mercenta Mini App. When customers use that destination, its wallet, checkout and delivery belong to Mercenta, not to the owner of the storefront bot.
+
+The starter does **not** implement:
+
+- merchant-controlled prices or a resale markup;
+- Telegram Stars invoices or direct crypto collection in chat;
+- authenticated wholesale procurement;
+- independent payment verification, refunds or customer order storage.
+
+No payment callback is treated as payment evidence, and no activation codes are generated. Independent sales require a separately verified merchant integration covering quotes, settlement, idempotent orders, fulfillment and support. Do not collect customer funds before that integration is ready.
+
+## Quickstart
+
+### 1. Create your own bot
+
+Create a bot through BotFather. Use your own token, never the official Mercenta bot token. Download and extract the ZIP, then open the extracted `mercenta-shop-template` directory.
+
+### 2. Configure public branding
+
+Edit `shop.config.json`:
+
+```json
+{
+  "name": "Your Digital Store",
+  "tagline": {
+    "ru": "Игры, подписки и цифровые товары в одном месте.",
+    "en": "Games, subscriptions and digital essentials in one place."
+  },
+  "support": "support@example.com",
+  "miniAppUrl": "https://www.mercenta.xyz/tg",
+  "theme": {
+    "background": "#080b10",
+    "surface": "#10151d",
+    "accent": "#b2e5ff"
+  }
+}
+```
+
+| Setting | Purpose |
+| --- | --- |
+| `name` | Store name, up to 80 characters. |
+| `tagline.ru`, `tagline.en` | Short descriptions, up to 240 characters each. |
+| `support` | Your support email or Telegram `@username`. |
+| `miniAppUrl` | HTTPS destination. The bot adds `lang` and `section` parameters. |
+| `theme` | Reference tokens for your own Mini App; not a Telegram chat theme override. |
+
+Telegram chat buttons do not support arbitrary CSS or React components. PanelUI is used in the official web Mini App, not inside Telegram chat messages. Changing `theme` in this bot configuration does not recolor the official Mercenta app. A fully branded web experience needs your own configured Mini App.
+
+### 3. Validate before connecting Telegram
+
+```bash
+python3 bot.py --config shop.config.json --check
+python3 -m unittest discover -p test_bot.py
+```
+
+These commands validate public configuration and run local tests without contacting Telegram or sending messages.
+
+### 4. Provide the token securely
+
+For a local smoke test in Bash, read the token without placing its value in command history:
+
+```bash
+read -r -s -p 'Your BotFather token: ' TELEGRAM_BOT_TOKEN
+printf '\n'
+export TELEGRAM_BOT_TOKEN
+export TELEGRAM_STATE_PATH=data/bot.sqlite3
+python3 bot.py --config shop.config.json
+unset TELEGRAM_BOT_TOKEN
+```
+
+The process registers commands and the Mini App menu at startup. Open your bot and send `/start`. Check both languages and every destination before sharing the bot with customers.
+
+`.env.example` documents variable names but is **not loaded automatically**. Never commit a token, API secret, database or wallet backup.
+
+### Optional Node.js wizard
+
+With Node.js 22+ and Python installed:
+
+```bash
+npm ci
+npm run setup
+npm run build
+npm start
+```
+
+The wizard changes public branding only. It does not request or write a bot token. Set `PYTHON=python3` if your Python executable is not named `python`.
+
+## Run continuously on a VPS
+
+Place the extracted files in `/opt/mercenta-shop`. Review the included `mercenta-shop.service` before installation. It uses a restricted dynamic user, persistent state directory and encrypted systemd credential.
+
+On a Linux host with `systemd-creds`:
+
+```bash
+sudo install -d -m 700 /etc/credstore.encrypted
+read -r -s -p 'Your BotFather token: ' BOT_TOKEN
+printf '\n'
+printf '%s' "$BOT_TOKEN" | sudo systemd-creds encrypt \
+  --with-key=host --name=bot-token - \
+  /etc/credstore.encrypted/mercenta-shop-token
+unset BOT_TOKEN
+sudo chmod 600 /etc/credstore.encrypted/mercenta-shop-token
+sudo install -m 644 mercenta-shop.service \
+  /etc/systemd/system/mercenta-shop.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now mercenta-shop
+sudo systemctl status mercenta-shop
+```
+
+Host-encrypted credentials protect against accidental file disclosure, not a compromised root account. Use a protected process-manager secret mechanism if your operating system does not support encrypted systemd credentials.
+
+The example service stores SQLite state in `/var/lib/mercenta-shop/bot.sqlite3`. Do not run two polling processes with the same token. If a webhook is already configured, the starter refuses to poll instead of deleting it silently.
+
+## Operations and recovery
+
+- Back up `shop.config.json` and SQLite using SQLite's backup mechanism, or stop the service before copying the database and its WAL files.
+- SQLite stores language preferences and the Telegram update offset. It does not store customer wallet private keys or product activation codes.
+- Restarting resumes from the saved offset. Telegram message delivery is not an exactly-once payment system: a crash after sending but before saving the offset may repeat a message.
+- An API failure never means a purchase succeeded. Check service logs without printing credentials or customer message contents.
+- Testnet and Mainnet selection happens inside the Mini App. Test USDC and non-redeemable delivery must not be represented as real funds or goods.
+
+## Кратко по-русски
+
+1. Создайте собственного бота через BotFather и скачайте ZIP.
+2. Настройте название, описание RU/EN, поддержку и HTTPS-адрес Mini App в `shop.config.json`.
+3. Выполните проверку конфигурации и тесты, затем передайте токен через окружение или systemd credential.
+4. Запустите long polling на своём VPS. Язык и offset сохраняются в SQLite; Redis и webhook не нужны.
+5. Проверьте `/start`, смену языка и ссылки на магазин, кошелёк и покупки.
+
+**Граница возможностей:** это брендируемая витрина. По умолчанию оплата выполняется в официальном Mini App Mercenta. Собственные цены, наценка, Stars, приём криптовалюты и закупка через merchant API требуют отдельной интеграции. Шаблон не имитирует успешные платежи и не создаёт случайные ключи.
+
+For account-specific issues, follow the [support guide](/docs/account/support). Keep keys and passwords out of every support request.
