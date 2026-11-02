@@ -104,3 +104,5 @@ scripts/
 storyboard/
 submission/
 
+
+.playwright-mcp/

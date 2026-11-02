@@ -1,79 +1,19 @@
-import * as readline from 'node:readline';
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-function ask(question: string, defaultValue: string = ''): Promise<string> {
-  return new Promise((resolve) => {
-    const prompt = defaultValue ? `${question} [${defaultValue}]: ` : `${question}: `;
-    rl.question(prompt, (answer) => {
-      resolve(answer.trim() || defaultValue);
-    });
-  });
-}
-
-async function runWizard() {
-  console.log('\n======================================================');
-  console.log('   🚀 MERCENTA TURNKEY TELEGRAM SHOP BUILDER');
-  console.log('   Launch your automated digital store in 2 minutes');
-  console.log('======================================================\n');
-
-  const configPath = path.join(__dirname, '../shop.config.json');
-  let currentConfig: Record<string, any> = {};
-  try {
-    currentConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  } catch {}
-
-  const shopName = await ask('1. Store Name', currentConfig.shop?.name || 'My Cyber Store');
-  const tagline = await ask('2. Store Tagline', currentConfig.shop?.tagline || 'Instant Gaming & Subscription Keys');
-  const markupStr = await ask('3. Your Profit Markup (%) over wholesale', String(currentConfig.shop?.markupPercentage || '15'));
-  const apiKey = await ask('4. Your Mercenta API Key (from Mercenta Bot/Console)', currentConfig.mercenta?.apiKey || 'mct_live_demo');
-  const supportContact = await ask('5. Support Contact (@username)', currentConfig.shop?.supportContact || '@Support');
-  const botToken = await ask('6. Telegram Bot Token (from @BotFather)', process.env.TELEGRAM_BOT_TOKEN || '');
-  const cryptoAddr = await ask('7. Your Crypto Deposit Address (USDT/USDC)', currentConfig.payments?.merchantCryptoAddress || '0xYourWalletAddress');
-
-  const markup = parseFloat(markupStr) || 15.0;
-
-  const newConfig = {
-    shop: {
-      name: shopName,
-      tagline: tagline,
-      welcomeBannerUrl: 'https://mercenta.xyz/og-cover.png',
-      currencySymbol: '$',
-      markupPercentage: markup,
-      supportContact: supportContact,
-    },
-    mercenta: {
-      apiUrl: 'https://mercenta.xyz/api',
-      apiKey: apiKey,
-      marginProtectionFloor: 2.5,
-    },
-    payments: {
-      enableTelegramStars: true,
-      enableCryptoDirect: true,
-      starsToUsdRate: 0.02,
-      merchantCryptoAddress: cryptoAddr,
-    },
-    customProducts: currentConfig.customProducts || [],
-  };
-
-  fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2), 'utf8');
-
-  // Also write .env
-  const envPath = path.join(__dirname, '../.env');
-  const envContent = `TELEGRAM_BOT_TOKEN=${botToken}\nMERCENTA_API_KEY=${apiKey}\nPORT=3000\n`;
-  fs.writeFileSync(envPath, envContent, 'utf8');
-
-  console.log('\n✅ Store configuration saved successfully to shop.config.json & .env!');
-  console.log(`\n🎉 Your Profit Model: All Mercenta wholesale items will sell with +${markup}% margin.`);
-  console.log('   Example: $10.00 wholesale cost -> Sells to your customer at $' + (10 * (1 + markup / 100)).toFixed(2) + ' (You pocket $' + (10 * markup / 100).toFixed(2) + ' profit per sale!)');
-  console.log('\nRun "npm start" to launch your shop bot now!\n');
-
-  rl.close();
-}
-
-runWizard().catch(console.error);
+import { readFile, writeFile } from 'node:fs/promises';
+import { createInterface } from 'node:readline/promises';
+const path = new URL('../shop.config.json', import.meta.url);
+const config = JSON.parse(await readFile(path, 'utf8'));
+const prompt = createInterface({ input: process.stdin, output: process.stdout });
+try {
+  const ask = async (label: string, current: string) => (await prompt.question(`${label} [${current}]: `)).trim() || current;
+  config.name = await ask('Store name / Название магазина', config.name);
+  config.tagline.ru = await ask('Описание RU', config.tagline.ru);
+  config.tagline.en = await ask('Tagline EN', config.tagline.en);
+  config.support = await ask('Support email or @username', config.support);
+  config.miniAppUrl = await ask('HTTPS Mini App URL', config.miniAppUrl);
+  const url = new URL(config.miniAppUrl);
+  if (url.protocol !== 'https:' || url.username || url.password || url.hash) throw new Error('Use an HTTPS Mini App URL without credentials or fragments.');
+  if (!config.name.trim() || config.name.length > 80) throw new Error('Store name must contain 1–80 characters.');
+  if (!/^@[A-Za-z0-9_]{5,32}$/.test(config.support) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(config.support)) throw new Error('Enter a support email or Telegram username.');
+  await writeFile(path, JSON.stringify(config, null, 2) + '\n');
+  console.log('Public branding saved. No token or API key was requested or written. Configure TELEGRAM_BOT_TOKEN through your shell/process manager. This starter does not collect payments or apply merchant markup.');
+} finally { prompt.close(); }

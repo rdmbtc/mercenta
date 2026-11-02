@@ -95,15 +95,17 @@ function TelegramNetworkApp({ localWallet, network, locked, onLock, onNetwork }:
       </button>
     </div></header>
     <main className="tg-main" lang={lang}>
-      <div className="tg-language-selector" role="group" aria-label={t('Interface language', 'Язык интерфейса')}><button disabled={busy} aria-pressed={ru} onClick={() => choose('ru')}>RU</button><button disabled={busy} aria-pressed={!ru} onClick={() => choose('en')}>EN</button></div>
-      <div className="tg-network-selector" role="group" aria-label="Network">
-        {(['testnet', 'mainnet'] as const).map(mode => <button key={mode} disabled={busy} aria-pressed={network === mode} onClick={() => onNetwork(mode)}>{mode === 'testnet' ? 'Testnet' : 'Mainnet'}</button>)}
+      <div className="tg-context-toolbar">
+        <div className="tg-network-selector" role="group" aria-label={t('Network', 'Сеть')}>
+          {(['testnet', 'mainnet'] as const).map(mode => <button key={mode} disabled={busy} aria-pressed={network === mode} onClick={() => onNetwork(mode)}>{mode === 'testnet' ? 'Testnet' : 'Mainnet'}</button>)}
+        </div>
+        <div className="tg-language-selector" role="group" aria-label={t('Interface language', 'Язык интерфейса')}><button disabled={busy} aria-pressed={ru} onClick={() => choose('ru')}>RU</button><button disabled={busy} aria-pressed={!ru} onClick={() => choose('en')}>EN</button></div>
       </div>
       <p className="tg-network-status" role="status">{NETWORKS[network].name} · {NETWORKS[network].chainId} · {network === 'mainnet' ? t('Real USDC', 'Реальные USDC') : t('Test funds only', 'Только тестовые средства')}</p>
       {state.error && <div className="tg-network-error" role="alert"><p>{ru ? 'Не удалось загрузить данные сети или подключить кошелёк. Проверьте соединение и повторите попытку. Средства не списаны.' : state.error}</p><button className="tg-secondary" disabled={busy || state.loading} onClick={() => void state.refresh()}>{t('Retry network data', 'Повторить загрузку')}</button></div>}
       <div className="tg-intro"><h1>{ru ? { store: 'Всё цифровое. Здесь.', profile: 'Ваш кошелёк.', policy: 'Ваши правила.', help: 'Мы рядом.' }[activeTab] : TAB_INTROS[activeTab][0]}</h1><p>{ru ? { store: 'Игры, подписки и инструменты в одном месте.', profile: 'Баланс, пополнение и история покупок.', policy: 'Настройте предпочтения для следующих покупок.', help: 'Ответы, документация и связь с поддержкой.' }[activeTab] : TAB_INTROS[activeTab][1]}</p></div>
       {activeTab === 'store' && <>
-        <section className="tg-feature" aria-label={`${NETWORKS[network].name} store`}><div className="tg-feature-copy"><span className="tg-preview-label">{NETWORKS[network].name}</span><h2>{t('Good things.', 'Хорошие покупки.')}<br />{t('Within your rules.', 'По вашим правилам.')}</h2><a href="#tg-products">{t('Browse the catalog', 'Открыть каталог')} <ArrowUpRight size={17} /></a></div><Image src="/policy-gate.webp" alt="" width={1264} height={848} className="tg-feature-art" priority /></section>
+        <section className="tg-feature" aria-label={`${NETWORKS[network].name} store`}><div className="tg-feature-copy"><span className="tg-preview-label">{NETWORKS[network].name}</span><h2>{t('Good things.', 'Хорошие покупки.')} {t('Within your rules.', 'По вашим правилам.')}</h2><a href="#tg-products">{t('Browse the catalog', 'Открыть каталог')} <ArrowUpRight size={17} /></a></div><Image src="/policy-gate.webp" alt="" width={1264} height={848} className="tg-feature-art" priority /></section>
         <TgCatalog key={external ? 'external' : localWallet.provider ? 'local-unlocked' : 'local-locked'} walletProvider={external ? undefined : localWallet.provider ?? undefined} network={network} wallet={state.wallet} readOnly={network === 'testnet' && (!state.summary || !!state.summary.readOnly)} onConnect={() => void connect()} onLock={onLock} />
       </>}
       {activeTab === 'profile' && <><button className="tg-action" onClick={() => setWalletOpen(true)} disabled={busy}>{localWallet.address ? t('Manage encrypted wallet', 'Управление кошельком') : t('Create wallet', 'Создать кошелёк')}</button><TgProfile network={network} state={state} onOpenTopUp={() => setTopUpOpen(true)} /></>}

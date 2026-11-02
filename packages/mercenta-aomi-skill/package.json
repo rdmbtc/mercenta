@@ -1,0 +1,25 @@
+{
+  "name": "@mercenta/aomi-skill",
+  "version": "1.0.0",
+  "description": "Official Aomi App & Agent Skill for Mercenta Commerce and Autonomous Treasury Management on Arc Network",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "aomi",
+    "agent-skills",
+    "mercenta",
+    "arc-network",
+    "circle-agent-stack",
+    "digital-commerce",
+    "treasury-sweeper",
+    "usdc"
+  ],
+  "author": "Mercenta Labs",
+  "license": "MIT",
+  "peerDependencies": {
+    "viem": "^2.21.0"
+  }
+}

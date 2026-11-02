@@ -1,31 +1,14 @@
 {
-  "shop": {
-    "name": "Apex Digital Store",
-    "tagline": "Instant Gaming Keys, Subscriptions & Vouchers",
-    "welcomeBannerUrl": "https://mercenta.xyz/og-cover.png",
-    "currencySymbol": "$",
-    "markupPercentage": 15.0,
-    "supportContact": "@ApexStoreSupport"
+  "name": "Your Digital Store",
+  "tagline": {
+    "ru": "Игры, подписки и цифровые товары в одном месте.",
+    "en": "Games, subscriptions and digital essentials in one place."
   },
-  "mercenta": {
-    "apiUrl": "https://mercenta.xyz/api",
-    "apiKey": "mct_live_replace_with_your_key",
-    "marginProtectionFloor": 2.5
-  },
-  "payments": {
-    "enableTelegramStars": true,
-    "enableCryptoDirect": true,
-    "starsToUsdRate": 0.02,
-    "merchantCryptoAddress": "0xYourEvmOrTronAddressHere"
-  },
-  "customProducts": [
-    {
-      "id": "custom-vip-consult",
-      "name": "1-on-1 Discord Gaming Consultation",
-      "category": "custom",
-      "priceUsdc": 19.99,
-      "shortDesc": "30-minute custom strategy and setup call with our store founder.",
-      "deliveryType": "manual"
-    }
-  ]
+  "support": "support@example.com",
+  "miniAppUrl": "https://www.mercenta.xyz/tg",
+  "theme": {
+    "background": "#080b10",
+    "surface": "#10151d",
+    "accent": "#b2e5ff"
+  }
 }

@@ -1,0 +1,84 @@
+{
+  "id": "mercenta-commerce",
+  "name": "Mercenta Commerce & Treasury",
+  "version": "1.0.0",
+  "description": "Autonomous digital goods checkout and treasury management engine on Arc Network",
+  "category": "Commerce & Treasury",
+  "developer": {
+    "name": "Mercenta Labs",
+    "url": "https://mercenta.xyz",
+    "github": "https://github.com/rdmbtc/mercenta"
+  },
+  "chains": [5042],
+  "runtime": "serverless",
+  "endpoints": {
+    "manifest": "https://mercenta.xyz/api/aomi/manifest",
+    "action": "https://mercenta.xyz/api/aomi/tools",
+    "openapi": "https://mercenta.xyz/api/openapi"
+  },
+  "tools": [
+    {
+      "name": "mercenta_catalog",
+      "description": "Search wholesale digital goods, gaming vouchers, streaming subscriptions, and AI compute tokens on Arc",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string", "enum": ["gaming", "streaming", "compute", "tokens", "donations", "all"] },
+          "query": { "type": "string", "description": "Search keyword" },
+          "max_price_usdc": { "type": "number", "description": "Maximum price in USDC" }
+        }
+      }
+    },
+    {
+      "name": "mercenta_quote",
+      "description": "Simulate and test 5-Gate policy compliance (margin floor, auto-approval limits, spend velocity) before checkout",
+      "parameters": {
+        "type": "object",
+        "required": ["product_id", "denomination_usdc"],
+        "properties": {
+          "product_id": { "type": "string" },
+          "denomination_usdc": { "type": "number" },
+          "max_slippage_bps": { "type": "number", "default": 50 }
+        }
+      }
+    },
+    {
+      "name": "mercenta_checkout",
+      "description": "Settle an approved order atomically on Arc Mainnet in native USDC with instant delivery",
+      "parameters": {
+        "type": "object",
+        "required": ["quote_id"],
+        "properties": {
+          "quote_id": { "type": "string" },
+          "recipient_address": { "type": "string" },
+          "auto_claim": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    {
+      "name": "mercenta_treasury_sweep",
+      "description": "Sweep idle merchant revenue above reserve floor into Morpho Blue / USYC yield vaults on Arc",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reserve_floor_usdc": { "type": "number", "default": 50.0 },
+          "vault_id": { "type": "string", "default": "galaxy-usdc" },
+          "simulate_only": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "mercenta_crosschain_topup",
+      "description": "Generate multi-chain liquidity top-up route to fund Arc wallet from Base, Solana, or Arbitrum",
+      "parameters": {
+        "type": "object",
+        "required": ["source_chain", "amount_usdc", "arc_destination_wallet"],
+        "properties": {
+          "source_chain": { "type": "string", "enum": ["base", "solana", "arbitrum", "ethereum", "polygon"] },
+          "amount_usdc": { "type": "number" },
+          "arc_destination_wallet": { "type": "string" }
+        }
+      }
+    }
+  ]
+}

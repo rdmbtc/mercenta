@@ -1,0 +1,26 @@
+{
+  "ru": {
+    "start": {"title":"Добро пожаловать в {name}","body":"{tagline}\n\nВыберите товар в магазине. Кошелёк и история покупок доступны после входа в Mini App.","note":"Testnet — для тестов. Mainnet — для реальных USDC."},
+    "shop": {"title":"Магазин {name}","body":"Игры, подписки и цифровые товары.\n\nВыберите регион и номинал, затем проверьте актуальную котировку. Просмотр каталога ничего не списывает.","note":"Оплата подтверждается отдельно в Mini App."},
+    "wallet": {"title":"Ваш кошелёк","body":"Создайте зашифрованный кошелёк на устройстве или подключите свой.\n\nСохраните пароль и резервную копию до первого пополнения.","note":"Никому не отправляйте приватный ключ или пароль."},
+    "orders": {"title":"Мои покупки","body":"Заказы, квитанции и доступная выдача — в вашем Mini App.\n\nЕсли платёж уже отправлен, сначала проверьте статус заказа.","note":"Ожидание выдачи — не повод платить повторно."},
+    "network": {"title":"Две сети. Разные средства.","body":"<b>Testnet</b> · Arc 5042002\nТестовые USDC и неактивируемая выдача.\n\n<b>Mainnet</b> · Arc 5042\nРеальные USDC. Каждый платёж подтверждаете вы.","note":"Сеть переключается внутри Mini App. Балансы не смешиваются."},
+    "language": {"title":"Язык интерфейса","body":"Выберите удобный язык.\nНастройка сохранится для следующих сообщений.","note":"Текущий язык: русский."},
+    "help": {"title":"Помощь и поддержка","body":"По вопросу заказа напишите: {support}\n\nУкажите номер заказа и кратко опишите проблему. Не отправляйте ключи, пароли и коды активации.","note":"Меню: /shop · /wallet · /orders · /network · /language"},
+    "payment_unavailable": {"title":"Оплата в чате не подключена","body":"Этот магазин не принимает оплату через сообщения. Используйте проверенный checkout в Mini App.","note":"Ничего не списано. Коды не создавались."},
+    "buttons": {"shop":"Открыть магазин","wallet":"Открыть кошелёк","orders":"Мои покупки","help":"Поддержка","network":"Выбрать сеть","language":"Язык","home":"Главное меню","back":"Назад","wallet_short":"Кошелёк","help_short":"Помощь"},
+    "defaultTagline":"Цифровые товары. Ваши правила."
+  },
+  "en": {
+    "start": {"title":"Welcome to {name}","body":"{tagline}\n\nFind your next digital purchase in the store. Your wallet and purchase history are available after sign-in in the Mini App.","note":"Testnet is for testing. Mainnet uses real USDC."},
+    "shop": {"title":"The {name} store","body":"Games, subscriptions and digital goods.\n\nChoose a region and option, then review a fresh quote. Browsing never charges funds.","note":"Payment requires separate confirmation in the Mini App."},
+    "wallet": {"title":"Your wallet","body":"Create an encrypted wallet on your device or connect your own.\n\nSave your password and encrypted backup before your first deposit.","note":"Never share your private key or password."},
+    "orders": {"title":"Your purchases","body":"Orders, receipts and available delivery live in your Mini App.\n\nIf a payment has already been sent, check the order status first.","note":"Pending delivery is not a reason to pay again."},
+    "network": {"title":"Two networks. Separate funds.","body":"<b>Testnet</b> · Arc 5042002\nTest USDC and non-redeemable delivery.\n\n<b>Mainnet</b> · Arc 5042\nReal USDC. You confirm every payment.","note":"Switch inside the Mini App. Balances never mix."},
+    "language": {"title":"Interface language","body":"Choose your preferred language.\nYour choice is saved for future messages.","note":"Current language: English."},
+    "help": {"title":"Help and support","body":"For order help, contact: {support}\n\nInclude the order reference and a short description. Never send keys, passwords or activation codes.","note":"Menu: /shop · /wallet · /orders · /network · /language"},
+    "payment_unavailable": {"title":"Chat payments are not connected","body":"This storefront does not collect payments in messages. Use the verified checkout in the Mini App.","note":"No funds charged. No activation codes generated."},
+    "buttons": {"shop":"Open store","wallet":"Open wallet","orders":"My purchases","help":"Support","network":"Choose network","language":"Language","home":"Main menu","back":"Back","wallet_short":"Wallet","help_short":"Help"},
+    "defaultTagline":"Digital essentials. Your rules."
+  }
+}

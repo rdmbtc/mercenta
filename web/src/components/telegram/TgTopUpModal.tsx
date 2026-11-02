@@ -5,9 +5,11 @@ import { useEffect, useState } from 'react';
 import { Modal } from '@/components/product/ProductShell';
 import { DepositIntentForm } from '@/components/product/DepositIntentForm';
 import { AddUsdcDialog } from '@/components/onramp/AddUsdcDialog';
+import { UniversalCrosschainTopup } from '@/components/onramp/UniversalCrosschainTopup';
 import { checkoutApi, testAmount } from '@/lib/test-checkout';
 import type { NetworkMode } from '@/lib/network-profile';
 import type { TelegramSummary } from './useTelegramNetwork';
+import { ArrowLeftRight, Landmark } from 'lucide-react';
 
 type Deposit = Record<string, string | number | null>;
 
@@ -20,7 +22,8 @@ export function TgTopUpModal({ network, summary, wallet, onClose, onRefresh, onL
   onLock: (locked: boolean) => void;
   onConnect: () => void;
 }) {
-  const { t, lang } = useTgLocale();
+  const { t, lang, ru } = useTgLocale();
+  const [fundingMode, setFundingMode] = useState<'crosschain' | 'onramp'>('crosschain');
   const [deposit, setDeposit] = useState<Deposit | null>(null);
   const [hash, setHash] = useState('');
   const [busy, setBusy] = useState(false);
@@ -46,8 +49,65 @@ export function TgTopUpModal({ network, summary, wallet, onClose, onRefresh, onL
   }, [network, onLock]);
 
   if (network === 'mainnet') {
-    if (productionFunding !== true) return <Modal title={t('Add Mainnet USDC', 'Пополнить Mainnet USDC')} onClose={onClose}><p role="status">{productionFunding === null ? t('Checking Mainnet funding availability…', 'Проверяем доступность пополнения Mainnet…') : t('Production funding is unavailable on this origin. Sandbox funding is not offered as real USDC.', 'Пополнение реальными USDC недоступно на этом домене. Sandbox не заменяет реальное пополнение.')}</p></Modal>;
-    return <AddUsdcDialog onClose={() => { onClose(); onRefresh(); }} />;
+    return (
+      <Modal title={t('Universal Top-Up (USDC)', 'Универсальное пополнение (USDC)')} onClose={onClose}>
+        <div className="space-y-4">
+          {/* Funding Method Tabs */}
+          <div className="grid grid-cols-2 gap-2 bg-[#0e121b] p-1.5 rounded-xl border border-white/5">
+            <button
+              type="button"
+              onClick={() => setFundingMode('crosschain')}
+              className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                fundingMode === 'crosschain'
+                  ? 'bg-[#10b981] text-black shadow-md'
+                  : 'text-[#a0aec0] hover:text-white'
+              }`}
+            >
+              <ArrowLeftRight className="size-3.5" />
+              {t('Multi-Chain Bridge', 'Кроссчейн-мост')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setFundingMode('onramp')}
+              className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                fundingMode === 'onramp'
+                  ? 'bg-[#10b981] text-black shadow-md'
+                  : 'text-[#a0aec0] hover:text-white'
+              }`}
+            >
+              <Landmark className="size-3.5" />
+              {t('Bank Transfer', 'Банковский перевод')}
+            </button>
+          </div>
+
+          {fundingMode === 'crosschain' ? (
+            <UniversalCrosschainTopup
+              destinationWallet={wallet}
+              onClose={() => { onClose(); onRefresh(); }}
+              ru={ru}
+            />
+          ) : (
+            <div>
+              {productionFunding === false ? (
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-xs text-[#a0aec0] space-y-2">
+                  <p className="font-semibold text-white">
+                    {t('Circle Onramp Inactive on Sandbox Origin', 'Circle Onramp не активен на тестовом домене')}
+                  </p>
+                  <p>
+                    {t(
+                      'Please use the Multi-Chain Bridge tab above to bridge USDC from Base, Solana, or Arbitrum directly to your Arc wallet.',
+                      'Пожалуйста, используйте вкладку "Кроссчейн-мост" выше для мгновенного перевода USDC из Base, Solana или Arbitrum.'
+                    )}
+                  </p>
+                </div>
+              ) : (
+                <AddUsdcDialog onClose={() => { onClose(); onRefresh(); }} />
+              )}
+            </div>
+          )}
+        </div>
+      </Modal>
+    );
   }
 
   async function create(body: { requestId: string; amount: string }) {

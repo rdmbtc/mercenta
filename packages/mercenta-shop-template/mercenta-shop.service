@@ -1,0 +1,29 @@
+[Unit]
+Description=Mercenta customer storefront
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=mercenta-shop
+StateDirectoryMode=0700
+WorkingDirectory=/opt/mercenta-shop
+Environment=TELEGRAM_STATE_PATH=/var/lib/mercenta-shop/bot.sqlite3
+LoadCredentialEncrypted=bot-token:/etc/credstore.encrypted/mercenta-shop-token
+ExecStart=/usr/bin/python3 -u /opt/mercenta-shop/bot.py --config /opt/mercenta-shop/shop.config.json
+Restart=on-failure
+RestartSec=15
+TimeoutStopSec=45
+UMask=0077
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+CapabilityBoundingSet=
+MemoryMax=128M
+
+[Install]
+WantedBy=multi-user.target

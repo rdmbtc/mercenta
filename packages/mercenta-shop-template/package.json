@@ -1,24 +1,17 @@
 {
   "name": "@mercenta/shop-template",
-  "version": "1.0.0",
-  "description": "1-Click Turnkey Telegram Shop Template powered by Mercenta Wholesale API",
-  "main": "dist/bot.js",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Configurable bilingual Telegram storefront starter with SQLite; no simulated payments",
   "scripts": {
     "setup": "tsx src/setup-wizard.ts",
     "dev": "tsx src/bot.ts",
     "start": "tsx src/bot.ts",
-    "build": "tsc"
+    "build": "tsc --noEmit",
+    "test": "python -m unittest discover -p test_bot.py"
   },
-  "keywords": [
-    "telegram-bot",
-    "ecommerce",
-    "digital-goods",
-    "gift-cards",
-    "mercenta",
-    "usdc"
-  ],
-  "author": "Mercenta",
-  "license": "MIT",
+  "engines": { "node": ">=22" },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
