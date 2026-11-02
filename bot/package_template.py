@@ -4,12 +4,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / 'packages' / 'mercenta-shop-template'
-FILES = ['README.md', 'shop.config.json', '.env.example', 'package.json', 'tsconfig.json', 'mercenta-shop.service', 'src/bot.ts', 'src/setup-wizard.ts', 'bot.py', 'messages.json', 'test_bot.py']
+FILES = ['README.md', 'shop.config.json', '.env.example', 'package.json', 'package-lock.json', 'tsconfig.json', 'mercenta-shop.service', 'src/bot.ts', 'src/setup-wizard.ts', 'bot.py', 'messages.json', 'test_bot.py']
 
 
 def build():
     shutil.copyfile(ROOT / 'bot' / 'polling.py', TEMPLATE / 'bot.py')
     shutil.copyfile(ROOT / 'bot' / 'messages.json', TEMPLATE / 'messages.json')
+    shutil.copyfile(ROOT / 'bot' / 'messages.json', ROOT / 'web' / 'src' / 'lib' / 'bot-messages.json')
     shutil.copyfile(ROOT / 'bot' / 'test_polling.py', TEMPLATE / 'test_bot.py')
     test = (TEMPLATE / 'test_bot.py').read_text(encoding='utf-8').replace('import polling\n', 'import bot as polling\n')
     (TEMPLATE / 'test_bot.py').write_text(test, encoding='utf-8')

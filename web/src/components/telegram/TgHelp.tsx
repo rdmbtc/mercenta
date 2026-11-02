@@ -76,6 +76,14 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
     </Frame>
 
     <Frame className="tg-frame">
+      <Frame.Header><Frame.Title as="h2">{t('Launch your storefront', 'Запустить свой магазин')}</Frame.Title></Frame.Header>
+      <Frame.Panel>
+        <Frame.Row><Frame.Content><Frame.Description>{t('Download the configurable RU/EN Telegram starter. Bring your own bot token, name and support contact. Uses your VPS and SQLite, without paid bot services.', 'Скачайте настраиваемый Telegram-шаблон RU/EN. Укажите свой токен бота, название и поддержку. Работает на вашем VPS с SQLite, без платных бот-сервисов.')}</Frame.Description><Frame.Description>{t('This is a storefront linked to a Mini App. Independent payments, merchant markup and procurement require a separate verified integration.', 'Это витрина с переходом в Mini App. Собственная оплата, наценка и закупка требуют отдельной проверенной интеграции.')}</Frame.Description></Frame.Content></Frame.Row>
+        <Frame.Row href="/downloads/mercenta-shop-template.zip"><Frame.Content><Frame.Title as="p">{t('Download shop starter · ZIP', 'Скачать шаблон магазина · ZIP')}</Frame.Title></Frame.Content><Frame.Media><ExternalLink size={17} aria-hidden="true" /></Frame.Media></Frame.Row>
+      </Frame.Panel>
+    </Frame>
+
+    <Frame className="tg-frame">
       <Frame.Header><Frame.Title as="h2">{t('Email Support', 'Написать в поддержку')}</Frame.Title><Frame.Action><Send size={18} aria-hidden="true" /></Frame.Action></Frame.Header>
       <Frame.Panel><form onSubmit={handleSendTicket} className="tg-support-form">
         <p>{t('Opens a draft in your email app to support@mercenta.xyz. Nothing is submitted here; send the email yourself. If no app opens, email this address directly. Never include your private key or password.', 'Откроет черновик в почтовом приложении для support@mercenta.xyz. Здесь ничего не отправляется; отправьте письмо самостоятельно. Если приложение не открылось, напишите на этот адрес напрямую. Никогда не указывайте приватный ключ или пароль.')}</p>

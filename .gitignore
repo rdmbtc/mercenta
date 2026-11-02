@@ -42,6 +42,8 @@ __pycache__/
 env/
 develop-eggs/
 downloads/
+!web/public/downloads/
+!web/public/downloads/mercenta-shop-template.zip
 eggs/
 .eggs/
 /lib/
