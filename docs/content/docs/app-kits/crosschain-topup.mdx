@@ -1,0 +1,77 @@
+---
+title: "Universal Cross-Chain Top-Up"
+description: "Native Circle CCTP V2 burn-and-mint settlement from Base, Solana, Arbitrum, Polygon, and Ethereum into Arc Mainnet."
+---
+
+# Universal Multi-Chain Top-Up
+
+Mercenta eliminates liquidity isolation by integrating **Circle Cross-Chain Transfer Protocol (CCTP) V2**, allowing instant, zero-slippage USDC deposits directly into Arc Mainnet (`5042`) wallets from 5 major networks.
+
+---
+
+## 1. Supported Source Networks
+
+| Network | Transfer Rail | Typical Finality | Slippage |
+| --- | --- | --- | --- |
+| **Base** | Circle CCTP V2 Native | ~30 seconds | 0.00% (1:1) |
+| **Solana** | Circle CCTP V2 Native | ~45 seconds | 0.00% (1:1) |
+| **Arbitrum One** | Circle CCTP V2 Native | ~30 seconds | 0.00% (1:1) |
+| **Polygon PoS** | Circle CCTP V2 Native | ~90 seconds | 0.00% (1:1) |
+| **Ethereum** | Circle CCTP V2 Native | ~3 minutes | 0.00% (1:1) |
+
+---
+
+## 2. Architecture & Security Guarantees
+
+Unlike legacy cross-chain bridges that rely on lock-and-mint wrapped tokens or vulnerable liquidity pools, Mercenta's top-up pipeline uses **native burn-and-mint**:
+
+```
+[Source Chain (e.g. Base)]                  [Arc Mainnet (5042)]
+User Wallet (USDC)                          Recipient Arc Wallet
+        │                                           ▲
+        ▼                                           │
+ Circle TokenMessenger (Burn)               Circle MessageTransmitter (Mint)
+        │                                           ▲
+        ▼                                           │
+  Circle Attestation Service ───────────────────────┘
+  (Cryptographically Signed Burn Attestation)
+```
+
+1. **Zero Wrapped Token Risk**: USDC is destroyed on the source chain and minted natively on Arc. No synthetic or wrapped tokens are created.
+2. **Zero Price Slippage**: Transfers settle at exact $1.000000 = $1.000000 parity minus static network gas fees.
+3. **Hardware Nonce Verification**: Every transfer carries a unique Circle transfer nonce to prevent replay attacks across chains.
+
+---
+
+## 3. Dynamic Quote API
+
+Autonomous agents and client storefronts calculate real-time deposit estimates using the `/api/liquidity/crosschain-quote` endpoint:
+
+```http
+GET /api/liquidity/crosschain-quote?source=base&amount=100&recipient=0x9ED9...B5760
+```
+
+### Example Response:
+
+```json
+{
+  "source": "base",
+  "destination": "arc-mainnet",
+  "depositAmount": "100.00",
+  "bridgeFeeUsdc": "0.00",
+  "estimatedGasUsdc": "0.15",
+  "netCreditedUsdc": "99.85",
+  "estimatedDurationSec": 35,
+  "cctpVersion": "v2-burn-and-mint",
+  "depositContract": "0x123...CCTP",
+  "quoteExpiry": 1793400000
+}
+```
+
+---
+
+## 4. UI Integration
+
+Universal Top-Up is accessible across Mercenta interfaces:
+* **Mercenta Console**: Full institutional panel at `/onramp` and `/earn`.
+* **Telegram Web App (`@mercentabot`)**: Direct multi-chain modal embedded in the non-custodial wallet manager (`TgTopUpModal.tsx`).

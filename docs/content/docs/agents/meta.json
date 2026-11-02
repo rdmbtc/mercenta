@@ -2,6 +2,7 @@
   "title": "Assistant & automations",
   "pages": [
     "ai-advisor",
+    "aomi-skill",
     "circle-gateway",
     "machine-checkout",
     "profit-first"

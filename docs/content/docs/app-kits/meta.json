@@ -3,6 +3,7 @@
   "pages": [
     "overview",
     "earn",
+    "crosschain-topup",
     "borrow",
     "onramp",
     "swap",

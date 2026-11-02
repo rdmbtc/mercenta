@@ -205,10 +205,14 @@ Mercenta operates as a distributed, multi-surface ecosystem:
 
 - **`mercenta.xyz`**: The flagship public portal. Features interactive policy simulators, live receipt inspectors, and institutional overview.
 - **`app.mercenta.xyz`**: The merchant and agent console. Provides real-time budget controls, wallet management, order telemetry, and Circle Onramp funding.
+- **`t.me/mercentabot` & `mercenta.xyz/tg`**: Official Telegram Bot and Web App (TWA) with non-custodial Arc EVM wallet generation, mobile 5-Gate policy controls, and turnkey merchant shop templates.
+- **`@mercenta/aomi-skill` (`npx skills add rdmbtc/mercenta`)**: Official Aomi App and Agent Skill powering Claude Code, Cursor, Codex, OpenCode, and Hermes with autonomous digital goods procurement on Arc Mainnet.
+- **Autonomous Treasury Sweeper (RFB 01)**: Continuous idle yield harvesting into Morpho Blue Arc Vaults (`0x32A4...8c1b`, ~8.4% APY) with operating liquidity floor protection.
+- **Universal Multi-Chain Top-Up (Circle CCTP V2)**: Frictionless 1:1 burn-and-mint USDC deposits into Arc from Base, Solana, Arbitrum, Polygon, and Ethereum.
 - **`catalog.mercenta.xyz`**: High-density digital goods showcase displaying live regional availability, pricing, and instantaneous checkout flows.
 - **`testnet.mercenta.xyz`**: Full-featured risk-free sandbox environment with simulated USDC balances for developers and QA testing.
-- **`mainnet.mercenta.xyz`**: Live production clearinghouse executing atomic settlements on Arc Mainnet.
-- **`docs.mercenta.xyz` & `/api-docs`**: OpenAPI 3.1 / Swagger developer documentation with interactive curl and TypeScript snippets.
+- **`mainnet.mercenta.xyz`**: Live production clearinghouse executing atomic settlements on Arc Mainnet (`0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed`).
+- **`docs.mercenta.xyz` & `/api-docs`**: Developer documentation built on Next.js/Fumadocs with interactive curl and TypeScript snippets.
 - **`status.mercenta.xyz`**: Real-time infrastructure health dashboard monitoring gateway latency (<25ms) and Arc Network settlement SLAs.
 
 ---

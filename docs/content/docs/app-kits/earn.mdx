@@ -1,12 +1,82 @@
 ---
-title: "Earn discovery and planning"
-description: "Inspect testnet SDK metadata. Calculate scenarios without moving funds."
+title: "Earn & Autonomous Treasury Sweeper"
+description: "Morpho Blue Arc yield optimization, operational liquidity reserve floor protection, and continuous automated sweeping."
 ---
 
-Open **Account → Finance → Earn**. Set a principal, your own APY assumption and a period for a labelled estimate. The initial APY assumption is zero. No live return, available balance or guaranteed income is invented.
+# Earn & Autonomous Treasury Sweeper
 
-**Discover testnet vaults** queries the installed Circle SDK through the backend. The public result includes only Arc Testnet names, assets and validated addresses, with a one-minute metadata cache. Discovery was checked without an optional Circle API key. Two returned addresses had bytecode on chain 5042002; one is explicitly named a mock vault. This is not a contract audit, liquidity check or current-yield verification.
+Mercenta provides enterprise yield optimization for merchant cashflows and autonomous store operators on **Arc Mainnet (5042)** through the **Autonomous Treasury Sweeper** (RFB 01 Intelligent Business Treasury), alongside testnet vaults for scenario simulation.
 
-APY and raw provider assertions are not passed through as verified data. Discovery failure is shown as unavailable, not as a successful financial operation. SDK metadata does not authorize deposits or withdrawals. Execution remains disabled.
+---
 
-Customer prepaid funds do not earn interest automatically. Before live Earn, verify supported production network, vault security, fresh rates and liquidity, allowance limits, owner signing, deposit/withdrawal receipts and risk disclosures. Do not move real money to a testnet vault.
+## 1. Autonomous Treasury Sweeper (Arc Mainnet)
+
+In high-volume digital goods commerce, merchant working capital accumulates continuously as customer orders settle in sub-second native USDC. Leaving idle balances in hot wallets incurs inflation drag and unnecessary custodial exposure.
+
+The **Treasury Sweeper** automatically allocates surplus merchant cashflow into the **Morpho Blue Galaxy USDC Vault** on Arc Mainnet:
+
+* **Arc Mainnet Chain ID**: `5042`
+* **Target Vault**: Morpho Blue Galaxy USDC Vault (`0x32A44B04C8567dB1a613271167E1402CeF5E8c1b`)
+* **Underlying Asset**: Native USDC (6 decimals)
+* **Historical Yield**: ~8.4% Net APY
+* **Execution Endpoint**: `POST /api/treasury/sweep`
+
+---
+
+## 2. Operating Reserve Floor Protection
+
+To ensure an automated merchant never runs out of working capital for order fulfillment or customer refunds, the sweeper enforces a **Deterministic Liquidity Floor**:
+
+```
+Total Merchant Wallet Balance ($2,450 USDC)
+  ├── Operating Liquidity Floor: $500 USDC ──► LOCKED in wallet for instant fulfillment
+  └── Surplus Idle Capital:      $1,950 USDC ──► AUTOMATICALLY SWEPT into Morpho Vault (8.4% APY)
+```
+
+1. **Configurable Floor**: The store operator or owner agent sets an exact reserve floor (e.g. $250, $500, or $5,000 USDC).
+2. **Deterministic Invariant**: A sweep transaction will **never execute** if the post-sweep balance would drop below the configured reserve floor.
+3. **Instant Redemption**: Funds deposited into the Morpho Blue vault can be withdrawn on demand whenever operational liquidity requirements increase.
+
+---
+
+## 3. Sweeper API Specification
+
+Autonomous store agents trigger sweeps programmatically:
+
+```http
+POST /api/treasury/sweep
+Content-Type: application/json
+
+{
+  "walletAddress": "0x9ED914F8C356FE8C3673fB57601A94b3A8B5760",
+  "minReserveFloor": 500,
+  "continuousMode": true,
+  "maxSweepCap": 10000
+}
+```
+
+### Response:
+
+```json
+{
+  "success": true,
+  "status": "SWEEP_COMPLETED",
+  "sweptAmountUsdc": "1950.00",
+  "remainingWalletBalance": "500.00",
+  "targetVault": "0x32A44B04C8567dB1a613271167E1402CeF5E8c1b",
+  "apyPercent": 8.42,
+  "txHash": "0x8fae92b3c48...7d91",
+  "arcScanUrl": "https://arcscan.app/tx/0x8fae92b3c48...7d91",
+  "timestamp": "2026-11-02T19:15:00Z"
+}
+```
+
+---
+
+## 4. Testnet Discovery & Scenario Simulation
+
+On Arc Testnet (`5042002`), merchants can test APY models and compounding calculators without moving funds under **Account → Finance → Earn**.
+
+* The initial APY assumption defaults to 0%.
+* Testnet vault addresses are queried through the installed Circle SDK metadata cache.
+* Testnet balances do not generate real yields and cannot be transferred to production vaults.

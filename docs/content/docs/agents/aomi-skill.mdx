@@ -1,0 +1,104 @@
+---
+title: "Aomi Agent Skill & App Integration"
+description: "Autonomous digital goods procurement, 5-Gate Policy evaluation, and Arc Mainnet settlement for Claude Code, Cursor, OpenCode, and Hermes."
+---
+
+# Official Aomi App & Agent Skill
+
+Mercenta publishes an official agent skill package [`@mercenta/aomi-skill`](https://github.com/rdmbtc/mercenta/tree/main/packages/mercenta-aomi-skill) compliant with the `aomi-labs/skills` specification and the [`build.aomi.dev`](https://build.aomi.dev) execution runtime.
+
+Autonomous AI agents can programmatically discover wholesale digital inventory, quote orders with hardware-enforced margin constraints, execute atomic checkout on Arc Mainnet, sweep idle operational yields, and bridge liquidity across chains without human intervention.
+
+---
+
+## 1. Installation & Setup
+
+Install the canonical agent skill into your local AI coding assistant or autonomous runtime:
+
+```bash
+# Add skill to Claude Code, Cursor, OpenCode, Codex, or Hermes
+npx skills add rdmbtc/mercenta
+```
+
+For custom agent pipelines using the TypeScript SDK:
+
+```bash
+npm install @mercenta/aomi-skill
+```
+
+---
+
+## 2. Manifest & Contract Addresses
+
+The live Aomi App manifest is served dynamically with CORS enabled for `build.aomi.dev` and autonomous clients:
+
+* **Manifest Endpoint**: `GET https://mercenta.xyz/api/aomi/manifest`
+* **Tools Execution Endpoint**: `POST https://mercenta.xyz/api/aomi/tools`
+* **Arc Mainnet Chain ID**: `5042`
+* **Arc Mainnet Checkout Contract**: `0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed`
+* **Settlement Asset**: Native USDC (`0x0000000000000000000000000000000000000000` / 18 decimals)
+* **Morpho Blue Galaxy Vault**: `0x32A44B04C8567dB1a613271167E1402CeF5E8c1b`
+
+---
+
+## 3. Autonomous Tool Suite
+
+The skill exposes 5 deterministic tools designed for machine safety:
+
+### `mercenta_catalog`
+Queries the live wholesale catalog of verified digital vouchers, software keys, and compute tokens.
+
+* **Parameters**:
+  * `category` *(optional)*: `'gaming'` | `'streaming'` | `'creator'` | `'developer'` | `'cloud'`
+  * `country_code` *(optional)*: ISO country code (e.g. `'US'`, `'GLOBAL'`)
+  * `query` *(optional)*: Search string for products or brands
+* **Output**: Verified product listings with available denominations, currency, wholesale cost, and instant delivery availability.
+
+### `mercenta_quote`
+Simulates an order through the 5-Gate Policy Engine without executing on-chain funds.
+
+* **Parameters**:
+  * `product_id`: Identifier of the desired product
+  * `denomination_amount`: Face value amount
+  * `currency`: Target denomination currency (default `'USD'`)
+  * `max_slippage_bps` *(optional)*: Maximum allowed price slippage in basis points
+* **Validation**:
+  1. Gross Margin Floor ($\ge 15\%$ spread protection).
+  2. Single-order auto-approval cap.
+  3. Spend velocity rate limiting.
+  4. Balance solvency.
+
+### `mercenta_checkout`
+Executes atomic onchain checkout on Arc Mainnet (`5042`) with sub-second finality.
+
+* **Parameters**:
+  * `quote_id`: Validated quote reference returned from `mercenta_quote`
+  * `recipient_email` *(optional)*: Direct delivery destination
+  * `payer_wallet`: Signing wallet address on Arc Mainnet
+* **Output**: Cryptographic receipt, transaction hash on ArcScan, and encrypted digital voucher activation payload.
+
+### `mercenta_treasury_sweep`
+Sweeps idle operational revenue accumulating in merchant accounts into Arc Morpho Blue vaults to harvest yield.
+
+* **Parameters**:
+  * `wallet_address`: Merchant or agent treasury address
+  * `min_reserve_floor_usdc`: Mandatory operational liquidity buffer preserved in wallet
+* **Output**: Swept amount, deposit receipt, and updated Morpho vault position.
+
+### `mercenta_crosschain_topup`
+Generates quotes for zero-slippage cross-chain USDC deposits via Circle CCTP V2.
+
+* **Parameters**:
+  * `source_chain`: `'base'` | `'arbitrum'` | `'solana'` | `'polygon'` | `'ethereum'`
+  * `amount_usdc`: Amount to deposit
+  * `recipient_arc_address`: Target Arc Mainnet wallet address
+
+---
+
+## 4. Machine Safety Invariants
+
+Mercenta enforces strict machine-execution boundaries based on the Rubicon standard:
+
+1. **Blind Execution Defense**: LLM models never receive raw wholesale credentials or unencrypted voucher keys in plain context prompts.
+2. **Hardware-Enforced Spending Bounds**: The policy engine rejects transactions exceeding velocity limits or margin thresholds before touching the blockchain.
+3. **Receipt-Based Accounting**: Every agent purchase generates an immutable SHA-256 state transition recorded in the double-entry audit ledger and verifiable on ArcScan.

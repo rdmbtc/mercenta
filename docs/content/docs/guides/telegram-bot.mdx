@@ -1,0 +1,58 @@
+---
+title: "Official Telegram Bot & TWA (@mercentabot)"
+description: "Non-custodial mobile storefront, mobile 5-Gate Policy Engine, and turnkey merchant store starter on Arc Mainnet."
+---
+
+# Telegram Bot & Web App (@mercentabot)
+
+Mercenta delivers a native mobile commerce experience through the **Official Telegram Bot** ([`@mercentabot`](https://t.me/mercentabot)) and its integrated **Telegram Web App (TWA)** hosted at [`https://mercenta.xyz/tg`](https://mercenta.xyz/tg).
+
+Customers can purchase digital goods, manage encrypted non-custodial Arc wallets, and execute atomic settlements in sub-second USDC directly inside Telegram on iOS, Android, and desktop.
+
+---
+
+## 1. Key Architectural Features
+
+### 1. Client-Side Non-Custodial Arc Wallet
+* **In-Client Key Generation**: EVM-compatible keypairs are generated directly in the user's browser runtime using cryptographic entropy.
+* **Encrypted Local Storage**: Private keys are encrypted using AES-GCM and stored only in the Telegram client sandbox. Mercenta servers never see or hold private keys.
+* **Full Self-Sovereignty**: Users can reveal and export their private key at any time to MetaMask, Rabby, Frame, or any standard EVM wallet.
+
+### 2. Dual-Language Interface (RU / EN)
+* One-click bilingual switching between Russian and English.
+* Full localization of product catalogs, region warnings, policy parameters, transaction receipts, and FAQs.
+
+### 3. Mobile 5-Gate Policy Engine Controls
+Merchants and agency operators can inspect and adjust policy boundaries directly on mobile:
+* **Gross Margin Floor**: Enforces minimum profitable spread ($\ge 15\%$) across all bot listings.
+* **Auto-Approval Cap**: Configures the maximum order size processed automatically without manual multi-sig sign-off.
+* **Spend Velocity Cap**: Caps the rate of orders per minute (e.g. 5 tx/min) to prevent flash-drain attacks from compromised bot tokens.
+
+---
+
+## 2. Turnkey Client Storefront Starter (`bot/`)
+
+Mercenta includes an open-source turnkey Telegram bot template in [`bot/bot.js`](https://github.com/rdmbtc/mercenta/tree/main/bot) enabling solo entrepreneurs and digital agencies to launch their own branded Telegram store in under 5 minutes:
+
+### Setup Steps:
+1. Clone the repository and navigate to the bot directory:
+   ```bash
+   cd bot
+   npm install
+   ```
+2. Configure your environment variables in `.env`:
+   ```bash
+   TELEGRAM_BOT_TOKEN="your_bot_token_from_botfather"
+   WEBAPP_URL="https://mercenta.xyz/tg"
+   MERCHANT_MARGIN_PERCENT="15.0"
+   MERCHANT_ARC_WALLET="0xYourArcMainnetWalletAddress"
+   ```
+3. Run the bot:
+   ```bash
+   node bot.js
+   ```
+
+### Automated Flow:
+* The bot greets customers, displays catalog categories, and opens the customized Web App.
+* Orders settle natively on Arc Mainnet (`5042`).
+* Wholesale cost is deducted atomically, the merchant margin is credited directly to the merchant's Arc wallet, and the digital voucher code is securely sent to the buyer.

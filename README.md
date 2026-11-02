@@ -37,10 +37,34 @@ flowchart LR
 ## 2. Live Ecosystem Deployments
 
 - **Mainnet Hub & Business Operator:** [https://mainnet.mercenta.xyz](https://mainnet.mercenta.xyz)
+- **Official Telegram Storefront & TWA:** [https://t.me/mercentabot](https://t.me/mercentabot) / [https://mercenta.xyz/tg](https://mercenta.xyz/tg)
+- **Official Aomi Agent Skill:** [`@mercenta/aomi-skill`](packages/mercenta-aomi-skill) (`npx skills add rdmbtc/mercenta`)
 - **Testnet Autonomous Operator Lab:** [https://testnet.mercenta.xyz/app?section=agent-chat](https://testnet.mercenta.xyz/app?section=agent-chat)
 - **Flagship Presentation:** [https://mercenta.xyz](https://mercenta.xyz)
 - **Developer Documentation:** [https://docs.mercenta.xyz](https://docs.mercenta.xyz)
 - **System Status & Telemetry:** [https://status.mercenta.xyz](https://status.mercenta.xyz)
+
+---
+
+## 3. Autonomous Ecosystem Capabilities
+
+### 3.1 Official Aomi App & Agent Skill (`packages/mercenta-aomi-skill`)
+Mercenta ships a turnkey agent skill compliant with the `aomi-labs/skills` specification:
+- **Agents Supported**: Claude Code, Cursor, Codex, OpenCode, Hermes, and `build.aomi.dev`.
+- **5 Deterministic Agent Tools**: `mercenta_catalog`, `mercenta_quote` (5-gate policy simulation), `mercenta_checkout` (atomic Arc settlement), `mercenta_treasury_sweep` (Morpho Blue sweep), `mercenta_crosschain_topup` (Circle CCTP V2).
+- **One-Command Installation**: `npx skills add rdmbtc/mercenta`.
+
+### 3.2 Autonomous Treasury Sweeper (RFB 01)
+- Continuously sweeps merchant revenue accumulating above a configurable **Operating Reserve Floor** into the **Morpho Blue Galaxy USDC Vault** (`0x32A44B04C8567dB1a613271167E1402CeF5E8c1b`) on Arc Mainnet generating ~8.4% APY.
+- Operating liquidity protection guarantees working capital is never depleted below merchant fulfillment needs.
+
+### 3.3 Universal Cross-Chain Top-Up (Circle CCTP V2)
+- Zero-slippage 1:1 burn-and-mint USDC deposits into Arc Mainnet wallets from **Base**, **Solana**, **Arbitrum One**, **Polygon**, and **Ethereum**.
+- Eradicates bridge wrapper vulnerabilities, synthetic token risks, and liquidity fragmentation.
+
+### 3.4 Official Telegram Bot & TWA Storefront (`@mercentabot`)
+- **Client-Side Non-Custodial Arc Wallet**: In-client key generation, local AES encryption, and direct export to MetaMask/Rabby/Frame.
+- **Turnkey Merchant Bot Starter**: Open-source starter in `bot/` enabling non-technical merchants and creators to launch a branded Telegram shop with custom profit margins in under 5 minutes.
 
 ---
 

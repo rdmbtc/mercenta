@@ -1,39 +1,42 @@
 ---
 title: Documentation
-description: "A practical guide to the Arc Testnet commerce account."
+description: "Comprehensive guide to Mercenta: Arc Mainnet commerce, Aomi agent skills, Treasury Sweeper, and Universal multi-chain settlement."
 ---
 
-# Test the complete commerce cycle
+# Mercenta Documentation
 
-Mercenta connects wallet identity, verified test-USDC deposits, scoped API access and an auditable account history. The model may propose actions. It cannot sign transactions or edit balances.
+Mercenta connects wallet identity, verified onchain USDC settlement, hardware-enforced policy gates, autonomous AI agent skills, and auditable accounting on **Arc Network**.
 
-## Start here
+---
 
-1. [Connect your wallet](/docs/quickstart).
-2. [Fund your account](/docs/account/funds) with test USDC on Arc.
-3. [Place a test order](/docs/account/orders).
-4. [Inspect dashboard and transactions](/docs/account/dashboard).
-5. [Create a scoped API key](/docs/api-reference/authentication).
+## Getting Started
 
-## Capability status
+1. **[Quickstart Guide](/docs/quickstart)**: Connect an EVM wallet and inspect verified environments.
+2. **[Official Aomi App & Skill](/docs/agents/aomi-skill)**: Equip Claude Code, Cursor, Codex, OpenCode, and Hermes with autonomous digital goods procurement.
+3. **[Universal Cross-Chain Top-Up](/docs/app-kits/crosschain-topup)**: Deposit USDC directly into Arc from Base, Solana, Arbitrum, Polygon, and Ethereum via Circle CCTP V2.
+4. **[Autonomous Treasury Sweeper](/docs/app-kits/earn)**: Automate yield generation into Morpho Blue Arc Vaults with reserve floor protection.
+5. **[Telegram Bot & Web App](/docs/guides/telegram-bot)**: Launch a turnkey mobile storefront with `@mercentabot` or build custom storefronts with the open-source starter.
+6. **[API Reference](/docs/api-reference/endpoints)**: Integrate programmatic quotes, order webhooks, and ledger balances.
 
-| Capability | Current boundary |
-| --- | --- |
-| Wallet sign-in | Signed nonce and server session |
-| Arc account deposit | Requires configured receiver; on-chain proof before credit |
-| Customer account balance | Immutable double-entry journal; no sample opening credit |
-| Test shop orders | Simulated fulfillment only; maximum 10 test USDC per order |
-| Dashboard, histories, CSV | Private account data; UTC date filters |
-| API access | Hash-only keys, scopes, expiry and revocation |
-| Cross-chain funding | Disabled until destination attribution and route validation |
-| Card / Apple Pay | Preview only until Circle onboarding and settlement validation |
-| Earn / Borrow | Separate labelled treasury sandbox |
-| Mainnet and real goods | Disabled |
+---
 
-**Test USDC has no purchasing power for real digital goods.** The test shop never delivers redeemable gift codes, credits a real external account or calls the Wholesale Provider.
+## Live Capability Matrix
 
-## Before publishing
+| Capability | Mainnet (`5042`) | Testnet (`5042002`) | Safety Boundary |
+| --- | --- | --- | --- |
+| **Wallet Sign-In** | SIWE Nonce + Server Session | SIWE Nonce + Server Session | Non-custodial; server never holds private keys |
+| **On-Chain Settlement** | Atomic Checkout (`0x06B6...F3Ed`) | Direct Receipt Verification | 2 confirmations; exact 6-dec precision validation |
+| **Aomi Agent Skill** | Live (`@mercenta/aomi-skill`) | Sandbox simulation | 5-Gate Policy Engine, spend velocity & auto-approval limits |
+| **Treasury Sweeper** | Live Morpho Blue Vault (`0x32A4...8c1b`) | Sandbox APY scenario calculator | Strict operating liquidity floor; never starves merchant capital |
+| **Cross-Chain Top-Up** | Circle CCTP V2 (5 networks) | Preview test funding | 1:1 burn-and-mint; zero slippage; no bridge wrappers |
+| **Telegram Storefront** | Live `@mercentabot` & TWA | Sandbox toggle | Client-side encrypted wallet; direct export to MetaMask |
+| **Digital Goods Delivery** | Real-time wholesale activation | Simulated fulfillment | Zero-trust vault; models never see raw keys in prompt |
+| **Double-Entry Ledger** | SQLite Append-Only Journal | SQLite Append-Only Journal | SHA-256 state receipts; tamper-evident audit trail |
 
-Public domains require DNS, TLS and deployment. Local builds do not deploy a website. [Review the launch checklist](/docs/guides/testnet-launch).
+---
 
-Mercenta is independently developed. No Circle partnership or endorsement is implied.
+## Safe Operation Invariants
+
+* **Blind Execution Defense**: AI agents interact exclusively through verified API quotes and atomic contracts. Language models never handle plain-text license codes or unencrypted customer secrets.
+* **Deterministic Policy Gates**: Transactions failing Gross Margin Floor ($\ge 15\%$), single-transaction approval caps, or velocity limits are rejected before touching the blockchain.
+* **Public Explorer Verification**: All Mainnet transactions are publicly auditable on [ArcScan](https://arcscan.app).
