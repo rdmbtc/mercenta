@@ -116,7 +116,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Missing quote_id' }, { status: 400 });
       }
 
-      const orderId = `mct_ord_${Date.now().toString(36).toUpperCase()}`;
+      const orderId = `mct_ord_${Date.now().toString(36).toUpperCase()}_${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
       const fakeTxHash = `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
       const voucherCode = auto_claim ? `MCT-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}` : undefined;
 

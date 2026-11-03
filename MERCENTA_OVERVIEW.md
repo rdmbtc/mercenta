@@ -222,7 +222,7 @@ Mercenta operates as a distributed, multi-surface ecosystem:
 - **Frontend & Fullstack Framework**: Next.js 15 (App Router, Turbopack, React 19).
 - **Type Safety**: 100% strict TypeScript with zero compilation errors (`tsc --noEmit`).
 - **Smart Contract & Settlement Layer**: Viem-powered interaction with Arc Network RPCs; atomic ERC-20 transfers for USDC.
-- **Automated Testing Suite**: 80 test files, **629 unit & integration tests passing with 100% success rate** via Vitest.
+- **Automated Testing Suite**: 105 test files, **1,005 unit & integration tests passing with 100% success rate** via Vitest.
 - **Compliance & Attribution**: Full compliance with Arc Brand Guidelines and Circle Brand Kit:
   - *Mercenta is an independent application built on Arc Network. Arc™ is a trademark of Circle Internet Group, Inc. and/or its affiliates. USDC is issued by Circle.*
 

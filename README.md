@@ -3,7 +3,7 @@
 > **Deterministic Policy Boundary Between AI Intent and Onchain Settlement**  
 > *Built for the Tameion Agents Hackathon (Arc Blockchain · Circle Stack)*
 
-[![Tests](https://img.shields.io/badge/tests-80%20suites%20%2F%20629%20passed-3ee6a8?style=flat-square)](https://github.com/rdmbtc/mercenta)
+[![Tests](https://img.shields.io/badge/tests-105%20suites%20%2F%201005%20passed-3ee6a8?style=flat-square)](https://github.com/rdmbtc/mercenta)
 [![Arc Mainnet](https://img.shields.io/badge/network-Arc%20Mainnet%20(5042)-00d2ff?style=flat-square)](https://explorer.arc.io)
 [![Circle Stack](https://img.shields.io/badge/circle-Onramp%20Kit%20%2B%20x402-0052ff?style=flat-square)](https://www.circle.com)
 [![License](https://img.shields.io/badge/license-MIT-64748b?style=flat-square)](LICENSE)
@@ -122,7 +122,7 @@ cd mercenta/web
 npm install
 ```
 
-### Run Test Suite (80 Suites / 629 Tests)
+### Run Test Suite (105 Suites / 1005 Tests)
 ```bash
 npm test
 ```
