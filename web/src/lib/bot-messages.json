@@ -8,7 +8,7 @@
     "language": {"title":"Язык интерфейса","body":"Выберите удобный язык.\nНастройка сохранится для следующих сообщений.","note":"Текущий язык: русский."},
     "help": {"title":"Помощь и поддержка","body":"По вопросу заказа напишите: {support}\n\nУкажите номер заказа и кратко опишите проблему. Не отправляйте ключи, пароли и коды активации.","note":"Меню: /shop · /wallet · /orders · /network · /language"},
     "payment_unavailable": {"title":"Оплата в чате не подключена","body":"Этот магазин не принимает оплату через сообщения. Используйте проверенный checkout в Mini App.","note":"Ничего не списано. Коды не создавались."},
-    "buttons": {"shop":"Открыть магазин","wallet":"Открыть кошелёк","orders":"Мои покупки","help":"Поддержка","network":"Выбрать сеть","language":"Язык","home":"Главное меню","back":"Назад","wallet_short":"Кошелёк","help_short":"Помощь"},
+    "buttons": {"shop":"Открыть магазин","wallet":"Открыть кошелёк","orders":"Мои покупки","admin":"⚙️ Админ-панель","help":"Поддержка","network":"Выбрать сеть","language":"Язык","home":"Главное меню","back":"Назад","wallet_short":"Кошелёк","help_short":"Помощь"},
     "defaultTagline":"Цифровые товары. Ваши правила."
   },
   "en": {
@@ -20,7 +20,7 @@
     "language": {"title":"Interface language","body":"Choose your preferred language.\nYour choice is saved for future messages.","note":"Current language: English."},
     "help": {"title":"Help and support","body":"For order help, contact: {support}\n\nInclude the order reference and a short description. Never send keys, passwords or activation codes.","note":"Menu: /shop · /wallet · /orders · /network · /language"},
     "payment_unavailable": {"title":"Chat payments are not connected","body":"This storefront does not collect payments in messages. Use the verified checkout in the Mini App.","note":"No funds charged. No activation codes generated."},
-    "buttons": {"shop":"Open store","wallet":"Open wallet","orders":"My purchases","help":"Support","network":"Choose network","language":"Language","home":"Main menu","back":"Back","wallet_short":"Wallet","help_short":"Help"},
+    "buttons": {"shop":"Open store","wallet":"Open wallet","orders":"My purchases","admin":"⚙️ Admin Console","help":"Support","network":"Choose network","language":"Language","home":"Main menu","back":"Back","wallet_short":"Wallet","help_short":"Help"},
     "defaultTagline":"Digital essentials. Your rules."
   }
 }

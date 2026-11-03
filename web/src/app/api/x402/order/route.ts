@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createHash, randomBytes } from 'node:crypto';
 import { createPublicClient, http, type Hash } from 'viem';
 import { getDb } from '@/lib/db';
+import { notifyAdminsNewOrder } from '@/lib/telegram-admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -144,6 +145,19 @@ export async function POST(req: Request) {
       getDb().prepare(
         'INSERT INTO orders (id, product_id, customer_wallet, sale_amount_usdc_units, status, payment_tx_hash, delivery_status, expires_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
       ).run(orderId, productId, payer, Number(totalAmountUnits), 'FULFILLED', txHash.toLowerCase(), 'DELIVERED', now + 3600000, now, now);
+
+      // Instant push notification to Mercenta Telegram Bot Admin Console
+      notifyAdminsNewOrder({
+        orderId,
+        productId,
+        customerWallet: payer,
+        amountUsdc: amountUsdcFormatted,
+        txHash,
+        status: 'FULFILLED',
+        network: 'Arc Mainnet (5042)',
+        itemCode: voucherCode,
+        quantity,
+      }).catch(err => console.error('Admin notification dispatch error:', err));
     } catch (claimErr) {
       const msg = (claimErr as Error).message;
       if (msg.includes('payment_tx_hash'))
