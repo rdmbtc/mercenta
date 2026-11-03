@@ -121,6 +121,52 @@ export const ACTIVATION_GUIDES: Record<string, ActivationGuide> = {
       'Выберите способ оплаты «Предоплаченные карты и коды».',
       'Введите полученный цифровой код и нажмите «Отправить». VP начислятся мгновенно.',
     ],
+    noteEn: 'Ensure your Riot Games client region matches the voucher territory.',
+    noteRu: 'Убедитесь, что регион учетной записи Riot Games соответствует региону ваучера.',
+  },
+
+  nintendo: {
+    brand: 'Nintendo',
+    category: 'Gaming Keys & Platform Vouchers',
+    titleEn: 'Nintendo eShop Digital Card Activation Guide',
+    titleRu: 'Инструкция по активации Nintendo eShop',
+    redeemUrl: 'https://ec.nintendo.com/redeem',
+    stepsEn: [
+      'Open the Nintendo eShop on your Nintendo Switch console or visit ec.nintendo.com/redeem in your browser.',
+      'Sign in to your Nintendo Account.',
+      'Select "Enter Code" (or Redeem Code) from the menu.',
+      'Enter the 16-character alphanumeric download code and confirm activation.',
+    ],
+    stepsRu: [
+      'Откройте Nintendo eShop на консоли Nintendo Switch или перейдите на ec.nintendo.com/redeem.',
+      'Войдите в свою учетную запись Nintendo Account.',
+      'Выберите пункт «Ввести код» (Redeem Code) в левом меню.',
+      'Введите 16-значный код загрузки и подтвердите получение средств.',
+    ],
+    noteEn: 'Make sure your Nintendo Account country setting matches the currency of the eShop card.',
+    noteRu: 'Убедитесь, что страна в настройках Nintendo Account совпадает с регионом карты eShop.',
+  },
+
+  battlenet: {
+    brand: 'Blizzard / Battle.net',
+    category: 'Gaming Keys & Platform Vouchers',
+    titleEn: 'Blizzard Battle.net Code Activation Guide',
+    titleRu: 'Инструкция по активации Blizzard Battle.net',
+    redeemUrl: 'https://battle.net/redeem',
+    stepsEn: [
+      'Log in to account.battle.net or open the Battle.net desktop application.',
+      'Go to the Account Overview tab or click Redeem a Code.',
+      'Enter the digital code into the "Redeem a Code" box and click Continue.',
+      'Your Battle.net balance, game time, or digital goods will be credited immediately.',
+    ],
+    stepsRu: [
+      'Войдите на account.battle.net или откройте приложение Battle.net на компьютере.',
+      'Перейдите в раздел «Обзор учетной записи» и найдите «Использовать код».',
+      'Введите цифровой код в соответствующее поле и нажмите «Использовать код».',
+      'Средства кошелька, игровое время или игра будут зачислены мгновенно.',
+    ],
+    noteEn: 'Battle.net codes are currency and region specific.',
+    noteRu: 'Коды Battle.net привязаны к валюте и региону учетной записи.',
   },
 
   apple: {
@@ -287,6 +333,8 @@ export const ACTIVATION_GUIDES: Record<string, ActivationGuide> = {
       'Перейдите в раздел Баланс -> «Активировать ваучер инференса».',
       'Введите код для мгновенного зачисления кредитов инференса моделей.',
     ],
+    noteEn: 'API vouchers do not expire and pool across your organization workspace.',
+    noteRu: 'Ваучеры API не сгорают и объединяются на уровне пространства вашей организации.',
   },
 
   compute: {
@@ -307,6 +355,8 @@ export const ACTIVATION_GUIDES: Record<string, ActivationGuide> = {
       'Выберите дата-центр кластера и образ ОС (CUDA 12.4 / Ubuntu 24.04 LTS).',
       'SSH-доступы и выделенные эндпоинты будут развернуты в течение 60 секунд.',
     ],
+    noteEn: 'Reservations guarantee 100% bare-metal performance SLA without noisy neighbors.',
+    noteRu: 'Резервация гарантирует 100% выделенную мощность без соседней нагрузки.',
   },
 
   default: {
@@ -341,7 +391,9 @@ export function getActivationGuide(productName: string, brandName?: string, cate
   if (/play\s*station|psn/i.test(text)) return ACTIVATION_GUIDES.playstation;
   if (/xbox|flight\s*simulator|microsoft/i.test(text)) return ACTIVATION_GUIDES.xbox;
   if (/roblox/i.test(text)) return ACTIVATION_GUIDES.roblox;
-  if (/valorant|riot/i.test(text)) return ACTIVATION_GUIDES.valorant;
+  if (/valorant|riot|league/i.test(text)) return ACTIVATION_GUIDES.valorant;
+  if (/nintendo/i.test(text)) return ACTIVATION_GUIDES.nintendo;
+  if (/battle\.?net|blizzard|warcraft|diablo/i.test(text)) return ACTIVATION_GUIDES.battlenet;
   if (/apple|itunes|app\s*store/i.test(text)) return ACTIVATION_GUIDES.apple;
   if (/spotify/i.test(text)) return ACTIVATION_GUIDES.spotify;
   if (/discord/i.test(text)) return ACTIVATION_GUIDES.discord;
