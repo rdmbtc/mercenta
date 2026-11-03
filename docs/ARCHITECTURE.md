@@ -75,7 +75,7 @@ stateDiagram-v2
 
 ## 3. The 6-Error Intent-Aware Accounting Gate
 
-Drawing from Canteen's *Agents and Ledgers* accounting integrity principles, The regression suite covers six classical accounting-error cases with complete intent witnesses. Optional intent checks do not cover every production posting. External omissions cannot be detected by an internal journal alone; independent reconciliation remains required:
+Drawing from *Agents and Ledgers* accounting integrity principles, The regression suite covers six classical accounting-error cases with complete intent witnesses. Optional intent checks do not cover every production posting. External omissions cannot be detected by an internal journal alone; independent reconciliation remains required:
 
 | Error Type | Threat Vector | Mercenta Mitigation Gate |
 | :--- | :--- | :--- |

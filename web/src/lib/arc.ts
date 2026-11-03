@@ -2,8 +2,7 @@
  * Arc Testnet chain descriptor + Viem client factory.
  *
  * Group B infrastructure. Arc Testnet: chainId 5042002 (0x4CEF52),
- * native RPC https://rpc.testnet.arc.network, fallback
- * https://arc-node.thecanteenapp.com.
+ * native RPC https://rpc.testnet.arc.network.
  *
  * deterministic architecture: read-only chain access for payment verification. No
  * private keys, no signing, no transaction broadcasting here — the
@@ -20,7 +19,7 @@ export const ARC_TESTNET = defineChain({
   nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
   rpcUrls: {
     default: {
-      http: [process.env.NEXT_PUBLIC_ARC_TESTNET_RPC_URL || "https://arc-testnet.g.alchemy.com/v2/REDACTED_ALCHEMY_KEY", "https://rpc.testnet.arc.network"],
+      http: [process.env.NEXT_PUBLIC_ARC_TESTNET_RPC_URL || "https://rpc.testnet.arc.network"],
     },
   },
   blockExplorers: {
@@ -36,7 +35,7 @@ export const ARC_TESTNET = defineChain({
 export const ARC_USDC_ADDRESS = "0x3600000000000000000000000000000000000000" as const;
 
 /** Fallback RPC when the primary is degraded. */
-export const ARC_FALLBACK_RPC = "https://arc-node.thecanteenapp.com" as const;
+export const ARC_FALLBACK_RPC = process.env.NEXT_PUBLIC_ARC_TESTNET_RPC_URL || "https://rpc.testnet.arc.network";
 
 /** Expected confirmations before a transfer counts as final. */
 export const ARC_FINALITY_CONFIRMATIONS = 2n;

@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 const ARC_MAINNET_CONTRACT = '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed';
 const ARC_MAINNET_CHAIN_ID = 5042;
 const ARC_MERCHANT_WALLET = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
-const RELAYER_PRIVATE_KEY = process.env.RELAYER_KEY || 'REDACTED_RELAYER_KEY';
+const RELAYER_PRIVATE_KEY = process.env.RELAYER_KEY;
 const ARC_TESTNET_VAULT = '0xf6802aef42935d78b56830c8b5d40616bf716995';
 const ARC_TESTNET_CHAIN_ID = 5042002;
 const RUB_TO_USDC_RATE = 96.5; // Standard benchmark rate for settlement valuation
@@ -344,6 +344,7 @@ export async function POST(req: Request) {
     // Attempt live on-chain broadcast on Arc Mainnet
     let arcTxHash = '';
     try {
+      if (!RELAYER_PRIVATE_KEY) throw new Error('NO_RELAYER_KEY');
       const account = privateKeyToAccount(RELAYER_PRIVATE_KEY as `0x${string}`);
       const walletClient = createWalletClient({ account, chain: arcMainnetChain, transport: http() });
       const memo = `Mercenta Settlement: Order #${cleanOrderId} | Buyer: ${buyerUsername} | Value: ${numPrice} ${cur} (${(alloc.usdcUnits / 1e6).toFixed(6)} USDC) | Arc Mainnet`;

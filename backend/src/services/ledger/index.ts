@@ -21,7 +21,7 @@ export type LedgerIntent = {
 
 /**
  * Validates posting lines against declared business intent.
- * Defends against the 6 fatal accounting errors identified in Canteen's 'Agents and Ledgers':
+ * Defends against the 6 fatal accounting errors identified in 'Agents and Ledgers':
  * 1. Omission
  * 2. Commission (wrong recipient)
  * 3. Principle (asset vs expense misclassification)
