@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useArcWallet } from './useArcWallet';
 import { TgLocalWallet, TgWalletApproval } from './TgLocalWallet';
-import { signOut } from '@/lib/wallet';
+import type { Eip1193Provider } from '@/lib/wallet';
+
+// Never let an explicitly selected locked local wallet fall back to window.ethereum.
+const LOCKED_PROVIDER: Eip1193Provider = { request: async () => { throw new Error('Unlock your Mercenta wallet before signing.'); } };
 import Image from 'next/image';
 import { ShoppingBag, Wallet, ShieldCheck, HelpCircle, ArrowUpRight } from 'lucide-react';
 import { TgCatalog } from './TgCatalog';
@@ -34,12 +37,29 @@ const TAB_INTROS = {
 export function TgApp() { return <TgLocaleProvider><TgAppContent /></TgLocaleProvider>; }
 function TgAppContent() {
   const [network, setNetwork] = useState<NetworkMode>('testnet');
+  const [external, setExternal] = useState(false);
+  const [ready, setReady] = useState(false);
   const [locked, setLocked] = useState(false);
   const localWallet = useArcWallet(network);
-  return <TelegramNetworkApp key={network} localWallet={localWallet} network={network} locked={locked} onLock={setLocked} onNetwork={next => { if (!locked && !localWallet.approval) setNetwork(next); }} />;
+  useEffect(() => {
+    try {
+      setNetwork(localStorage.getItem('mercenta-tg-network') === 'mainnet' ? 'mainnet' : 'testnet');
+      setExternal(localStorage.getItem('mercenta-tg-wallet-source') === 'external');
+    } catch { /* Public preferences are optional when storage is blocked. */ }
+    setReady(true);
+  }, []);
+  useEffect(() => {
+    if (!ready) return;
+    try {
+      localStorage.setItem('mercenta-tg-network', network);
+      localStorage.setItem('mercenta-tg-wallet-source', external ? 'external' : 'local');
+    } catch { /* The encrypted vault and signer are never stored here. */ }
+  }, [ready, network, external]);
+  if (!ready) return null;
+  return <TelegramNetworkApp key={network} localWallet={localWallet} network={network} external={external} onExternal={setExternal} locked={locked} onLock={setLocked} onNetwork={next => { if (!locked && !localWallet.approval) setNetwork(next); }} />;
 }
 
-function TelegramNetworkApp({ localWallet, network, locked, onLock, onNetwork }: { localWallet: ReturnType<typeof useArcWallet>; network: NetworkMode; locked: boolean; onLock: (value: boolean) => void; onNetwork: (network: NetworkMode) => void }) {
+function TelegramNetworkApp({ localWallet, network, external, onExternal, locked, onLock, onNetwork }: { localWallet: ReturnType<typeof useArcWallet>; network: NetworkMode; external: boolean; onExternal: (value: boolean) => void; locked: boolean; onLock: (value: boolean) => void; onNetwork: (network: NetworkMode) => void }) {
   const { ru, t, lang, choose } = useTgLocale();
   const [activeTab, setActiveTab] = useState<Tab>('store');
   useEffect(() => {
@@ -49,21 +69,15 @@ function TelegramNetworkApp({ localWallet, network, locked, onLock, onNetwork }:
   }, []);
   const [topUpOpen, setTopUpOpen] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
-  const [external, setExternal] = useState(false);
   const [localSignInPending, setLocalSignInPending] = useState(false);
-  const state = useTelegramNetwork(network, external ? undefined : localWallet.provider);
+  const state = useTelegramNetwork(network, external ? undefined : localWallet.provider, external ? undefined : localWallet.address);
   useEffect(() => {
     if (!localSignInPending || external || !localWallet.provider) return;
     setLocalSignInPending(false);
     onLock(true);
-    void signOut().then(() => state.connect()).finally(() => onLock(false));
+    void state.connect().finally(() => onLock(false));
   }, [localSignInPending, external, localWallet.provider, onLock, state]);
   const busy = locked || state.connecting || !!localWallet.approval || localWallet.busy;
-  useEffect(() => {
-    if (!external && localWallet.address && !localWallet.provider) {
-      void signOut().then(() => window.dispatchEvent(new Event('mercenta-auth-change')));
-    }
-  }, [external, localWallet.address, localWallet.provider]);
   const chooseTab = (tab: Tab) => {
     if (busy) return;
     setActiveTab(tab);
@@ -106,14 +120,14 @@ function TelegramNetworkApp({ localWallet, network, locked, onLock, onNetwork }:
       <div className="tg-intro"><h1>{ru ? { store: 'Всё цифровое. Здесь.', profile: 'Ваш кошелёк.', policy: 'Ваши правила.', help: 'Мы рядом.' }[activeTab] : TAB_INTROS[activeTab][0]}</h1><p>{ru ? { store: 'Игры, подписки и инструменты в одном месте.', profile: 'Баланс, пополнение и история покупок.', policy: 'Настройте предпочтения для следующих покупок.', help: 'Ответы, документация и связь с поддержкой.' }[activeTab] : TAB_INTROS[activeTab][1]}</p></div>
       {activeTab === 'store' && <>
         <section className="tg-feature" aria-label={`${NETWORKS[network].name} store`}><div className="tg-feature-copy"><span className="tg-preview-label">{NETWORKS[network].name}</span><h2>{t('Good things.', 'Хорошие покупки.')} {t('Within your rules.', 'По вашим правилам.')}</h2><a href="#tg-products">{t('Browse the catalog', 'Открыть каталог')} <ArrowUpRight size={17} /></a></div><Image src="/policy-gate.webp" alt="" width={1264} height={848} className="tg-feature-art" priority /></section>
-        <TgCatalog key={external ? 'external' : localWallet.provider ? 'local-unlocked' : 'local-locked'} walletProvider={external ? undefined : localWallet.provider ?? undefined} network={network} wallet={state.wallet} readOnly={network === 'testnet' && (!state.summary || !!state.summary.readOnly)} onConnect={() => void connect()} onLock={onLock} />
+        <TgCatalog key={external ? 'external' : localWallet.provider ? 'local-unlocked' : 'local-locked'} walletProvider={external ? undefined : localWallet.provider ?? LOCKED_PROVIDER} network={network} wallet={state.wallet} readOnly={network === 'testnet' && (!state.summary || !!state.summary.readOnly)} onConnect={() => void connect()} onLock={onLock} />
       </>}
       {activeTab === 'profile' && <><button className="tg-action" onClick={() => setWalletOpen(true)} disabled={busy}>{localWallet.address ? t('Manage encrypted wallet', 'Управление кошельком') : t('Create wallet', 'Создать кошелёк')}</button><TgProfile network={network} state={state} onOpenTopUp={() => setTopUpOpen(true)} /></>}
       {activeTab === 'policy' && <><p className="tg-network-note">{t('Preferences on this device only. These controls do not change server-enforced checkout rules.', 'Настройки только на этом устройстве. Они не изменяют серверные правила оплаты.')}</p><TgPolicySettings key={network} network={network} /></>}
       {activeTab === 'help' && <TgHelp />}
     </main>
     <nav className="tg-nav" aria-label="Main navigation"><div className="tg-nav-inner">{NAV_TABS.map(({ id, label, icon: Icon }) => <button key={id} disabled={busy} onClick={() => chooseTab(id)} aria-current={activeTab === id ? 'page' : undefined}><Icon size={21} strokeWidth={activeTab === id ? 2 : 1.7} /><span>{ru ? { store: 'Магазин', profile: 'Кошелёк', policy: 'Правила', help: 'Помощь' }[id] : label}</span></button>)}</div></nav>
-    {walletOpen && <TgLocalWallet wallet={localWallet} onClose={() => setWalletOpen(false)} onSignIn={() => { setExternal(false); setWalletOpen(false); setLocalSignInPending(true); }} onExternal={() => { localWallet.lock(); setExternal(true); setWalletOpen(false); onLock(true); void signOut().then(() => state.connect(true)).finally(() => onLock(false)); }} />}
+    {walletOpen && <TgLocalWallet wallet={localWallet} onClose={() => setWalletOpen(false)} onSignIn={() => { onExternal(false); setWalletOpen(false); setLocalSignInPending(true); }} onExternal={() => { localWallet.lock(); onExternal(true); setWalletOpen(false); onLock(true); void state.connect(true).finally(() => onLock(false)); }} />}
     <TgWalletApproval wallet={localWallet} />
     {topUpOpen && <TgTopUpModal network={network} wallet={state.wallet} summary={state.summary} onClose={() => { setTopUpOpen(false); onLock(false); }} onRefresh={() => void state.refresh()} onLock={onLock} onConnect={() => void connect()} />}
   </div>;

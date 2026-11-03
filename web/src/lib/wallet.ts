@@ -86,7 +86,8 @@ export async function signInWithWallet(address: `0x${string}`, provider?: Eip119
 /** Fetch current session from the hub. */
 export async function fetchSession(): Promise<{ authenticated: boolean; address: string | null }> {
   const res = await fetch("/api/me", { credentials: "same-origin", cache: "no-store" });
-  if (!res.ok) return { authenticated: false, address: null };
+  if (res.status === 401) return { authenticated: false, address: null };
+  if (!res.ok) throw new Error('Session service is unavailable. Please retry.');
   const data = (await res.json()) as { authenticated: boolean; address: string | null };
   return data;
 }

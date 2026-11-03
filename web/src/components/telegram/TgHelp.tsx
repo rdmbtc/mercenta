@@ -25,6 +25,10 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
       a: t('A deterministic safety layer protecting businesses and AI agents from unconstrained spending, supplier price slippage, and front-running by enforcing gross margin floors (>=2.5%) and daily velocity limits.', 'Детерминированный уровень защиты бизнеса и ИИ-агентов от бесконтрольных расходов, проскальзывания цен поставщика и фронтраннинга. Он обеспечивает минимальную валовую маржу (>=2.5%) и дневные лимиты операций.'),
     },
     {
+      q: t('Where can I find product activation guides?', 'Где найти инструкцию по активации товара?'),
+      a: t('Each product in the catalogue and each fulfilled order in Purchases displays a dedicated Activation Guide with the official redemption portal (Steam, PlayStation, Microsoft/Xbox, Apple, Spotify, etc.) and step-by-step instructions.', 'Каждый товар в каталоге и каждый исполненный заказ в разделе «Мои покупки» содержит подробную инструкцию по активации с прямой ссылкой на официальный портал погашения (Steam, PlayStation, Microsoft/Xbox, Apple, Spotify и др.) и пошаговым руководством.'),
+    },
+    {
       q: t('How can I use a wallet in Telegram?', 'Как использовать кошелёк в Telegram?'),
       a: t('Create or restore an encrypted local Mercenta wallet on this device, or connect an external provider such as MetaMask or Rabby in a compatible browser. Your password encrypts the local key; keep an encrypted backup and your password separately. Mercenta cannot recover the key. Signing and payments require your confirmation.', 'Создайте или восстановите зашифрованный локальный кошелёк Mercenta на этом устройстве либо подключите внешний кошелёк, например MetaMask или Rabby, в совместимом браузере. Пароль шифрует локальный ключ; храните зашифрованную резервную копию и пароль отдельно. Mercenta не может восстановить ключ. Подписи и платежи требуют вашего подтверждения.'),
     },
@@ -48,6 +52,7 @@ export function TgHelp({ triggerHaptic }: TgHelpProps) {
       </Frame.Header>
       <Frame.Panel>
         <Frame.Row><Frame.Content><Frame.Description>{t('Need help with order fulfillment, API integration, or multi-chain deposits? Contact support by email or check the service status.', 'Нужна помощь с заказом, интеграцией API или пополнением в разных сетях? Напишите в поддержку или проверьте статус сервиса.')}</Frame.Description></Frame.Content></Frame.Row>
+        <Frame.Row href="https://t.me/mercentabot?start=support" target="_blank" rel="noopener noreferrer"><Frame.Content><Frame.Title as="p">{t('Private Telegram support', 'Личное обращение в Telegram')}</Frame.Title><Frame.Description>{t('Send /support to open a private ticket. Only you and the store administrator can access the conversation.', 'Отправьте /support для создания личного тикета. Переписка доступна только вам и администратору магазина.')}</Frame.Description></Frame.Content><Frame.Media><MessageSquare size={17} aria-hidden="true" /></Frame.Media></Frame.Row>
         <Frame.Row href="https://docs.mercenta.xyz" target="_blank" rel="noopener noreferrer" onClick={() => triggerHaptic?.('light')}>
           <Frame.Content><Frame.Title as="p">{t('Developer Docs', 'Документация')}</Frame.Title></Frame.Content>
           <Frame.Media><ExternalLink size={17} aria-hidden="true" /></Frame.Media>

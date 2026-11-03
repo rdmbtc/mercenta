@@ -22,6 +22,7 @@ beforeEach(() => {
   HTMLDialogElement.prototype.close = vi.fn();
   localStorage.clear();
   vi.stubGlobal('scrollTo', vi.fn());
+  mocks.connect.mockResolvedValue(undefined);
   mocks.networkState.mockImplementation((network: string) => ({ wallet: '0x1111111111111111111111111111111111111111', balance: network === 'testnet' ? '25000000' : null, summary: null, orders: [], mainnetOrders: [], loading: false, error: '', connecting: false, connect: mocks.connect, refresh: mocks.refresh }));
 });
 afterEach(async () => { await act(async () => root.unmount()); host.remove(); vi.unstubAllGlobals(); vi.clearAllMocks(); });
@@ -60,6 +61,21 @@ it('unmounts the old network funding state before opening the other network', as
   await click('Mainnet');
   expect(host.querySelector('[role="dialog"]')).toBeNull();
   expect(host.querySelector('[data-testid="catalog"]')?.getAttribute('data-network')).toBe('mainnet');
+});
+
+it('persists public source and network preferences across keyed remount and reload', async () => {
+  await act(async () => root.render(<TgApp />));
+  await click('Wallet');
+  await click('Create wallet');
+  await click('Use MetaMask / Rabby instead');
+  await click('Mainnet');
+  expect(mocks.networkState).toHaveBeenLastCalledWith('mainnet', undefined, undefined);
+  expect(localStorage.getItem('mercenta-tg-wallet-source')).toBe('external');
+  expect(localStorage.getItem('mercenta-tg-network')).toBe('mainnet');
+  await act(async () => root.unmount());
+  root = createRoot(host);
+  await act(async () => root.render(<TgApp />));
+  expect(mocks.networkState).toHaveBeenLastCalledWith('mainnet', undefined, undefined);
 });
 
 it('exposes missing wallet provider feedback without invented balances', async () => {

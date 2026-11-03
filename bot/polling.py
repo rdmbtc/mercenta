@@ -145,6 +145,13 @@ def handle_update(update, api, store, config):
     chat = message.get('chat') or {}
     if not isinstance(user.get('id'), int) or not isinstance(chat.get('id'), int):
         return
+    admin_value = os.environ.get('TELEGRAM_ADMIN_ID', '')
+    if admin_value.isdigit():
+        from support import handle_support, register_customer
+        if chat.get('type') == 'private' and chat.get('id') == user['id']:
+            register_customer(store, user)
+        if handle_support(update, api, store, config, int(admin_value)):
+            return
     if callback:
         try:
             api.call('answerCallbackQuery', {'callback_query_id': callback['id']})
@@ -158,7 +165,19 @@ def handle_update(update, api, store, config):
         store.set_language(user['id'], language)
     match = re.match(r'^/([a-z]+)(?:@[a-z0-9_]+)?(?:\s|$)', message.get('text', '').strip(), re.I)
     command = data.removeprefix('cmd_') if callback else (match[1].lower() if match else 'help')
+    if admin_value.isdigit() and not callback and re.fullmatch(r'/start(?:@[A-Za-z0-9_]+)?\s+support', message.get('text', '').strip(), re.I):
+        from support import handle_support
+        support_update = dict(update, message=dict(message, text='/support'))
+        if handle_support(support_update, api, store, config, int(admin_value)):
+            return
+    if admin_value.isdigit():
+        from support import storefront_paused
+        if command in ('shop', 'catalog') and storefront_paused(store):
+            api.call('sendMessage', {'chat_id':chat['id'], 'text':'Витрина временно приостановлена. Поддержка: /support' if language == 'ru' else 'Bot storefront temporarily paused. Support: /support'})
+            return
     rendered = render_message(command, language, config, chat.get('type') == 'private')
+    if admin_value.isdigit() and screen_name(command) == 'help' and chat.get('type') == 'private':
+        rendered['reply_markup']['inline_keyboard'].insert(0, [{'text':'Открыть обращение' if language == 'ru' else 'Open support ticket','callback_data':'sup:new'}, {'text':'Мои обращения' if language == 'ru' else 'My tickets','callback_data':'sup:list:open:0'}])
     if callback and message.get('message_id'):
         try:
             api.call('editMessageText', {'chat_id': chat['id'], 'message_id': message['message_id'], **rendered})
@@ -175,7 +194,11 @@ def register(api, config):
     for language in ('', 'en', 'ru'):
         ru = language == 'ru'
         labels = [('start', 'Главное меню' if ru else 'Main menu'), ('shop', 'Каталог товаров' if ru else 'Browse products'), ('wallet', 'Кошелёк' if ru else 'Wallet'), ('orders', 'Мои покупки' if ru else 'My purchases'), ('network', 'Testnet и Mainnet'), ('language', 'Выбрать язык' if ru else 'Choose language'), ('help', 'Помощь' if ru else 'Help')]
+        if os.environ.get('TELEGRAM_ADMIN_ID', '').isdigit():
+            labels.extend([('support', 'Личное обращение' if ru else 'Private support ticket'), ('tickets', 'Мои обращения' if ru else 'My tickets'), ('cancel', 'Отменить ввод' if ru else 'Cancel input')])
         api.call('setMyCommands', {'commands': [{'command': c, 'description': d} for c, d in labels], 'language_code': language})
+    if os.environ.get('TELEGRAM_ADMIN_ID', '').isdigit():
+        api.call('setMyCommands', {'scope': {'type':'chat', 'chat_id':int(os.environ['TELEGRAM_ADMIN_ID'])}, 'commands': [{'command':'admin','description':'Управление магазином / Store administration'}, {'command':'tickets','description':'Обращения / Tickets'}, {'command':'cancel','description':'Отменить ввод / Cancel input'}, {'command':'start','description':'Главное меню / Main menu'}]})
     api.call('setChatMenuButton', {'menu_button': {'type': 'web_app', 'text': config['name'][:32], 'web_app': {'url': config['miniAppUrl']}}})
 
 
@@ -218,6 +241,9 @@ def main():
     backoff = 4
     while running:
         try:
+            if os.environ.get('TELEGRAM_ADMIN_ID', '').isdigit():
+                from support import flush_outbox
+                flush_outbox(api, store, limit=10)
             updates = api.call('getUpdates', {'offset': offset, 'timeout': 25, 'allowed_updates': ['message', 'callback_query']})
             for update in updates:
                 if not running:

@@ -19,6 +19,9 @@ export const BRAND_ARTWORK_RULES = [
   { brand: "blood-strike", pattern: /\bblood\s*strike\b/i, src: "/product-covers/bloodstriketopup.png" },
   { brand: "zenless-zone-zero", pattern: /\bzenless(?:\s+zone\s+zero)?\b/i, src: "/product-covers/zenlesszonezerotopup.png" },
 
+  { brand: "flight-simulator", pattern: /\b(?:flight\s+simulator|msfs)\b/i, src: "/product-covers/xboxgiftcard.png" },
+  { brand: "microsoft", pattern: /\bmicrosoft\b/i, src: "/product-covers/xbox.webp" },
+
   // Platform & Service Fallbacks
   { brand: "steam", pattern: /\bsteam\b/i, src: "/product-covers/steam.webp" },
   { brand: "xbox-console", pattern: /\bxbox\b/i, src: "/product-covers/xbox.webp" },

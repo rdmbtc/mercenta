@@ -192,6 +192,26 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (url.pathname === '/admin/order-metadata' && req.method === 'GET') {
+    const adminKey = process.env.TELEGRAM_ORDERS_READ_KEY;
+    const given = Buffer.from(String(req.headers['x-mercenta-orders-read'] || ''));
+    const expected = Buffer.from(adminKey || '');
+    if (!adminKey || adminKey.length < 32 || given.length !== expected.length || !timingSafeEqual(given, expected)) {
+      res.writeHead(401, {'Content-Type':'application/json'}); res.end(JSON.stringify({error:'UNAUTHORIZED'})); return;
+    }
+    const wallet = url.searchParams.get('wallet');
+    if (wallet && !/^0x[a-f0-9]{40}$/i.test(wallet)) { res.writeHead(400); res.end(); return; }
+    const rawOffset = url.searchParams.get('offset') || '0';
+    if (!/^\d{1,6}$/.test(rawOffset)) { res.writeHead(400); res.end(); return; }
+    const offset = Number(rawOffset);
+    const columns = 'tx_hash, order_id, wallet, product_name, option_name, amount_usdc, quantity, status, created_at';
+    const rows = wallet
+      ? db.prepare(`SELECT ${columns} FROM fulfilled_orders WHERE LOWER(wallet)=? ORDER BY created_at DESC, tx_hash LIMIT 25 OFFSET ?`).all(wallet.toLowerCase(), offset)
+      : db.prepare(`SELECT ${columns} FROM fulfilled_orders ORDER BY created_at DESC, tx_hash LIMIT 25 OFFSET ?`).all(offset);
+    res.writeHead(200, {'Content-Type':'application/json'});
+    res.end(JSON.stringify({network:'mainnet', orders:rows, nextOffset:rows.length===25?offset+25:null})); return;
+  }
+
   if (url.pathname === '/orders' && req.method === 'GET') {
     const wallet = authenticatedWallet;
     const selected=url.searchParams.get('wallet');

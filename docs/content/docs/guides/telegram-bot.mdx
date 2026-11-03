@@ -1,58 +1,47 @@
 ---
-title: "Official Telegram Bot & TWA (@mercentabot)"
-description: "Non-custodial mobile storefront, mobile 5-Gate Policy Engine, and turnkey merchant store starter on Arc Mainnet."
+title: "Telegram bot and private support"
+description: "Wallet sessions, private support tickets and owner-only administration in the Mercenta Telegram bot."
 ---
 
-# Telegram Bot & Web App (@mercentabot)
+The official [@mercentabot](https://t.me/mercentabot) opens the [Mercenta Mini App](https://www.mercenta.xyz/tg). It runs on the operator's VPS using long polling and SQLite; no paid Redis or webhook service is required.
 
-Mercenta delivers a native mobile commerce experience through the **Official Telegram Bot** ([`@mercentabot`](https://t.me/mercentabot)) and its integrated **Telegram Web App (TWA)** hosted at [`https://mercenta.xyz/tg`](https://mercenta.xyz/tg).
+## Wallet connection and locking
 
-Customers can purchase digital goods, manage encrypted non-custodial Arc wallets, and execute atomic settlements in sub-second USDC directly inside Telegram on iOS, Android, and desktop.
+An encrypted wallet and a login session serve different purposes:
 
----
+- The encrypted wallet stays on the device. Reloading or five minutes of inactivity locks its signer; unlocking requires the password.
+- A valid authenticated session allows viewing account data while the signer is locked. Locking or switching Testnet/Mainnet must not delete that session.
+- Signing in and sending funds require separate explicit confirmations. An expired session requires signing in again; connection is not guaranteed to remain valid forever.
+- Only public wallet-source and network preferences are remembered. Private keys and passwords are not stored unencrypted.
 
-## 1. Key Architectural Features
+Keep an encrypted backup and its password separately. Mercenta cannot recover a lost client key.
 
-### 1. Client-Side Non-Custodial Arc Wallet
-* **In-Client Key Generation**: EVM-compatible keypairs are generated directly in the user's browser runtime using cryptographic entropy.
-* **Encrypted Local Storage**: Private keys are encrypted using AES-GCM and stored only in the Telegram client sandbox. Mercenta servers never see or hold private keys.
-* **Full Self-Sovereignty**: Users can reveal and export their private key at any time to MetaMask, Rabby, Frame, or any standard EVM wallet.
+## Private support
 
-### 2. Dual-Language Interface (RU / EN)
-* One-click bilingual switching between Russian and English.
-* Full localization of product catalogs, region warnings, policy parameters, transaction receipts, and FAQs.
+Use `/support` in your **private chat** with the bot to open an appeal. Use `/tickets` to find your own conversations and `/cancel` to leave message-entry mode.
 
-### 3. Mobile 5-Gate Policy Engine Controls
-Merchants and agency operators can inspect and adjust policy boundaries directly on mobile:
-* **Gross Margin Floor**: Enforces minimum profitable spread ($\ge 15\%$) across all bot listings.
-* **Auto-Approval Cap**: Configures the maximum order size processed automatically without manual multi-sig sign-off.
-* **Spend Velocity Cap**: Caps the rate of orders per minute (e.g. 5 tx/min) to prevent flash-drain attacks from compromised bot tokens.
+An appeal has an owner, a message history and an open/closed status. Replies are sent only to the owner's private chat. Customers cannot list, read, answer or close another customer's ticket, even if they know its number. Support messages are not handled in group chats.
 
----
+Text support does not need your private key, wallet password, recovery phrase or activation code. Never send them. Include an order reference and a short problem description instead.
 
-## 2. Turnkey Client Storefront Starter (`bot/`)
+## Owner administration
 
-Mercenta includes an open-source turnkey Telegram bot template in [`bot/bot.js`](https://github.com/rdmbtc/mercenta/tree/main/bot) enabling solo entrepreneurs and digital agencies to launch their own branded Telegram store in under 5 minutes:
+The operator sets `TELEGRAM_ADMIN_ID` on the VPS. The bot checks the authenticated sender ID, private chat and action permissions on every privileged operation. A callback ID or a hidden button is not an authorization mechanism.
 
-### Setup Steps:
-1. Clone the repository and navigate to the bot directory:
-   ```bash
-   cd bot
-   npm install
-   ```
-2. Configure your environment variables in `.env`:
-   ```bash
-   TELEGRAM_BOT_TOKEN="your_bot_token_from_botfather"
-   WEBAPP_URL="https://mercenta.xyz/tg"
-   MERCHANT_MARGIN_PERCENT="15.0"
-   MERCHANT_ARC_WALLET="0xYourArcMainnetWalletAddress"
-   ```
-3. Run the bot:
-   ```bash
-   node bot.js
-   ```
+`/admin` provides ticket management, customer selection and direct messages, closure/reopening, notifications and storefront controls. Closing a ticket preserves its history. Direct customer messages are scoped to the selected conversation, not broadcast to everyone.
 
-### Automated Flow:
-* The bot greets customers, displays catalog categories, and opens the customized Web App.
-* Orders settle natively on Arc Mainnet (`5042`).
-* Wholesale cost is deducted atomically, the merchant margin is credited directly to the merchant's Arc wallet, and the digital voucher code is securely sent to the buyer.
+Storefront pause/resume controls affect bot navigation only. They do not transfer funds, alter network contracts or override the commerce server's payment safeguards.
+
+## Purchase history integration
+
+The Telegram bot and the authoritative fulfillment database can be hosted on different servers. Order metadata must be supplied through a separately authenticated, read-only bridge. The optional `TELEGRAM_ORDERS_ENDPOINT` and `orders-read-key` systemd credential enable that bridge after the fulfillment service is configured.
+
+History contains only order references, product names, exact amounts, network, status and timestamps. Activation codes, upstream payloads and wallet private keys must never be returned through the admin history endpoint. A client-posted receipt or wallet address is not independent payment evidence.
+
+If the bridge is unavailable or not configured, the bot reports that history is unavailable. It does not present an empty or fabricated purchase history as complete. Linking a Telegram identity to a wallet requires verified ownership; merely sending an address in chat must not grant access.
+
+## Operations
+
+The bot database stores language preferences, update offsets and support records. Keep it private and back it up using SQLite's backup mechanism. Do not publish it with the [customer storefront starter](/docs/guides/telegram-shop).
+
+The official administrator ID and credentials are operator settings, not defaults for copied customer shops. Telegram must allow a private conversation with the owner before notifications can be delivered. Delivery errors do not mean a customer message or order succeeded; check the service status and retry safely.
