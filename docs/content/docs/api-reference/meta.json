@@ -1,9 +1,10 @@
 {
   "title": "Developer API",
   "pages": [
-    "swagger",
-    "authentication",
+    "packages",
+    "sdks",
     "endpoints",
-    "sdks"
+    "authentication",
+    "swagger"
   ]
 }

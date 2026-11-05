@@ -1,0 +1,161 @@
+---
+title: "NPM Packages & Libraries"
+description: "Official published NPM packages for Mercenta: primitives, client SDK, and Aomi agent skills."
+---
+
+# Official NPM Packages
+
+Mercenta publishes modular open-source packages to the official [NPM Registry](https://www.npmjs.com) under the verified `mercenta` publisher identity. These packages power autonomous AI agents, machine checkout routers, policy engines, and headless digital storefronts on **Arc Network**.
+
+---
+
+## Package Overview
+
+| Package | Version | Purpose | Install Command |
+| :--- | :--- | :--- | :--- |
+| [**`mercenta-primitives`**](#1-mercenta-primitives) | `1.0.0` | Reusable Arc smart contracts, 5-step PolicyGate, x402, and Viem rails | `npm install mercenta-primitives` |
+| [**`mercenta-client`**](#2-mercenta-client) | `1.0.0` | Lightweight, zero-dependency public catalogue client SDK | `npm install mercenta-client` |
+| [**`mercenta-aomi-skill`**](#3-mercenta-aomi-skill) | `1.0.0` | Canonical Aomi App & Agent Skill for autonomous procurement | `npm install mercenta-aomi-skill` |
+| [**`@mercenta/read-only-client`**](#2-mercenta-client) | `0.1.1` | Scoped alias for the public read-only catalogue client | `npm install @mercenta/read-only-client` |
+
+---
+
+## 1. `mercenta-primitives`
+
+The core, reusable agent-economy toolkit built explicitly for builders and autonomous agents on the **Arc blockchain** (Chain ID `5042`).
+
+### Capabilities Included:
+1. **`PolicyEngine.sol` & TypeScript `PolicyGate`**: Deterministic 5-step gate enforcing Available Spend, Reserved Liquidity Floor, Gross Margin Floor ($\ge 15\%$), Catalog Verification, and Auto-Approval Thresholds.
+2. **`MercentaCheckout.sol`**: Non-upgradeable Arc checkout router settling in canonical 6-decimal USDC with sub-second Malachite block finality.
+3. **`AgentTreasuryVault.sol`**: Non-custodial enterprise vault with daily spending allowances, per-order limits, and owner co-sign escalation.
+4. **Circle Agent Stack & `x402`**: HTTP 402 protocol handler (`sdk/x402.ts`) and batched nanopayment verification via Circle Gateway.
+5. **Arc Onramp Kit**: Multi-chain CCTP bridges from Base, Solana, Arbitrum, and Ethereum into native Arc USDC.
+
+### Installation
+
+```bash
+npm install mercenta-primitives
+# or
+pnpm add mercenta-primitives
+# or
+bun add mercenta-primitives
+```
+
+### Quick Usage
+
+```typescript
+import {
+  MercentaClient,
+  evaluatePolicy,
+  CONTRACT_ADDRESSES,
+  arcMainnet
+} from 'mercenta-primitives';
+
+// 1. Initialize client on Arc Mainnet
+const client = new MercentaClient({ network: 'mainnet' });
+
+// 2. Query available USDC balance on Arc
+const balance = await client.getUsdcBalance('0xYourAgentWalletAddress...');
+console.log(`Available USDC: ${Number(balance) / 1e6}`);
+
+// 3. Evaluate 5-Step Deterministic Policy Gate before spending
+const evaluation = client.evaluate({
+  orderId: '0xorder123',
+  listingId: 'STEAM-WALLET-50',
+  supplier: CONTRACT_ADDRESSES.mainnet.mercentaCheckout,
+  orderValueUsdc: 50_000000n, // $50.00 USDC
+  supplierCostUsdc: 42_000000n, // Wholesale cost
+  category: 'gaming'
+});
+
+if (evaluation.decision === 'Cleared') {
+  console.log(`Order cleared with margin: ${evaluation.marginPercent}%`);
+}
+```
+
+---
+
+## 2. `mercenta-client`
+
+A tiny, zero-dependency, browser- and server-compatible TypeScript/JavaScript client for querying the Mercenta public wholesale digital goods catalogue.
+
+### Security Invariants:
+* **Zero runtime dependencies**: Pure native `fetch` client.
+* **Read-only by design**: No private keys, no wallet credentials, and no write endpoints.
+* **Strict isolation**: Cannot execute payments or modify ledger state.
+
+### Installation
+
+```bash
+npm install mercenta-client
+# or
+pnpm add mercenta-client
+# or
+bun add mercenta-client
+```
+
+### Quick Usage
+
+```typescript
+import { MercentaClient } from 'mercenta-client';
+
+const client = new MercentaClient({ origin: 'https://mercenta.xyz' });
+
+// Fetch real-time digital goods catalogue
+const catalog = await client.catalogue();
+console.log(`Catalogue status: ${catalog.live ? 'LIVE' : 'MAINTENANCE'}`);
+console.log(`Total listings available: ${catalog.rows.length}`);
+```
+
+---
+
+## 3. `mercenta-aomi-skill`
+
+The official agent skill package compliant with the `aomi-labs/skills` specification and the [`build.aomi.dev`](https://build.aomi.dev) execution runtime.
+
+Equips AI agents in **Aomi**, **Claude Code**, **Cursor**, **Codex**, **OpenCode**, and **Hermes** with autonomous digital goods procurement and treasury management capabilities.
+
+### Installation
+
+```bash
+# Add skill directly to your AI agent environment:
+npx skills add rdmbtc/mercenta
+
+# Or install the TypeScript package:
+npm install mercenta-aomi-skill
+```
+
+### Autonomous Tools:
+
+1. **`mercenta_catalog`**: Discover wholesale gaming vouchers, streaming subscriptions, developer API tokens, and AI compute vouchers.
+2. **`mercenta_quote`**: Simulate 5-gate policy compliance (margin floor, auto-approval thresholds, spend velocity) prior to transaction submission.
+3. **`mercenta_checkout`**: Settle orders atomically on Arc Mainnet in native USDC with instant voucher delivery.
+4. **`mercenta_treasury_sweep`**: Sweep idle merchant revenue above reserve floors into Morpho Blue Arc yield vaults.
+5. **`mercenta_crosschain_topup`**: Generate Circle CCTP V2 bridging routes to fund Arc wallets from Base, Solana, Arbitrum, or Ethereum.
+
+### Quick Usage
+
+```typescript
+import { MercentaAomiClient } from 'mercenta-aomi-skill';
+
+const client = new MercentaAomiClient();
+
+// 1. Search catalogue
+const items = await client.getCatalog({ category: 'gaming', query: 'steam' });
+
+// 2. Request quote with policy verification
+const quote = await client.getQuote(items[0].id, 50.0);
+
+if (quote.decision === 'CLEARED') {
+  // 3. Execute atomic settlement on Arc Mainnet
+  const order = await client.checkout(quote.quoteId);
+  console.log('Order settled on Arc:', order.txHash);
+}
+```
+
+---
+
+## Licensing & Source Code
+
+All Mercenta client packages and smart contract primitives are open source under the [MIT License](https://opensource.org/licenses/MIT).
+Source repositories and audit logs are available at [github.com/rdmbtc/mercenta](https://github.com/rdmbtc/mercenta).

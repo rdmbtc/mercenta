@@ -5,25 +5,30 @@ description: "Integration libraries, Aomi Agent Skill, and client storefront sta
 
 # SDK & Agent Tooling
 
-Mercenta provides client packages and agent skill manifests for programmatic procurement, machine checkout, and storefront deployment.
+Mercenta provides client packages, smart contract primitives, and agent skill manifests for programmatic procurement, machine checkout, and storefront deployment.
+
+For complete NPM documentation and usage guides, see the dedicated [NPM Packages & Libraries](/docs/api-reference/packages) guide.
 
 ---
 
-## 1. Official Aomi Agent Skill (`@mercenta/aomi-skill`)
+## 1. Published NPM Packages
 
-The canonical agent skill package provides a typed TypeScript client and manifests for autonomous assistants:
+All packages are published on the official [NPM Registry](https://www.npmjs.com) under the verified `mercenta` publisher identity:
 
-```bash
-# Add skill to Claude Code, Cursor, Codex, OpenCode, or Hermes
-npx skills add rdmbtc/mercenta
-
-# Or install the TypeScript package directly
-npm install @mercenta/aomi-skill
-```
-
-* **Standard**: Compliant with `aomi-labs/skills` and `build.aomi.dev`.
-* **Autonomous Tools**: `mercenta_catalog`, `mercenta_quote`, `mercenta_checkout`, `mercenta_treasury_sweep`, `mercenta_crosschain_topup`.
-* **Detailed Documentation**: See the [Aomi Agent Skill Guide](/docs/agents/aomi-skill).
+* **`mercenta-primitives`**: Reusable Arc smart contracts, 5-step `PolicyGate`, `x402` payment rails, and Viem utilities.
+  ```bash
+  npm install mercenta-primitives
+  ```
+* **`mercenta-client`**: Lightweight, dependency-free public catalogue client SDK.
+  ```bash
+  npm install mercenta-client
+  ```
+* **`mercenta-aomi-skill`**: Canonical agent skill for Claude Code, Cursor, Codex, OpenCode, and Hermes.
+  ```bash
+  npm install mercenta-aomi-skill
+  # or
+  npx skills add rdmbtc/mercenta
+  ```
 
 ---
 
@@ -41,7 +46,7 @@ Circle App Kit and the Viem adapter are server integration dependencies. Human w
 
 ## 3. Telegram Storefront Starter
 
-To launch a branded RU/EN bot, see the [Telegram shop starter guide](/docs/guides/telegram-shop). It includes a standalone download, public branding configuration, Python/SQLite long polling, and a hardened VPS systemd service example.
+To launch a branded RU/EN bot, see the [Telegram shop starter guide](/docs/guides/telegram-shop). It includes a turnkey starter, public branding configuration, Python/SQLite long polling, and a hardened VPS systemd service example.
 
 ---
 
