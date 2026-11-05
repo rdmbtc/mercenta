@@ -271,12 +271,12 @@ export async function getCatalog(): Promise<Catalog> {
  }catch{}
  return {
    products: artworkFirst(diversify((snapshot as Catalog).products)),
-   live: true,
-   snapshot: false,
-   sourceStatus: 'catalog-ready',
-   coverage: 'full-catalogue',
+   live: false,
+   snapshot: true,
+   sourceStatus: 'snapshot-fallback',
+   coverage: 'snapshot-catalogue',
    pricingPolicy: RETAIL_PRICE_POLICY,
-   generatedAt: new Date().toISOString(),
+   generatedAt: (snapshot as Catalog).generatedAt,
    purchasingEnabled: false
  };
 }

@@ -21,6 +21,8 @@ const ROUTES: Array<{
   { path: '/support', priority: 0.7, changeFrequency: 'weekly' },
   { path: '/status', priority: 0.7, changeFrequency: 'weekly' },
   { path: '/privacy', priority: 0.5, changeFrequency: 'yearly' },
+  { path: '/security', priority: 0.5, changeFrequency: 'yearly' },
+  { path: '/legal', priority: 0.5, changeFrequency: 'yearly' },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

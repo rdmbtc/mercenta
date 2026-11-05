@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDb, resetDb } from "@/lib/db";
+import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +14,6 @@ export async function GET() {
     } catch {}
     return NextResponse.json({ ok: true, orders, time: Date.now() });
   } catch (e) {
-    resetDb();
     return NextResponse.json({ ok: false, error: (e as Error).message }, { status: 500 });
   }
 }

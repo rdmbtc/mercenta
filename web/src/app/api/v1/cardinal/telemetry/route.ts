@@ -3,6 +3,8 @@ import { getDb } from '@/lib/db';
 import { createHash, randomUUID } from 'node:crypto';
 import { createWalletClient, http, defineChain, stringToHex } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
+import { requireTelegramAdminWallet } from '@/lib/telegram-admin-auth';
+import { sameOrigin, smallJson } from '@/lib/mainnet-retail';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -159,7 +161,7 @@ function ensureTable(db: ReturnType<typeof getDb>) {
       tax_units INTEGER NOT NULL,
       owners_pay_units INTEGER NOT NULL,
       opex_units INTEGER NOT NULL,
-      arc_tx_hash TEXT NOT NULL,
+      arc_tx_hash TEXT,
       policy_decision TEXT NOT NULL DEFAULT 'APPROVED',
       recorded_at INTEGER NOT NULL
     );
@@ -180,8 +182,7 @@ function ensureTable(db: ReturnType<typeof getDb>) {
   for (const b of VERIFIED_BASELINE_ORDERS) {
     const alloc = calculateProfitFirst(b.price, b.currency);
     const onchain = VERIFIED_ONCHAIN_SETTLEMENTS[b.orderId];
-    const digest = `${b.orderId}:${b.buyer}:${alloc.usdcUnits}:${b.timestamp}:5042`;
-    const txHash = onchain?.txHash || `0x${createHash('sha256').update(digest).digest('hex')}`;
+    const txHash = onchain?.txHash ?? null;
     insert.run(
       `mct-base-${b.orderId}`,
       b.orderId,
@@ -211,7 +212,9 @@ function ensureTable(db: ReturnType<typeof getDb>) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  const auth = requireTelegramAdminWallet(req);
+  if (auth.status !== 200) return NextResponse.json({ error: auth.status === 401 ? 'SIGN_IN_REQUIRED' : 'ADMIN_ACCESS_REQUIRED' }, { status: auth.status, headers: { 'Cache-Control': 'no-store' } });
   try {
     const db = getDb();
     ensureTable(db);
@@ -265,7 +268,7 @@ export async function GET() {
         blockNumber: settlement?.blockNumber ?? null,
         network: settlement?.network ?? 'Arc Mainnet Attestation',
         chainId: settlement?.chainId ?? ARC_MAINNET_CHAIN_ID,
-        explorerUrl: settlement?.explorerUrl ?? `https://explorer.arc.io/tx/${order.arc_tx_hash}`
+        explorerUrl: settlement?.explorerUrl ?? null
       };
     });
 
@@ -303,17 +306,22 @@ export async function GET() {
       },
       recentOrders: enrichedRecent
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { ok: false, error: (error as Error).message },
-      { status: 500 }
+      { ok: false, error: 'TELEMETRY_PROCESSING_FAILED' },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     );
   }
 }
 
 export async function POST(req: Request) {
+  const auth = requireTelegramAdminWallet(req);
+  if (auth.status !== 200) return NextResponse.json({ error: auth.status === 401 ? 'SIGN_IN_REQUIRED' : 'ADMIN_ACCESS_REQUIRED' }, { status: auth.status, headers: { 'Cache-Control': 'no-store' } });
+  if (!sameOrigin(req)) return NextResponse.json({ error: 'ORIGIN_NOT_ALLOWED' }, { status: 403 });
   try {
-    const body = await req.json();
+    let body: unknown;
+    try { body = await smallJson(req); } catch { return NextResponse.json({ error: 'INVALID_REQUEST' }, { status: 400 }); }
+    if (!body || typeof body !== 'object' || Array.isArray(body)) return NextResponse.json({ error: 'INVALID_REQUEST' }, { status: 400 });
     const {
       orderId,
       description,
@@ -321,59 +329,42 @@ export async function POST(req: Request) {
       price,
       currency = 'RUB',
       buyerUsername = 'anonymous',
-      deliveredAt = Date.now(),
       source = 'cardinal-funpay'
-    } = body;
+    } = body as Record<string, unknown>;
 
     if (!orderId || typeof orderId !== 'string') {
       return NextResponse.json({ error: 'ORDER_ID_REQUIRED' }, { status: 400 });
     }
+    const cleanOrderId = orderId.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+    if (!cleanOrderId) return NextResponse.json({ error: 'ORDER_ID_REQUIRED' }, { status: 400 });
+    if (typeof description !== 'string' || description.trim().length === 0 || description.length > 255) return NextResponse.json({ error: 'DESCRIPTION_REQUIRED' }, { status: 400 });
+    const cur = String(currency).toUpperCase();
+    if (!['RUB', 'EUR', 'USD'].includes(cur)) return NextResponse.json({ error: 'INVALID_CURRENCY' }, { status: 400 });
 
     const numPrice = Number(price);
-    if (!Number.isFinite(numPrice) || numPrice <= 0) {
-      return NextResponse.json({ error: 'INVALID_PRICE' }, { status: 400 });
-    }
-
-    const cur = String(currency).toUpperCase();
+    if (!Number.isFinite(numPrice) || numPrice <= 0 || numPrice > 1_000_000) return NextResponse.json({ error: 'INVALID_PRICE' }, { status: 400 });
     const alloc = calculateProfitFirst(numPrice, cur);
-
-    // Cryptographic proof and Arc Mainnet receipt hash
-    const cleanOrderId = orderId.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+    const db = getDb();
+    ensureTable(db);
+    const now = Date.now();
+    const buyer = String(buyerUsername).slice(0, 100);
+    const existing = db.prepare('SELECT id, arc_tx_hash FROM cardinal_telemetry WHERE funpay_order_id = ?').get(cleanOrderId) as { id: string; arc_tx_hash: string | null } | undefined;
+    if (existing) return NextResponse.json({ status: 'ALREADY_RECORDED', receiptId: existing.id, orderId: cleanOrderId, txHash: existing.arc_tx_hash, message: 'Order was already synced with Arc Mainnet journal.' });
     const recordId = `mct-rec-${randomUUID()}`;
 
     // Attempt live on-chain broadcast on Arc Mainnet
-    let arcTxHash = '';
+    let arcTxHash: string | null = null;
     try {
       if (!RELAYER_PRIVATE_KEY) throw new Error('NO_RELAYER_KEY');
       const account = privateKeyToAccount(RELAYER_PRIVATE_KEY as `0x${string}`);
       const walletClient = createWalletClient({ account, chain: arcMainnetChain, transport: http() });
-      const memo = `Mercenta Settlement: Order #${cleanOrderId} | Buyer: ${buyerUsername} | Value: ${numPrice} ${cur} (${(alloc.usdcUnits / 1e6).toFixed(6)} USDC) | Arc Mainnet`;
-      arcTxHash = await walletClient.sendTransaction({
-        to: ARC_MERCHANT_WALLET,
-        value: 1000000000000n, // 0.000001 USDC
-        data: stringToHex(memo)
-      });
+      const memo = `Mercenta Settlement: Order #${cleanOrderId} | Buyer: ${String(buyer)} | Value: ${numPrice} ${cur} (${(alloc.usdcUnits / 1e6).toFixed(6)} USDC) | Arc Mainnet`;
+      const hash = await walletClient.sendTransaction({ to: ARC_MERCHANT_WALLET, value: 1000000000000n, data: stringToHex(memo) });
+      if (!/^0x[a-f0-9]{64}$/i.test(hash)) throw new Error('INVALID_RELAY_RECEIPT');
+      arcTxHash = hash;
     } catch {
-      const digestPayload = `${cleanOrderId}:${buyerUsername}:${alloc.usdcUnits}:${deliveredAt}:5042`;
-      arcTxHash = `0x${createHash('sha256').update(digestPayload).digest('hex')}`;
+      return NextResponse.json({ error: 'RELAY_UNAVAILABLE', status: 'RELAY_FAILED', orderId: cleanOrderId }, { status: 503, headers: { 'Cache-Control': 'no-store' } });
     }
-
-    const db = getDb();
-    ensureTable(db);
-
-    // Idempotent upsert in cardinal_telemetry
-    const existing = db.prepare('SELECT id FROM cardinal_telemetry WHERE funpay_order_id = ?').get(cleanOrderId);
-    if (existing) {
-      return NextResponse.json({
-        status: 'ALREADY_RECORDED',
-        receiptId: (existing as { id: string }).id,
-        orderId: cleanOrderId,
-        txHash: arcTxHash,
-        message: 'Order was already synced with Arc Mainnet journal.'
-      });
-    }
-
-    const now = Date.now();
     const insertTelemetry = db.prepare(`
       INSERT INTO cardinal_telemetry (
         id, funpay_order_id, lot_description, subcategory,
@@ -391,7 +382,7 @@ export async function POST(req: Request) {
       String(subcategory).slice(0, 100),
       numPrice,
       cur,
-      String(buyerUsername).slice(0, 100),
+      String(buyer),
       alloc.usdcUnits,
       alloc.cogsUnits,
       alloc.feesUnits,
@@ -415,7 +406,7 @@ export async function POST(req: Request) {
       `).run(
         recordId,
         `funpay:${cleanOrderId}`,
-        `0x${createHash('sha256').update(buyerUsername).digest('hex').slice(0, 40)}`,
+        `0x${createHash('sha256').update(buyer).digest('hex').slice(0, 40)}`,
         alloc.usdcUnits,
         'RECORDED',
         arcTxHash,
@@ -464,10 +455,10 @@ export async function POST(req: Request) {
       },
       clearedAt: now
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { error: 'TELEMETRY_PROCESSING_FAILED', details: (error as Error).message },
-      { status: 500 }
+      { error: 'TELEMETRY_PROCESSING_FAILED' },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     );
   }
 }

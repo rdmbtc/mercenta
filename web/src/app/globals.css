@@ -33,6 +33,71 @@
   --edge: var(--line);
   --metal: linear-gradient(135deg, #e2e8f4 0%, #c8d2e2 35%, #d6dded 65%, #e6eef8 100%);
   --metal-warm: linear-gradient(135deg, #f0ede8 0%, #e0d0bc 35%, #ecdcca 65%, #f4eada 100%);
+
+  /* Canonical semantic design tokens. Existing aliases above remain stable for
+     route-specific surfaces while new components use these role-based names. */
+  --color-canvas: #000000;
+  --color-surface-1: #15181e;
+  --color-surface-2: #1f232b;
+  --color-surface-3: #3b3d45;
+  --color-border: rgba(178, 182, 189, 0.10);
+  --color-border-strong: #3b3d45;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b2b6bd;
+  --color-text-tertiary: #656a76;
+  --color-text-inverse: #000000;
+  --color-interactive-primary: #ffffff;
+  --color-interactive-primary-ink: #000000;
+  --color-interactive-focus: #b2e5ff;
+  --color-state-success: #00ca8e;
+  --color-state-warning: #ffcf25;
+  --color-state-error: #e62b1e;
+  --color-state-info: #14c6cb;
+  --color-domain-policy: #7b42bc;
+  --color-domain-liquidity: #ffcf25;
+  --color-domain-settlement: #00ca8e;
+  --color-domain-telemetry: #14c6cb;
+  --color-domain-rails: #1868f2;
+  --color-domain-boundary: #f24c53;
+
+  --text-display-xl: clamp(3.5rem, 8vw, 6rem);
+  --text-display-lg: clamp(3rem, 6vw, 5rem);
+  --text-display-md: clamp(2.5rem, 4.5vw, 3.5rem);
+  --text-headline: clamp(2rem, 3.2vw, 2.375rem);
+  --text-subhead-lg: 1.25rem;
+  --text-subhead: 1.125rem;
+  --text-body: 1rem;
+  --text-body-sm: 0.875rem;
+  --text-button: 0.875rem;
+  --text-mono-data: 0.875rem;
+  --text-mono-label: 0.75rem;
+  --text-mono-eyebrow: 0.6875rem;
+  --leading-display: 0.95;
+  --leading-heading: 1.1;
+  --leading-body: 1.55;
+  --tracking-display: -0.03em;
+  --tracking-label: 0.08em;
+
+  --space-xxs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 3rem;
+  --space-section: 6rem;
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-card: 1.875rem;
+  --radius-pill: 9999px;
+  --breakpoint-narrow: 40rem;
+  --breakpoint-mid: 60rem;
+  --breakpoint-wide: 73.75rem;
+  --focus-ring: 2px solid var(--color-interactive-focus);
+  --control-min-size: 2.75rem;
 }
 
 /* Atmosphere layer (components/Atmosphere.*) */
@@ -130,7 +195,7 @@ body {
     color: var(--accent-ink);
   }
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: var(--focus-ring);
     outline-offset: 3px;
     border-radius: 6px;
   }

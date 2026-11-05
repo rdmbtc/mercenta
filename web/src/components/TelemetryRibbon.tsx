@@ -97,7 +97,7 @@ export default function TelemetryRibbon() {
   return (
     <div
       className="relative z-10 w-full overflow-hidden border-y border-[rgba(178,182,189,0.12)] bg-[#050608]/90 py-2.5 backdrop-blur-md"
-      aria-label="Live settlement stream ticker"
+      aria-label="Illustrative policy activity ticker"
     >
       <div className="mx-auto flex max-w-[1440px] items-center px-4">
         {/* Fixed Left Status Badge */}
@@ -111,7 +111,7 @@ export default function TelemetryRibbon() {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00ca8e]" />
           </span>
           <span className="font-mono text-[11px] font-medium tracking-[0.1em] uppercase text-[#b2b6bd]">
-            Live Policy Gateway
+            Illustrative policy activity
           </span>
           <span className="rounded bg-[#00ca8e]/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-[#00ca8e]">
             Arc Testnet
@@ -153,7 +153,7 @@ export default function TelemetryRibbon() {
                   {item.status === "cleared" ? (
                     <>
                       <ShieldCheck size={10} />
-                      CLEARED ({item.chain})
+                      SAMPLE CLEARED ({item.chain})
                     </>
                   ) : (
                     <>
@@ -170,7 +170,7 @@ export default function TelemetryRibbon() {
         {/* Fixed Right Metric */}
         <div className="ml-6 hidden shrink-0 items-center gap-3 border-l border-[#252830] pl-6 font-mono text-[11px] text-[#b2b6bd] lg:flex">
           <Activity size={13} className="text-[#14c6cb]" />
-          <span>Avg Gate Latency:</span>
+          <span>Illustrative latency:</span>
           <span className="font-semibold text-white">14.2ms</span>
         </div>
       </div>

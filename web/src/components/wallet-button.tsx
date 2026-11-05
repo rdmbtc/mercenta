@@ -40,6 +40,7 @@ export default function WalletButton() {
   const version = useRef(0);
   const popoverRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   // Sync wallet state across sessions, MetaMask events, and localStorage
   useEffect(() => {
@@ -140,9 +141,10 @@ export default function WalletButton() {
     };
   }, []);
 
-  // Dismiss profile popover on outside click or Escape key
+  // Keep the profile popover keyboard-contained and return focus to its trigger.
   useEffect(() => {
     if (!profileOpen) return;
+    closeRef.current?.focus();
 
     const handleOutside = (e: MouseEvent) => {
       if (
@@ -152,11 +154,33 @@ export default function WalletButton() {
         !buttonRef.current.contains(e.target as Node)
       ) {
         setProfileOpen(false);
+        buttonRef.current.focus();
       }
     };
 
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setProfileOpen(false);
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setProfileOpen(false);
+        buttonRef.current?.focus();
+        return;
+      }
+      if (e.key !== "Tab" || !popoverRef.current) return;
+      const focusable = Array.from(
+        popoverRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
 
     document.addEventListener("mousedown", handleOutside);
@@ -291,39 +315,43 @@ export default function WalletButton() {
 
       {/* Wallet Profile Popover */}
       {profileOpen && phase === "authed" && address && (
-        <div ref={popoverRef} className="wallet-popover" role="dialog" aria-modal="false" aria-label="Wallet profile">
+        <div ref={popoverRef} className="wallet-popover" role="dialog" aria-modal="true" aria-labelledby="wallet-profile-title">
           <div className="wallet-pop-header">
-            <div className="wallet-pop-badge">
-              <span className="wallet-pop-dot" aria-hidden="true" />
-              <span>{isMainnet ? "Arc Mainnet (5042)" : "Arc Testnet (5042002)"}</span>
+            <div>
+              <h2 id="wallet-profile-title" className="wallet-pop-title">Wallet profile</h2>
+              <div className="wallet-pop-badge">
+                <span className="wallet-pop-dot" aria-hidden="true" />
+                <span>{isMainnet ? "Arc Mainnet (5042)" : "Arc Testnet (5042002)"}</span>
+              </div>
+              {chainId && chainId.toLowerCase() !== (isMainnet ? "0x13b2" : "0x4cef52") && (
+                <button
+                  type="button"
+                  className="wallet-pop-switch-btn"
+                  style={{
+                    background: "rgba(245, 158, 11, 0.15)",
+                    border: "1px solid rgba(245, 158, 11, 0.4)",
+                    color: "#fbbf24",
+                    borderRadius: "6px",
+                    padding: "4px 8px",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    marginTop: "6px",
+                    display: "block",
+                    width: "100%",
+                    textAlign: "center",
+                  }}
+                  onClick={() => void ensureArcChain(isMainnet)}
+                >
+                  ⚠ Switch to {isMainnet ? "Arc Mainnet (5042)" : "Arc Testnet"}
+                </button>
+              )}
             </div>
-            {chainId && chainId.toLowerCase() !== (isMainnet ? "0x13b2" : "0x4cef52") && (
-              <button
-                type="button"
-                className="wallet-pop-switch-btn"
-                style={{
-                  background: "rgba(245, 158, 11, 0.15)",
-                  border: "1px solid rgba(245, 158, 11, 0.4)",
-                  color: "#fbbf24",
-                  borderRadius: "6px",
-                  padding: "4px 8px",
-                  fontSize: "11px",
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  marginTop: "6px",
-                  display: "block",
-                  width: "100%",
-                  textAlign: "center",
-                }}
-                onClick={() => void ensureArcChain(isMainnet)}
-              >
-                ⚠ Switch to {isMainnet ? "Arc Mainnet (5042)" : "Arc Testnet"}
-              </button>
-            )}
             <button
+              ref={closeRef}
               type="button"
               className="wallet-pop-close"
-              onClick={() => setProfileOpen(false)}
+              onClick={() => { setProfileOpen(false); buttonRef.current?.focus(); }}
               aria-label="Close profile modal"
             >
               ✕

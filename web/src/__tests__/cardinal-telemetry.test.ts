@@ -1,80 +1,46 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET, POST } from '@/app/api/v1/cardinal/telemetry/route';
+import { mintSession } from '@/lib/auth';
 import { resetDb } from '@/lib/db';
 
-describe('Cardinal FunPay Telemetry API (/api/v1/cardinal/telemetry)', () => {
+const ADMIN = '0x' + 'aa'.repeat(20);
+const session = () => `mercenta_session=${encodeURIComponent(mintSession(ADMIN, Date.now()).token)}`;
+const request = (method: 'GET' | 'POST', body?: unknown) => new Request('https://app.test/api/v1/cardinal/telemetry', {
+  method,
+  headers: { cookie: session(), ...(method === 'POST' ? { origin: 'https://app.test', 'content-type': 'application/json' } : {}) },
+  body: method === 'POST' ? JSON.stringify(body) : undefined,
+});
+
+describe('Cardinal telemetry security boundary', () => {
   beforeEach(() => {
     resetDb();
+    vi.stubEnv('TELEGRAM_ADMIN_WALLETS', ADMIN);
+    vi.stubEnv('RELAYER_KEY', '');
   });
 
-  it('GET returns status ONLINE with Arc Mainnet contract details and verified baseline orders', async () => {
-    const res = await GET();
-    expect(res.status).toBe(200);
-    const data = await res.json();
-
-    expect(data.status).toBe('ONLINE');
-    expect(data.network).toBe('arc-mainnet');
-    expect(data.chainId).toBe(5042);
-    expect(data.contract).toBe('0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed');
-    expect(data.mode).toBe('OBSERVER_AP_AR');
-    expect(data.stats).toBeDefined();
-    expect(data.stats.totalOrders).toBe(11);
-    expect(data.stats.totalRubVolume).toBe(30.5);
-    expect(Number(data.stats.totalUsdcAmount)).toBeGreaterThan(0.3);
+  it('rejects anonymous reads before touching the database', async () => {
+    const res = await GET(new Request('https://app.test/api/v1/cardinal/telemetry'));
+    expect(res.status).toBe(401);
+    expect(res.headers.get('cache-control')).toBe('no-store');
   });
 
-  it('POST records a new order, allocates Profit First buckets, and updates stats', async () => {
-    const payload = {
-      orderId: 'FP_TEST_NEW_ORDER',
-      description: 'Telegram Stars (50 Stars)',
-      subcategory: 'Telegram Stars',
-      price: 249.0,
-      currency: 'RUB',
-      buyerUsername: 'arc_tester_buyer',
-      deliveredAt: 1730000000000
-    };
-
-    const req = new Request('http://localhost:3000/api/v1/cardinal/telemetry', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    const res = await POST(req);
-    expect(res.status).toBe(200);
-    const data = await res.json();
-
-    expect(data.success).toBe(true);
-    expect(data.orderId).toBe('FP_TEST_NEW_ORDER');
-    expect(data.network).toBe('arc-mainnet');
-    expect(data.chainId).toBe(5042);
-    expect(data.txHash).toMatch(/^0x[a-f0-9]{64}$/);
-    expect(data.profitFirstAllocation).toBeDefined();
-
-    // Verify GET aggregates update immediately
-    const getRes = await GET();
-    const getData = await getRes.json();
-    expect(getData.stats.totalOrders).toBe(12);
-    expect(getData.stats.totalRubVolume).toBe(279.5);
+  it('rejects anonymous writes', async () => {
+    const res = await POST(new Request('https://app.test/api/v1/cardinal/telemetry', { method: 'POST' }));
+    expect(res.status).toBe(401);
   });
 
-  it('POST is strictly idempotent: duplicate orderId returns ALREADY_RECORDED', async () => {
-    const payload = {
-      orderId: 'Y8NQPWDR',
-      description: 'Steam Wallet $5 USD',
-      price: 5.0,
-      currency: 'RUB',
-      buyerUsername: 'GefiStore'
-    };
-
-    const req = new Request('http://localhost:3000/api/v1/cardinal/telemetry', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    const res = await POST(req);
-    expect(res.status).toBe(200);
+  it('does not fabricate a transaction hash when relaying is unavailable', async () => {
+    const res = await POST(request('POST', {
+      orderId: 'FP_TEST_NEW_ORDER', description: 'Telegram Stars', subcategory: 'Telegram', price: 249, currency: 'RUB', buyerUsername: 'tester',
+    }));
+    expect(res.status).toBe(503);
     const data = await res.json();
-    expect(data.status).toBe('ALREADY_RECORDED');
+    expect(data.status).toBe('RELAY_FAILED');
+    expect(data.txHash).toBeUndefined();
+  });
+
+  it('rejects malformed and unsupported input', async () => {
+    const invalid = await POST(request('POST', { orderId: '!!!', description: '', price: 1, currency: 'GBP' }));
+    expect(invalid.status).toBe(400);
   });
 });

@@ -5,7 +5,7 @@ import {createHmac,timingSafeEqual} from 'node:crypto';
 import {z} from 'zod';
 import type {DB} from '../db.js';import type {Config} from '../config.js';
 import {arcClient,verifyArc} from '../services/arc/index.js';import type {Address,Hash} from 'viem';
-import {initAccount,funds,createDeposit,getDeposit,creditDeposit,TEST_PRODUCTS,SCOPES,dashboard,range,accountOrders,history,listKeys,createKey,revokeKey,authenticateKey,placeTestOrder} from '../services/account.js';
+import {initAccount,funds,createDeposit,getDeposit,creditDeposit,TEST_PRODUCTS,SCOPES,dashboard,range,accountOrders,history,listKeys,createKey,revokeKey,authenticateKey,placeTestOrder,listNotifications,markNotificationRead,markAllNotificationsRead} from '../services/account.js';
 export function accountActor(req:FastifyRequest,c:Config){const a=req.headers['x-mercenta-actor'],ts=req.headers['x-mercenta-timestamp'],sig=req.headers['x-mercenta-signature'];if(typeof a!=='string'||!/^wallet:0x[a-f0-9]{40}$/.test(a))throw new Error('WALLET_AUTH_REQUIRED');if(typeof ts!=='string'||typeof sig!=='string'||!/^\d{13}$/.test(ts)||Math.abs(Date.now()-Number(ts))>30000)throw new Error('UNAUTHORIZED');const expected=createHmac('sha256',c.BACKEND_PROXY_SECRET).update(`${ts}\n${req.method}\n${req.url}\n${a}\n${req.body?JSON.stringify(req.body):''}`).digest('hex');const x=Buffer.from(sig),y=Buffer.from(expected);if(x.length!==y.length||!timingSafeEqual(x,y))throw new Error('UNAUTHORIZED');return a;}
 const uuid=z.string().uuid(),money=z.string().regex(/^(0|[1-9]\d*)(\.\d{1,6})?$/).max(30);
 const query=z.object({period:z.enum(['24h','7d','30d','90d','all','custom']).default('30d'),from:z.string().optional(),to:z.string().optional(),initiator:z.string().max(100).optional(),status:z.string().max(40).optional(),country:z.string().max(20).optional(),product:z.string().max(100).optional(),method:z.string().max(40).optional(),page:z.coerce.number().int().min(1).default(1),pageSize:z.coerce.number().int().min(1).max(100).default(25)});
@@ -25,6 +25,9 @@ export function registerAccountRoutes(app:FastifyInstance,db:DB,c:Config){initAc
  app.get('/api/account/keys',req=>({items:listKeys(db,accountActor(req,c)),scopes:SCOPES}));
  app.post('/api/account/keys',req=>{const a=accountActor(req,c),b=z.object({name:z.string().min(1).max(60),scopes:z.array(z.enum(SCOPES)).min(1),expiresDays:z.number().int().min(1).max(90)}).parse(req.body);return createKey(db,a,b.name,b.scopes,b.expiresDays)});
  app.post('/api/account/keys/:id/revoke',req=>revokeKey(db,accountActor(req,c),z.object({id:uuid}).parse(req.params).id));
+ app.get('/api/account/notifications',req=>{const a=accountActor(req,c),q=z.object({page:z.coerce.number().int().min(1).default(1),pageSize:z.coerce.number().int().min(1).max(100).default(25),unreadOnly:z.coerce.boolean().default(false)}).parse(req.query);return listNotifications(db,a,q.page,q.pageSize,q.unreadOnly)});
+ app.post('/api/account/notifications/read-all',req=>markAllNotificationsRead(db,accountActor(req,c)));
+ app.post('/api/account/notifications/:id/read',req=>{const a=accountActor(req,c),id=z.object({id:uuid}).parse(req.params).id;return markNotificationRead(db,a,id)});
  app.get('/api/account/support',req=>{accountActor(req,c);return {manager:null,email:null,newsRU:null,newsEN:null,message:'Contact channels are not configured. Do not send seed phrases, private keys, API secrets or delivery codes.'}});
  const key=(req:FastifyRequest,scope:string)=>authenticateKey(db,String(req.headers.authorization??'').replace(/^Bearer /,''),scope);
  app.get('/api/v1/account',req=>funds(db,key(req,'account:read').actor));

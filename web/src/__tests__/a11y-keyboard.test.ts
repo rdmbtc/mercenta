@@ -132,6 +132,13 @@ describe('AGENT-14: Accessibility and Keyboard Navigation QA', () => {
     const summary = el.querySelector<HTMLElement>('summary')!;
     expect(summary).toBeTruthy();
     expect(summary.getAttribute('aria-disabled')).toBe('true');
+    expect(summary.getAttribute('tabindex')).toBe('-1');
+
+    // Disabled summaries must not toggle from keyboard activation either.
+    await act(async () => {
+      summary.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true, cancelable: true}));
+    });
+    expect(summary.parentElement?.hasAttribute('open')).toBe(false);
 
     // Clicking when disabled does not open dialog
     await act(async () => {

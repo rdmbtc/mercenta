@@ -70,7 +70,7 @@ export function ProductStatus(){
               <ThinkingOrb state={probe.state==='ok'?'cleared':probe.state==='checking'?'evaluating':'idle'} size={22} />
               <h2 aria-live="polite" style={{margin:0}}>{label}</h2>
             </div>
-            <p>{probe.state==='ok'?'The health endpoint reports API liveness and database access.':probe.state==='error'?'The request did not return a healthy response. Try again or inspect the service.':'Run a read-only check of the API and database on this site.'}</p>
+            <p>{probe.state==='ok'?'The health endpoint is reachable and returned a limited database check. It does not verify wallet auth, catalog stock, suppliers, chains, settlement, delivery or uptime.':probe.state==='error'?'The request did not return a healthy response. Try again or inspect the service.':'Run a read-only check of the API and limited database access on this site. It does not verify wallet auth, catalog stock, suppliers, chains, settlement, delivery or uptime.'}</p>
             <button className="mp-button full" disabled={probe.state==='checking'} onClick={check}>
               <RefreshCw size={17} className={probe.state==='checking'?'mp-spin':''}/>
               {probe.state==='checking'?'Checking…':probe.state==='unchecked'?'Run endpoint check':'Check again'}

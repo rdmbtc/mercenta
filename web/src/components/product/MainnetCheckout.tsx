@@ -12,6 +12,7 @@ import {getActivationGuide} from '@/lib/activation-guides';
 const ROUTER_ADDRESS = '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed';
 const MERCHANT_ADDRESS = '0x58863e4a739da0e62c2eba258b7783e95d5c48ce';
 const ARC_MAINNET_CHAIN_ID_HEX = '0x13b2'; // 5042 in hex
+const ACCOUNT_REFERENCE_PATTERN = /^@?[a-zA-Z0-9_.\-+ ():]{2,80}$/;
 
 type Provider = {
   request: (args: {method: string; params?: unknown[] | object}) => Promise<unknown>;
@@ -56,6 +57,10 @@ export function MainnetCheckout({
   }, [accountReference]);
   const effectiveAccount = (accountReference ?? recipientAccount ?? '').trim();
   const needsAccountRef = isTopup && !effectiveAccount;
+  const invalidAccountRef = isTopup && Boolean(effectiveAccount) && !ACCOUNT_REFERENCE_PATTERN.test(effectiveAccount);
+  const accountRefError = needsAccountRef ? topupConfig.error : invalidAccountRef
+    ? (ru ? 'Введите корректный идентификатор получателя.' : 'Enter a valid recipient identifier.')
+    : '';
 
   const [account, setAccount] = useState<string | null>(() => {
     if (initialAccount) return initialAccount.toLowerCase();
@@ -167,6 +172,10 @@ export function MainnetCheckout({
 
   async function connectWallet() {
     setError('');
+    if (accountRefError) {
+      setError(accountRefError);
+      return;
+    }
     const eth = walletProvider ?? (window as unknown as {ethereum?: Provider})?.ethereum;
     if (!eth) {
       setError(ru ? 'MetaMask или Rabby кошелёк не обнаружен.' : 'No Web3 wallet (MetaMask / Rabby) detected.');
@@ -251,6 +260,12 @@ export function MainnetCheckout({
         const inputEl = document.getElementById('catalogue-account-ref') || document.getElementById('topup-username-input');
         inputEl?.focus();
       }
+      return;
+    }
+
+    if (invalidAccountRef) {
+      setError(accountRefError);
+      document.getElementById('catalogue-account-ref')?.focus();
       return;
     }
 
@@ -465,7 +480,7 @@ export function MainnetCheckout({
         <Frame.Header className="px-0 pt-0 pb-3 flex items-center justify-between">
           <Frame.Title as="h4" className="flex items-center gap-2 m-0 text-[13px] font-bold tracking-[0.05em] text-[#f8fafc]">
             <span className="size-2 rounded-full bg-[#b2e5ff] inline-block shadow-[0_0_8px_#b2e5ff] animate-pulse" />
-            <span>{ru ? 'ARC MAINNET · ПЕРЕВОД ОТПРАВЛЕН' : 'ARC MAINNET · DELIVERY PENDING'}</span>
+            <span>{ru ? 'ARC MAINNET · ПЛАТЁЖ ОТПРАВЛЕН · ВЫДАЧА ОЖИДАЕТСЯ' : 'ARC MAINNET · PAYMENT SUBMITTED · DELIVERY PENDING'}</span>
           </Frame.Title>
           <Frame.Action>
             <span style={{
@@ -484,10 +499,10 @@ export function MainnetCheckout({
         </Frame.Header>
         <Frame.Panel className="bg-transparent border-0 divide-y-0 p-0">
           <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc', margin: '0 0 8px' }}>
-            {ru ? 'Перевод отправлен. Проверяем выдачу.' : 'Transfer submitted. Delivery pending.'}
+            {ru ? 'Платёж отправлен. Выдача ожидается.' : 'Payment submitted. Delivery pending.'}
           </h3>
           <p style={{ fontSize: '13px', color: 'var(--checkout-muted, #96a3b4)', lineHeight: 1.55, margin: '0 0 16px' }}>
-            {ru ? 'Подтверждение оплаты и выдачи пока не получено. Не платите повторно. Хеш сохранён в покупках; обновление статуса не отправляет деньги.' : 'Payment and delivery confirmation are not yet available. Do not pay again. The hash is saved in Purchases; checking status never sends another payment.'}
+            {ru ? 'Платёж отправлен, подтверждение ещё не проверено. После подтверждения Mercenta запросит выдачу у провайдера. Не платите повторно. Хеш сохранён в покупках; обновление статуса не отправляет деньги.' : 'Payment was submitted, but confirmation is not verified yet. After confirmation, Mercenta will request provider delivery. Do not pay again. The hash is saved in Purchases; checking status never sends another payment.'}
           </p>
           <dl className="mainnet-receipt-dl" style={{ background: 'var(--checkout-inset, #080b10)', border: '1px solid var(--checkout-border, rgba(255, 255, 255, 0.07))', borderRadius: '12px', padding: '14px 16px', marginBottom: '16px' }}>
             <div className="mainnet-receipt-row">
@@ -525,7 +540,7 @@ export function MainnetCheckout({
               }}
             >
               {busy ? <LoaderCircle size={16} className="animate-spin" /> : null}
-              <span>{ru ? 'Проверить выдачу' : 'Check delivery'}</span>
+              <span>{ru ? 'Обновить статус платежа и выдачи' : 'Refresh payment & delivery status'}</span>
             </button>
             <a
               className="mp-button outline full"
@@ -620,7 +635,7 @@ export function MainnetCheckout({
           <Frame.Header className="px-0 pt-0 pb-3 flex items-center justify-between">
             <Frame.Title as="h4" className="flex items-center gap-2 m-0 text-[14px] font-bold text-[#f8fafc] tracking-[0.03em]">
               <span className="size-2 rounded-full bg-[#b2e5ff] inline-block shadow-[0_0_8px_#b2e5ff]" />
-              <span>{ru ? 'Выдача получена от провайдера' : 'Delivery received from provider'}</span>
+              <span>{ru ? 'Выдача подтверждена провайдером' : 'Delivery confirmed by provider'}</span>
             </Frame.Title>
             <Frame.Action>
               <span style={{
@@ -640,9 +655,7 @@ export function MainnetCheckout({
           <Frame.Panel className="bg-transparent border-0 divide-y-0 p-0">
 
         <p style={{fontSize: '13px', color: 'var(--checkout-muted, #96a3b4)', lineHeight: 1.55, margin: '0 0 16px'}}>
-          {ru
-            ? (isTopup ? 'Провайдер сообщил о выдаче пополнения. Проверьте баланс аккаунта получателя.' : 'Код получен от провайдера и сохранён в покупках.')
-            : (isTopup ? 'Provider reports top-up delivery. Check the recipient account balance.' : 'Your provider-issued activation key is saved to Purchases. A transfer alone does not prove redemption.')}
+          {ru ? (isTopup ? 'Провайдер сообщил о выдаче пополнения. Проверьте баланс аккаунта получателя.' : 'Выдача подтверждена ответом провайдера и сохранена в покупках.') : (isTopup ? 'Provider reports top-up delivery. Check the recipient account balance.' : 'Provider delivery was reported and the key is saved to Purchases. A transfer alone does not prove redemption.')}
         </p>
 
         {isTopup ? (
@@ -653,7 +666,7 @@ export function MainnetCheckout({
                 {ru ? 'АККАУНТ ЗАЧИСЛЕНИЯ' : 'RECIPIENT ACCOUNT'}
               </span>
               <span style={{fontSize: '11px', color: 'var(--checkout-accent, #b2e5ff)', background: 'rgba(178, 229, 255, 0.1)', border: '1px solid rgba(178, 229, 255, 0.25)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600}}>
-                {ru ? 'Зачислено' : 'Credited'}
+                {ru ? 'Сообщено провайдером' : 'Provider reported'}
               </span>
             </div>
             <div className="mainnet-topup-recipient-row" style={{marginTop: 0, background: 'var(--checkout-surface, #10151d)', border: '1px solid var(--checkout-border, rgba(255, 255, 255, 0.07))'}}>
@@ -973,6 +986,8 @@ export function MainnetCheckout({
               setRecipientAccount(e.target.value);
               if (error) setError('');
             }}
+            aria-invalid={invalidAccountRef || undefined}
+            aria-describedby={accountRefError ? 'mainnet-account-ref-error' : undefined}
             disabled={busy}
             style={{
               width: '100%',
@@ -999,6 +1014,13 @@ export function MainnetCheckout({
           <span>
             {topupConfig.error}
           </span>
+        </div>
+      )}
+
+      {accountRefError && (
+        <div id="mainnet-account-ref-error" style={{display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--checkout-accent, #b2e5ff)', background: 'rgba(178, 229, 255, 0.08)', border: '1px solid rgba(178, 229, 255, 0.25)', borderRadius: '8px', padding: '10px 12px', margin: '10px 0', fontSize: '12px'}}>
+          <AlertCircle size={16}/>
+          <span>{accountRefError}</span>
         </div>
       )}
 
@@ -1030,7 +1052,7 @@ export function MainnetCheckout({
             }}
           >
             {busy ? <LoaderCircle size={16} className="animate-spin"/> : <Wallet size={16}/>}
-            <span>{ru ? `Оплатить ${totalPriceUsdc} USDC · Подключить кошелёк` : `Pay with USDC (${totalPriceUsdc} USDC) · Connect Wallet`}</span>
+            <span>{ru ? 'Подключить кошелёк для продолжения' : 'Connect wallet to continue'}</span>
           </button>
         ) : !isArcMainnet ? (
           <button
@@ -1052,7 +1074,7 @@ export function MainnetCheckout({
             }}
           >
             {busy ? <LoaderCircle size={16} className="animate-spin"/> : <ShieldCheck size={16}/>}
-            <span>{ru ? `Оплатить ${totalPriceUsdc} USDC · Переключить на Arc Mainnet` : `Pay with USDC (${totalPriceUsdc} USDC) · Switch to Arc Mainnet`}</span>
+            <span>{ru ? 'Переключить сеть на Arc Mainnet для продолжения' : 'Switch to Arc Mainnet to continue'}</span>
           </button>
         ) : (
           <button
@@ -1078,7 +1100,7 @@ export function MainnetCheckout({
               {step === 'signing'
                 ? (ru ? 'Подписание в кошельке…' : 'Signing in wallet…')
                 : step === 'confirming'
-                ? (ru ? 'Перевод отправлен · Проверяем выдачу…' : 'Transfer submitted · Checking delivery…')
+                ? (ru ? 'Платёж отправлен · Ожидаем подтверждение…' : 'Payment submitted · Waiting for confirmation…')
                 : busy
                 ? (ru ? 'Обработка…' : 'Processing…')
                 : !allGatesPassed
@@ -1091,15 +1113,17 @@ export function MainnetCheckout({
             </span>
           </button>
         )}
-      </div>
-
-      <p style={{fontSize: '11px', color: 'var(--checkout-muted, #96a3b4)', margin: '14px 0 0', textAlign: 'center'}}>
-        {ru
-          ? 'Прямой клиринг USDC на Arc Mainnet (5042) с детерминированной валидацией 5 политик. Автоматический релиз ключа при получении подтверждения.'
-          : 'Direct USDC clearing on Arc Mainnet (5042) enforced by 5 Policy Gates. Automatic digital code issuance upon transaction confirmation.'}
-      </p>
+        </div>
+        <p style={{fontSize: '11px', color: 'var(--checkout-muted, #96a3b4)', margin: '0', textAlign: 'center'}}>
+          {ru ? 'Подключение кошелька и смена сети не отправляют средства. Платёж требует отдельного подтверждения в кошельке.' : 'Connecting a wallet or switching networks does not send funds. Payment requires separate confirmation in your wallet.'}
+        </p>
+        <p style={{fontSize: '11px', color: 'var(--checkout-muted, #96a3b4)', margin: '14px 0 0', textAlign: 'center'}}>
+          {ru
+            ? 'Клиринг USDC на Arc Mainnet (5042) проходит 5 проверок политики. После подтверждения транзакции выдача запрашивается у провайдера и может занять время.'
+            : 'USDC clearing on Arc Mainnet (5042) passes 5 Policy Gates. After transaction confirmation, provider delivery is requested and may take a moment.'}
+        </p>
         </Frame.Panel>
-      </Frame>
+        </Frame>
     </section>
   );
 }

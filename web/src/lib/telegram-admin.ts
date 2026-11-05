@@ -70,11 +70,6 @@ export function isTelegramAdmin(userId: number, username?: string): boolean {
   if (adminChatId && String(userId) === adminChatId) return true;
   if (username && adminUsernames.includes(username.toLowerCase().replace(/^@/, ''))) return true;
 
-  // If no admin is configured at all in development/test mode, allow access for initial setup
-  if (adminIds.length === 0 && adminUsernames.length === 0 && !adminChatId) {
-    if (process.env.NODE_ENV !== 'production') return true;
-  }
-
   return false;
 }
 

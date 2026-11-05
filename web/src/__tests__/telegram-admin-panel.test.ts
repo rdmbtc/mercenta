@@ -32,6 +32,14 @@ describe('Telegram Bot Admin Panel & Order Notifications Matrix', () => {
   // Part 1: Admin Authorization & RBAC
   // -------------------------------------------------------------------------
   describe('Admin Authorization & Identification', () => {
+    it('fails closed when no admin is configured', () => {
+      process.env.NODE_ENV = 'development';
+      delete process.env.TELEGRAM_ADMIN_IDS;
+      delete process.env.TELEGRAM_ADMIN_ID;
+      delete process.env.TELEGRAM_ADMIN_USERNAMES;
+      delete process.env.TELEGRAM_ADMIN_CHAT_ID;
+      expect(isTelegramAdmin(123456789, 'anyone')).toBe(false);
+    });
     it('recognizes admin from TELEGRAM_ADMIN_IDS (single ID)', () => {
       process.env.NODE_ENV = 'production';
       process.env.TELEGRAM_ADMIN_IDS = '123456789';
