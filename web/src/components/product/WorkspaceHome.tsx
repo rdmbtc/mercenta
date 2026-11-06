@@ -9,12 +9,12 @@ import {safeCompactUsdc,type PreviewProduct} from '@/lib/workspace-discovery';
 import type {Language} from '@/lib/workspace-plan';
 import type {BrowseCatalog} from '@/lib/catalog-browse';
 import {homeFeaturedFamilies,saveHomeGoal,saveFamilyIntent} from '@/lib/home-featured';
-import type {Destination} from './WorkspaceGuide';
+import type {WorkspaceSection} from '@/lib/workspace-navigation';
 import {CatalogFamilyCard} from './CatalogFamilyCard';
 import {ThinkingOrb} from '@/components/panelui/thinking-orb';
 import {RollingNumber} from '@/components/panelui/rolling-number';
 type Row=Record<string,string|number|null>;
-type Props={catalog?:BrowseCatalog;lang:Language;wallet:string|null;available:string|null;reserved:string|null;orders:number|null;spent:string|null;recent:Row[];products:PreviewProduct[];onReview:(p:PreviewProduct)=>void;onNavigate:(s:Destination)=>void;onSetup:()=>void;onFund:()=>void;canFund:boolean;loading:boolean;readOnly:boolean;network?:'testnet'|'mainnet'};
+type Props={catalog?:BrowseCatalog;lang:Language;wallet:string|null;available:string|null;reserved:string|null;orders:number|null;spent:string|null;recent:Row[];products:PreviewProduct[];onReview:(p:PreviewProduct)=>void;onNavigate:(s:WorkspaceSection)=>void;onSetup:()=>void;onFund:()=>void;canFund:boolean;loading:boolean;readOnly:boolean;network?:'testnet'|'mainnet'};
 export function WorkspaceHome(p:Props){
  const ru=p.lang==='ru',signedIn=!!p.wallet,amount=p.available===null?null:safeCompactUsdc(p.available);let availUnits=0n;try{const raw=String(p.available??'0').trim();availUnits=raw.includes('.')?BigInt(Math.round(parseFloat(raw)*1_000_000)):BigInt(raw);}catch{}const needsFunds=amount&&availUnits===0n&&p.canFund,isMainnet=p.network==='mainnet';
  const parsedBalance = amount?.exact ? parseFloat(amount.exact) : (amount?.text ? parseFloat(amount.text.replace(/,/g, '')) : null);
