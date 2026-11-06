@@ -48,7 +48,6 @@ function ReadyCatalogItemDialog({
   const [id, setId] = useState(p.denominations.find((d) => d.available)?.id ?? p.denominations[0]?.id ?? '');
   const [quantity, setQuantity] = useState(1);
   const [accountRef, setAccountRef] = useState('');
-  const [telegramRef, setTelegramRef] = useState('');
 
   const d = p.denominations.find((x) => x.id === id);
   const total = catalogueTotal(d, quantity);
@@ -71,13 +70,7 @@ function ReadyCatalogItemDialog({
   const topupConfig = getTopupConfig(titleOverride ?? p.name, p.type, ru);
   const guide = getActivationGuide(titleOverride ?? p.name, p.brand, p.category);
 
-  const cleanTg = telegramRef.trim().replace(/^@+/, '');
-  const tgFormatted = cleanTg ? `@${cleanTg}` : '';
-  const combinedAccount = topupConfig.isTelegram
-    ? accountRef.trim() || tgFormatted
-    : topupConfig.isTopup
-    ? accountRef.trim()
-    : '';
+  const combinedAccount = topupConfig.isTopup ? accountRef.trim() : '';
 
   return (
     <Modal canClose={!locked} title={titleOverride ?? p.name} onClose={() => { if (!locked) onClose(); }}>
@@ -200,44 +193,6 @@ function ReadyCatalogItemDialog({
             />
             <p className="mp-note" style={{ marginTop: '6px', fontSize: '11px', color: '#94a3b8' }}>
               {topupConfig.hint}
-            </p>
-          </div>
-        )}
-
-        {topupConfig.isTopup && !topupConfig.isTelegram && (
-          <div className="mp-field" style={{
-            marginTop: '10px',
-            background: 'rgba(178, 229, 255, 0.03)',
-            padding: '14px',
-            borderRadius: '10px',
-            border: '1px solid rgba(178, 229, 255, 0.15)'
-          }}>
-            <label htmlFor="catalogue-telegram-ref" style={{ fontWeight: 600, display: 'block', marginBottom: '8px', color: '#f8fafc', fontSize: '13px' }}>
-              {ru ? 'Telegram username (@username) для чека и квитанции:' : 'Telegram username (@username) for delivery updates & receipt:'}
-              <span style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 400, marginLeft: '6px' }}>({ru ? 'опционально' : 'optional'})</span>
-            </label>
-            <input
-              id="catalogue-telegram-ref"
-              type="text"
-              placeholder="@username (e.g. @durov)"
-              value={telegramRef}
-              disabled={locked}
-              onChange={(e) => setTelegramRef(e.target.value.trim())}
-              style={{
-                width: '100%',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                border: '1px solid rgba(178, 229, 255, 0.25)',
-                background: '#080b10',
-                color: '#f8fafc',
-                fontSize: '14px',
-                fontFamily: 'monospace',
-                boxSizing: 'border-box',
-                outline: 'none'
-              }}
-            />
-            <p className="mp-note" style={{ marginTop: '6px', fontSize: '11px', color: '#94a3b8' }}>
-              {ru ? 'Уведомление о зачислении и подтверждение квитанции будут продублированы в Telegram.' : 'Delivery confirmation and receipt will be duplicated to Telegram.'}
             </p>
           </div>
         )}

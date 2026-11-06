@@ -73,10 +73,68 @@ def render_message(command, language, config, private_chat=True, messages=None):
     launch = {'text': launch_label}
     launch.update({'web_app': {'url': url}} if private_chat else {'url': url})
     home = {'text': b['home'], 'callback_data': 'cmd_start'}
+
+    def make_app_btn(label, **extra_query):
+        q = dict(query)
+        q.update(extra_query)
+        btn_url = urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path or '/tg', urllib.parse.urlencode(q), ''))
+        return {'text': label, 'web_app': {'url': btn_url}} if private_chat else {'text': label, 'url': btn_url}
+
     if screen == 'language':
         keyboard = [[{'text': ('✓ ' if language == 'ru' else '') + 'Русский', 'callback_data': 'lang_ru'}, {'text': ('✓ ' if language == 'en' else '') + 'English', 'callback_data': 'lang_en'}], [home]]
     elif screen == 'start':
         keyboard = [[launch], [{'text': b['wallet_short'], 'callback_data': 'cmd_wallet'}, {'text': b['orders'], 'callback_data': 'cmd_orders'}], [{'text': b['help_short'], 'callback_data': 'cmd_help'}, {'text': b['language'], 'callback_data': 'cmd_language'}]]
+    elif screen == 'shop':
+        if language == 'ru':
+            keyboard = [
+                [make_app_btn('🛍 Открыть полный каталог', section='store')],
+                [
+                    make_app_btn('🎮 Игры и ключи', section='store', category='gaming'),
+                    make_app_btn('🎬 Подписки', section='store', category='streaming'),
+                ],
+                [
+                    make_app_btn('💎 Telegram Stars', section='store', category='creator'),
+                    make_app_btn('⚡ Донаты в игры', section='store', kind='direct_topup'),
+                ],
+                [
+                    make_app_btn('🌐 Global', section='store', region='GLOB'),
+                    make_app_btn('🇹🇷 Турция', section='store', region='TR'),
+                    make_app_btn('🇺🇸 США', section='store', region='US'),
+                ],
+                [
+                    make_app_btn('🇷🇺 СНГ', section='store', region='CIS'),
+                    make_app_btn('🇪🇺 Европа', section='store', region='EU'),
+                ],
+                [
+                    {'text': b['wallet_short'], 'callback_data': 'cmd_wallet'},
+                    home,
+                ],
+            ]
+        else:
+            keyboard = [
+                [make_app_btn('🛍 Open Full Catalog', section='store')],
+                [
+                    make_app_btn('🎮 Games & Keys', section='store', category='gaming'),
+                    make_app_btn('🎬 Subscriptions', section='store', category='streaming'),
+                ],
+                [
+                    make_app_btn('💎 Telegram Stars', section='store', category='creator'),
+                    make_app_btn('⚡ Direct Top-Up', section='store', kind='direct_topup'),
+                ],
+                [
+                    make_app_btn('🌐 Global', section='store', region='GLOB'),
+                    make_app_btn('🇹🇷 Turkey', section='store', region='TR'),
+                    make_app_btn('🇺🇸 US', section='store', region='US'),
+                ],
+                [
+                    make_app_btn('🇷🇺 CIS', section='store', region='CIS'),
+                    make_app_btn('🇪🇺 Europe', section='store', region='EU'),
+                ],
+                [
+                    {'text': b['wallet_short'], 'callback_data': 'cmd_wallet'},
+                    home,
+                ],
+            ]
     elif screen == 'help':
         keyboard = [[launch], [{'text': b['language'], 'callback_data': 'cmd_language'}, home]]
     else:

@@ -1,7 +1,7 @@
 {
   "ru": {
     "start": {"title":"Добро пожаловать в {name}","body":"{tagline}\n\nВыберите товар в магазине. Кошелёк и история покупок доступны после входа в Mini App.","note":"Testnet — для тестов. Mainnet — для реальных USDC."},
-    "shop": {"title":"Магазин {name}","body":"Игры, подписки и цифровые товары.\n\nВыберите регион и номинал, затем проверьте актуальную котировку. Просмотр каталога ничего не списывает.","note":"Оплата подтверждается отдельно в Mini App."},
+    "shop": {"title":"Магазин {name} · Каталог цифровых товаров","body":"Выберите категорию или регион для быстрого перехода, либо откройте полную витрину:\n\n• 🎮 <b>Игры</b>: Steam, PlayStation, Xbox, Riot, Roblox\n• 🎬 <b>Подписки</b>: Spotify, Apple, Netflix, Discord\n• 💎 <b>Telegram</b>: Stars, Premium, TON\n• ⚡ <b>Донаты</b>: PUBG Mobile, Free Fire, MLBB\n• 🌐 <b>Регионы</b>: Global, Турция, США, СНГ, Европа","note":"Оплата подтверждается отдельно в Mini App через смарт-контракт Arc USDC."},
     "wallet": {"title":"Ваш кошелёк","body":"Создайте зашифрованный кошелёк на устройстве или подключите свой.\n\nСохраните пароль и резервную копию до первого пополнения.","note":"Никому не отправляйте приватный ключ или пароль."},
     "orders": {"title":"Мои покупки","body":"Заказы, квитанции и доступная выдача — в вашем Mini App.\n\nЕсли платёж уже отправлен, сначала проверьте статус заказа.","note":"Ожидание выдачи — не повод платить повторно."},
     "network": {"title":"Две сети. Разные средства.","body":"<b>Testnet</b> · Arc 5042002\nТестовые USDC и неактивируемая выдача.\n\n<b>Mainnet</b> · Arc 5042\nРеальные USDC. Каждый платёж подтверждаете вы.","note":"Сеть переключается внутри Mini App. Балансы не смешиваются."},
@@ -13,7 +13,7 @@
   },
   "en": {
     "start": {"title":"Welcome to {name}","body":"{tagline}\n\nFind your next digital purchase in the store. Your wallet and purchase history are available after sign-in in the Mini App.","note":"Testnet is for testing. Mainnet uses real USDC."},
-    "shop": {"title":"The {name} store","body":"Games, subscriptions and digital goods.\n\nChoose a region and option, then review a fresh quote. Browsing never charges funds.","note":"Payment requires separate confirmation in the Mini App."},
+    "shop": {"title":"The {name} Store · Digital Catalog","body":"Choose a category or region for quick access, or open the full catalog:\n\n• 🎮 <b>Games</b>: Steam, PlayStation, Xbox, Riot, Roblox\n• 🎬 <b>Subscriptions</b>: Spotify, Apple, Netflix, Discord\n• 💎 <b>Telegram</b>: Stars, Premium, TON\n• ⚡ <b>In-Game Top-Up</b>: PUBG Mobile, Free Fire, MLBB\n• 🌐 <b>Regions</b>: Global, Turkey, US, CIS, Europe","note":"Payments are securely settled on Arc USDC via the Mini App."},
     "wallet": {"title":"Your wallet","body":"Create an encrypted wallet on your device or connect your own.\n\nSave your password and encrypted backup before your first deposit.","note":"Never share your private key or password."},
     "orders": {"title":"Your purchases","body":"Orders, receipts and available delivery live in your Mini App.\n\nIf a payment has already been sent, check the order status first.","note":"Pending delivery is not a reason to pay again."},
     "network": {"title":"Two networks. Separate funds.","body":"<b>Testnet</b> · Arc 5042002\nTest USDC and non-redeemable delivery.\n\n<b>Mainnet</b> · Arc 5042\nReal USDC. You confirm every payment.","note":"Switch inside the Mini App. Balances never mix."},

@@ -31,6 +31,29 @@ class BotTests(unittest.TestCase):
             group = polling.render_message('wallet', language, polling.DEFAULT_CONFIG, False)
             self.assertIn('url', group['reply_markup']['inline_keyboard'][0][0])
 
+    def test_shop_keyboard_categories_and_regions(self):
+        for language in ('ru', 'en'):
+            shop = polling.render_message('shop', language, polling.DEFAULT_CONFIG)
+            kb = shop['reply_markup']['inline_keyboard']
+            self.assertEqual(len(kb), 6)
+            # Full catalog button
+            self.assertIn('section=store', kb[0][0]['web_app']['url'])
+            # Categories: Gaming and Streaming
+            self.assertIn('category=gaming', kb[1][0]['web_app']['url'])
+            self.assertIn('category=streaming', kb[1][1]['web_app']['url'])
+            # Creator (Stars) & Direct Topup
+            self.assertIn('category=creator', kb[2][0]['web_app']['url'])
+            self.assertIn('kind=direct_topup', kb[2][1]['web_app']['url'])
+            # Regions: Global, Turkey, US
+            self.assertIn('region=GLOB', kb[3][0]['web_app']['url'])
+            self.assertIn('region=TR', kb[3][1]['web_app']['url'])
+            self.assertIn('region=US', kb[3][2]['web_app']['url'])
+            # CIS, Europe
+            self.assertIn('region=CIS', kb[4][0]['web_app']['url'])
+            self.assertIn('region=EU', kb[4][1]['web_app']['url'])
+            # Navigation row: wallet & home
+            self.assertEqual(kb[5][1]['callback_data'], 'cmd_start')
+
     def test_fake_payment_callbacks_never_deliver_codes(self):
         for command in ('buy_steam', 'pay_crypto_steam', 'pay_stars_steam', 'setmarkup'):
             self.assertEqual(polling.screen_name(command), 'payment_unavailable')
