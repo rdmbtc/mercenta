@@ -81,6 +81,12 @@ function ReadyCatalogItemDialog({
           imageUrl={p.imageSource === 'supplier' ? p.imageUrl : undefined}
           className="cp-detail-image"
         />
+        <ol className="cf-purchase-steps" aria-label={ru ? 'Шаги покупки' : 'Purchase steps'}>
+          <li className="is-current"><span>1</span>{ru ? 'Регион' : 'Region'}</li>
+          <li><span>2</span>{ru ? 'Вариант' : 'Option'}</li>
+          <li><span>3</span>{ru ? 'Количество' : 'Quantity'}</li>
+          <li><span>4</span>{ru ? 'Проверка' : 'Review'}</li>
+        </ol>
         {regionControl}
         <dl className="customer-product-facts">
           <div>

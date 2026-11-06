@@ -11,12 +11,12 @@ import { Activity,AlertTriangle,ArrowRight,ArrowUpRight,Badge,CategoryIcon,Check
 type Probe={state:'unchecked'|'checking'|'ok'|'error';checkedAt?:string;elapsed?:number};
 
 const modules=[
-  {id:'gateway',name:'Policy gateway',description:'Spend, reserves, margin, supplier and approval checks.',Icon:ShieldCheck},
-  {id:'escrow',name:'Liquidity & reserves',description:'Budget availability and reserved-funds boundary.',Icon:Wallet},
-  {id:'settlement',name:'Settlement rails',description:'Planned USDC routing. A health probe does not verify settlement.',Icon:Globe},
-  {id:'telemetry',name:'Agent telemetry',description:'Intent traces, events and order records.',Icon:Activity},
-  {id:'enclave',name:'Hardware boundary',description:'Attestation and verification boundary.',Icon:Terminal},
-  {id:'sdk',name:'Developer rails',description:'Supplier integrations and SDK connectivity.',Icon:FileText}
+  {id:'gateway',name:'Policy gateway',description:'Spend, reserves, margin, supplier and approval checks.',scope:'No policy-specific probe',next:'Configure gateway telemetry',Icon:ShieldCheck},
+  {id:'escrow',name:'Liquidity & reserves',description:'Budget availability and reserved-funds boundary.',scope:'No funds probe',next:'Connect reserve signal',Icon:Wallet},
+  {id:'settlement',name:'Settlement rails',description:'Planned USDC routing. A health probe does not verify settlement.',scope:'Not verified by origin check',next:'Add chain/RPC probes',Icon:Globe},
+  {id:'telemetry',name:'Agent telemetry',description:'Intent traces, events and order records.',scope:'No event stream connected',next:'Connect event telemetry',Icon:Activity},
+  {id:'enclave',name:'Hardware boundary',description:'Attestation and verification boundary.',scope:'No attestation probe',next:'Publish attestation evidence',Icon:Terminal},
+  {id:'sdk',name:'Developer rails',description:'Supplier integrations and SDK connectivity.',scope:'No supplier probe',next:'Connect integration checks',Icon:FileText}
 ];
 
 export function ProductStatus(){
@@ -98,7 +98,7 @@ export function ProductStatus(){
             <p>Six modules. Explicit monitoring coverage.<br/>Nothing inferred from a green dot.</p>
           </div>
           <div className="mp-module-grid">
-            {modules.map(({id,name,description,Icon},i)=>(
+            {modules.map(({id,name,description,scope,next,Icon},i)=>(
               <button className="mp-module text-left flex flex-col justify-between" key={id} onClick={()=>setDetail(id)}>
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -114,7 +114,7 @@ export function ProductStatus(){
                   <p className="mt-2 text-xs text-slate-400 leading-relaxed">{description}</p>
                 </div>
                 <div className="mp-module-state mt-4 flex items-center justify-between w-full">
-                  <Badge>Telemetry not connected</Badge>
+                  <span className="mp-module-evidence"><Badge>Not verified</Badge><small>{scope}</small></span>
                   <ArrowUpRight size={17}/>
                 </div>
               </button>
@@ -154,13 +154,13 @@ export function ProductStatus(){
 
         <section className="mp-wrap mp-status-export">
           <div><Eyebrow>KEEP THE CONTEXT</Eyebrow><h2>Inspect. Don’t assume.</h2><p>Export the endpoint result and monitoring coverage as JSON.</p></div>
-          <button className="mp-button outline" onClick={()=>DownloadJson({generatedAt:new Date().toISOString(),scope:'this origin only',endpoint:'/api/health',probe,modules:modules.map(m=>({id:m.id,name:m.name,telemetry:'not_connected'})),rails:['Arc','Base','Solana'].map(chain=>({chain,status:'not_monitored'}))},'mercenta-status.json')}>Download status snapshot <Download size={17}/></button>
+          <button className="mp-button outline" onClick={()=>DownloadJson({generatedAt:new Date().toISOString(),scope:'this origin only',endpoint:'/api/health',probe,modules:modules.map(m=>({id:m.id,name:m.name,status:'not_verified',scope:m.scope,next:m.next})),rails:['Arc','Base','Solana'].map(chain=>({chain,status:'not_monitored'}))},'mercenta-status.json')}>Download status snapshot <Download size={17}/></button>
         </section>
       </main>
       <ProductFooter/>
 
       {moduleInfo&&<Modal title={moduleInfo.name} onClose={()=>setDetail(null)}>
-        <Badge tone="hold">Telemetry not connected</Badge>
+        <Badge tone="hold">{moduleInfo.scope}</Badge>
         <p className="mp-drawer-intro">{moduleInfo.description}</p>
         <div className="mp-monitor-empty">
           <Activity size={30}/>
@@ -168,7 +168,7 @@ export function ProductStatus(){
           <p>The API health check cannot establish this module’s health. Configure module-specific probes before publishing availability or uptime.</p>
         </div>
         <div className="mp-detail-total">
-          <p><span>Monitoring coverage</span><strong>Not configured</strong></p>
+          <p><span>Next evidence</span><strong>{moduleInfo.next}</strong></p>
           <p><span>Uptime history</span><span>Unavailable</span></p>
           <p><span>Live incident feed</span><span>Not connected</span></p>
         </div>

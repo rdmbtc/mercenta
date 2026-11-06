@@ -21,4 +21,6 @@ it('featured product only passes one-shot search intent, never executes a purcha
 it('signed-in actual balance is shown rather than a mocked zero',async()=>{await render({wallet:'0xabc',available:'12500000'});expect(el.querySelector('.rf-account')?.textContent).toContain('12.50');expect(el.textContent).toContain('Your prepaid account')});
 it('Russian home offers the same safe workflow',async()=>{await render({lang:'ru'});expect(el.textContent).toContain('Найдите нужное');expect(el.textContent).toContain('Это не разрешение на покупку')});
 
+it('exposes API access and docs without authorizing spend',async()=>{await render();expect(el.textContent).toContain('Build with the API');const apiButton=[...el.querySelectorAll('button')].find(b=>b.textContent?.includes('Open API Access')) as HTMLButtonElement;await act(async()=>apiButton.click());expect(props.onNavigate).toHaveBeenCalledWith('API Access');expect(el.querySelector('a[href="/api-docs"]')).not.toBeNull()});
+
 it('editorial homepage excludes account resale and auto-registration listings',()=>{expect(homeFeatured({...catalog,rows:[row('account','Auto-regs | Steam Accounts'),row('wallet','Steam Wallet')]}).map(r=>r[0])).toEqual(['wallet'])});
