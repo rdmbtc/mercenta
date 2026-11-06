@@ -101,7 +101,24 @@ export function TgCatalog({
       .then(data => {
         if (live) setProducts(unpackBrowse(data).products);
       })
-      .catch(() => {
+      .catch(async () => {
+        // Fallback: fetch browse catalog directly even if strict live check rejected
+        try {
+          const res = await fetch('/api/catalog?view=browse', { credentials: 'omit' });
+          if (res.ok) {
+            const raw = await res.json();
+            const unpacked = unpackBrowse(raw);
+            if (unpacked.products && unpacked.products.length > 0) {
+              if (live) {
+                setProducts(unpacked.products);
+                setError(false);
+                return;
+              }
+            }
+          }
+        } catch {
+          /* ignore fallback error */
+        }
         if (live) setError(true);
       })
       .finally(() => {
