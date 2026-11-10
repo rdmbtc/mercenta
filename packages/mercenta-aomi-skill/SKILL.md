@@ -40,7 +40,7 @@ Evaluate an order through the deterministic **5-Gate Policy Engine** before spen
 - **Output**: Policy decision (`"CLEARED"`, `"BLOCKED"`, or `"REQUIRE_ESCALATION"`), breakdown of platform fee and margin, and simulation hash.
 
 ### 3. `mercenta_checkout`
-Execute atomic settlement on Arc Mainnet via `MercentaCheckout.sol` (`0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed`).
+Execute checkout on Arc Mainnet via `MercentaCheckout.sol` (`0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed`).
 - **Input Parameters**:
   - `quote_id`: Approved quote token from `mercenta_quote`
   - `recipient_address` *(optional)*: EVM address for receipt delivery (defaults to caller)

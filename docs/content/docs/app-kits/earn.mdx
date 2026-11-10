@@ -9,17 +9,15 @@ Mercenta provides enterprise yield optimization for merchant cashflows and auton
 
 ---
 
-## 1. Autonomous Treasury Sweeper (Arc Mainnet)
+## 1. Treasury Sweeper Simulation (Scenario Planning)
 
-In high-volume digital goods commerce, merchant working capital accumulates continuously as customer orders settle in sub-second native USDC. Leaving idle balances in hot wallets incurs inflation drag and unnecessary custodial exposure.
+In digital goods commerce, merchants track operating cashflow separately from reserve buffers. The **Treasury Sweeper** (`/api/treasury/sweep`) models automated allocation of surplus balances using scenario parameters without moving on-chain funds:
 
-The **Treasury Sweeper** automatically allocates surplus merchant cashflow into the **Morpho Blue Galaxy USDC Vault** on Arc Mainnet:
-
-* **Arc Mainnet Chain ID**: `5042`
-* **Target Vault**: Morpho Blue Galaxy USDC Vault (`0x32A44B04C8567dB1a613271167E1402CeF5E8c1b`)
-* **Underlying Asset**: Native USDC (6 decimals)
-* **Historical Yield**: ~8.4% Net APY
-* **Execution Endpoint**: `POST /api/treasury/sweep`
+* **Chain Reference**: `5042` (Scenario planning mode)
+* **Reference Target Vault**: Simulation metadata (`galaxy-usdc` / placeholder `0x32A44B04C8567dB1a613271167E1402CeF5E8c1b`, no live deployed Arc contract at this address)
+* **Underlying Asset**: USDC (6 decimals)
+* **Simulated Reference Yield**: 8.4% scenario parameter (illustrative only, not verified APR or live payout)
+* **Simulation Endpoint**: `POST /api/treasury/sweep`
 
 ---
 

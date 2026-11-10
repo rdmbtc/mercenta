@@ -32,12 +32,12 @@ npm install @mercenta/aomi-skill
 
 The live Aomi App manifest is served dynamically with CORS enabled for `build.aomi.dev` and autonomous clients:
 
-* **Manifest Endpoint**: `GET https://mercenta.xyz/api/aomi/manifest`
-* **Tools Execution Endpoint**: `POST https://mercenta.xyz/api/aomi/tools`
+* **Manifest Endpoint**: `GET https://mercenta.xyz/api/aomi/manifest` (also served read-only on `https://mainnet.mercenta.xyz/api/aomi/manifest`)
+* **Tools Sandbox Endpoint**: `POST https://mercenta.xyz/api/aomi/tools` (simulation endpoint; does not move live Mainnet funds)
 * **Arc Mainnet Chain ID**: `5042`
-* **Arc Mainnet Checkout Contract**: `0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed`
-* **Settlement Asset**: Native USDC (`0x0000000000000000000000000000000000000000` / 18 decimals)
-* **Morpho Blue Galaxy Vault**: `0x32A44B04C8567dB1a613271167E1402CeF5E8c1b`
+* **Arc Mainnet Checkout Contract (Sourcify Verified)**: `0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed`
+* **Arc Mainnet Settlement Vault**: `0x58863e4a739da0e62c2eba258b7783e95d5c48ce`
+* **Settlement Asset**: Arc USDC (`0x3600000000000000000000000000000000000000`, 6-decimal ERC-20 / 18-decimal native gas)
 
 ---
 

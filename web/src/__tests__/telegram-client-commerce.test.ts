@@ -58,8 +58,8 @@ describe('Telegram Client Commerce & Security Tests', () => {
 
     it.each([
       ['0x9ED914F8C356FE8C3673fB57601A94b3A8B57601', true],
-      ['0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed', true],
-      ['0x32A44B04C8567dB1a613271167E1402CeF5E8c1b', true],
+      ['0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed', true],
+      ['0x58863e4a739da0e62c2eba258b7783e95d5c48ce', true],
       ['0x0000000000000000000000000000000000000000', true],
       ['0x123', false],
       ['not_a_wallet', false],

@@ -95,7 +95,7 @@ describe('100-Client Concurrency & High-Load Stress Audit', () => {
 
       receipts.forEach((r) => {
         expect(r.status).toBe('SETTLED');
-        expect(r.contract).toBe('0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed');
+        expect(r.contract).toBe('0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed');
         expect(orderIds.has(r.orderId)).toBe(false);
         expect(txHashes.has(r.txHash)).toBe(false);
         expect(voucherCodes.has(r.voucherCode)).toBe(false);

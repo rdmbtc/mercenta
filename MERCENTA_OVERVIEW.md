@@ -207,11 +207,11 @@ Mercenta operates as a distributed, multi-surface ecosystem:
 - **`app.mercenta.xyz`**: The merchant and agent console. Provides real-time budget controls, wallet management, order telemetry, and Circle Onramp funding.
 - **`t.me/mercentabot` & `mercenta.xyz/tg`**: Official Telegram Bot and Web App (TWA) with non-custodial Arc EVM wallet generation, mobile 5-Gate policy controls, and turnkey merchant shop templates.
 - **`@mercenta/aomi-skill` (`npx skills add rdmbtc/mercenta`)**: Official Aomi App and Agent Skill powering Claude Code, Cursor, Codex, OpenCode, and Hermes with autonomous digital goods procurement on Arc Mainnet.
-- **Autonomous Treasury Sweeper (RFB 01)**: Continuous idle yield harvesting into Morpho Blue Arc Vaults (`0x32A4...8c1b`, ~8.4% APY) with operating liquidity floor protection.
+- **Autonomous Treasury Sweeper (RFB 01)**: Reserve floor guardrail checks and scenario yield planning before allocating idle capital above working liquidity requirements.
 - **Universal Multi-Chain Top-Up (Circle CCTP V2)**: Frictionless 1:1 burn-and-mint USDC deposits into Arc from Base, Solana, Arbitrum, Polygon, and Ethereum.
 - **`catalog.mercenta.xyz`**: High-density digital goods showcase displaying live regional availability, pricing, and instantaneous checkout flows.
 - **`testnet.mercenta.xyz`**: Full-featured risk-free sandbox environment with simulated USDC balances for developers and QA testing.
-- **`mainnet.mercenta.xyz`**: Live production clearinghouse executing atomic settlements on Arc Mainnet (`0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed`).
+- **`mainnet.mercenta.xyz`**: Live production clearinghouse executing settlements on Arc Mainnet (`0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed`).
 - **`docs.mercenta.xyz` & `/api-docs`**: Developer documentation built on Next.js/Fumadocs with interactive curl and TypeScript snippets.
 - **`status.mercenta.xyz`**: Real-time infrastructure health dashboard monitoring gateway latency (<25ms) and Arc Network settlement SLAs.
 
@@ -222,7 +222,7 @@ Mercenta operates as a distributed, multi-surface ecosystem:
 - **Frontend & Fullstack Framework**: Next.js 15 (App Router, Turbopack, React 19).
 - **Type Safety**: 100% strict TypeScript with zero compilation errors (`tsc --noEmit`).
 - **Smart Contract & Settlement Layer**: Viem-powered interaction with Arc Network RPCs; atomic ERC-20 transfers for USDC.
-- **Automated Testing Suite**: 105 test files, **1,005 unit & integration tests passing with 100% success rate** via Vitest.
+- **Automated Testing Suite**: 115 test files, **3,225 unit & integration tests** via Vitest (plus `docs` 36 tests and `bot` 23 unit tests).
 - **Compliance & Attribution**: Full compliance with Arc Brand Guidelines and Circle Brand Kit:
   - *Mercenta is an independent application built on Arc Network. Arc™ is a trademark of Circle Internet Group, Inc. and/or its affiliates. USDC is issued by Circle.*
 

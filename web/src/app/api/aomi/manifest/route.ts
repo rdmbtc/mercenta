@@ -14,8 +14,8 @@ export async function GET() {
     settlement_currency: 'USDC',
     contract_addresses: {
       arc_mainnet: {
-        checkout: '0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed',
-        treasury_vault: '0x42A64061B6cD84067Bb660b2A9B8AA881fD225BB'
+        checkout: '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed',
+        settlement_vault: '0x58863e4a739da0e62c2eba258b7783e95d5c48ce'
       }
     },
     tools: [

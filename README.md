@@ -3,7 +3,7 @@
 > **Deterministic Policy Boundary Between AI Intent and Onchain Settlement**  
 > *Built for the Tameion Agents Hackathon (Arc Blockchain · Circle Stack)*
 
-[![Tests](https://img.shields.io/badge/tests-105%20suites%20%2F%201005%20passed-3ee6a8?style=flat-square)](https://github.com/rdmbtc/mercenta)
+[![Tests](https://img.shields.io/badge/tests-115%20suites%20%2F%203225%20tests-3ee6a8?style=flat-square)](https://github.com/rdmbtc/mercenta)
 [![Arc Mainnet](https://img.shields.io/badge/network-Arc%20Mainnet%20(5042)-00d2ff?style=flat-square)](https://explorer.arc.io)
 [![Circle Stack](https://img.shields.io/badge/circle-Onramp%20Kit%20%2B%20x402-0052ff?style=flat-square)](https://www.circle.com)
 [![License](https://img.shields.io/badge/license-MIT-64748b?style=flat-square)](LICENSE)
@@ -55,8 +55,7 @@ Mercenta ships a turnkey agent skill compliant with the `aomi-labs/skills` speci
 - **One-Command Installation**: `npx skills add rdmbtc/mercenta`.
 
 ### 3.2 Autonomous Treasury Sweeper (RFB 01)
-- Continuously sweeps merchant revenue accumulating above a configurable **Operating Reserve Floor** into the **Morpho Blue Galaxy USDC Vault** (`0x32A44B04C8567dB1a613271167E1402CeF5E8c1b`) on Arc Mainnet generating ~8.4% APY.
-- Operating liquidity protection guarantees working capital is never depleted below merchant fulfillment needs.
+- Scenario yield planning and **Operating Reserve Floor** protection logic (`Reserve Floor` slider and `/api/treasury/sweep` simulator) ensuring working capital is never depleted below merchant fulfillment needs before allocating idle surplus to whitelisted yield strategies.
 
 ### 3.3 Universal Cross-Chain Top-Up (Circle CCTP V2)
 - Zero-slippage 1:1 burn-and-mint USDC deposits into Arc Mainnet wallets from **Base**, **Solana**, **Arbitrum One**, **Polygon**, and **Ethereum**.
@@ -100,12 +99,13 @@ Mercenta leverages the full suite of Circle financial infrastructure:
 
 ## 5. Smart Contracts & Onchain Architecture
 
-| Entity | Address | Network | Explorer |
+| Entity | Address / Ref | Network | Explorer |
 | :--- | :--- | :---: | :--- |
-| **Policy Router Reference** | `0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed` | Arc Mainnet (5042) | [View Code](https://explorer.arc.io/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed#code) |
-| **Clearing Gateway** | `0x58863e4a739da0e62c2eba258b7783e95d5c48ce` | Arc Mainnet (5042) | [View Address](https://explorer.arc.io/address/0x58863e4a739da0e62c2eba258b7783e95d5c48ce) |
+| **MercentaCheckout (Sourcify Verified)** | `0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed` | Arc Mainnet (5042) | [View Code](https://explorer.arc.io/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed#code) · [Sourcify](https://repo.sourcify.dev/5042/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed) |
+| **Clearing Settlement Vault** | `0x58863e4a739da0e62c2eba258b7783e95d5c48ce` | Arc Mainnet (5042) | [View Address](https://explorer.arc.io/address/0x58863e4a739da0e62c2eba258b7783e95d5c48ce) |
 | **Arc Native USDC** | `0x3600000000000000000000000000000000000000` | Arc Mainnet (5042) | [View Token](https://explorer.arc.io/token/0x3600000000000000000000000000000000000000) |
-| **Testnet Settlement Vault** | `0x486b1f28b7e2832810a08e1ecfa732e752945d7f` | Arc Testnet (5042002) | [View Vault](https://testnet.arcscan.app/address/0x486b1f28b7e2832810a08e1ecfa732e752945d7f) |
+| **x402 Gateway Acceptance Tx** | `0xef8037362a4b0e7f07b3c6d81b3327389b9271ab57fd7c5e537e4c7a578835b6` | Arc Testnet (5042002) | [View Tx](https://testnet.arcscan.app/tx/0xef8037362a4b0e7f07b3c6d81b3327389b9271ab57fd7c5e537e4c7a578835b6) |
+| **Open-Source Primitives** | `PolicyEngine.sol`, `AgentTreasuryVault.sol` | MIT Toolkit | [mercenta-primitives](https://github.com/rdmbtc/mercenta-primitives) |
 
 ---
 
@@ -122,7 +122,7 @@ cd mercenta/web
 npm install
 ```
 
-### Run Test Suite (105 Suites / 1005 Tests)
+### Run Test Suite (115 Suites / 3,225 Tests)
 ```bash
 npm test
 ```

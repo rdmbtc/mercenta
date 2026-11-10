@@ -21,7 +21,8 @@ describe('Aomi Agent Tools API (/api/aomi/tools & manifest)', () => {
       expect(data.schema_version).toBe('v1');
       expect(data.name).toBe('Mercenta Commerce & Treasury');
       expect(data.chains).toContain(5042);
-      expect(data.contract_addresses?.arc_mainnet?.checkout).toBe('0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed');
+      expect(data.contract_addresses?.arc_mainnet?.checkout).toBe('0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed');
+      expect(data.contract_addresses?.arc_mainnet?.settlement_vault).toBe('0x58863e4a739da0e62c2eba258b7783e95d5c48ce');
       expect(data.tools).toBeInstanceOf(Array);
       expect(data.tools.length).toBeGreaterThanOrEqual(5);
     });
@@ -311,7 +312,7 @@ describe('Aomi Agent Tools API (/api/aomi/tools & manifest)', () => {
       expect(body.orderId).toMatch(/^mct_ord_/i);
       expect(body.txHash).toMatch(/^0x[0-9a-f]{64}$/i);
       expect(body.arcscanUrl).toBe(`https://arcscan.app/tx/${body.txHash}`);
-      expect(body.contract).toBe('0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed');
+      expect(body.contract).toBe('0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed');
       expect(body.recipient).toBe(recipient);
       expect(body.voucherCode).toMatch(/^MCT-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/);
       expect(body.receiptSha256).toMatch(/^0x[0-9a-f]{64}$/i);

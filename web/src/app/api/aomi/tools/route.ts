@@ -124,9 +124,10 @@ export async function POST(req: Request) {
         orderId,
         quoteId: quote_id,
         status: 'SETTLED',
+        simulated: true,
         txHash: fakeTxHash,
         arcscanUrl: `https://arcscan.app/tx/${fakeTxHash}`,
-        contract: '0x06B6F77626F22e379D55836F3851B5A24ebFF3Ed',
+        contract: '0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed',
         recipient: recipient_address || 'caller',
         voucherCode,
         deliveryMethod: 'instant_onchain_event',
@@ -157,6 +158,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         status: simulate_only ? 'SIMULATED' : 'SWEPT',
+        simulated: true,
         amountSweptUsdc: sweepableAmount,
         operatingBalanceRemainingUsdc: Number(reserve_floor_usdc),
         targetVault: vault_id === 'galaxy-usdc' ? 'Morpho Blue / Galaxy USDC Vault (Arc 5042)' : vault_id,
