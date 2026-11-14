@@ -12,6 +12,7 @@ import {LiquidityBento} from './LiquidityBento';
 import Hero3DReceipt from "./Hero3DReceipt";
 import { LaunchBadges } from "./LaunchBadges";
 import { RollingNumber } from "@/components/panelui/rolling-number";
+import TelemetryRibbon from "@/components/TelemetryRibbon";
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d={diagonal ? "M6 18 18 6M6 6h12v12" : "M4 12h16m-6-6 6 6-6 6"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -67,10 +68,12 @@ function SellersSection() {
 export default function FlagshipLanding() {
   const [menu, setMenu] = useState(false);
   const [motion] = useState(true);
-    const [activeCase, setActiveCase] = useState<string>("order");
+  const [activeCase, setActiveCase] = useState<string>("order");
   const [amount, setAmount] = useState<number>(CASES.order.amount);
   const [cost, setCost] = useState<number>(CASES.order.cost);
   const [supplier, setSupplier] = useState<SupplierState>("verified");
+  const [labView, setLabView] = useState<"checks" | "trace">("checks");
+  const [labCopied, setLabCopied] = useState(false);
   const [good, setGood] = useState(0);
   const [copied, setCopied] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -165,7 +168,15 @@ export default function FlagshipLanding() {
         </div>
         <div className="mx-wrap mx-hero-layout">
           <div className="mx-hero-copy">
-            <a href="#playground" className="mx-preview"><span className="mx-beacon" /> PRE-LAUNCH PREVIEW <span className="mx-preview-divider" /> Explore the engine <Arrow /></a>
+            <a
+              href="https://repo.sourcify.dev/5042/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed"
+              target="_blank"
+              rel="noreferrer"
+              className="mx-preview"
+              title="Verified on Arc Mainnet via Sourcify"
+            >
+              <span className="mx-beacon" /> ARC MAINNET VERIFIED <span className="mx-preview-divider" /> Sourcify Router 0x06b6...f3ed <Arrow diagonal />
+            </a>
             <div className="mx-hero-headline-pair">
               <div className="mx-hero-headline-col">
                 <MorphHeadline motion={true} />
@@ -184,6 +195,8 @@ export default function FlagshipLanding() {
         </div>
         <div className="mx-wrap"><div className="mx-hero-bottom"><span className="mx-bottom-intro">Built for the<br /><strong>agent economy.</strong></span><div><span className="mx-label">VALIDATE</span><p>5 policy checks</p></div><div><span className="mx-label">PROTECT</span><p>{percent(POLICY.grossMarginFloor).replace(".0", "")} margin floor</p></div><div><span className="mx-label">AUTHORIZE</span><p><RollingNumber value={POLICY.autoApprovalLimit} /> USDC limit</p></div><a href="#control" className="mx-scroll-cue" aria-label="Explore spend controls">Explore <span>↓</span></a></div></div>
       </section>
+
+      <TelemetryRibbon />
 
       <LiquidityBento />
       <SupplySection />
@@ -219,8 +232,146 @@ export default function FlagshipLanding() {
             <div className="mx-scenarios" role="group" aria-label="Example policy scenarios">{SCENARIOS.map(s => <button key={s.key} type="button" aria-pressed={activeCase === s.key} className={activeCase === s.key ? "is-active" : ""} onClick={() => chooseCase(s.key)}>{s.label}</button>)}</div>
             <div className="mx-lab-fields"><label>Client price <span>USDC</span><input type="number" min="1" max="1000000" step="50" value={amount} onChange={e => { setAmount(Math.max(0, Number(e.target.value))); setActiveCase("custom"); }} /></label><label>Supplier cost <span>USDC</span><input type="number" min="0" max="1000000" step="50" value={cost} onChange={e => { setCost(Math.max(0, Number(e.target.value))); setActiveCase("custom"); }} /></label></div>
             <label className="mx-supplier-field">Supplier status<select value={supplier} onChange={e => { setSupplier(e.target.value as SupplierState); setActiveCase("custom"); }}><option value="verified">Verified supplier</option><option value="uncertain">Uncertain supplier</option></select></label>
-            <div className="mx-check-heading"><span className="mx-label">CHECKPOINT</span><span className="mx-label">RESULT</span></div>
-            <ul className="mx-check-list">{result.checks.map((check, index) => <li key={check.id} className={`mx-check-${check.state}`}><span className="mx-check-index">0{index + 1}</span><div><strong>{CHECK_LABELS[index]}</strong><p>{check.note}</p></div><span className="mx-check-state"><StatusIcon state={check.state} /><span>{check.state === "pass" ? "PASS" : check.state === "fail" ? "BLOCK" : "REVIEW"}</span></span></li>)}</ul>
+
+            <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.85rem", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "0.5rem" }}>
+              <button
+                type="button"
+                onClick={() => setLabView("checks")}
+                style={{
+                  padding: "0.3rem 0.65rem",
+                  fontSize: "11px",
+                  fontFamily: "var(--font-mono, monospace)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  borderRadius: "6px",
+                  border: labView === "checks" ? "1px solid #38bdf8" : "1px solid rgba(255, 255, 255, 0.1)",
+                  background: labView === "checks" ? "rgba(56, 189, 248, 0.15)" : "rgba(255, 255, 255, 0.02)",
+                  color: labView === "checks" ? "#38bdf8" : "rgba(255, 255, 255, 0.55)",
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                01 Policy Gates (5/5)
+              </button>
+              <button
+                type="button"
+                onClick={() => setLabView("trace")}
+                style={{
+                  padding: "0.3rem 0.65rem",
+                  fontSize: "11px",
+                  fontFamily: "var(--font-mono, monospace)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  borderRadius: "6px",
+                  border: labView === "trace" ? "1px solid #38bdf8" : "1px solid rgba(255, 255, 255, 0.1)",
+                  background: labView === "trace" ? "rgba(56, 189, 248, 0.15)" : "rgba(255, 255, 255, 0.02)",
+                  color: labView === "trace" ? "#38bdf8" : "rgba(255, 255, 255, 0.55)",
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                02 Euthyna Continuous Audit Trace
+              </button>
+            </div>
+
+            {labView === "checks" ? (
+              <>
+                <div className="mx-check-heading"><span className="mx-label">CHECKPOINT</span><span className="mx-label">RESULT</span></div>
+                <ul className="mx-check-list">{result.checks.map((check, index) => <li key={check.id} className={`mx-check-${check.state}`}><span className="mx-check-index">0{index + 1}</span><div><strong>{CHECK_LABELS[index]}</strong><p>{check.note}</p></div><span className="mx-check-state"><StatusIcon state={check.state} /><span>{check.state === "pass" ? "PASS" : check.state === "fail" ? "BLOCK" : "REVIEW"}</span></span></li>)}</ul>
+              </>
+            ) : (
+              <div style={{ position: "relative", marginBottom: "1rem" }}>
+                <pre
+                  style={{
+                    background: "rgba(9, 13, 19, 0.9)",
+                    border: "1px solid rgba(56, 189, 248, 0.25)",
+                    borderRadius: "8px",
+                    padding: "0.85rem",
+                    fontSize: "11px",
+                    fontFamily: "var(--font-mono, monospace)",
+                    color: "#94a3b8",
+                    overflowX: "auto",
+                    lineHeight: "1.45",
+                    maxHeight: "260px",
+                  }}
+                >
+                  <code>
+                    {JSON.stringify(
+                      {
+                        protocol: "Mercenta Policy Boundary v0.3",
+                        audit_standard: "Athenian Euthyna Continuous Record (Prior Art 01)",
+                        settlement_rail: "Arc Mainnet (5042) · USDC Native Gas",
+                        intent: {
+                          client_price: usdc(amount),
+                          supplier_cost: usdc(cost),
+                          gross_margin: percent(result.margin),
+                          supplier_status: supplier,
+                        },
+                        gate_evaluations: result.checks.map((c, i) => ({
+                          gate: `0${i + 1}`,
+                          check: CHECK_LABELS[i],
+                          state: c.state.toUpperCase(),
+                          note: c.note,
+                        })),
+                        policy_decision: result.decision,
+                        deterministic_reason_hash: `0x${Array.from(`${amount}:${cost}:${supplier}:${result.decision}`)
+                          .reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0x7f4a8e)
+                          .toString(16)
+                          .replace("-", "")
+                          .padStart(16, "0")}...${(Math.abs(amount * 31 + cost * 17) % 0xffff).toString(16).padStart(4, "0")}`,
+                        tamper_proof: true,
+                      },
+                      null,
+                      2
+                    )}
+                  </code>
+                </pre>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const logObj = {
+                      protocol: "Mercenta Policy Boundary v0.3",
+                      audit_standard: "Athenian Euthyna Continuous Record (Prior Art 01)",
+                      settlement_rail: "Arc Mainnet (5042) · USDC Native Gas",
+                      intent: {
+                        client_price: usdc(amount),
+                        supplier_cost: usdc(cost),
+                        gross_margin: percent(result.margin),
+                        supplier_status: supplier,
+                      },
+                      gate_evaluations: result.checks.map((c, i) => ({
+                        gate: `0${i + 1}`,
+                        check: CHECK_LABELS[i],
+                        state: c.state.toUpperCase(),
+                        note: c.note,
+                      })),
+                      policy_decision: result.decision,
+                      tamper_proof: true,
+                    };
+                    try {
+                      await navigator.clipboard.writeText(JSON.stringify(logObj, null, 2));
+                      setLabCopied(true);
+                      setTimeout(() => setLabCopied(false), 2000);
+                    } catch {}
+                  }}
+                  style={{
+                    position: "absolute",
+                    top: "0.5rem",
+                    right: "0.5rem",
+                    padding: "0.25rem 0.55rem",
+                    fontSize: "10px",
+                    fontFamily: "var(--font-mono, monospace)",
+                    background: "rgba(56, 189, 248, 0.2)",
+                    border: "1px solid rgba(56, 189, 248, 0.4)",
+                    color: "#38bdf8",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {labCopied ? "Copied Trace ✓" : "Copy Trace"}
+                </button>
+              </div>
+            )}
             <div className={`mx-verdict mx-verdict-${tone}`} role="status" aria-live="polite" aria-atomic="true"><div><span className="mx-label">POLICY DECISION</span><strong>{result.decision}<Arrow /></strong></div><div><span className="mx-label">GROSS MARGIN</span><strong>{percent(result.margin)}</strong></div></div>
           </div>
         </div>

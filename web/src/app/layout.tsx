@@ -19,9 +19,9 @@ const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"], displ
 // Display face is kept separate from the functional UI and mono data faces.
 const display = DM_Serif_Display({ variable: "--font-display", subsets: ["latin"], weight: "400", display: "swap" });
 
-const TITLE = "Mercenta | Agentic Commerce with Spend Control";
+const TITLE = "Mercenta | Autonomous Business Operator & Digital Procurement on Arc";
 const DESCRIPTION =
- "Buy gaming, streaming and cloud gift cards with USDC. Built on Arc Network, with multi-chain settlement. Agent checkout with spend limits. Mainnet closed; refunds via Support.";
+  "Institutional digital goods clearinghouse on Arc settled natively in USDC. Deterministic 5-step policy engine, x402 machine-to-machine commerce, and zero-inventory wholesale feeds for AI agents.";
 
 export const metadata: Metadata = {
   icons: { icon: [{url:'/favicon.ico?v=mercenta-2',sizes:'any'}, {url:'/favicon-32.png',type:'image/png',sizes:'32x32'}], apple: [{url:'/apple-touch-icon.png',sizes:'180x180'}] },

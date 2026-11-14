@@ -21,6 +21,8 @@ export interface ClearingOrder {
   checks: string;
   txHash: string;
   latency: string;
+  fullTxHash?: string;
+  explorerUrl?: string;
 }
 
 export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
@@ -39,8 +41,10 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
-    txHash: "0x8f3c...b491",
+    txHash: "0xaefe...95a8",
     latency: "14ms",
+    fullTxHash: "0xaefe4925821f750bda4815a5fbcbc073e67c87c71f37e4093952ba8d23e595a8",
+    explorerUrl: "https://explorer.arc.io/tx/0xaefe4925821f750bda4815a5fbcbc073e67c87c71f37e4093952ba8d23e595a8",
   },
   {
     id: "MR-ORD-3294",
@@ -57,8 +61,10 @@ export const HERO_CLEARING_ORDERS: ClearingOrder[] = [
     decision: "Cleared",
     network: "Arc Mainnet (5042)",
     checks: "5/5 Checks Passed",
-    txHash: "0x3e1a...72fd",
+    txHash: "0x3d94...d747",
     latency: "11ms",
+    fullTxHash: "0x3d94ee899e4b6000287cf06c5478c90967db053f36fe213ad4b29bb8b209d747",
+    explorerUrl: "https://explorer.arc.io/tx/0x3d94ee899e4b6000287cf06c5478c90967db053f36fe213ad4b29bb8b209d747",
   },
   {
     id: "MR-ORD-7810",
@@ -332,7 +338,26 @@ export default function Hero3DReceipt() {
             <span className="mx-bar-1" />
           </div>
           <div className="mx-receipt-crypto-meta">
-            <span>TX: {order.txHash}</span>
+            {order.explorerUrl ? (
+              <a
+                href={order.explorerUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  color: "#38bdf8",
+                  textDecoration: "none",
+                  borderBottom: "1px dotted #38bdf8",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "2px",
+                }}
+                title={`Verified on Arc Mainnet: ${order.fullTxHash || order.txHash}`}
+              >
+                TX: {order.txHash} ↗
+              </a>
+            ) : (
+              <span>TX: {order.txHash}</span>
+            )}
             <span>LATENCY: {order.latency}</span>
             <span>{order.network}</span>
           </div>

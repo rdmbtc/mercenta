@@ -38,6 +38,8 @@ flowchart LR
 
 - **Mainnet Hub & Business Operator:** [https://mainnet.mercenta.xyz](https://mainnet.mercenta.xyz)
 - **Official Telegram Storefront & TWA:** [https://t.me/mercentabot](https://t.me/mercentabot) / [https://mercenta.xyz/tg](https://mercenta.xyz/tg)
+- **Arc Ecosystem Showcase Profile:** [https://arc-showcase.thecanteenapp.com/p/mercenta/](https://arc-showcase.thecanteenapp.com/p/mercenta/)
+- **Alchemy Developer Grant:** $1,000 Grant Recipient
 - **Official Aomi Agent Skill:** [`@mercenta/aomi-skill`](packages/mercenta-aomi-skill) (`npx skills add rdmbtc/mercenta`)
 - **Testnet Autonomous Operator Lab:** [https://testnet.mercenta.xyz/app?section=agent-chat](https://testnet.mercenta.xyz/app?section=agent-chat)
 - **Flagship Presentation:** [https://mercenta.xyz](https://mercenta.xyz)
@@ -104,6 +106,8 @@ Mercenta leverages the full suite of Circle financial infrastructure:
 | **MercentaCheckout (Sourcify Verified)** | `0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed` | Arc Mainnet (5042) | [View Code](https://explorer.arc.io/address/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed#code) · [Sourcify](https://repo.sourcify.dev/5042/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed) |
 | **Clearing Settlement Vault** | `0x58863e4a739da0e62c2eba258b7783e95d5c48ce` | Arc Mainnet (5042) | [View Address](https://explorer.arc.io/address/0x58863e4a739da0e62c2eba258b7783e95d5c48ce) |
 | **Arc Native USDC** | `0x3600000000000000000000000000000000000000` | Arc Mainnet (5042) | [View Token](https://explorer.arc.io/token/0x3600000000000000000000000000000000000000) |
+| **Verified Live Purchase Settlement #1** | `0xaefe4925821f750bda4815a5fbcbc073e67c87c71f37e4093952ba8d23e595a8` | Arc Mainnet (5042) | [View Tx (0.83 USDC)](https://explorer.arc.io/tx/0xaefe4925821f750bda4815a5fbcbc073e67c87c71f37e4093952ba8d23e595a8) |
+| **Verified Live Purchase Settlement #2** | `0x3d94ee899e4b6000287cf06c5478c90967db053f36fe213ad4b29bb8b209d747` | Arc Mainnet (5042) | [View Tx (0.98 USDC)](https://explorer.arc.io/tx/0x3d94ee899e4b6000287cf06c5478c90967db053f36fe213ad4b29bb8b209d747) |
 | **x402 Gateway Acceptance Tx** | `0xef8037362a4b0e7f07b3c6d81b3327389b9271ab57fd7c5e537e4c7a578835b6` | Arc Testnet (5042002) | [View Tx](https://testnet.arcscan.app/tx/0xef8037362a4b0e7f07b3c6d81b3327389b9271ab57fd7c5e537e4c7a578835b6) |
 | **Open-Source Primitives** | `PolicyEngine.sol`, `AgentTreasuryVault.sol` | MIT Toolkit | [mercenta-primitives](https://github.com/rdmbtc/mercenta-primitives) |
 

@@ -5,23 +5,26 @@ import "./landing-expanded.css";
 import FlagshipLanding from "@/components/landing/FlagshipLanding";
 
 export const metadata: Metadata = {
-  title: "Mercenta | Buy Gift Cards with USDC",
+  title: "Mercenta | Autonomous Business Operator & Digital Goods Clearinghouse on Arc",
   description:
-    "Buy gift cards with stablecoin USDC on Base and Solana. Steam, PSN, Xbox and more codes with clear pricing, verified availability and agent tooling.",
+    "Institutional digital goods clearinghouse on Arc settled natively in USDC. Deterministic 5-step policy engine, x402 machine-to-machine commerce, and zero-inventory feeds for AI agents.",
   keywords: [
-    "buy gift cards with stablecoin",
-    "buy steam gift card with usdc",
-    "xbox gift card usdc",
-    "playstation gift card usdc",
-    "gift card wholesale api",
-    "digital goods supplier usdc",
-    "usdc gift cards",
+    "autonomous business operator",
+    "arc network",
+    "circle agent stack",
+    "usdc settlement",
+    "x402 machine commerce",
+    "digital goods clearinghouse",
+    "tameion hackathon",
+    "policy engine",
+    "wholesale digital goods",
+    "agentic commerce",
   ],
   alternates: {canonical: "/"},
   openGraph: {
-    title: "Mercenta | Buy Gift Cards with USDC",
+    title: "Mercenta | Autonomous Business Operator & Digital Goods Clearinghouse on Arc",
     description:
-      "Buy gift cards with stablecoin USDC on Base and Solana. Steam, PSN, Xbox and more codes with clear pricing, verified availability and agent tooling.",
+      "Institutional digital goods clearinghouse on Arc settled natively in USDC. Deterministic 5-step policy engine, x402 machine-to-machine commerce, and zero-inventory feeds for AI agents.",
     url: "/",
     type: "website",
   },
