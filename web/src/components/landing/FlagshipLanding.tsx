@@ -13,6 +13,16 @@ import Hero3DReceipt from "./Hero3DReceipt";
 import { LaunchBadges } from "./LaunchBadges";
 import { RollingNumber } from "@/components/panelui/rolling-number";
 import TelemetryRibbon from "@/components/TelemetryRibbon";
+import CommandButton from "@/components/motion/CommandButton";
+import MorphIsland from "@/components/motion/MorphIsland";
+import SpringDropdown from "@/components/motion/SpringDropdown";
+import JellySlider from "@/components/motion/JellySlider";
+import LetterLimit from "@/components/motion/LetterLimit";
+
+const SUPPLIER_OPTIONS = [
+  { id: "verified", label: "Verified Institutional Supplier (Wholesale API)", color: "#34d17a" },
+  { id: "uncertain", label: "Uncertain / Unverified Counterparty (Blocked)", color: "#ff5a5f" },
+];
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d={diagonal ? "M6 18 18 6M6 6h12v12" : "M4 12h16m-6-6 6 6-6 6"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -72,7 +82,7 @@ export default function FlagshipLanding() {
   const [amount, setAmount] = useState<number>(CASES.order.amount);
   const [cost, setCost] = useState<number>(CASES.order.cost);
   const [supplier, setSupplier] = useState<SupplierState>("verified");
-  const [labView, setLabView] = useState<"checks" | "trace">("checks");
+  const [labView, setLabView] = useState<"checks" | "trace" | "mandate">("checks");
   const [labCopied, setLabCopied] = useState(false);
   const [good, setGood] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -154,6 +164,9 @@ export default function FlagshipLanding() {
       <div className="mx-wrap mx-nav-inner">
         <a href="#" className="mx-brand" aria-label="Mercenta home"><BrandMark /><span>mercenta<span className="mx-brand-dot">.</span></span></a>
         <nav className="mx-desktop-links" aria-label="Main navigation"><a href="/catalog">Catalog</a><a href="#playground">Playground</a><a href="#architecture">How it works</a><a href="/app?section=agent-chat">Business Operator</a></nav>
+        <div style={{ display: "none" }} className="lg:!flex items-center">
+          <CommandButton placeholder="Search catalog, policy, or tokens..." />
+        </div>
         <a className="mx-nav-console" href="/app">Console <Arrow diagonal /></a>
         <button ref={menuButton} type="button" className="mx-menu-toggle" aria-expanded={menu} aria-controls="mx-mobile-nav" aria-label={menu ? "Close navigation" : "Open navigation"} onClick={() => setMenu(!menu)}><span /><span /></button>
       </div>
@@ -168,15 +181,18 @@ export default function FlagshipLanding() {
         </div>
         <div className="mx-wrap mx-hero-layout">
           <div className="mx-hero-copy">
-            <a
-              href="https://repo.sourcify.dev/5042/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed"
-              target="_blank"
-              rel="noreferrer"
-              className="mx-preview"
-              title="Verified on Arc Mainnet via Sourcify"
-            >
-              <span className="mx-beacon" /> ARC MAINNET VERIFIED <span className="mx-preview-divider" /> Sourcify Router 0x06b6...f3ed <Arrow diagonal />
-            </a>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", marginBottom: "1.25rem" }}>
+              <a
+                href="https://repo.sourcify.dev/5042/0x06b67adf8d63c8c35a6beda42a3bb93d485af3ed"
+                target="_blank"
+                rel="noreferrer"
+                className="mx-preview"
+                title="Verified on Arc Mainnet via Sourcify"
+              >
+                <span className="mx-beacon" /> ARC MAINNET VERIFIED <span className="mx-preview-divider" /> Sourcify Router 0x06b6...f3ed <Arrow diagonal />
+              </a>
+              <MorphIsland />
+            </div>
             <div className="mx-hero-headline-pair">
               <div className="mx-hero-headline-col">
                 <MorphHeadline motion={true} />
@@ -231,9 +247,51 @@ export default function FlagshipLanding() {
             <div className="mx-lab-header"><span><i className="mx-beacon" />POLICY LAB</span><span className="mx-label">{POLICY.version}</span></div>
             <div className="mx-scenarios" role="group" aria-label="Example policy scenarios">{SCENARIOS.map(s => <button key={s.key} type="button" aria-pressed={activeCase === s.key} className={activeCase === s.key ? "is-active" : ""} onClick={() => chooseCase(s.key)}>{s.label}</button>)}</div>
             <div className="mx-lab-fields"><label>Client price <span>USDC</span><input type="number" min="1" max="1000000" step="50" value={amount} onChange={e => { setAmount(Math.max(0, Number(e.target.value))); setActiveCase("custom"); }} /></label><label>Supplier cost <span>USDC</span><input type="number" min="0" max="1000000" step="50" value={cost} onChange={e => { setCost(Math.max(0, Number(e.target.value))); setActiveCase("custom"); }} /></label></div>
-            <label className="mx-supplier-field">Supplier status<select value={supplier} onChange={e => { setSupplier(e.target.value as SupplierState); setActiveCase("custom"); }}><option value="verified">Verified supplier</option><option value="uncertain">Uncertain supplier</option></select></label>
 
-            <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.85rem", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "0.5rem" }}>
+            <div style={{ margin: "14px 15px 0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <span style={{ fontSize: "11px", fontFamily: "var(--font-mono, monospace)", color: "#bdc9d6", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                  Supplier Verification Boundary (Spring Dropdown)
+                </span>
+                <span style={{ fontSize: "10px", color: supplier === "verified" ? "#34d17a" : "#ff5a5f", fontFamily: "var(--font-mono, monospace)" }}>
+                  {supplier === "verified" ? "Gate 04: PASS" : "Gate 04: BLOCK"}
+                </span>
+              </div>
+              <SpringDropdown
+                label="Supplier Verification"
+                options={SUPPLIER_OPTIONS}
+                selectedId={supplier}
+                onSelect={(id) => {
+                  setSupplier(id as SupplierState);
+                  setActiveCase("custom");
+                }}
+              />
+            </div>
+
+            <div style={{ margin: "16px 15px 12px", padding: "12px 14px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.07)", borderRadius: "8px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <span style={{ fontSize: "11px", fontFamily: "var(--font-mono, monospace)", color: "#bdc9d6", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                  Tactile Price Adjuster (Liquid Goo Physics)
+                </span>
+                <span style={{ fontSize: "11px", fontFamily: "var(--font-mono, monospace)", color: "#38bdf8" }}>
+                  {amount} USDC
+                </span>
+              </div>
+              <JellySlider
+                min={10}
+                max={1000}
+                step={10}
+                value={amount}
+                unit=" USDC"
+                label="Client Price"
+                onChange={(val) => {
+                  setAmount(val);
+                  setActiveCase("custom");
+                }}
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: "0.5rem", margin: "14px 15px 0.85rem", borderBottom: "1px solid rgba(255, 255, 255, 0.08)", paddingBottom: "0.5rem", flexWrap: "wrap" }}>
               <button
                 type="button"
                 onClick={() => setLabView("checks")}
@@ -272,6 +330,25 @@ export default function FlagshipLanding() {
               >
                 02 Euthyna Continuous Audit Trace
               </button>
+              <button
+                type="button"
+                onClick={() => setLabView("mandate")}
+                style={{
+                  padding: "0.3rem 0.65rem",
+                  fontSize: "11px",
+                  fontFamily: "var(--font-mono, monospace)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  borderRadius: "6px",
+                  border: labView === "mandate" ? "1px solid #38bdf8" : "1px solid rgba(255, 255, 255, 0.1)",
+                  background: labView === "mandate" ? "rgba(56, 189, 248, 0.15)" : "rgba(255, 255, 255, 0.02)",
+                  color: labView === "mandate" ? "#38bdf8" : "rgba(255, 255, 255, 0.55)",
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                03 Agent Policy Mandate
+              </button>
             </div>
 
             {labView === "checks" ? (
@@ -279,7 +356,7 @@ export default function FlagshipLanding() {
                 <div className="mx-check-heading"><span className="mx-label">CHECKPOINT</span><span className="mx-label">RESULT</span></div>
                 <ul className="mx-check-list">{result.checks.map((check, index) => <li key={check.id} className={`mx-check-${check.state}`}><span className="mx-check-index">0{index + 1}</span><div><strong>{CHECK_LABELS[index]}</strong><p>{check.note}</p></div><span className="mx-check-state"><StatusIcon state={check.state} /><span>{check.state === "pass" ? "PASS" : check.state === "fail" ? "BLOCK" : "REVIEW"}</span></span></li>)}</ul>
               </>
-            ) : (
+            ) : labView === "trace" ? (
               <div style={{ position: "relative", marginBottom: "1rem" }}>
                 <pre
                   style={{
@@ -370,6 +447,23 @@ export default function FlagshipLanding() {
                 >
                   {labCopied ? "Copied Trace ✓" : "Copy Trace"}
                 </button>
+              </div>
+            ) : (
+              <div style={{ position: "relative", marginBottom: "1rem", padding: "0.25rem 0" }}>
+                <div style={{ marginBottom: "0.85rem" }}>
+                  <strong style={{ display: "block", fontSize: "12px", color: "#ffffff", marginBottom: "3px" }}>
+                    Micro-Payload Boundary Sandbox
+                  </strong>
+                  <p style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.55)", lineHeight: "1.4" }}>
+                    Autonomous agent instructions dispatched across Arc Network relayers enforce an 80-character budget constraint. Excess characters physically drop and bounce with gravity physics:
+                  </p>
+                </div>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <LetterLimit
+                    limit={80}
+                    placeholder="e.g. Restock 10x Steam USD 50 only if gross margin >= 8% and supplier is verified."
+                  />
+                </div>
               </div>
             )}
             <div className={`mx-verdict mx-verdict-${tone}`} role="status" aria-live="polite" aria-atomic="true"><div><span className="mx-label">POLICY DECISION</span><strong>{result.decision}<Arrow /></strong></div><div><span className="mx-label">GROSS MARGIN</span><strong>{percent(result.margin)}</strong></div></div>
