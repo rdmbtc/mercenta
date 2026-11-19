@@ -13,17 +13,13 @@ export function LiquidityBento() {
     <section className="mx-liquidity" id="liquidity">
       <div className="mx-wrap">
         <div className="mx-section-meta">
-          <span className="mx-label">THE CAPITAL LAYER / BUILT ON ARC NETWORK</span>
+          <span className="mx-label">Working Capital</span>
           <a className="mx-text-link" href="/app?section=liquidity">
             Open liquidity <ArrowUpRight size={17} />
           </a>
         </div>
         <div className="mx-liquidity-heading">
-          <h2>
-            Your supply.
-            <br />
-            <span>Your working capital.</span>
-          </h2>
+          <h2>Treasury liquidity and reserve modeling</h2>
           <p>
             A visible treasury workspace for reserves, collateral and funding.
             Let agents advise. Keep execution inside your rules.
@@ -39,11 +35,7 @@ export function LiquidityBento() {
               <span className="mx-label">EARN USDC</span>
               <span className="mx-liquidity-tag">RATE MODEL</span>
             </div>
-            <h3>
-              Idle capital.
-              <br />
-              An active plan.
-            </h3>
+            <h3>Yield modeling on free reserves</h3>
             <p>
               Model how free USDC reserves could earn while preserving operating
               liquidity.
@@ -71,11 +63,7 @@ export function LiquidityBento() {
               <span className="mx-label">BORROW VS CIRBTC</span>
               <span className="mx-liquidity-tag">RISK MODEL</span>
             </div>
-            <h3>
-              Keep the Bitcoin.
-              <br />
-              Explore the liquidity.
-            </h3>
+            <h3>Collateralized borrowing models</h3>
             <p>
               Compare collateral, USDC debt and liquidation risk without selling
               the model collateral.

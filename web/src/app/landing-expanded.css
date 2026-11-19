@@ -158,6 +158,7 @@
   mix-blend-mode: multiply;
   z-index: 2;
   transition: opacity 0.2s ease;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.45) 0%, rgba(178, 229, 255, 0.15) 35%, transparent 65%);
 }
 
 /* Hologram Laser Scanning Beam */

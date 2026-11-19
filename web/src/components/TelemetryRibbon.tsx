@@ -102,15 +102,13 @@ export default function TelemetryRibbon() {
       <div className="mx-auto flex max-w-[1440px] items-center px-4">
         {/* Fixed Left Status Badge */}
         <div className="mr-6 flex shrink-0 items-center gap-2 border-r border-[#252830] pr-6">
-          <span className="relative flex h-2 w-2">
-            <span
-              className={`absolute inline-flex h-full w-full rounded-full bg-[#00ca8e] transition-opacity duration-500 ${
-                pulse ? "opacity-100 scale-125" : "opacity-40 scale-100"
-              }`}
-            />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#00ca8e]" />
-          </span>
-          <span className="font-mono text-[11px] font-medium tracking-[0.1em] uppercase text-[#b2b6bd]">
+          <Activity
+            size={12}
+            className={`text-[#00ca8e] transition-opacity duration-500 ${
+              pulse ? "opacity-100" : "opacity-50"
+            }`}
+          />
+          <span className="font-mono text-[11px] font-medium tracking-[0.04em] text-[#b2b6bd]">
             Illustrative policy activity
           </span>
           <span className="rounded bg-[#00ca8e]/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-[#00ca8e]">

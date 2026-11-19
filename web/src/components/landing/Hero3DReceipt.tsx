@@ -225,12 +225,13 @@ export default function Hero3DReceipt() {
           transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
         }}
       >
-        {/* Holographic Specular Glare */}
+        {/* Specular glare */}
         <div
           className="mx-3d-glare"
           style={{
-            background: `radial-gradient(circle at ${tilt.gx}% ${tilt.gy}%, rgba(255, 255, 255, 0.45) 0%, rgba(178, 229, 255, 0.15) 35%, transparent 65%)`,
-          }}
+            '--gx': `${tilt.gx}%`,
+            '--gy': `${tilt.gy}%`,
+          } as React.CSSProperties}
           aria-hidden="true"
         />
 
@@ -240,7 +241,7 @@ export default function Hero3DReceipt() {
         {/* Top: BrandMark + Illustrative Order Record + Live Clearing Badge */}
         <div className="mx-receipt-top">
           <BrandMark />
-          <span className="mx-label">ILLUSTRATIVE ORDER RECORD</span>
+          <span className="mx-label">Illustrative order record</span>
           <div className="mx-receipt-live-badge">
             <span className="mx-receipt-live-dot" />
             <span>SETTLED</span>

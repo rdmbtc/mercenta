@@ -139,7 +139,7 @@ export default function PolicySandbox() {
               </span>
               <span className="ml-check__body">
                 <span className="ml-check__label">
-                  <span className="ml-mono ml-dim">0{i + 1}</span> {c.label}
+                  <span className="ml-mono ml-dim">{i + 1}.</span> {c.label}
                 </span>
                 <span className="ml-check__note">{c.note}</span>
               </span>

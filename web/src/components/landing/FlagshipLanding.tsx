@@ -46,8 +46,8 @@ const GOODS = [
 
 const SELLER_POINTS = [
   ["Console, CSV or REST", "Buy in batches from the web console, upload a CSV, or wire one endpoint. About 40 lines to a first order."],
-  ["USDC settlement", "Built on Arc Network, with multi-chain settlement. A signed receipt for every batch — no chargebacks, no payment anxiety."],
-  ["Daily restock", "Steam, PlayStation, Xbox, Epic, Riot, Blizzard, Roblox, Razer Gold — region-labeled, live price feed."],
+  ["USDC settlement", "Built on Arc Network, with multi-chain settlement. A signed receipt for every batch, with zero chargebacks."],
+  ["Daily restock", "Steam, PlayStation, Xbox, Epic, Riot, Blizzard, Roblox, Razer Gold with region labels and live price feed."],
   ["Launch offer", "We beat your current wholesale quote by 1–2 points, or your first order is free. 0% API fee for 30 days. No minimums."],
 ];
 
@@ -55,19 +55,19 @@ function SellersSection() {
   return <section className="mx-sellers" id="sellers" aria-labelledby="mx-sellers-title">
     <div className="mx-wrap mx-sellers-layout">
       <div className="mx-sellers-copy">
-        <div className="mx-section-meta"><span className="mx-label">10 / FOR RESELLERS</span><span className="mx-label">WHOLESALE. NO WAREHOUSE.</span></div>
-        <h2 id="mx-sellers-title">You sell.<br /><span>We restock.</span></h2>
-        <p>Wholesale digital goods for marketplace shops and Telegram stores. Order what your shop needs today — supply, pricing and receipts stay Mercenta&rsquo;s problem.</p>
+        <div className="mx-section-meta"><span className="mx-label">For Resellers</span></div>
+        <h2 id="mx-sellers-title">Wholesale digital goods for merchants</h2>
+        <p>Wholesale digital goods for marketplace shops and Telegram stores. Order what your shop needs today, with pricing and receipts handled by Mercenta.</p>
         <ul className="mx-seller-points">{SELLER_POINTS.map(([t, d]) => <li key={t}><strong>{t}</strong><p>{d}</p></li>)}</ul>
         <div className="mx-actions"><a className="mx-button mx-button-primary" href="https://t.me/mercenta" target="_blank" rel="noreferrer">Get wholesale access <Arrow diagonal /></a><a className="mx-button mx-button-quiet" href="/api-docs">Read the API contract <Arrow /></a></div>
       </div>
       <aside className="mx-sellers-card" aria-label="How to request a wholesale quote">
-        <div className="mx-envelope-top"><BrandMark /><span className="mx-label">QUOTE REQUEST</span><span className="mx-label">REPLY WITHIN 24H</span></div>
-        <p className="mx-sellers-card-title">Send three things.<br /><span>Get a price sheet.</span></p>
+        <div className="mx-envelope-top"><BrandMark /><span className="mx-label">Wholesale quote</span></div>
+        <p className="mx-sellers-card-title">Request a price sheet</p>
         <ol>
-          <li><span className="mx-label">01</span><span>Your shop link — FunPay, GGSel, G2G or a Telegram store</span></li>
-          <li><span className="mx-label">02</span><span>Monthly volume, in USD</span></li>
-          <li><span className="mx-label">03</span><span>The SKUs you restock most</span></li>
+          <li><span>Shop link (FunPay, GGSel, G2G or Telegram)</span></li>
+          <li><span>Estimated monthly volume in USD</span></li>
+          <li><span>Primary SKUs needed</span></li>
         </ol>
         <div className="mx-sellers-card-foot"><StatusIcon state="pass" /><span>Graduated daily limits grow with a clean order history.</span></div>
       </aside>
@@ -196,7 +196,7 @@ export default function FlagshipLanding() {
             <div className="mx-hero-headline-pair">
               <div className="mx-hero-headline-col">
                 <MorphHeadline motion={true} />
-                <p className="mx-hero-description">You run the business. Mercenta brings the goods.<br className="mx-desktop-break" /> Give agents the power to buy — inside your rules.</p>
+                <p className="mx-hero-description">Wholesale digital goods for autonomous workflows.<br className="mx-desktop-break" /> Set deterministic spend caps and margin floors before agents buy.</p>
                 <div className="mx-actions"><a href="/app" className="mx-button mx-button-primary">Launch console <Arrow diagonal /></a><a href="#playground" className="mx-button mx-button-quiet">Test the guardrails <Arrow /></a></div>
                 <a className="mx-hero-seller" href="#sellers">Running a shop? Wholesale supply <Arrow /></a>
                 <LaunchBadges variant="hero" />
@@ -206,8 +206,8 @@ export default function FlagshipLanding() {
               </div>
             </div>
           </div>
-          <div className="mx-art-caption"><span className="mx-cross">+</span><div><span className="mx-label">THE POLICY GATE / 001</span><p>Intelligence moves fast.<br />Control moves with it.</p></div></div>
-          <div className="mx-art-status"><span className="mx-beacon" /> DETERMINISTIC BY DESIGN</div>
+          <div className="mx-art-caption"><span className="mx-cross">+</span><div><span className="mx-label">Policy Boundary</span><p>Intelligence moves fast.<br />Control moves with it.</p></div></div>
+          <div className="mx-art-status"><span className="mx-beacon" /> Deterministic verification</div>
         </div>
         <div className="mx-wrap"><div className="mx-hero-bottom"><span className="mx-bottom-intro">Built for the<br /><strong>agent economy.</strong></span><div><span className="mx-label">VALIDATE</span><p>5 policy checks</p></div><div><span className="mx-label">PROTECT</span><p>{percent(POLICY.grossMarginFloor).replace(".0", "")} margin floor</p></div><div><span className="mx-label">AUTHORIZE</span><p><RollingNumber value={POLICY.autoApprovalLimit} /> USDC limit</p></div><a href="#control" className="mx-scroll-cue" aria-label="Explore spend controls">Explore <span>↓</span></a></div></div>
       </section>
@@ -219,20 +219,20 @@ export default function FlagshipLanding() {
 
       <section className="mx-control" id="control" aria-labelledby="mx-control-title">
         <div className="mx-wrap">
-          <div className="mx-section-meta"><span className="mx-label">02 / THE CONTROL LAYER</span><span className="mx-label">NOT A PROMPT. A POLICY.</span></div>
-          <div className="mx-control-intro"><h2 id="mx-control-title">Give agents the keys.<br /><span>Not the blank check.</span></h2><p>Autonomy without boundaries is just risk at machine speed. Mercenta puts a deterministic checkpoint between an agent&rsquo;s intent and your money.</p></div>
+          <div className="mx-section-meta"><span className="mx-label">Spend Controls</span></div>
+          <div className="mx-control-intro"><h2 id="mx-control-title">Deterministic spend boundaries for autonomous agents</h2><p>Autonomy without boundaries is risk at machine speed. Mercenta places a deterministic checkpoint between agent intent and treasury funds.</p></div>
           <div className="mx-control-grid">
             <div className="mx-rule-list">
-              <article><span className="mx-rule-number">01</span><div><h3>Budgets that mean business.</h3><p>Available and reserved funds are checked before authorization. An agent cannot talk its way around arithmetic.</p></div><span className="mx-rule-glyph">↗</span></article>
-              <article><span className="mx-rule-number">02</span><div><h3>Margin is not optional.</h3><p>Below your gross margin floor? Blocked. The rules stay the rules, even when the agent is confident.</p></div><span className="mx-rule-glyph">≠</span></article>
-              <article><span className="mx-rule-number">03</span><div><h3>Uncertainty stops here.</h3><p>Unverified suppliers are blocked. Orders above the approval threshold are routed to a human.</p></div><span className="mx-rule-glyph">⊥</span></article>
+              <article><div><h3>Spend balance verification</h3><p>Available and reserved funds are verified before authorization. Arithmetic cannot be bypassed by prompt confidence.</p></div><span className="mx-rule-glyph">↗</span></article>
+              <article><div><h3>Gross margin floor protection</h3><p>Orders falling below the target margin threshold are blocked immediately.</p></div><span className="mx-rule-glyph">≠</span></article>
+              <article><div><h3>Counterparty verification</h3><p>Unverified suppliers are blocked. Orders exceeding single-order thresholds escalate to human review.</p></div><span className="mx-rule-glyph">⊥</span></article>
             </div>
             <div className="mx-policy-envelope">
               <div className="mx-envelope-top"><BrandMark /><span className="mx-label">POLICY ENVELOPE</span><span className="mx-label">v0.3</span></div>
-              <div className="mx-envelope-title">Your rules.<br /><span>Machine-enforced.</span></div>
+              <div className="mx-envelope-title">Workspace Policy Limits</div>
               <div className="mx-envelope-rule"><span>Gross margin floor</span><strong>{percent(POLICY.grossMarginFloor).replace(".0", "")}<span> MIN</span></strong></div>
               <div className="mx-envelope-rule"><span>Auto-approval threshold</span><strong>{POLICY.autoApprovalLimit.toLocaleString("en-US")}<span> USDC</span></strong></div>
-              <div className="mx-envelope-footer"><StatusIcon state="pass" /><span>Same input. Same decision. Every time.</span></div>
+              <div className="mx-envelope-footer"><StatusIcon state="pass" /><span>Deterministic evaluation on every order.</span></div>
             </div>
           </div>
         </div>
@@ -242,16 +242,16 @@ export default function FlagshipLanding() {
 
       <section id="playground" className="mx-playground" aria-labelledby="mx-playground-title">
         <div className="mx-wrap mx-playground-layout">
-          <div className="mx-playground-copy"><span className="mx-label">04 / INTERACTIVE POLICY LAB</span><h2 id="mx-playground-title">Try to break<br /><span>the rules.</span></h2><p>Drop the margin. Change the supplier. Push the limit. See exactly where your order stops — and why.</p><div className="mx-lab-note"><span><svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true"><path d="M6 4v16h18m-7-7 7 7-7 7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg></span><p>Real policy logic.<br /><strong>Illustrative money.</strong></p></div><div className="mx-legend"><span><i className="mx-indicator-pass" />Clear</span><span><i className="mx-indicator-fail" />Block</span><span><i className="mx-indicator-hold" />Review</span></div></div>
+          <div className="mx-playground-copy"><span className="mx-label">Policy Lab</span><h2 id="mx-playground-title">Policy simulation and spend boundaries</h2><p>Adjust the client price, supplier cost and counterparty verification to inspect how orders pass or block against policy limits.</p><div className="mx-lab-note"><span><svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true"><path d="M6 4v16h18m-7-7 7 7-7 7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg></span><p>Real policy logic.<br /><strong>Illustrative money.</strong></p></div><div className="mx-legend"><span><i className="mx-indicator-pass" />Clear</span><span><i className="mx-indicator-fail" />Block</span><span><i className="mx-indicator-hold" />Review</span></div></div>
           <div className="mx-lab">
-            <div className="mx-lab-header"><span><i className="mx-beacon" />POLICY LAB</span><span className="mx-label">{POLICY.version}</span></div>
+            <div className="mx-lab-header"><span>Policy sandbox</span><span className="mx-label">{POLICY.version}</span></div>
             <div className="mx-scenarios" role="group" aria-label="Example policy scenarios">{SCENARIOS.map(s => <button key={s.key} type="button" aria-pressed={activeCase === s.key} className={activeCase === s.key ? "is-active" : ""} onClick={() => chooseCase(s.key)}>{s.label}</button>)}</div>
             <div className="mx-lab-fields"><label>Client price <span>USDC</span><input type="number" min="1" max="1000000" step="50" value={amount} onChange={e => { setAmount(Math.max(0, Number(e.target.value))); setActiveCase("custom"); }} /></label><label>Supplier cost <span>USDC</span><input type="number" min="0" max="1000000" step="50" value={cost} onChange={e => { setCost(Math.max(0, Number(e.target.value))); setActiveCase("custom"); }} /></label></div>
 
             <div style={{ margin: "14px 15px 0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                <span style={{ fontSize: "11px", fontFamily: "var(--font-mono, monospace)", color: "#bdc9d6", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                  Supplier Verification Boundary (Spring Dropdown)
+                <span style={{ fontSize: "12px", fontFamily: "var(--font-mono, monospace)", color: "#bdc9d6" }}>
+                  Counterparty verification
                 </span>
                 <span style={{ fontSize: "10px", color: supplier === "verified" ? "#34d17a" : "#ff5a5f", fontFamily: "var(--font-mono, monospace)" }}>
                   {supplier === "verified" ? "Gate 04: PASS" : "Gate 04: BLOCK"}
@@ -270,8 +270,8 @@ export default function FlagshipLanding() {
 
             <div style={{ margin: "16px 15px 12px", padding: "12px 14px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.07)", borderRadius: "8px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                <span style={{ fontSize: "11px", fontFamily: "var(--font-mono, monospace)", color: "#bdc9d6", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                  Tactile Price Adjuster (Liquid Goo Physics)
+                <span style={{ fontSize: "12px", fontFamily: "var(--font-mono, monospace)", color: "#bdc9d6" }}>
+                  Client price adjustment
                 </span>
                 <span style={{ fontSize: "11px", fontFamily: "var(--font-mono, monospace)", color: "#38bdf8" }}>
                   {amount} USDC
@@ -299,8 +299,6 @@ export default function FlagshipLanding() {
                   padding: "0.3rem 0.65rem",
                   fontSize: "11px",
                   fontFamily: "var(--font-mono, monospace)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
                   borderRadius: "6px",
                   border: labView === "checks" ? "1px solid #38bdf8" : "1px solid rgba(255, 255, 255, 0.1)",
                   background: labView === "checks" ? "rgba(56, 189, 248, 0.15)" : "rgba(255, 255, 255, 0.02)",
@@ -309,7 +307,7 @@ export default function FlagshipLanding() {
                   transition: "all 0.15s ease",
                 }}
               >
-                01 Policy Gates (5/5)
+                Policy Gates (5/5)
               </button>
               <button
                 type="button"
@@ -318,8 +316,6 @@ export default function FlagshipLanding() {
                   padding: "0.3rem 0.65rem",
                   fontSize: "11px",
                   fontFamily: "var(--font-mono, monospace)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
                   borderRadius: "6px",
                   border: labView === "trace" ? "1px solid #38bdf8" : "1px solid rgba(255, 255, 255, 0.1)",
                   background: labView === "trace" ? "rgba(56, 189, 248, 0.15)" : "rgba(255, 255, 255, 0.02)",
@@ -328,7 +324,7 @@ export default function FlagshipLanding() {
                   transition: "all 0.15s ease",
                 }}
               >
-                02 Euthyna Continuous Audit Trace
+                Continuous Audit Trace
               </button>
               <button
                 type="button"
@@ -337,8 +333,6 @@ export default function FlagshipLanding() {
                   padding: "0.3rem 0.65rem",
                   fontSize: "11px",
                   fontFamily: "var(--font-mono, monospace)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
                   borderRadius: "6px",
                   border: labView === "mandate" ? "1px solid #38bdf8" : "1px solid rgba(255, 255, 255, 0.1)",
                   background: labView === "mandate" ? "rgba(56, 189, 248, 0.15)" : "rgba(255, 255, 255, 0.02)",
@@ -347,14 +341,14 @@ export default function FlagshipLanding() {
                   transition: "all 0.15s ease",
                 }}
               >
-                03 Agent Policy Mandate
+                Prompt Budget Sandbox
               </button>
             </div>
 
             {labView === "checks" ? (
               <>
                 <div className="mx-check-heading"><span className="mx-label">CHECKPOINT</span><span className="mx-label">RESULT</span></div>
-                <ul className="mx-check-list">{result.checks.map((check, index) => <li key={check.id} className={`mx-check-${check.state}`}><span className="mx-check-index">0{index + 1}</span><div><strong>{CHECK_LABELS[index]}</strong><p>{check.note}</p></div><span className="mx-check-state"><StatusIcon state={check.state} /><span>{check.state === "pass" ? "PASS" : check.state === "fail" ? "BLOCK" : "REVIEW"}</span></span></li>)}</ul>
+                <ul className="mx-check-list">{result.checks.map((check, index) => <li key={check.id} className={`mx-check-${check.state}`}><span className="mx-check-index">{index + 1}</span><div><strong>{CHECK_LABELS[index]}</strong><p>{check.note}</p></div><span className="mx-check-state"><StatusIcon state={check.state} /><span>{check.state === "pass" ? "PASS" : check.state === "fail" ? "BLOCK" : "REVIEW"}</span></span></li>)}</ul>
               </>
             ) : labView === "trace" ? (
               <div style={{ position: "relative", marginBottom: "1rem" }}>
@@ -452,10 +446,10 @@ export default function FlagshipLanding() {
               <div style={{ position: "relative", marginBottom: "1rem", padding: "0.25rem 0" }}>
                 <div style={{ marginBottom: "0.85rem" }}>
                   <strong style={{ display: "block", fontSize: "12px", color: "#ffffff", marginBottom: "3px" }}>
-                    Micro-Payload Boundary Sandbox
+                    Prompt Budget Constraint
                   </strong>
                   <p style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.55)", lineHeight: "1.4" }}>
-                    Autonomous agent instructions dispatched across Arc Network relayers enforce an 80-character budget constraint. Excess characters physically drop and bounce with gravity physics:
+                    Micro-payload instructions sent across Arc relayers enforce an 80-character budget constraint.
                   </p>
                 </div>
                 <div style={{ display: "flex", justifyContent: "center" }}>
@@ -473,9 +467,9 @@ export default function FlagshipLanding() {
 
       <section className="mx-catalog" id="catalog" aria-labelledby="mx-catalog-title">
         <div className="mx-wrap">
-          <div className="mx-section-meta"><span className="mx-label">05 / THE AGENT CATALOG</span><a className="mx-text-link" href="/catalog">Explore full catalog <Arrow diagonal /></a></div>
-          <h2 id="mx-catalog-title">Digital goods.<br /><span>Agent-ready.</span></h2>
-          <div className="mx-catalog-layout"><div className="mx-catalog-tabs" role="tablist" aria-orientation="vertical" aria-label="Digital goods categories">{GOODS.map((item, index) => <button key={item.code} type="button" id={`mx-good-tab-${index}`} role="tab" aria-selected={good === index} aria-controls="mx-good-panel" tabIndex={good === index ? 0 : -1} onClick={() => setGood(index)} onKeyDown={e => { if (["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft", "Home", "End"].includes(e.key)) { e.preventDefault(); const next = e.key === "Home" ? 0 : e.key === "End" ? GOODS.length - 1 : (index + (["ArrowDown", "ArrowRight"].includes(e.key) ? 1 : GOODS.length - 1)) % GOODS.length; setGood(next); document.getElementById(`mx-good-tab-${next}`)?.focus(); } }}><span className="mx-label">0{index + 1}</span><span>{item.name}<small>{item.tag}</small></span><Arrow diagonal /></button>)}</div>
+          <div className="mx-section-meta"><span className="mx-label">Agent Catalog</span><a className="mx-text-link" href="/catalog">Explore full catalog <Arrow diagonal /></a></div>
+          <h2 id="mx-catalog-title">Digital goods for autonomous workflows</h2>
+          <div className="mx-catalog-layout"><div className="mx-catalog-tabs" role="tablist" aria-orientation="vertical" aria-label="Digital goods categories">{GOODS.map((item, index) => <button key={item.code} type="button" id={`mx-good-tab-${index}`} role="tab" aria-selected={good === index} aria-controls="mx-good-panel" tabIndex={good === index ? 0 : -1} onClick={() => setGood(index)} onKeyDown={e => { if (["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft", "Home", "End"].includes(e.key)) { e.preventDefault(); const next = e.key === "Home" ? 0 : e.key === "End" ? GOODS.length - 1 : (index + (["ArrowDown", "ArrowRight"].includes(e.key) ? 1 : GOODS.length - 1)) % GOODS.length; setGood(next); document.getElementById(`mx-good-tab-${next}`)?.focus(); } }}><span>{item.name}<small>{item.tag}</small></span><Arrow diagonal /></button>)}</div>
             <div className="mx-good-panel" id="mx-good-panel" role="tabpanel" aria-labelledby={`mx-good-tab-${good}`} tabIndex={0}><div className="mx-good-top"><span className="mx-label">MERCENTA / {currentGood.code}</span><span className="mx-label">CATALOG PREVIEW</span></div><div className="mx-good-visual" aria-hidden="true"><span>{currentGood.symbol}</span><i /><i /><i /><i /></div><div className="mx-good-copy"><span className="mx-label">{currentGood.detail}</span><h3>{currentGood.title}</h3><p>{currentGood.description}</p><a href="/catalog" className="mx-text-link">View catalog <Arrow diagonal /></a></div></div>
           </div>
         </div>
@@ -484,7 +478,7 @@ export default function FlagshipLanding() {
       <WorkflowContrast />
       <BusinessPlaybooks />
 
-      <section className="mx-evidence" aria-labelledby="mx-evidence-title"><div className="mx-wrap mx-evidence-layout"><div><span className="mx-label">07 / THE AUDIT TRAIL</span><h2 id="mx-evidence-title">Not just approved.<br /><span>Accounted for.</span></h2><p>Price. Cost. Margin. Decision.<br />The order record keeps the context together, so you can inspect the outcome instead of trusting a summary.</p><button ref={receiptButton} className="mx-text-link" type="button" onClick={() => setReceiptOpen(true)}>Inspect example record <Arrow diagonal /></button></div><div className="mx-receipt"><div className="mx-receipt-top"><BrandMark /><span className="mx-label">ILLUSTRATIVE ORDER RECORD</span></div><span className="mx-label">{ORDER.id}</span><div className="mx-receipt-amount">{CASES.order.amount.toLocaleString("en-US")}<span>USDC</span></div><dl><div><dt>Supplier cost</dt><dd>{usdc(CASES.order.cost)}</dd></div><div><dt>Platform fee ({percent(POLICY.platformFee)})</dt><dd>{usdc(CASES.order.amount * POLICY.platformFee)}</dd></div><div><dt>Gross margin</dt><dd>{percent(example.margin)}</dd></div></dl><div className="mx-receipt-bottom"><StatusIcon state="pass" />{example.decision}<span>PREVIEW ONLY</span></div></div></div></section>
+      <section className="mx-evidence" aria-labelledby="mx-evidence-title"><div className="mx-wrap mx-evidence-layout"><div><span className="mx-label">Audit Trail</span><h2 id="mx-evidence-title">Deterministic accounting for every order</h2><p>Price, cost, margin, and approval decisions remain bound to the order record for independent verification.</p><button ref={receiptButton} className="mx-text-link" type="button" onClick={() => setReceiptOpen(true)}>Inspect example record <Arrow diagonal /></button></div><div className="mx-receipt"><div className="mx-receipt-top"><BrandMark /><span className="mx-label">ILLUSTRATIVE ORDER RECORD</span></div><span className="mx-label">{ORDER.id}</span><div className="mx-receipt-amount">{CASES.order.amount.toLocaleString("en-US")}<span>USDC</span></div><dl><div><dt>Supplier cost</dt><dd>{usdc(CASES.order.cost)}</dd></div><div><dt>Platform fee ({percent(POLICY.platformFee)})</dt><dd>{usdc(CASES.order.amount * POLICY.platformFee)}</dd></div><div><dt>Gross margin</dt><dd>{percent(example.margin)}</dd></div></dl><div className="mx-receipt-bottom"><StatusIcon state="pass" />{example.decision}<span>PREVIEW ONLY</span></div></div></div></section>
 
       <DeveloperBlock />
       <SDKHero />
@@ -492,7 +486,7 @@ export default function FlagshipLanding() {
 
       <SellersSection />
 
-      <section className="mx-final" aria-labelledby="mx-final-title"><div className="mx-wrap"><div className="mx-final-top"><span className="mx-label">THE NEXT MOVE IS YOURS.</span><span className="mx-label">MERCENTA / PRE-LAUNCH</span></div><h2 id="mx-final-title">Let agents act.<br /><span>On your terms.</span></h2><div className="mx-final-bottom"><p>Intelligent commerce.<br />Non-negotiable control.</p><a href="/app" className="mx-button mx-button-primary">Enter the console <Arrow diagonal /></a></div></div><div className="mx-final-watermark" aria-hidden="true">mercenta.</div></section>
+      <section className="mx-final" aria-labelledby="mx-final-title"><div className="mx-wrap"><div className="mx-final-top"><span className="mx-label">Mercenta Console</span></div><h2 id="mx-final-title">Deploy autonomous commerce inside verified limits</h2><div className="mx-final-bottom"><p>Machine-enforced boundaries for agent spending.</p><a href="/app" className="mx-button mx-button-primary">Enter the console <Arrow diagonal /></a></div></div><div className="mx-final-watermark" aria-hidden="true">mercenta.</div></section>
     </main>
     <footer className="mx-footer"><div className="mx-wrap"><a href="#" className="mx-brand"><BrandMark /><span>mercenta.</span></a><p>© {new Date().getFullYear()} Mercenta · Pre-launch preview</p><div><a href="/catalog">Catalog <Arrow diagonal /></a><a href="/app">Console <Arrow diagonal /></a><a href="/status">Status <Arrow diagonal /></a><a href="/releases">Releases <Arrow diagonal /></a><a href="/operations">Operations lab <Arrow diagonal /></a><a href="/earn">External Earn <Arrow diagonal /></a><a href="#">Back to top ↑</a></div><LaunchBadges variant="footer" />
           <OfficialContacts/><div className="mx-footer-compliance"><p>Mercenta is an independent application built on Arc Network. Arc™ is a trademark of Circle Internet Group, Inc. and/or its affiliates. USDC is issued by Circle. Use of Arc and Circle Brand Assets is solely to reference underlying infrastructure and compatibility.</p></div></div></footer>

@@ -6,7 +6,7 @@ import BrandMark from "./BrandMark";
 
 const CHAPTERS = [
   { label: "Intent", title: "An agent has a plan.", text: "It needs 250 compute hours. It submits the listing, quantity, price and supplier. The request is structured. The money has not moved.", note: "A request is not permission." },
-  { label: "Policy", title: "Your rules take over.", text: "Spend balance. Reserved funds. Margin. Supplier. Approval limit. Five deterministic checks run in order — no model gets a vote.", note: "Scroll to run all five checks." },
+  { label: "Policy", title: "Your rules take over.", text: "Spend balance. Reserved funds. Margin. Supplier. Approval limit. Five deterministic checks run in sequence without probabilistic variation.", note: "Scroll to run all five checks." },
   { label: "Decision", title: "The numbers decide.", text: "This order meets every condition. It clears the policy gate. A failing check would block it; an order above the threshold would need a human.", note: "Clear. Block. Or ask a human." },
   { label: "Record", title: "Nothing gets lost.", text: "The amount, supplier cost, fee and decision stay together in an inspectable order record. Settlement and delivery are planned, not live in this preview.", note: "A trail, not a black box." },
 ] as const;
@@ -33,19 +33,19 @@ function Scene({ stage, checks = 5 }: { stage: number; checks?: number }) {
     <div className="ms-order-item"><span className="ms-chip-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" stroke="currentColor" /><path d="M9 1v5m6-5v5M9 18v5m6-5v5M1 9h5m-5 6h5m12-6h5m-5 6h5M9 9h6v6H9z" stroke="currentColor" /></svg></span><div><h3>Cloud compute</h3><p>{ORDER.units} {ORDER.unit}</p></div></div>
     <div className="ms-order-amount"><span>{CASES.order.amount.toLocaleString("en-US")}</span><span>USDC</span></div>
     <dl className="ms-details"><div><dt>Supplier</dt><dd>{ORDER.supplier}</dd></div><div><dt>Supplier cost</dt><dd>{usdc(CASES.order.cost)}</dd></div><div><dt>Order</dt><dd>{ORDER.id}</dd></div></dl>
-    <div className="ms-card-bottom"><span className="ms-neutral-dot" />Awaiting policy evaluation <span>01 / 04</span></div>
+    <div className="ms-card-bottom"><span className="ms-neutral-dot" />Awaiting policy evaluation</div>
   </div>;
   if (stage === 1) return <div className="ms-policy-card">
-    <div className="ms-policy-title"><BrandMark /><div><span className="mx-label">MERCENTA POLICY ENGINE</span><h3>Permission is earned.</h3></div><span className="ms-check-count">{checks}<small>/ 5</small></span></div>
-    <ol className="ms-policy-checks">{EXAMPLE.checks.map((check, index) => <li key={check.id} data-complete={index < checks}><span className="ms-policy-index">0{index + 1}</span><div><strong>{LABELS[index]}</strong><p>{CHECK_VALUES[index]}</p></div><span className="ms-policy-result"><Tick pending={index >= checks} /><span>{index < checks ? "PASS" : "WAIT"}</span></span></li>)}</ol>
-    <div className="ms-policy-foot"><span>Deterministic, not probabilistic.</span><span className="mx-label">POLICY v0.3</span></div>
+    <div className="ms-policy-title"><BrandMark /><div><span className="mx-label">Policy engine</span><h3>Permission is earned.</h3></div><span className="ms-check-count">{checks}<small>/ 5</small></span></div>
+    <ol className="ms-policy-checks">{EXAMPLE.checks.map((check, index) => <li key={check.id} data-complete={index < checks}><span className="ms-policy-index">{index + 1}</span><div><strong>{LABELS[index]}</strong><p>{CHECK_VALUES[index]}</p></div><span className="ms-policy-result"><Tick pending={index >= checks} /><span>{index < checks ? "PASS" : "WAIT"}</span></span></li>)}</ol>
+    <div className="ms-policy-foot"><span>Deterministic, not probabilistic.</span><span className="mx-label">Policy rules v0.3</span></div>
   </div>;
   if (stage === 2) return <div className="ms-decision-card">
     <div className="ms-card-title"><span className="mx-label">POLICY DECISION</span><span className="ms-tag ms-tag-pass">5 / 5 passed</span></div>
     <div className="ms-decision-seal" aria-hidden="true"><span /><span /><svg width="44" height="44" viewBox="0 0 48 48" fill="none"><path d="m12 24 8 8 16-17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
     <h3>{EXAMPLE.decision}<span>.</span></h3><p>All five checks passed.<br />The illustrative order is authorized.</p>
     <div className="ms-decision-values"><div><span>Gross margin</span><strong>{percent(EXAMPLE.margin)}</strong></div><div><span>Approval limit</span><strong>{POLICY.autoApprovalLimit.toLocaleString("en-US")} <small>USDC</small></strong></div></div>
-    <div className="ms-card-bottom"><Tick />Policy-authorized. Not settled.<span>03 / 04</span></div>
+    <div className="ms-card-bottom"><Tick />Policy-authorized. Not settled.</div>
   </div>;
   return <div className="ms-record-card">
     <div className="ms-record-brand"><BrandMark /><span className="mx-label">ILLUSTRATIVE ORDER RECORD</span></div>
@@ -133,12 +133,12 @@ export default function ScrollStory() {
   return <section ref={root} id="architecture" className="mx-story" data-enhanced={enhanced} data-stage={stage} aria-labelledby="ms-title">
     <div className="ms-pin">
       <div className="mx-wrap ms-inner">
-        <div className="ms-meta"><span className="mx-label">03 / ONE ORDER, END TO END</span><span className="mx-label">SCROLL TO FOLLOW THE TRANSACTION ↓</span></div>
+        <div className="ms-meta"><span className="mx-label">Transaction lifecycle</span><span className="mx-label">Scroll to follow</span></div>
         <div className="ms-stage-layout">
           <div className="ms-copy">
             <h2 id="ms-title">One order.<br /><span> Every checkpoint.</span></h2>
             <div className="ms-chapter-copy">{CHAPTERS.map((chapter, index) => <div key={chapter.label} className="ms-chapter" data-active={stage === index} aria-hidden={stage !== index}>
-              <span className="ms-chapter-number">0{index + 1}<span> / 04</span></span>
+              <span className="ms-chapter-number">Stage {index + 1} of 4</span>
               <h3>{chapter.title}</h3><p>{chapter.text}</p><div className="ms-chapter-note"><Arrow /><span>{chapter.note}</span></div>
             </div>)}</div>
             <p className="ms-static-intro">Follow an illustrative compute order through four checkpoints. The model proposes. The policy decides.</p>
@@ -147,7 +147,7 @@ export default function ScrollStory() {
           <div className="ms-visual" aria-label="Scroll-driven illustrative order lifecycle">
             {/* Existing hero artwork becomes a quiet, scroll-linked backdrop, never a new fake logo. */}
             <div className="ms-visual-art" aria-hidden="true" />
-            <div className="ms-visual-top"><span className="mx-label">MERCENTA / TRANSACTION VIEW</span><span className="ms-scene-counter">0{stage + 1}<span>/04</span></span></div>
+            <div className="ms-visual-top"><span className="mx-label">Transaction state</span><span className="ms-scene-counter">Stage {stage + 1} of 4</span></div>
             <div className="ms-flow" aria-hidden="true"><div className="ms-flow-line"><span /></div><div data-reached={stage >= 0}><span>&gt;_</span><small>Agent</small></div><div data-reached={stage >= 1}><BrandMark /><small>Policy</small></div><div data-reached={stage >= 2}><Tick /><small>Decision</small></div><div data-reached={stage >= 3}><span>≡</span><small>Record</small></div></div>
             <div className="ms-scenes">{CHAPTERS.map((chapter, index) => <div key={chapter.label} className="ms-scene" data-active={stage === index} aria-hidden={stage !== index}>
               <Scene stage={index} checks={checks} />
@@ -155,9 +155,9 @@ export default function ScrollStory() {
             <div className="ms-visual-foot"><span className="ms-preview-dot" />ILLUSTRATIVE TRANSACTION<span>NO LIVE FUNDS</span></div>
           </div>
         </div>
-        <nav className="ms-chapter-nav" aria-label="Transaction chapters"><div className="ms-progress-track" aria-hidden="true"><span /></div>{CHAPTERS.map((chapter, index) => <button key={chapter.label} type="button" onClick={() => goToChapter(index)} aria-current={stage === index ? "step" : undefined} aria-label={`Go to chapter ${index + 1}: ${chapter.label}`} data-complete={stage > index}><span className="ms-nav-number">0{index + 1}</span><span>{chapter.label}</span><span className="ms-nav-indicator" aria-hidden="true">{stage > index ? "✓" : "↗"}</span></button>)}</nav>
+        <nav className="ms-chapter-nav" aria-label="Transaction chapters"><div className="ms-progress-track" aria-hidden="true"><span /></div>{CHAPTERS.map((chapter, index) => <button key={chapter.label} type="button" onClick={() => goToChapter(index)} aria-current={stage === index ? "step" : undefined} aria-label={`Go to chapter ${index + 1}: ${chapter.label}`} data-complete={stage > index}><span className="ms-nav-number">{index + 1}</span><span>{chapter.label}</span><span className="ms-nav-indicator" aria-hidden="true">{stage > index ? "✓" : "↗"}</span></button>)}</nav>
       </div>
     </div>
-    <div className="ms-fallback mx-wrap">{CHAPTERS.map((chapter, index) => <article key={chapter.label} className="ms-fallback-chapter"><div><span className="mx-label">0{index + 1} / {chapter.label}</span><h3>{chapter.title}</h3><p>{chapter.text}</p></div><Scene stage={index} /></article>)}</div>
+    <div className="ms-fallback mx-wrap">{CHAPTERS.map((chapter, index) => <article key={chapter.label} className="ms-fallback-chapter"><div><span className="mx-label">{chapter.label}</span><h3>{chapter.title}</h3><p>{chapter.text}</p></div><Scene stage={index} /></article>)}</div>
   </section>;
 }

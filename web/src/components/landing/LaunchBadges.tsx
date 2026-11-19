@@ -19,15 +19,13 @@ export function LaunchBadges({ variant = "hero", className = "" }: LaunchBadgesP
       <span
         style={{
           display: "block",
-          fontSize: "10px",
+          fontSize: "11px",
           fontFamily: "var(--font-mono, monospace)",
-          textTransform: "uppercase",
-          letterSpacing: "0.14em",
-          color: "rgba(255, 255, 255, 0.45)",
+          color: "rgba(255, 255, 255, 0.55)",
           marginBottom: "0.6rem",
         }}
       >
-        Featured &amp; Launching on
+        Verified network environments
       </span>
       <div
         style={{
@@ -49,18 +47,18 @@ export function LaunchBadges({ variant = "hero", className = "" }: LaunchBadgesP
             height: "38px",
             padding: "0 12px",
             borderRadius: "8px",
-            background: "linear-gradient(135deg, rgba(0, 210, 255, 0.15), rgba(0, 82, 255, 0.18))",
-            border: "1px solid rgba(0, 210, 255, 0.4)",
+            background: "rgba(255, 255, 255, 0.04)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
             color: "#e0f2fe",
             fontSize: "12px",
             fontFamily: "var(--font-mono, monospace)",
             textDecoration: "none",
             transition: "all 0.15s ease",
           }}
-          className="hover:scale-[1.02] hover:border-cyan-400 hover:shadow-[0_0_15px_rgba(0,210,255,0.25)]"
+          className="hover:border-cyan-400 hover:bg-white/[0.08]"
           title="Featured on Arc Ecosystem Showcase by Canteen"
         >
-          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#38bdf8", boxShadow: "0 0 8px #38bdf8" }} />
+          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#38bdf8", boxShadow: "none" }} />
           <strong>Arc Showcase</strong>
           <span style={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "10px" }}>CANTEEN</span>
         </a>
@@ -77,18 +75,18 @@ export function LaunchBadges({ variant = "hero", className = "" }: LaunchBadgesP
             height: "38px",
             padding: "0 12px",
             borderRadius: "8px",
-            background: "linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(59, 130, 246, 0.15))",
-            border: "1px solid rgba(168, 85, 247, 0.4)",
+            background: "rgba(255, 255, 255, 0.04)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
             color: "#f3e8ff",
             fontSize: "12px",
             fontFamily: "var(--font-mono, monospace)",
             textDecoration: "none",
             transition: "all 0.15s ease",
           }}
-          className="hover:scale-[1.02] hover:border-purple-400 hover:shadow-[0_0_15px_rgba(168,85,247,0.25)]"
+          className="hover:border-purple-400 hover:bg-white/[0.08]"
           title="Alchemy Developer Grant Recipient ($1,000)"
         >
-          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#c084fc", boxShadow: "0 0 8px #c084fc" }} />
+          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#c084fc", boxShadow: "none" }} />
           <strong>Alchemy Grantee</strong>
           <span style={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "10px" }}>$1,000</span>
         </a>
@@ -99,7 +97,7 @@ export function LaunchBadges({ variant = "hero", className = "" }: LaunchBadgesP
           target="_blank"
           rel="noopener noreferrer"
           style={{ display: "inline-block", transition: "transform 0.15s ease, opacity 0.15s ease" }}
-          className="hover:scale-[1.02] hover:opacity-100 opacity-90"
+          className="hover:opacity-100 opacity-90"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -115,7 +113,7 @@ export function LaunchBadges({ variant = "hero", className = "" }: LaunchBadgesP
           target="_blank"
           rel="noopener noreferrer"
           style={{ display: "inline-block", transition: "transform 0.15s ease, opacity 0.15s ease" }}
-          className="hover:scale-[1.02] hover:opacity-100 opacity-90"
+          className="hover:opacity-100 opacity-90"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -132,7 +130,7 @@ export function LaunchBadges({ variant = "hero", className = "" }: LaunchBadgesP
           rel="noopener noreferrer"
           aria-label="View Mercenta on ConfettiSaaS"
           style={{ display: "inline-block", transition: "transform 0.15s ease, opacity 0.15s ease" }}
-          className="hover:scale-[1.02] hover:opacity-100 opacity-90"
+          className="hover:opacity-100 opacity-90"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -149,7 +147,7 @@ export function LaunchBadges({ variant = "hero", className = "" }: LaunchBadgesP
           target="_blank"
           rel="noopener noreferrer"
           style={{ display: "inline-block", transition: "transform 0.15s ease, opacity 0.15s ease" }}
-          className="hover:scale-[1.02] hover:opacity-100 opacity-90"
+          className="hover:opacity-100 opacity-90"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -166,7 +164,7 @@ export function LaunchBadges({ variant = "hero", className = "" }: LaunchBadgesP
           target="_blank"
           rel="noopener noreferrer"
           style={{ display: "inline-block", transition: "transform 0.15s ease, opacity 0.15s ease" }}
-          className="hover:scale-[1.02] hover:opacity-100 opacity-90"
+          className="hover:opacity-100 opacity-90"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -182,7 +180,7 @@ export function LaunchBadges({ variant = "hero", className = "" }: LaunchBadgesP
           target="_blank"
           rel="noopener noreferrer"
           style={{ display: "inline-block", transition: "transform 0.15s ease, opacity 0.15s ease" }}
-          className="hover:scale-[1.02] hover:opacity-100 opacity-90"
+          className="hover:opacity-100 opacity-90"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
